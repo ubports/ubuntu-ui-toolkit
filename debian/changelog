@@ -1,3 +1,110 @@
+ubuntu-ui-toolkit (1.3.1918+16.04.20160404-0ubuntu1) xenial; urgency=medium
+
+  [ Benjamin Zeller ] 
+  * Register expected warning messages in the tree testcase.
+  * Add testsuite for Tree. Fixes LP: #1549171.
+  * Compile with Qt 5.6. Fixes LP: #1540356
+  * More Qt 5.6 fixes.
+  
+  [ Michael Terry ]
+  * Add grabGesture field to SwipeArea.
+  * This field controls whether the SwipeArea takes ownership of the gestures it
+    observes. Fixes LP: #1527387.
+
+  [ Timo Jyrinki ]
+  * Add additional Breaks as requested by archive admin.
+  * Add a test for blocking if packaging not sorted and clean.
+  * More package name transitioning, wrap and sort, fix debian/copyright syntax, 
+    update standards-version, fix devel package sections and add/fix 
+    lintian-overrides.
+
+  [ Olivier Tilloy ]
+  * Fix dependencies of the transitional dummy package 
+    qtdeclarative5-ubuntu-ui-toolkit-plugin. Fixes LP: #1553551.
+
+  [ Christian Dywan ]
+  * Rename qtdeclarative5-*-plugin to qml-module-*. Fixes LP: #1342031.
+  * Require a qtdeclarative5 known to have the tab fence patch.
+  * Reset previous theme version and use UbuntuTestCase in tst_animator.
+  * BottomEdge(Hint) focus and close via keyboard. Fixes LP: #1523825
+  * Add 1.3 version of UbuntuTestCase.
+  * No gdb when running unit tests on armv7l.
+  * Build-depend on python3-debian for wrap-and-sort.
+
+  [ XiaoGuo Liu ]
+  * Fix AdaptivePageLayout documentation.
+
+  [ Tim Peeters ]
+  * Properly disable left/right arrows on sections when at the beginning/end of
+    the list. Fixes LP: #1551356.
+  * Sections and old AppHeader landscape mode. Fixes LP: #1551341.
+  * Set the window color as soon as the window is available, to avoid a 
+    flickering background when it is updated later. 
+    Fixes LP: #1439133, LP: #1554897
+  * Add theme, style and styleName properties to Dialog and Popover. 
+    Fixes LP: #1555548
+  * Update the gallery script to use the new name of the export script.
+  * Export the full list of library paths.
+  * Prevent Page geometry changes in APL when changing Pages in a column.
+  * Fix typo in DatePickerStyle. Fixes:  LP #1561440.
+
+  [ Zsombor Egri ]
+  * ListItem focus navigation in ListView and other views. 
+    Fixes LP: #1523815, LP: #1536679, LP: #1549733, LP: #1549743
+  * BorromEdge.preloadContent. Fixes LP: #1540454.
+  * Asynchronous loader (AsyncLoader) using incubator, prerequisite for 
+    BottomEdge preloading its content. Fixes LP: #1540454.
+  * ListView proxy should not consume up/down key events. Fixes LP: #1554447
+  * Pick up the right style. Fixes LP: #1555797
+  * Label makes sure the color alteration is known by the theming. 
+    Fixes LP: #1555784
+  * Fix AsyncLoader tests so they create slightly less amount of elements.
+  * AdaptivePageLayout removes all pages pushed to next columns when 
+    addPageToNextColumn() is called. Fixes LP: #1544745
+  * Fix BottomEdge content discarding.
+  * Disconnect enabled signal in Label in destructor, so functor call will not 
+    be handled when QQuickItem triggers enabled change. Fixes LP: #1560044.
+
+
+  [ Andrea Bernabei ]
+  * UI Gallery: fix vertical alignment of labels in left panel list items.
+  * ScrollView: add horizontalScrollbar and verticalScrollbar properties to 
+    allow custom properties and styling of scrollbars.
+  * Change Scrollbar default top and bottom anchor margins. Tests included.
+
+  [ Albert Astals Cid ] 
+  * Use "/" instead of QDir::separator for building paths that will be passed
+    to Qt.
+  * Some string optimizations in the icon searching code
+  * Improve icon file searching. Leave searching in hicolor to the end. Do not
+    search on icon themes we've already searched.
+
+  [ Zoltán Balogh ]
+  * Clean up examples. 
+  * Improve unit test plan tool
+
+  [ Florian Boucault ]
+  * Properly disable PerformanceMonitor for toolkit tests only. Re-enable it for
+    everything else.
+
+  [ Pierre Bertet ]
+  * Fix the lists style in the offline documentation. Fixes LP: #1557472.
+  * Make export_qml_dir.sh compatible with ZSH.
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Mon, 04 Apr 2016 04:47:18 +0000
+
+ubuntu-ui-toolkit (1.3.1872+16.04.20160330.2-0ubuntu1) xenial; urgency=medium
+
+  [ Tim Peeters ]
+  * Set the window color as soon as the window is available, to avoid a
+    flickering background when it is updated later, plus fix runtest.sh
+    to work for xenial on arm. (LP: #1554897, #1439133)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 30 Mar 2016 23:08:38 +0000
+
 ubuntu-ui-toolkit (1.3.1872+16.04.20160314-0ubuntu1) xenial; urgency=medium
 
   [ Zoltán Balogh ]

@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:49+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-04-09 05:43+0000\n"
+"X-Generator: Launchpad (build 17990)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -23,7 +23,7 @@ msgstr "Tietoja..."
 
 #: ActionBars.qml:68
 msgid "Short list"
-msgstr ""
+msgstr "Lyhyt luettelo"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: ActionBars.qml:92
 msgid "Long list"
-msgstr ""
+msgstr "Pitkä luettelo"
 
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
@@ -70,7 +70,7 @@ msgstr ""
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
-msgstr ""
+msgstr "Soita"
 
 #: Buttons.qml:37
 msgid "Stroke"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
-msgstr ""
+msgstr "Väri"
 
 #: Buttons.qml:53
 #, qt-format
@@ -91,7 +91,7 @@ msgstr "Kuvake"
 
 #: Buttons.qml:72 Buttons.qml:134
 msgid "Icon+Text"
-msgstr ""
+msgstr "Kuvake+teksti"
 
 #: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
@@ -103,15 +103,15 @@ msgstr ""
 
 #: Colors.qml:30
 msgid "Orange"
-msgstr ""
+msgstr "Oranssi"
 
 #: Colors.qml:36
 msgid "Light grey"
-msgstr ""
+msgstr "Vaaleanharmaa"
 
 #: Colors.qml:42
 msgid "Dark grey"
-msgstr ""
+msgstr "Tummanharmaa"
 
 #: Colors.qml:48
 msgid "Red"
@@ -127,7 +127,7 @@ msgstr "Sininen"
 
 #: Colors.qml:66
 msgid "Purple"
-msgstr ""
+msgstr "Violetti"
 
 #: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
@@ -165,43 +165,43 @@ msgstr ""
 
 #: ListItems.qml:73
 msgid "Progression"
-msgstr ""
+msgstr "Edistyminen"
 
 #: ListItems.qml:82
 msgid "Single value"
-msgstr ""
+msgstr "Yksi arvo"
 
 #: ListItems.qml:86
 msgid "Value"
-msgstr ""
+msgstr "Arvo"
 
 #: ListItems.qml:91
 msgid "Multi value"
-msgstr ""
+msgstr "Moniarvo"
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
 #: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
-msgstr ""
+msgstr "Arvo 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
 #: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
 #: OptionSelectors.qml:100
 msgid "Value 2"
-msgstr ""
+msgstr "Arvo 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
 #: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
 #: OptionSelectors.qml:101
 msgid "Value 3"
-msgstr ""
+msgstr "Arvo 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
 #: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
 #: OptionSelectors.qml:102
 msgid "Value 4"
-msgstr ""
+msgstr "Arvo 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
@@ -213,7 +213,7 @@ msgstr ""
 
 #: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
-msgstr ""
+msgstr "Monivalinta"
 
 #: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
@@ -222,22 +222,22 @@ msgstr ""
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
 msgid "Value 5"
-msgstr ""
+msgstr "Arvo 5"
 
 #: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
 #: OptionSelectors.qml:104
 msgid "Value 6"
-msgstr ""
+msgstr "Arvo 6"
 
 #: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
 #: OptionSelectors.qml:105
 msgid "Value 7"
-msgstr ""
+msgstr "Arvo 7"
 
 #: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
 #: OptionSelectors.qml:106
 msgid "Value 8"
-msgstr ""
+msgstr "Arvo 8"
 
 #: ListItems.qml:190
 msgid "Control"
@@ -306,7 +306,7 @@ msgstr ""
 #: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
 #: NewListItems.qml:213 NewListItems.qml:214
 msgid "Colored divider"
-msgstr ""
+msgstr "Väritetty erotin"
 
 #: NewListItems.qml:163
 msgid "Immutable"
@@ -314,7 +314,7 @@ msgstr ""
 
 #: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
 msgid "No divider"
-msgstr ""
+msgstr "Ei erotinta"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
@@ -322,17 +322,19 @@ msgstr ""
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr ""
+msgstr "Tämä on toinen arvo"
 
 #: OptionSelectors.qml:35
 msgid ""
 "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
 "nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 msgstr ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 
 #: OptionSelectors.qml:36
 msgid "Once upon a time there was a story nobody told."
-msgstr ""
+msgstr "Olipa kerran tarina, jota kukaan ei kertonut."
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
@@ -368,23 +370,23 @@ msgstr ""
 
 #: Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Toiminto #1"
 
 #: Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Toiminto #2"
 
 #: Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Toiminto #3"
 
 #: Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Toiminto #4"
 
 #: Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Toiminto #5"
 
 #: ProgressBars.qml:24
 msgid "Progress Bar"
@@ -400,7 +402,7 @@ msgstr ""
 
 #: ProportionalShape.qml:28
 msgid "Sizes"
-msgstr ""
+msgstr "Koot"
 
 #: Sections.qml:34
 msgid "Enabled"
@@ -417,7 +419,7 @@ msgstr ""
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
-msgstr ""
+msgstr "Todellinen arvo: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
@@ -453,7 +455,7 @@ msgstr "Salasana"
 
 #: TextInputs.qml:67
 msgid "Numbers"
-msgstr ""
+msgstr "Numerot"
 
 #: TextInputs.qml:78
 msgid "Read-only"

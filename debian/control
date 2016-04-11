@@ -22,6 +22,9 @@ Build-Depends: accountsservice,
                libqt5sql5-sqlite,
                libqt5svg5-dev,
                libudev-dev,
+               libx11-dev[!armhf],
+               libxcb1-dev[!armhf],
+               libxi-dev[!armhf],
                libxkbcommon-dev,
                libxrender-dev,
                locales,
@@ -96,6 +99,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Layouts QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -112,6 +116,7 @@ Depends: qml-module-qttest | qtdeclarative5-test-plugin,
          qml-module-ubuntu-components,
          ${misc:Depends},
          ${shlibs:Depends},
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Test QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -126,6 +131,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface

@@ -16,42 +16,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : (n != 8 && n != 11) ? "
 "2 : 3;\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:49+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-04-09 05:43+0000\n"
+"X-Generator: Launchpad (build 17990)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
 msgid "Select All"
-msgstr ""
+msgstr "Dewis i gyd"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:36
 #: Ubuntu/Components/1.3/TextInputPopover.qml:36
 msgid "Cut"
-msgstr ""
+msgstr "Torri"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:48
 #: Ubuntu/Components/1.3/TextInputPopover.qml:48
 msgid "Copy"
-msgstr ""
+msgstr "Copio"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:57
 #: Ubuntu/Components/1.3/TextInputPopover.qml:57
 msgid "Paste"
-msgstr ""
+msgstr "Gludo"
 
 #: Ubuntu/Components/1.2/ToolbarItems.qml:143
 #: Ubuntu/Components/1.3/ToolbarItems.qml:143
 msgid "Back"
-msgstr ""
+msgstr "Cefn"
 
 #: Ubuntu/Components/ListItems/1.2/Empty.qml:398
 #: Ubuntu/Components/ListItems/1.3/Empty.qml:398
 msgid "Delete"
-msgstr ""
+msgstr "Dileu"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
 msgid "No service/path specified"
-msgstr ""
+msgstr "Dim gwasanaeth/llwybr penodedig"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
 #, qt-format
@@ -61,7 +61,7 @@ msgstr ""
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
 msgid "Now"
-msgstr ""
+msgstr "Nawr"
 
 #: Ubuntu/Components/plugin/i18n.cpp:275
 #, qt-format
@@ -158,7 +158,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/ucalarm.cpp:41
 #: Ubuntu/Components/plugin/ucalarm.cpp:643
 msgid "Alarm"
-msgstr ""
+msgstr "Larwm"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:635
 #: Ubuntu/Components/plugin/ucalarm.cpp:667

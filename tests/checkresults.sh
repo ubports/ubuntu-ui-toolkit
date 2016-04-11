@@ -17,9 +17,13 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 ################################################################################
 
+WARNINGS_PATTERN='message="(.*)" type="qwarn"'
+ERRORS_PATTERN='<failure'
+
 FAILURES=0
-for i in $*; do
-    _XML=$i
+FATAL_WARNINGS=0
+EXCEPTED=0
+for _XML in $*; do
     _TESTNAME=$(basename $_XML | sed -r 's@test_(.+)\.xml@\1@' -)
 
     if [ ! -f $_XML ]; then
@@ -30,6 +34,8 @@ for i in $*; do
     EXCEPTIONS='tst_components_benchmark \
                 tst_tabbar.qml \
                 tst_datepicker.qml \
+                tst_datepicker13.qml \
+                tst_swipearea \
                 tst_qquick_image_extension \
                 tst_page.qml \
                 tst_toolbar.qml \
@@ -48,26 +54,46 @@ for i in $*; do
                 tst_inversemousearea \
                 '
 
-    WARNINGS=$(grep -c -e 'qwarn' $_XML)
-    ERRORS=$(grep -c -e '<failure' $_XML)
+    WARNINGS=$(grep -c -P "$WARNINGS_PATTERN" $_XML)
+    ERRORS=$(grep -c -P "$ERRORS_PATTERN" $_XML)
     if [ $ERRORS -ne 0 ]; then
-      echo "Error: $ERRORS errors in $_TESTNAME ($WARNINGS warnings)"
+      FAILURES_FILES="${FAILURES_FILES}  ${_TESTNAME}\n"
       ((FAILURES+=$ERRORS))
-      ((FAILURES+=$WARNINGS))
     elif [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
-        echo "FIXME: $WARNINGS warnings in $_TESTNAME - Known problematic test"
+        EXCEPTED_FILES="${EXCEPTED_FILES}  ${_TESTNAME}\n"
+        ((EXCEPTED+=$WARNINGS))
       else
-        echo "Error: $WARNINGS warnings in $_TESTNAME"
-        # FIXME: ((FAILURES+=$WARNINGS))
+        FATAL_WARNINGS_FILES="${FATAL_WARNINGS_FILES}  ${_TESTNAME}\n"
+        ((FATAL_WARNINGS+=$WARNINGS))
       fi
     elif [[ $EXCEPTIONS == *$_TESTNAME* ]]; then
-      echo Woot! Known problematic test $_TESTNAME did pass afterall!
-      echo '  ' Consider removing $_TESTNAME from EXCEPTIONS in ${0#$(pwd)/}
+      WOOT_FILES="${WOOT_FILES}  ${_TESTNAME}\n"
     fi
 done
 
-if [ $FAILURES -ne 0 ]; then
-    echo Found $FAILURES failures including warnings.
-    exit $FAILURES
+TOTAL=0
+if [ -n "$FAILURES_FILES" ]; then
+    ((TOTAL+=$FAILURES))
+    echo $FAILURES failures which MUST be fixed:
+    echo -e "$FAILURES_FILES"
 fi
+
+if [ -n "$FATAL_WARNINGS_FILES" ]; then
+    ((TOTAL+=FATAL_WARNINGS))
+    echo $FATAL_WARNINGS fatal warnings which MUST be fixed:
+    echo -e "$FATAL_WARNINGS_FILES"
+fi
+
+if [ -n "$EXCEPTED_FILES" ]; then
+    echo The following tests issued $EXCEPTED expected warnings:
+    echo -e "$EXCEPTED_FILES"
+fi
+
+if [ -n "$WOOT_FILES" ]; then
+    echo Woot! Known problematic tests passed!
+    echo Consider removing these from EXCEPTIONS in ${0#$(pwd)/}!
+    echo -e "$WOOT_FILES"
+fi
+
+exit $TOTAL
