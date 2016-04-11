@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:49+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-03-16 06:06+0000\n"
+"X-Generator: Launchpad (build 17947)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -78,7 +78,7 @@ msgstr ""
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
-msgstr ""
+msgstr "Väri"
 
 #: Buttons.qml:53
 #, qt-format
@@ -173,7 +173,7 @@ msgstr ""
 
 #: ListItems.qml:86
 msgid "Value"
-msgstr ""
+msgstr "Arvo"
 
 #: ListItems.qml:91
 msgid "Multi value"
@@ -183,25 +183,25 @@ msgstr ""
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
 #: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
-msgstr ""
+msgstr "Arvo 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
 #: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
 #: OptionSelectors.qml:100
 msgid "Value 2"
-msgstr ""
+msgstr "Arvo 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
 #: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
 #: OptionSelectors.qml:101
 msgid "Value 3"
-msgstr ""
+msgstr "Arvo 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
 #: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
 #: OptionSelectors.qml:102
 msgid "Value 4"
-msgstr ""
+msgstr "Arvo 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
@@ -222,22 +222,22 @@ msgstr ""
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
 msgid "Value 5"
-msgstr ""
+msgstr "Arvo 5"
 
 #: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
 #: OptionSelectors.qml:104
 msgid "Value 6"
-msgstr ""
+msgstr "Arvo 6"
 
 #: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
 #: OptionSelectors.qml:105
 msgid "Value 7"
-msgstr ""
+msgstr "Arvo 7"
 
 #: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
 #: OptionSelectors.qml:106
 msgid "Value 8"
-msgstr ""
+msgstr "Arvo 8"
 
 #: ListItems.qml:190
 msgid "Control"
@@ -368,23 +368,23 @@ msgstr ""
 
 #: Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Toiminto #1"
 
 #: Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Toiminto #2"
 
 #: Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Toiminto #3"
 
 #: Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Toiminto #4"
 
 #: Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Toiminto #5"
 
 #: ProgressBars.qml:24
 msgid "Progress Bar"
@@ -453,7 +453,7 @@ msgstr "Salasana"
 
 #: TextInputs.qml:67
 msgid "Numbers"
-msgstr ""
+msgstr "Numerot"
 
 #: TextInputs.qml:78
 msgid "Read-only"
