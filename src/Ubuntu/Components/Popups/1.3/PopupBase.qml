@@ -178,6 +178,8 @@ OrientationHelper {
         stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
     }
 
+
+    onOpacityChanged: print("opacity = "+opacity)
     Item {
         id: stateWrapper
         property Item rootItem: QuickUtils.rootItem(popupBase)
@@ -191,6 +193,7 @@ OrientationHelper {
             // not enough.
             if (windowIsValid) {
                 prevFocus = window.activeFocusItem;
+                print("prevFocus = "+prevFocus)
                 windowIsValidChanged.disconnect(saveActiveFocus);
             } else {
                 // connect the function so we can save the original focus item
@@ -206,6 +209,16 @@ OrientationHelper {
                     prevFocus.forceActiveFocus(Qt.OtherFocusReason);
                 }
             }
+        }
+
+        Component.onDestruction: print("bla")
+        function fadeOutFinished() {
+            print("fadeOutFinished. Opacity = "+popupBase.opacity)
+            return popupBase.opacity == 0.0;
+//            popupBase.visible = false;
+//            if (eventGrabber.enabled) {
+//                stateWrapper.restoreActiveFocus();
+//            }
         }
 
         states: [
@@ -239,16 +252,33 @@ OrientationHelper {
                 from: "opened"
                 to: "closed"
                 SequentialAnimation {
+                    ScriptAction {
+                        script: {
+                            print("START TO FADE")
+//                            popupBase.visible = false
+//                            popupBase.visible = Qt.binding(stateWrapper.fadeOutFinished);
+//                            popupBase.visible = Qt.binding(function(){
+//                                return popupBase.opacity == 0.0;
+//                            }//);
+                        }
+                    }
                     NumberAnimation {
                         target: popupBase
                         property: "opacity"
                         from: 1.0
-                        to: 0.0
+                        to: 0.2
                         duration: fadingAnimation.duration
                         easing: fadingAnimation.easing
+                        onStopped: {
+                            print("STOOP!!")
+                        }
+                        onRunningChanged: {
+                            print("running = "+running)
+                        }
                     }
                     ScriptAction {
                         script: {
+                            print("faded out popup")
                             popupBase.visible = false;
                             if (eventGrabber.enabled) {
                                 stateWrapper.restoreActiveFocus();

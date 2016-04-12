@@ -59,6 +59,7 @@ function open(popup, caller, params) {
         print("PopupUtils.open(): "+popup+" is not a component or a link");
         return null;
     }
+    print("rootObject = "+rootObject+ "("+rootObject.objectName+")")
 
     var popupObject;
     if (params !== undefined) {
