@@ -87,6 +87,7 @@ Replaces: qml-module-ubuntu-components,
           qtdeclarative5-ubuntu-ui-toolkit-plugin,
           qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
 Provides: qml-module-ubuntu-components,
+          qtdeclarative5-ubuntu-ui-toolkit-plugin,
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
