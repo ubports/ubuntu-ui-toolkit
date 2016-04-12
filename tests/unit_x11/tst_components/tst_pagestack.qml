@@ -34,6 +34,41 @@ Item {
                 id: pageInStack
             }
         }
+
+        Column {
+            // for manual testing
+            visible: pageStack.depth === 0
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                margins: units.gu(1)
+            }
+            Button {
+                text: "page1"
+                onClicked: pageStack.push(page1)
+            }
+            Button {
+                text: "page2"
+                onClicked: pageStack.push(page2)
+            }
+            Button {
+                text: "pageWithPage"
+                onClicked: pageStack.push(pageWithPage)
+            }
+            Button {
+                text: "tabs"
+                onClicked: pageStack.push(tabs)
+            }
+            Button {
+                text: "pageWithHeader"
+                onClicked: pageStack.push(pageWithHeader)
+            }
+            Button {
+                text: "pageComponent"
+                onClicked: pageStack.push(pageComponent)
+            }
+        }
     }
     Page {
         id: page1
@@ -238,19 +273,18 @@ Item {
                     "PageStack.push() returns Page created from QML file");
         }
 
-        function test_page_header_back_button() {
+        function test_page_header_back_button_bug1565811() {
             pageStack.push(pageWithHeader);
-            var backButton = findChild(pageWithHeader.header, "pagestack_back_action_button");
-            // FIXME TIM: when visibleActions is fixed, only check for backButton, null.
-            compare(backButton == null || !backButton.visible, true,
+            var backButton = findChild(pageWithHeader.header.leadingActionBar,
+                                       "pagestack_back_action_button");
+            compare(backButton, null,
                     "Page header shows back button with only one page on the stack.");
-
             pageStack.pop();
             pageStack.push(page1);
             pageStack.push(pageWithHeader);
             waitForHeaderAnimation(mainView);
             backButton = findChild(pageWithHeader.header, "pagestack_back_action_button");
-            compare(backButton.visible, true,
+            compare(backButton && backButton.visible, true,
                     "Page header has no back button with two pages on the stack.");
         }
     }

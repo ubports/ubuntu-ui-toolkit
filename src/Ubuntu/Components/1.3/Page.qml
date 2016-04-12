@@ -162,19 +162,16 @@ PageTreeNode {
         }
 
         property Item previousHeader: null
-        property Item previousHeaderParent: null
         function updateHeader() {
             internal.showDeprecationWarning = false;
             if (internal.previousHeader) {
-                internal.previousHeader.parent = internal.previousHeaderParent;
+                internal.previousHeader.parent = null;
             }
             if (page.header) {
-                internal.previousHeaderParent = page.header.parent;
                 internal.previousHeader = page.header;
                 page.header.parent = page;
             } else {
                 internal.previousHeader = null;
-                internal.previousHeaderParent = null;
             }
         }
 
