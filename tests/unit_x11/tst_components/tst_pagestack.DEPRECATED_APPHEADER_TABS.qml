@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Canonical Ltd.
+ * Copyright 2012-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,9 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
+import QtQuick 2.2
 import Ubuntu.Components 1.3
-import Ubuntu.Test 1.3
+import Ubuntu.Test 1.0
+
+// pagestack tests for deprecated toolbar are in
+// unit/tst_components/tst_pagestack_deprecated_toolbar.qml
 
 Item {
     width: units.gu(50)
@@ -54,6 +57,10 @@ Item {
                 onClicked: pageStack.push(pageWithPage)
             }
             Button {
+                text: "tabs"
+                onClicked: pageStack.push(tabs)
+            }
+            Button {
                 text: "pageComponent"
                 onClicked: pageStack.push(pageComponent)
             }
@@ -61,24 +68,31 @@ Item {
     }
     Page {
         id: page1
-        header: PageHeader {
-            title: "Title 1"
-        }
+        title: "Title 1"
     }
     Page {
         id: page2
-        header: PageHeader {
-            title: "Title 2"
-        }
+        title: "Title 2"
     }
     Page {
         id: pageWithPage
-        header: PageHeader {
-            title: "Outer"
-        }
+        title: "Outer"
         Page {
-            header: PageHeader {
-                title: "Inner"
+            title: "Inner"
+        }
+    }
+    Tabs {
+        id: tabs
+        Tab {
+            id: tab1
+            page: Page {
+                title: "Tab 1"
+            }
+        }
+        Tab {
+            id: tab2
+            page: Page {
+                title: "Tab 2"
             }
         }
     }
@@ -86,14 +100,12 @@ Item {
     Component {
         id: pageComponent
         Page {
-            header: PageHeader {
-                title: "Page from component"
-            }
+            title: "Page from component"
         }
     }
 
     UbuntuTestCase {
-        name: "PageStackAPI"
+        name: "PageStackDeprecatedAppHeaderAPI"
         when: windowShown
         id: testCase
 
@@ -155,7 +167,7 @@ Item {
             }
             waitForHeaderAnimation(mainView);
             compare(pageStack.depth, 1, "popping until one page is left failed. " +
-                    pageStack.depth + " pages left on stack");
+                        pageStack.depth + " pages left on stack");
         }
 
         function test_active_bug1260116() {
@@ -184,31 +196,70 @@ Item {
             compare(pageInStack.active, false, "Popping a page from PageStack makes it inactive");
         }
 
+        function test_title_bug1143345_bug1317902() {
+            pageStack.push(page1);
+            waitForHeaderAnimation(mainView);
+            compare(mainView.__propagated.header.title, "Title 1", "Header title is correctly set by page");
+            page1.title = "New title";
+            compare(mainView.__propagated.header.title, "New title", "Header title correctly updated by page");
+            pageStack.push(page2);
+            waitForHeaderAnimation(mainView);
+            compare(mainView.__propagated.header.title, "Title 2", "Header title is correctly set by page");
+            pageStack.clear();
+            page1.title = "Title 1";
+
+            pageStack.push(pageWithPage);
+            waitForHeaderAnimation(mainView);
+            compare(mainView.__propagated.header.title, pageWithPage.title, "Embedded page sets title of outer page");
+        }
+
+        function get_tabs_button() {
+            var button = findChild(mainView, "tabsButton");
+            if (!button.visible) return null;
+            return button;
+        }
+
+        function test_tabs_inside_stack_bug1187850() {
+            compare(get_tabs_button(), null, "Without tabs there is no visible tabs button.");
+            pageStack.push(tabs);
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
+            compare(tabs.active, true, "Tabs on top of a PageStack are active");
+            compare(get_tabs_button().visible, true, "Pushing tabs on pagestack enables the tabs button");
+            pageStack.push(page1);
+            waitForHeaderAnimation(mainView);
+            compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
+            compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+            compare(get_tabs_button(), null, "Contents of inactive Tabs is not applied to header");
+            pageStack.pop();
+            waitForHeaderAnimation(mainView);
+            compare(tabs.active, true, "Tabs on top of PageStack is active");
+            compare(get_tabs_button().visible, true, "Active Tabs controls header contents");
+        }
+
+        function test_pop_to_tabs_bug1316736() {
+            pageStack.push(tabs);
+            waitForHeaderAnimation(mainView);
+            tabs.selectedTabIndex = 1;
+            pageStack.push(page1);
+            waitForHeaderAnimation(mainView);
+            compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+            pageStack.pop();
+            waitForHeaderAnimation(mainView);
+            compare(tabs.active, true, "Tabs on top of PageStack is active");
+            compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
+        }
+
         function test_push_return_values() {
             var pushedPage = pageStack.push(page1);
             compare(pushedPage, page1,
                     "PageStack.push() returns pushed Page");
             pushedPage = pageStack.push(pageComponent);
-            compare(pushedPage.header.title, "Page from component",
+            compare(pushedPage.title, "Page from component",
                     "PageStack.push() returns Page created from Component");
-            pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPageWithNewHeader.qml"));
-            compare(pushedPage.header.title, "Page from QML file",
+            pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"));
+            compare(pushedPage.title, "Page from QML file",
                     "PageStack.push() returns Page created from QML file");
-        }
-
-        function test_page_header_back_button_bug1565811() {
-            pageStack.push(page2);
-            var backButton = findChild(page2.header.leadingActionBar,
-                                       "pagestack_back_action_button");
-            compare(backButton, null,
-                    "Page header shows back button with only one page on the stack.");
-            pageStack.pop();
-            pageStack.push(page1);
-            pageStack.push(page2);
-            waitForHeaderAnimation(mainView);
-            backButton = findChild(page2.header, "pagestack_back_action_button");
-            compare(backButton && backButton.visible, true,
-                    "Page header has no back button with two pages on the stack.");
         }
     }
 }

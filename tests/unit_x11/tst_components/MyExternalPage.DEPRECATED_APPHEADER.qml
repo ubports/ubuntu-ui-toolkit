@@ -21,6 +21,6 @@ Page {
     title: "Page from QML file"
     Label {
         anchors.centerIn: parent
-        text: "This page was created from MyExternalPage.qml."
+        text: "This page was created from MyExternalPage.DEPRECATED_APPHEADER.qml."
     }
 }
