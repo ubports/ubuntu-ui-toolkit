@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,10 +46,6 @@
   See \l Popover, \l ComposerSheet and \l Dialog for their respective documentation and more examples.
   */
 
-function printme() {
-    print("YIHAAAAAAAAAAAAAAAAAAAAA");
-}
-
 function open(popup, caller, params) {
     var popupComponent = null;
     var rootObject = null;
@@ -64,7 +60,6 @@ function open(popup, caller, params) {
         print("PopupUtils.open(): "+popup+" is not a component or a link");
         return null;
     }
-    print("rootObject = "+rootObject+ "("+rootObject.objectName+")")
 
     var popupObject;
     if (params !== undefined) {
@@ -86,6 +81,10 @@ function open(popup, caller, params) {
 
     popupObject.show();
     popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);
+
+    // Instantly (no fading) close and destroy the popup when the component
+    //  gets destroyed because that invalidates the QML context of the popup
+    //  and prevents the closing after fadeout. See bug 1568016.
     popupComponent.Component.destruction.connect(popupObject.__closePopup);
     return popupObject;
 }

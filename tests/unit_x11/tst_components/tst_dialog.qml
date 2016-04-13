@@ -24,8 +24,6 @@ Item {
     id: root
     width: units.gu(50)
     height: units.gu(80)
-    objectName: "root"
-//Component.onCompleted: print("root = "+root)
 
     MainView {
         anchors.fill: parent
@@ -58,40 +56,10 @@ Item {
                     anchors.centerIn: parent
                     text: "Continue"
                     onClicked: {
-                        print("clickily")
                         pageStack.push(secondPageComponent)
                     }
                 }
-
-                Rectangle {
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        bottom: parent.bottom
-                    }
-                    height: units.gu(10)
-                    color: mouseArea.pressed ? "red" : "blue"
-                    MouseArea {
-                        id: mouseArea
-                        anchors.fill: parent
-                    }
-                }
-
             }
-
-//            Timer {
-//                id: timer
-//                interval: 1000
-//                repeat: false
-//                onTriggered: {
-//                    print("closing..")
-//                    PopupUtils.close(dialog);
-//                    print("popping..")
-//                    pageStack.pop();
-//                    print("done.")
-//                }
-//                property Dialog dialog
-//            }
 
             Component {
                 id: secondPageComponent
@@ -102,29 +70,13 @@ Item {
                         title: "2. Page"
                     }
 
-
                     Button {
                         anchors.centerIn: parent
                         text: "Open dialog"
                         onClicked: {
                             pageStack.popup = PopupUtils.open(dialogComponent);
-//                            timer.dialog = popup;
-//                            timer.start();
                         }
                     }
-
-//                    Timer {
-//                        id: timer
-//                        interval: 1000
-//                        repeat: false
-//                        onTriggered: {
-//                            print("closing..")
-//                            PopupUtils.close(secondPage.popup);
-//                            print("popping..")
-//                            pageStack.pop();
-//                            print("done.")
-//                        }
-//                    }
 
                     property alias dialogComponent: dialogComponent
                     Component {
@@ -136,14 +88,10 @@ Item {
                             Button {
                                 text: "Close and pop page"
                                 onClicked: {
-                                    print("closing..")
                                     PopupUtils.close(pageStack.popup);
-                                    print("popping..")
                                     pageStack.pop();
-                                    print("done.")
                                 }
                             }
-                            Component.onDestruction: print("destroying dialog")
                         }
                     }
                 }
@@ -160,10 +108,6 @@ Item {
             id: buttonSpy
             signalName: 'clicked'
             target: continueButton
-            onCountChanged: print("new count = "+count)
-        }
-
-        function initTestCase() {
         }
 
         function cleanup() {
@@ -174,24 +118,19 @@ Item {
         function test_close_and_pop_bug1568016() {
             pageStack.push(secondPageComponent);
             var popup = PopupUtils.open(pageStack.currentPage.dialogComponent);
-//            wait(1000)
             var fadingDuration = popup.fadingAnimation.duration;
             PopupUtils.close(popup);
-//            wait(1000)
-//            wait(10)
             pageStack.pop();
 
-            wait(fadingDuration);
-//            waitForHeaderAnimation(mainview);
+            wait(fadingDuration); // make sure the dialog is not blocking the button
+
             compare(pageStack.depth, 1, "PageStack.pop() failed.");
             compare(pageStack.currentPage, startPage, "Incorrect current page on PageStack.");
 
             buttonSpy.clear();
-            print("spy count after clearing = "+buttonSpy.count)
-            mouseClick(continueButton)
+            mouseClick(continueButton);
             // FIXME: Compare buttonSpy.count to 1 after bug 1569379 is fixed.
             compare(buttonSpy.count > 0, true, "Could not click button.");
         }
     }
-
 }
