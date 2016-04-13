@@ -109,10 +109,10 @@ OrientationHelper {
       longer valid.
       */
     function __closePopup() {
-        if (eventGrabber.enabled) {
-            stateWrapper.restoreActiveFocus();
-        }
         if (popupBase !== undefined) {
+            if (eventGrabber.enabled) {
+                stateWrapper.restoreActiveFocus();
+            }
             popupBase.destroy();
         }
     }
@@ -221,14 +221,6 @@ OrientationHelper {
                 name: 'opened'
             }
         ]
-
-        Timer {
-            id: timer
-            interval: fadingAnimation.duration
-            running: false
-            repeat: false
-            onTriggered: print("Timer done.")
-        }
 
         transitions: [
             Transition {
