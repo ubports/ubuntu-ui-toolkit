@@ -48,7 +48,6 @@ Item {
                             text: "Settings"
                             iconName: "settings"
                         }
-
                     ]
                 }
                 Button {

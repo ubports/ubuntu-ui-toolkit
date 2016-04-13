@@ -181,7 +181,6 @@ OrientationHelper {
         stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
     }
 
-
     Item {
         id: stateWrapper
         property Item rootItem: QuickUtils.rootItem(popupBase)
@@ -221,7 +220,6 @@ OrientationHelper {
                 name: 'opened'
             }
         ]
-
         transitions: [
             Transition {
                 from: "*"
