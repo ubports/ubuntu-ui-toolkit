@@ -389,7 +389,6 @@ Item {
             verify(closeButton, "Close button not accessible");
             center = centerOf(closeButton);
             mouseClick(closeButton, center.x, center.y);
-            verify(!popoverTest.focus, "Button focus not lost.");
             popupCloseSpy.wait();
             if (data.bug) {
                 expectFailContinue(data.tag,
