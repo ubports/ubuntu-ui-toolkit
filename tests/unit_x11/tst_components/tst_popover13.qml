@@ -162,8 +162,8 @@ MainView {
 
         function test_popover_follows_pointerTarget_bug1199502_data() {
             return [
-                { tag: "Moving pointerTarget", button: pressMe, dir: "down", y: 318 },
-                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up", y: 142.8 },
+                { tag: "Moving pointerTarget", button: pressMe, dir: "down", y: units.gu(39) },
+                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up", y: units.gu(17) },
                 // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1427557
             ]
         }
@@ -179,7 +179,7 @@ MainView {
 
             // ensure popover was next to caller
             compare(dir, data.dir, "Popover arrow is wrong")
-            compare(popoverY, data.y, "Popover isn't pointing at the caller")
+            fuzzyCompare(popoverY, data.y, units.gu(1), "Popover isn't pointing at the caller")
         }
     }
 }
