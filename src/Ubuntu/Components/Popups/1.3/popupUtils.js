@@ -79,13 +79,14 @@ function open(popup, caller, params) {
     if (caller)
         caller.Component.onDestruction.connect(popupObject.__closePopup);
 
-    popupObject.show();
-    popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);
-
     // Instantly (no fading) close and destroy the popup when the component
     //  gets destroyed because that invalidates the QML context of the popup
     //  and prevents the closing after fadeout. See bug 1568016.
     popupComponent.Component.destruction.connect(popupObject.__closePopup);
+
+    popupObject.show();
+    popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);
+
     return popupObject;
 }
 
