@@ -91,7 +91,14 @@ OrientationHelper {
       PopupUtils.close() to do it automatically.
     */
     function hide() {
+        print("hiding")
         stateWrapper.state = 'closed';
+    }
+
+    function hideImmediately() {
+        print("hiding now!")
+//        popupBase.visible = false;
+        __closePopup();
     }
 
     /*!
@@ -109,6 +116,7 @@ OrientationHelper {
       longer valid.
       */
     function __closePopup() {
+        print("closing popup! "+popupBase)
         if (popupBase !== undefined) {
             popupBase.destroy();
         }
@@ -214,7 +222,7 @@ OrientationHelper {
         Component.onDestruction: print("bla")
         function fadeOutFinished() {
             print("fadeOutFinished. Opacity = "+popupBase.opacity)
-            return popupBase.opacity == 0.0;
+            return (0.0 === popupBase.opacity);
 //            popupBase.visible = false;
 //            if (eventGrabber.enabled) {
 //                stateWrapper.restoreActiveFocus();
@@ -230,6 +238,15 @@ OrientationHelper {
                 name: 'opened'
             }
         ]
+
+        Timer {
+            id: timer
+            interval: fadingAnimation.duration
+            running: false
+            repeat: false
+            onTriggered: print("Timer done.")
+        }
+
         transitions: [
             Transition {
                 from: "*"
@@ -251,12 +268,15 @@ OrientationHelper {
             Transition {
                 from: "opened"
                 to: "closed"
+                onRunningChanged: print("t.running = "+running)
                 SequentialAnimation {
+                    onRunningChanged: print("s.running = "+running)
                     ScriptAction {
                         script: {
                             print("START TO FADE")
+                            timer.start();
 //                            popupBase.visible = false
-//                            popupBase.visible = Qt.binding(stateWrapper.fadeOutFinished);
+//                                popupBase.visible = Qt.binding(stateWrapper.fadeOutFinished);
 //                            popupBase.visible = Qt.binding(function(){
 //                                return popupBase.opacity == 0.0;
 //                            }//);

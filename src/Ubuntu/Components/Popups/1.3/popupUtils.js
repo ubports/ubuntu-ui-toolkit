@@ -45,6 +45,11 @@
 
   See \l Popover, \l ComposerSheet and \l Dialog for their respective documentation and more examples.
   */
+
+function printme() {
+    print("YIHAAAAAAAAAAAAAAAAAAAAA");
+}
+
 function open(popup, caller, params) {
     var popupComponent = null;
     var rootObject = null;
@@ -81,6 +86,7 @@ function open(popup, caller, params) {
 
     popupObject.show();
     popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);
+    popupComponent.Component.destruction.connect(popupObject.__closePopup);
     return popupObject;
 }
 

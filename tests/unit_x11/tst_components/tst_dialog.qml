@@ -29,6 +29,7 @@ Item {
 
     MainView {
         anchors.fill: parent
+        id: mainview
         objectName: "mainview"
 
         PageStack {
@@ -173,9 +174,15 @@ Item {
         function test_close_and_pop_bug1568016() {
             pageStack.push(secondPageComponent);
             var popup = PopupUtils.open(pageStack.currentPage.dialogComponent);
+//            wait(1000)
+            var fadingDuration = popup.fadingAnimation.duration;
             PopupUtils.close(popup);
+//            wait(1000)
+//            wait(10)
             pageStack.pop();
 
+            wait(fadingDuration);
+//            waitForHeaderAnimation(mainview);
             compare(pageStack.depth, 1, "PageStack.pop() failed.");
             compare(pageStack.currentPage, startPage, "Incorrect current page on PageStack.");
 
