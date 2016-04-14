@@ -356,10 +356,11 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  * \qmlproperty real AbstractButton::sensingMargins.bottom
  * \qmlproperty real AbstractButton::sensingMargins.all
  * The property group specifies the margins extending the visual area where the
- * touch and mouse events are sensed. Positive values mean the area will be extended
+ * touch events are sensed. Positive values mean the area will be extended
  * on the specified direction outside of the visual area, negative values mean
  * the sensing will fall under the component's visual border.
- * All values default to 0.
+ * All values default to 0. This does not affect mouse sensing area, which only
+ * covers the visual area of the component.
  *
  * \note If the visual area and the sensing margins are not reaching the 4x4 grid
  * units limit, the component will fall back to these minimum limits.
