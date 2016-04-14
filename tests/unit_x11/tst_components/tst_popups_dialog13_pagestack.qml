@@ -134,10 +134,8 @@ Item {
             compare(pageStack.currentPage, startPage, "Incorrect current page on PageStack.");
 
             buttonSpy.clear();
-            mouseClick(continueButton);
+            mouseClick(continueButton, continueButton.width/2, continueButton.height/2);
             buttonSpy.wait();
-            // FIXME: Compare buttonSpy.count to 1 after bug 1569379 is fixed.
-            compare(buttonSpy.count > 0, true, "Could not click button.");
         }
     }
 }
