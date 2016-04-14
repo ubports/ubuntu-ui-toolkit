@@ -608,7 +608,8 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
             m_pressAndHoldTimer.stop();
         }
 
-        setHovered(true, 0);
+        setHovered(m_owner->contains(m_lastPos), Q_NULLPTR);
+
         m_moved = true;
         m_doubleClicked = false;
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,

@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:48+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-04-09 05:42+0000\n"
+"X-Generator: Launchpad (build 17990)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
@@ -150,6 +150,8 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"अब्जेक्ट %2 को गुण \"%1\" सङ्ग टाईप %3 छ र टाईप \"%5\" को मूल्य \"%4\" मा "
+"सेट हुनसक्दैन"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
@@ -191,11 +193,11 @@ msgstr "%1 ले थप argumentहरू अपेक्षा गरेको
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
-msgstr ""
+msgstr "swipeEvent() सलट ओभरराईड गर्न कन्सिडर गर!"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
 msgid "consider overriding rebound() slot!"
-msgstr ""
+msgstr "rebound() सलट ओभरराईड गर्न कन्सिडर गर!"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
@@ -220,7 +222,7 @@ msgstr "चेतावनी: संलग्न गरिएको आइड�
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
-msgstr ""
+msgstr "चेताबनी: संलग्न UUID रजिस्टर भैसकेको छ, स्टेट: %1 बचत हुनेछैन"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:107
 #, qt-format
@@ -228,25 +230,29 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"सबै प्यारेन्टस् संग आईडि हुनै पर्छ।\n"
+"%1, क्लास %2 का लागि ईस्टेट संग्रह असक्षम गरिएेको छ"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "थिम: \"%1\" भेटिऐन"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "पया्लेट कम्पोनेन्ट होईन।"
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "ड्रयागिङ मोडलाई लिस्टभिऊ चाहिन्छ"
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
 "Dragging is only supported when using a QAbstractItemModel, ListModel or "
 "list."
 msgstr ""
+"किऊऐबस्ट्रयाक्टआईटममोडल, लिस्टमोडल अथवा लिस्ट प्रयोग गर्दा मात्र तान्न "
+"समर्थित छ।"
 
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78

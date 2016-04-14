@@ -314,6 +314,7 @@ MainView {
             ];
         }
         function test_forced_synchronous_loading_bug1540449(data) {
+            layout.asynchronous = false;
             layout[data.func](layout.primaryPage, data.page);
             waitForRendering(layout, 400);
 

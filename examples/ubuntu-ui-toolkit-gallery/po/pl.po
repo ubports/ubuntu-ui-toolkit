@@ -14,43 +14,43 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:49+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-04-09 05:43+0000\n"
+"X-Generator: Launchpad (build 17990)\n"
 
 #: About.qml:34
 msgid "About..."
-msgstr ""
+msgstr "O programie..."
 
 #: ActionBars.qml:68
 msgid "Short list"
-msgstr ""
+msgstr "Krótka lista"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
-msgstr ""
+msgstr "Liczba slotów"
 
 #: ActionBars.qml:92
 msgid "Long list"
-msgstr ""
+msgstr "Długa lista"
 
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
 msgid "Disabled"
-msgstr ""
+msgstr "Wyłączone"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
-msgstr ""
+msgstr "NumberAnimation"
 
 #: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
 #: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
 #: Sliders.qml:28 TextInputs.qml:46
 msgid "Standard"
-msgstr ""
+msgstr "Standardowo"
 
 #: Animations.qml:58
 msgid "Standard Durations"
-msgstr ""
+msgstr "Standardowe czasy"
 
 #: Animations.qml:62
 msgid "Snap"
@@ -58,11 +58,11 @@ msgstr ""
 
 #: Animations.qml:98
 msgid "Fast"
-msgstr ""
+msgstr "Szybko"
 
 #: Animations.qml:134
 msgid "Slow"
-msgstr ""
+msgstr "Wolno"
 
 #: Animations.qml:159
 msgid "Sleepy"
@@ -70,7 +70,7 @@ msgstr ""
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
-msgstr ""
+msgstr "Połączenie"
 
 #: Buttons.qml:37
 msgid "Stroke"
@@ -95,27 +95,27 @@ msgstr "Ikona + Tekst"
 
 #: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
-msgstr ""
+msgstr "Zwinięte"
 
 #: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
 msgid "Expanded"
-msgstr ""
+msgstr "Rozwinięte"
 
 #: Colors.qml:30
 msgid "Orange"
-msgstr ""
+msgstr "Pomarańczowy"
 
 #: Colors.qml:36
 msgid "Light grey"
-msgstr ""
+msgstr "Jasnoszary"
 
 #: Colors.qml:42
 msgid "Dark grey"
-msgstr ""
+msgstr "Ciemnoszary"
 
 #: Colors.qml:48
 msgid "Red"
-msgstr ""
+msgstr "Czerwony"
 
 #: Colors.qml:54
 msgid "Green"
@@ -127,19 +127,19 @@ msgstr "Niebieski"
 
 #: Colors.qml:66
 msgid "Purple"
-msgstr ""
+msgstr "Purpurowy"
 
 #: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
-msgstr ""
+msgstr "Otwórz"
 
 #: Icons.qml:29
 msgid "Scaling"
-msgstr ""
+msgstr "Skalowanie"
 
 #: Icons.qml:79
 msgid "Theme"
-msgstr ""
+msgstr "Motyw"
 
 #: ListItemLayouts.qml:208 NewListItems.qml:79
 msgid "Leading and trailing actions"
@@ -149,11 +149,11 @@ msgstr ""
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
 #: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
 msgid "Label"
-msgstr ""
+msgstr "Etykieta"
 
 #: ListItems.qml:33
 msgid "Subtitled"
-msgstr ""
+msgstr "Podtytuł"
 
 #: ListItems.qml:37
 msgid "Secondary label"
@@ -165,15 +165,15 @@ msgstr ""
 
 #: ListItems.qml:73
 msgid "Progression"
-msgstr ""
+msgstr "Postęp"
 
 #: ListItems.qml:82
 msgid "Single value"
-msgstr ""
+msgstr "Pojedyncza wartość"
 
 #: ListItems.qml:86
 msgid "Value"
-msgstr ""
+msgstr "Wartość"
 
 #: ListItems.qml:91
 msgid "Multi value"
@@ -183,25 +183,25 @@ msgstr ""
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
 #: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
-msgstr ""
+msgstr "Wartość 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
 #: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
 #: OptionSelectors.qml:100
 msgid "Value 2"
-msgstr ""
+msgstr "Wartość 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
 #: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
 #: OptionSelectors.qml:101
 msgid "Value 3"
-msgstr ""
+msgstr "Wartość 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
 #: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
 #: OptionSelectors.qml:102
 msgid "Value 4"
-msgstr ""
+msgstr "Wartość 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
@@ -213,7 +213,7 @@ msgstr ""
 
 #: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
-msgstr ""
+msgstr "Wybór wielokrotny"
 
 #: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
@@ -222,22 +222,22 @@ msgstr ""
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
 msgid "Value 5"
-msgstr ""
+msgstr "Wartość 5"
 
 #: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
 #: OptionSelectors.qml:104
 msgid "Value 6"
-msgstr ""
+msgstr "Wartość 6"
 
 #: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
 #: OptionSelectors.qml:105
 msgid "Value 7"
-msgstr ""
+msgstr "Wartość 7"
 
 #: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
 #: OptionSelectors.qml:106
 msgid "Value 8"
-msgstr ""
+msgstr "Wartość 8"
 
 #: ListItems.qml:190
 msgid "Control"
@@ -249,7 +249,7 @@ msgstr ""
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr ""
+msgstr "Przesuń, aby usunąć"
 
 #: ListItems.qml:215
 msgid "Reset"
@@ -368,31 +368,31 @@ msgstr ""
 
 #: Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Działanie #1"
 
 #: Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Działanie #2"
 
 #: Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Działanie #3"
 
 #: Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Działanie #4"
 
 #: Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Działanie #5"
 
 #: ProgressBars.qml:24
 msgid "Progress Bar"
-msgstr ""
+msgstr "Pasek postępu"
 
 #: ProgressBars.qml:59
 msgid "No label"
-msgstr ""
+msgstr "Bez etykiety"
 
 #: ProgressBars.qml:81
 msgid "Activity Indicator"
@@ -400,7 +400,7 @@ msgstr ""
 
 #: ProportionalShape.qml:28
 msgid "Sizes"
-msgstr ""
+msgstr "Rozmiary"
 
 #: Sections.qml:34
 msgid "Enabled"
@@ -412,7 +412,7 @@ msgstr ""
 
 #: Sheet.qml:53 Sheet.qml:86
 msgid "Title"
-msgstr ""
+msgstr "Tytuł"
 
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
@@ -449,7 +449,7 @@ msgstr ""
 
 #: TextInputs.qml:56
 msgid "Password"
-msgstr ""
+msgstr "Hasło"
 
 #: TextInputs.qml:67
 msgid "Numbers"
@@ -457,7 +457,7 @@ msgstr ""
 
 #: TextInputs.qml:78
 msgid "Read-only"
-msgstr ""
+msgstr "Tylko do odczytu"
 
 #: TextInputs.qml:82
 msgid "Nobody type here"
@@ -477,11 +477,11 @@ msgstr ""
 
 #: Toggles.qml:28 Toggles.qml:66
 msgid "Unchecked"
-msgstr ""
+msgstr "Odznaczone"
 
 #: Toggles.qml:36 Toggles.qml:74
 msgid "Checked"
-msgstr ""
+msgstr "Zaznaczone"
 
 #: UbuntuShape.qml:28
 msgid "Aspect"
@@ -489,11 +489,11 @@ msgstr ""
 
 #: UbuntuShape.qml:73
 msgid "Radius"
-msgstr ""
+msgstr "Promień"
 
 #: UbuntuShape.qml:115
 msgid "Image"
-msgstr ""
+msgstr "Obraz"
 
 #: UbuntuShape.qml:134
 msgid "Gradient"

@@ -29,6 +29,7 @@
 #include "ullayouts.h"
 #include "ucunits.h"
 #include "uctestcase.h"
+#include "uctheme.h"
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
 
@@ -95,10 +96,12 @@ public:
 private Q_SLOTS:
     void initTestCase()
     {
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
     }
 
-    void cleanupTestCase()
+    void cleanup()
     {
+        UCTheme::previousVersion = 0;
     }
 
     void testCase_NoLayouts()
@@ -289,7 +292,8 @@ private Q_SLOTS:
 
     void testCase_NestedLayouts_ExtraLarge()
     {
-        QTest::ignoreMessage(QtWarningMsg, "\"There are still \"1\" items in the process of being created at engine destruction.\"");
+        QRegularExpression expression(".+ items in the process of being created at engine destruction.+");
+        QTest::ignoreMessage(QtWarningMsg, expression);
         QScopedPointer<QQuickView> view(loadTest("NestedLayouts.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();

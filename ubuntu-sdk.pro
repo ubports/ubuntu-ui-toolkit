@@ -8,7 +8,10 @@ write_file($$PWD/build_paths.inc,BUILD_PATH_CONTENTS)
 requires(qtHaveModule(quick))
 load(qt_parts)
 
-SUBDIRS += po documentation app-launch-profiler ubuntu-ui-toolkit-launcher apicheck
+src_uitk_launcher.subdir = ubuntu-ui-toolkit-launcher
+src_uitk_launcher.depends = sub-src
+
+SUBDIRS += po documentation app-launch-profiler src_uitk_launcher apicheck
 
 sub_tests.CONFIG -= no_default_target
 sub_tests.CONFIG -= no_default_install
