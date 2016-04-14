@@ -135,6 +135,7 @@ Item {
 
             buttonSpy.clear();
             mouseClick(continueButton);
+            buttonSpy.wait();
             // FIXME: Compare buttonSpy.count to 1 after bug 1569379 is fixed.
             compare(buttonSpy.count > 0, true, "Could not click button.");
         }
