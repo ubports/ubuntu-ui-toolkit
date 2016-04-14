@@ -36,7 +36,6 @@ class UCAbstractButton : public UCActionItem
     Q_PROPERTY(QQuickMouseArea *__mouseArea READ privateMouseArea CONSTANT)
 public:
     explicit UCAbstractButton(QQuickItem *parent = 0);
-    ~UCAbstractButton();
 
     bool pressed() const;
     bool hovered() const;

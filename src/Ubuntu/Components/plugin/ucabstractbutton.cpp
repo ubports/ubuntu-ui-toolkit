@@ -111,12 +111,6 @@ UCAbstractButton::UCAbstractButton(UCAbstractButtonPrivate &&dd, QQuickItem *par
     d_func()->init();
 }
 
-UCAbstractButton::~UCAbstractButton()
-{
-    Q_D(UCAbstractButton);
-    d->mouseArea->removeEventFilter(this);
-}
-
 bool UCAbstractButtonPrivate::isPressAndHoldConnected()
 {
     Q_Q(UCAbstractButton);
