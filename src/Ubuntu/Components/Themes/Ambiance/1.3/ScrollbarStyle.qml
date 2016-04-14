@@ -73,7 +73,9 @@ Item {
      *      STYLING PROPERTIES                           *
      *****************************************************/
     property bool interactive: isMouseConnected || veryLongContentItem
-    property real minimumSliderSize: units.gu(3)
+    property real minimumSliderSize: __canFitSteppersAndTallerThumb
+                                     ? __minSliderSizeWhenUnrestrictedSize
+                                     : __minSliderSizeWhenRestrictedSize
 
     property bool overlay: !alwaysOnScrollbars
     property real overlayOpacityWhenShown: 1.0
@@ -140,6 +142,27 @@ Item {
     /*****************************************************
      *      INTERNAL PROPERTIES AND FUNCTIONS            *
      *****************************************************/
+
+    //special handling of situations where we don't have enough room to show both thumb and steppers
+    property bool __canFitSteppers: visuals[scrollbarUtils.propSize] >= 2*__idealStepperSize
+    property bool __canFitShorterThumb: visuals[scrollbarUtils.propSize] >= (__minSliderSizeWhenRestrictedSize
+                                                                             + 2*thumbsExtremesMargin)
+    property bool __canFitSteppersAndShorterThumb: visuals[scrollbarUtils.propSize] >= (2*__idealStepperSize
+                                                                                        + __minSliderSizeWhenRestrictedSize
+                                                                                        + 2*thumbsExtremesMargin)
+    property bool __canFitSteppersAndTallerThumb: visuals[scrollbarUtils.propSize] >= (2*__idealStepperSize
+                                                                                       + __minSliderSizeWhenUnrestrictedSize
+                                                                                       + 2*thumbsExtremesMargin)
+
+    //the minimum slider size for common usecases, i.e. when there is enough space to show thumb + steppers
+    property real __minSliderSizeWhenUnrestrictedSize: 3*thumbThickness
+    property real __minSliderSizeWhenRestrictedSize: thumbThickness
+
+    property real __targetStepperSize: !__canFitSteppers
+                                       ? visuals[scrollbarUtils.propSize]/2
+                                       : __idealStepperSize
+    property real __idealStepperSize: troughThicknessSteppersStyle
+
     property bool __recursionGuard: false
     property bool __disableStateBinding: false
     property alias __overshootTimer: overshootTimer
@@ -511,6 +534,8 @@ Item {
                                                     ? 1.0
                                                     : (thumbArea.hoveringThumb ? 0.7 : 0.4 )))
 
+                    //visible: HANDLED BY STATES
+
                     //This is to stop the scrollbar from changing size while being dragged when we have listviews
                     //with delegates of variable size (in those cases, contentWidth/height changes as the user scrolls
                     //because of the way ListView estimates the size of the out-of-views delegates
@@ -633,7 +658,7 @@ Item {
                         topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
                         bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
                     }
-                    enabled: isScrollable && interactive
+                    enabled: isScrollable && interactive && __canFitSteppersAndShorterThumb
                     onPressed: {
                         cacheMousePosition(mouse)
                         //potentially we allow using touch to trigger mouse interactions, in case the
@@ -856,13 +881,13 @@ Item {
                         target: firstStepper
                         property: "height"
                         when: isVertical
-                        value: visible ? troughThicknessSteppersStyle : 0
+                        value: visible ? __targetStepperSize : 0
                     }
                     Binding {
                         target: firstStepper
                         property: "width"
                         when: !isVertical
-                        value: visible ? troughThicknessSteppersStyle : 0
+                        value: visible ? __targetStepperSize : 0
                     }
 
                     Icon {
@@ -893,13 +918,13 @@ Item {
                         target: secondStepper
                         property: "height"
                         when: isVertical
-                        value: visible ? troughThicknessSteppersStyle : 0
+                        value: visible ? __targetStepperSize : 0
                     }
                     Binding {
                         target: secondStepper
                         property: "width"
                         when: !isVertical
-                        value: visible ? troughThicknessSteppersStyle : 0
+                        value: visible ? __targetStepperSize : 0
                     }
                     Icon {
                         anchors.centerIn: parent
@@ -1029,6 +1054,10 @@ Item {
                 target: visuals
                 opacity: overlayOpacityWhenShown
             }
+            PropertyChanges {
+                target: slider
+                visible: __canFitShorterThumb
+            }
         },
         State {
             name: 'indicator'
@@ -1105,6 +1134,10 @@ Item {
                                troughColorSteppersStyle.b,
                                troughColorSteppersStyle.a * 0.9)
             }
+            PropertyChanges {
+                target: slider
+                visible: __canFitSteppersAndShorterThumb
+            }
         }
     ]
     transitions: [
@@ -1149,6 +1182,10 @@ Item {
                     target: flowContainer
                     properties: "showSteppers,showTrough,showCornerRect"
                 }
+                PropertyAction {
+                    target: slider
+                    properties: "visible"
+                }
             }
         },
         Transition {
@@ -1179,6 +1216,10 @@ Item {
                 PropertyAction {
                     target: flowContainer
                     properties: "showSteppers,showTrough,showCornerRect"
+                }
+                PropertyAction {
+                    target: slider
+                    properties: "visible"
                 }
             }
         },
@@ -1218,6 +1259,10 @@ Item {
                     }
                     ColorAnimation { target: trough; duration: scrollbarThicknessAnimation.duration }
                 }
+                PropertyAction {
+                    target: slider
+                    properties: "visible"
+                }
             }
         },
         Transition {
@@ -1233,6 +1278,12 @@ Item {
                 PropertyAction {
                     target: steppersMouseArea
                     properties: isVertical ? "width" : "height"
+                }
+                //hide the thumb (if needed) before the steppers expand (otherwise you'd see the
+                //thumb sliding out of screen before hiding)
+                PropertyAction {
+                    target: slider
+                    properties: "visible"
                 }
                 ParallelAnimation {
                     NumberAnimation {
@@ -1286,6 +1337,10 @@ Item {
                 PropertyAction {
                     target: trough
                     properties: "color"
+                }
+                PropertyAction {
+                    target: slider
+                    properties: "visible"
                 }
                 PropertyAction {
                     target: visuals
