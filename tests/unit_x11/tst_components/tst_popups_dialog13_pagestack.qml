@@ -104,6 +104,11 @@ Item {
         id: testCase
 
         SignalSpy {
+            id: dialogCloseSpy
+            signalName: "onDestruction"
+        }
+
+        SignalSpy {
             id: buttonSpy
             signalName: 'clicked'
             target: continueButton
@@ -116,12 +121,14 @@ Item {
 
         function test_close_and_pop_bug1568016() {
             pageStack.push(secondPageComponent);
-            var popup = PopupUtils.open(pageStack.currentPage.dialogComponent);
-            var fadingDuration = popup.fadingAnimation.duration;
-            PopupUtils.close(popup);
+            var dialog = PopupUtils.open(pageStack.currentPage.dialogComponent);
+            dialogCloseSpy.target = dialog.Component;
+            dialogCloseSpy.clear();
+
+            PopupUtils.close(dialog);
             pageStack.pop();
 
-            wait(fadingDuration); // make sure the dialog is not blocking the button
+            dialogCloseSpy.wait();
 
             compare(pageStack.depth, 1, "PageStack.pop() failed.");
             compare(pageStack.currentPage, startPage, "Incorrect current page on PageStack.");
