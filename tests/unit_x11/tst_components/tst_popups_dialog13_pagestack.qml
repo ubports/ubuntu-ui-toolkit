@@ -129,6 +129,7 @@ Item {
             pageStack.pop();
 
             dialogCloseSpy.wait();
+            waitForHeaderAnimation(mainview); // give time for the dialog to disappear
 
             compare(pageStack.depth, 1, "PageStack.pop() failed.");
             compare(pageStack.currentPage, startPage, "Incorrect current page on PageStack.");
