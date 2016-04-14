@@ -88,6 +88,9 @@ Item {
     property color troughColorSteppersStyle: theme.palette.normal.foreground
 
     property color sliderColor: theme.palette.normal.foregroundText
+    property color stepperBgColor: trough.color
+    //used for hover and pressed states
+    property color secondaryStepperBgColor: theme.palette.normal.base
     property real sliderRadius: units.dp(3)
     property real thumbThickness: units.gu(1)
     property real indicatorThickness : units.dp(3)
@@ -873,7 +876,10 @@ Item {
                         top: parent.top
                         bottom: !isVertical ? parent.bottom : undefined
                     }
-                    color: trough.color
+                    color: steppersMouseArea.hoveringFirstStepper
+                           ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
+                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? 1.0 : 0.63))
+                           : stepperBgColor
                     visible: parent.visible
                     clip: true
 
@@ -910,7 +916,10 @@ Item {
                         top: !isVertical ? parent.top : firstStepper.bottom
                         bottom: !isVertical ? parent.bottom : undefined
                     }
-                    color: trough.color
+                    color: steppersMouseArea.hoveringSecondStepper
+                           ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
+                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? 1.0 : 0.63))
+                           : stepperBgColor
                     clip: true
                     visible: parent.visible
 
