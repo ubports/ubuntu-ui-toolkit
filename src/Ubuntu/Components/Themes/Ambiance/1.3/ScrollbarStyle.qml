@@ -895,9 +895,13 @@ Item {
                         when: !isVertical
                         value: visible ? __targetStepperSize : 0
                     }
-
                     Icon {
-                        anchors.centerIn: parent
+                        //can't use anchors.centerIn: parent because anchors are rounded to integer, so
+                        //if the trough is 9px wide, the arrow would look not perfectly centered
+                        x: parent.width/2 - width/2
+                        y: parent.height/2 - height/2
+                        width: troughThicknessSteppersStyle - units.dp(3)
+                        height: width
                         rotation: isVertical ? 180 : 90
                         source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
@@ -936,7 +940,12 @@ Item {
                         value: visible ? __targetStepperSize : 0
                     }
                     Icon {
-                        anchors.centerIn: parent
+                        //can't use anchors.centerIn: parent because anchors are rounded to integer, so
+                        //if the trough is 9px wide, the arrow would look not perfectly centered
+                        x: parent.width/2 - width/2
+                        y: parent.height/2 - height/2
+                        width: troughThicknessSteppersStyle - units.dp(3)
+                        height: width
                         rotation: isVertical ? 0 : -90
                         source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
