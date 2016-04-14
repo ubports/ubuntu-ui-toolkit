@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+# export DH_VERBOSE=1
+export QT_SELECT := qt5
+export DPKG_GENSYMBOLS_CHECK_LEVEL=4
+export QMAKEFEATURES=$(CURDIR)/features
+DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+CONFIGURE_SWITCHES = "-r" \
+                     "ROOT_SOURCE_DIR=$(CURDIR)" \
+                     "ROOT_BUILD_DIR=$(CURDIR)"
+
+%:
+	dh $@ --parallel
+
+override_dh_auto_configure:
+	qmake -r
+	#dh_auto_configure -- $(CONFIGURE_SWITCHES)
+
+override_dh_auto_test:
+ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+	mkdir -p debian/tmp/home/run
+	chmod +x tests/xvfb.sh
+	tests/xvfb.sh dh_auto_test || exit $?
+endif
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
+
+override_dh_shlibdeps:
+	dh_shlibdeps -l/usr/lib/$(DEB_HOST_MULTI_ARCH)/

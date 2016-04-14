@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:49+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-04-09 05:43+0000\n"
+"X-Generator: Launchpad (build 17990)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -23,15 +23,15 @@ msgstr "Mu dhèidhinn..."
 
 #: ActionBars.qml:68
 msgid "Short list"
-msgstr ""
+msgstr "Liosta ghoirid"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
-msgstr ""
+msgstr "Co mheud slot"
 
 #: ActionBars.qml:92
 msgid "Long list"
-msgstr ""
+msgstr "Liosta fhada"
 
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
@@ -40,7 +40,7 @@ msgstr "À comas"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
-msgstr ""
+msgstr "Beòthachadh àireamhan"
 
 #: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
 #: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
@@ -50,11 +50,11 @@ msgstr "Stannardach"
 
 #: Animations.qml:58
 msgid "Standard Durations"
-msgstr ""
+msgstr "Fadan stannardach"
 
 #: Animations.qml:62
 msgid "Snap"
-msgstr ""
+msgstr "Greimich"
 
 #: Animations.qml:98
 msgid "Fast"
@@ -66,15 +66,15 @@ msgstr "Slaodach"
 
 #: Animations.qml:159
 msgid "Sleepy"
-msgstr ""
+msgstr "Cadalach"
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
-msgstr ""
+msgstr "Gairm"
 
 #: Buttons.qml:37
 msgid "Stroke"
-msgstr ""
+msgstr "Stràc"
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
@@ -83,7 +83,7 @@ msgstr "Dath"
 #: Buttons.qml:53
 #, qt-format
 msgid "Call %1"
-msgstr ""
+msgstr "Cuir fòn gu %1"
 
 #: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
 msgid "Icon"
@@ -91,7 +91,7 @@ msgstr "Ìomhaigheag"
 
 #: Buttons.qml:72 Buttons.qml:134
 msgid "Icon+Text"
-msgstr ""
+msgstr "Ìomhaigheag ⁊ teacsa"
 
 #: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
@@ -107,11 +107,11 @@ msgstr "Orains"
 
 #: Colors.qml:36
 msgid "Light grey"
-msgstr ""
+msgstr "Liath soilleir"
 
 #: Colors.qml:42
 msgid "Dark grey"
-msgstr ""
+msgstr "Liath dorcha"
 
 #: Colors.qml:48
 msgid "Red"
@@ -131,7 +131,7 @@ msgstr "Purpaidh"
 
 #: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
-msgstr ""
+msgstr "Fosgail"
 
 #: Icons.qml:29
 msgid "Scaling"
@@ -143,7 +143,7 @@ msgstr "Ùrlar"
 
 #: ListItemLayouts.qml:208 NewListItems.qml:79
 msgid "Leading and trailing actions"
-msgstr ""
+msgstr "Gnìomhan roimhe ’s ’na dhèidh"
 
 #: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
@@ -153,23 +153,23 @@ msgstr "Leubail"
 
 #: ListItems.qml:33
 msgid "Subtitled"
-msgstr ""
+msgstr "Le fo-thiotalan"
 
 #: ListItems.qml:37
 msgid "Secondary label"
-msgstr ""
+msgstr "Dàrna leubail"
 
 #: ListItems.qml:52
 msgid "ThinDivider"
-msgstr ""
+msgstr "Sgaradair tana"
 
 #: ListItems.qml:73
 msgid "Progression"
-msgstr ""
+msgstr "Adhartas"
 
 #: ListItems.qml:82
 msgid "Single value"
-msgstr ""
+msgstr "Aon luach"
 
 #: ListItems.qml:86
 msgid "Value"
@@ -177,79 +177,79 @@ msgstr "Luach"
 
 #: ListItems.qml:91
 msgid "Multi value"
-msgstr ""
+msgstr "Iomadh luach"
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
 #: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
-msgstr ""
+msgstr "Luach 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
 #: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
 #: OptionSelectors.qml:100
 msgid "Value 2"
-msgstr ""
+msgstr "Luach 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
 #: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
 #: OptionSelectors.qml:101
 msgid "Value 3"
-msgstr ""
+msgstr "Luach 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
 #: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
 #: OptionSelectors.qml:102
 msgid "Value 4"
-msgstr ""
+msgstr "Luach 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
-msgstr ""
+msgstr "Roghnaichear nithean"
 
 #: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
-msgstr ""
+msgstr "’Ga leudachadh"
 
 #: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
-msgstr ""
+msgstr "Ioma-thaghadh"
 
 #: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
-msgstr ""
+msgstr "Modail gnàthaichte"
 
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
 msgid "Value 5"
-msgstr ""
+msgstr "Luach 5"
 
 #: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
 #: OptionSelectors.qml:104
 msgid "Value 6"
-msgstr ""
+msgstr "Luach 6"
 
 #: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
 #: OptionSelectors.qml:105
 msgid "Value 7"
-msgstr ""
+msgstr "Luach 7"
 
 #: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
 #: OptionSelectors.qml:106
 msgid "Value 8"
-msgstr ""
+msgstr "Luach 8"
 
 #: ListItems.qml:190
 msgid "Control"
-msgstr ""
+msgstr "Uidheaman-smachd"
 
 #: ListItems.qml:202
 msgid "Removable"
-msgstr ""
+msgstr "So-ghluasadach"
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr ""
+msgstr "Sleamhnaich gus a thoirt air falbh"
 
 #: ListItems.qml:215
 msgid "Reset"
@@ -257,39 +257,39 @@ msgstr "Ath-shuidhich"
 
 #: ListItems.qml:226
 msgid "Grouped list"
-msgstr ""
+msgstr "Liosta bhuidhnichte"
 
 #: ListItems.qml:261
 msgid "UbuntuListView"
-msgstr ""
+msgstr "Sealla liosta Ubuntu"
 
 #: ListItems.qml:321
 msgid "ExpandablesColumn"
-msgstr ""
+msgstr "Colbh so-leudaichte"
 
 #: ListItems.qml:364
 msgid "Expandable"
-msgstr ""
+msgstr "So-leudaichte"
 
 #: NewListItems.qml:39
 msgid "Colored"
-msgstr ""
+msgstr "Dathte"
 
 #: NewListItems.qml:42
 msgid "Highlight color"
-msgstr ""
+msgstr "Dath an t-soillseachaidh"
 
 #: NewListItems.qml:71
 msgid "Leading actions"
-msgstr ""
+msgstr "Gnìomhan roimhe"
 
 #: NewListItems.qml:75
 msgid "Trailing actions"
-msgstr ""
+msgstr "Gnìomhan ’na dhèidh"
 
 #: NewListItems.qml:84
 msgid "Custom action delegates"
-msgstr ""
+msgstr "Riochdairean ghnìomhan gnàthaichte"
 
 #: NewListItems.qml:111
 msgid "Edit"
@@ -306,53 +306,56 @@ msgstr "Bunasach"
 #: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
 #: NewListItems.qml:213 NewListItems.qml:214
 msgid "Colored divider"
-msgstr ""
+msgstr "Sgaradair dathte"
 
 #: NewListItems.qml:163
 msgid "Immutable"
-msgstr ""
+msgstr "Do-atharraichte"
 
 #: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
 msgid "No divider"
-msgstr ""
+msgstr "Gun sgaradair"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
-msgstr ""
+msgstr "Roghnaichear roghainnean"
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr ""
+msgstr "Seo an dàrna luach"
 
 #: OptionSelectors.qml:35
 msgid ""
 "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
 "nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 msgstr ""
+"Boí rí amrae for Laignib, Mac Dathó a ainm. Boí cú occo. Im dīched in cú "
+"Laigniu huili. Ailbe ainm in chon, ocus ba lán hÉriu dia airdircus in chon."
 
 #: OptionSelectors.qml:36
 msgid "Once upon a time there was a story nobody told."
 msgstr ""
+"Roimhe seo o chionn fada an t-saoghail, bha sgeul ann nach innseadh daoine."
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
-msgstr ""
+msgstr "Àirde ghnàthaichte an t-soithich"
 
 #: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
-msgstr ""
+msgstr "Gun taghadh tòiseachail, gabhaidh sgroladh a dhèanamh."
 
 #: Pickers.qml:31
 msgid "Linear"
-msgstr ""
+msgstr "Sreathach"
 
 #: Pickers.qml:63
 msgid "Circular"
-msgstr ""
+msgstr "Cearcallach"
 
 #: Pickers.qml:100 ProgressBars.qml:49
 msgid "Infinite"
-msgstr ""
+msgstr "Neo-chrìochnach"
 
 #: Pickers.qml:137
 msgid "Clock"
@@ -364,43 +367,43 @@ msgstr "Tar-chòmhdachadh"
 
 #: Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Smàlagach"
 
 #: Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Gnìomh #1"
 
 #: Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Gnìomh #2"
 
 #: Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Gnìomh #3"
 
 #: Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Gnìomh #4"
 
 #: Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Gnìomh #5"
 
 #: ProgressBars.qml:24
 msgid "Progress Bar"
-msgstr ""
+msgstr "Bàr an adhartais"
 
 #: ProgressBars.qml:59
 msgid "No label"
-msgstr ""
+msgstr "Gun leubail"
 
 #: ProgressBars.qml:81
 msgid "Activity Indicator"
-msgstr ""
+msgstr "Taisbeanair gnìomhachd"
 
 #: ProportionalShape.qml:28
 msgid "Sizes"
-msgstr ""
+msgstr "Meudan"
 
 #: Sections.qml:34
 msgid "Enabled"
@@ -409,6 +412,7 @@ msgstr "An comas"
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"Tha coltas gu math tomadach air an t-siota seo leis gu bheil e gu math aosta."
 
 #: Sheet.qml:53 Sheet.qml:86
 msgid "Title"
@@ -417,11 +421,11 @@ msgstr "Tiotal"
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
-msgstr ""
+msgstr "An luach fìrinneach: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
-msgstr ""
+msgstr "Ùrachadh beò"
 
 #: Sliders.qml:57
 msgid "Range"
@@ -445,7 +449,7 @@ msgstr "Mòr"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
-msgstr ""
+msgstr "Sgrìobh mi ann an..."
 
 #: TextInputs.qml:56
 msgid "Password"
@@ -457,15 +461,15 @@ msgstr "Àireamhan"
 
 #: TextInputs.qml:78
 msgid "Read-only"
-msgstr ""
+msgstr "Cead-leughaidh a-mhàin"
 
 #: TextInputs.qml:82
 msgid "Nobody type here"
-msgstr ""
+msgstr "Nar sgrìobhar an-seo"
 
 #: TextInputs.qml:94
 msgid "No interaction allowed"
-msgstr ""
+msgstr "Casg air eadar-ghabhail"
 
 #: TextInputs.qml:107
 msgid "Default"
@@ -473,19 +477,19 @@ msgstr "Bun-roghainn"
 
 #: TextInputs.qml:129
 msgid "Rich Text"
-msgstr ""
+msgstr "Rich Text"
 
 #: Toggles.qml:28 Toggles.qml:66
 msgid "Unchecked"
-msgstr ""
+msgstr "Gun dearbhadh"
 
 #: Toggles.qml:36 Toggles.qml:74
 msgid "Checked"
-msgstr ""
+msgstr "Air a dhearbhadh"
 
 #: UbuntuShape.qml:28
 msgid "Aspect"
-msgstr ""
+msgstr "Taobh"
 
 #: UbuntuShape.qml:73
 msgid "Radius"

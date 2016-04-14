@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:48+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-04-09 05:42+0000\n"
+"X-Generator: Launchpad (build 17990)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
@@ -60,21 +60,21 @@ msgstr "Type de bus non valide : %1."
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
 msgid "Now"
-msgstr "Maintenant"
+msgstr "Actuellement"
 
 #: Ubuntu/Components/plugin/i18n.cpp:275
 #, qt-format
 msgid "%1 minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] "Il y a %1 minute"
-msgstr[1] "Il y a %1 minutes"
+msgstr[0] "il y a %1 minute"
+msgstr[1] "il y a %1 minutes"
 
 #: Ubuntu/Components/plugin/i18n.cpp:277
 #, qt-format
 msgid "%1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] "%1 minute"
-msgstr[1] "%1 minutes"
+msgstr[0] "%1 minute"
+msgstr[1] "%1 minutes"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -141,6 +141,8 @@ msgid ""
 "ListView has no ViewItems.dragUpdated() signal handler implemented. No "
 "dragging will be possible."
 msgstr ""
+"ListView n'est pas implémenté pour la gestion du signal "
+"ViewItems.dragUpdated(). Aucun déplacement glissé ne sera possible."
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -160,7 +162,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/ucalarm.cpp:41
 #: Ubuntu/Components/plugin/ucalarm.cpp:643
 msgid "Alarm"
-msgstr "Alarme"
+msgstr "Alerte"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:635
 #: Ubuntu/Components/plugin/ucalarm.cpp:667
@@ -178,7 +180,7 @@ msgstr "Options :"
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "%1 attend un argument supplémentaire : %2"
+msgstr "%1 attend une valeur supplémentaire : %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
@@ -192,11 +194,11 @@ msgstr "%1 attend des arguments supplémentaires : %2"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
-msgstr ""
+msgstr "considérez l'écrasement de l'emplacement swipeEvent() !"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
 msgid "consider overriding rebound() slot!"
-msgstr ""
+msgstr "considérez l'écrasement de l'emplacement rebound() !"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
@@ -211,6 +213,8 @@ msgstr "La modification des paramètres de connexion est interdite."
 msgid ""
 "Binding detected on property '%1' will be removed by the service updates."
 msgstr ""
+"L'erreur détectée sur la propriété « %1 » sera supprimée par le service de "
+"mises à jour."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
@@ -241,17 +245,19 @@ msgstr "Thème introuvable : « %1 »"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "Pas un composant de Palette."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "Le mode glisser nécessite ListView"
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
 "Dragging is only supported when using a QAbstractItemModel, ListModel or "
 "list."
 msgstr ""
+"Le glisser est uniquement pris en charge lorsque vous utilisez "
+"QAbstractItemModel, ListModel ou List."
 
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78
