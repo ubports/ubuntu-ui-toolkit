@@ -52,7 +52,7 @@ public:
     void forceCompletion();
 
 Q_SIGNALS:
-    void loadingStatus(LoadingStatus status, QObject *object);
+    void loadingStatus(AsyncLoader::LoadingStatus status, QObject *object);
 
 protected:
     Q_DECLARE_PRIVATE(AsyncLoader)

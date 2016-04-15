@@ -1,4 +1,4 @@
-QT *= core-private qml qml-private quick quick-private gui-private testlib UbuntuGestures
+QT *= core-private qml qml-private quick quick-private gui-private testlib UbuntuGestures UbuntuToolkit
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT *= v8-private
@@ -15,11 +15,9 @@ uri = Ubuntu.Test
 HEADERS += \
     $$PWD/uctestcase.h \
     $$PWD/testplugin.h \
-    $$PWD/uctestextras.h \
-    $$PWD/ucmousetouchadaptor.h \
+    $$PWD/uctestextras.h
 
 SOURCES += \
     $$PWD/uctestcase.cpp \
     $$PWD/testplugin.cpp \
-    $$PWD/uctestextras.cpp \
-    $$PWD/ucmousetouchadaptor.cpp \
+    $$PWD/uctestextras.cpp

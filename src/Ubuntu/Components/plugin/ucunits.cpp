@@ -175,7 +175,7 @@ QString UCUnits::resolveResource(const QUrl& url)
         return QString();
     }
 
-    QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
+    QString prefix = fileInfo.dir().absolutePath() + "/" + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
 
     /* Use file with expected grid unit suffix if it exists.

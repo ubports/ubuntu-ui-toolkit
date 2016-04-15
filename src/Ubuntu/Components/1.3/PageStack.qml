@@ -185,7 +185,7 @@ PageTreeNode {
 
     /*!
       Pop the top item from the stack if the stack size is at least 1.
-      Do not do anything if 0 or 1 items are on the stack.
+      Do not do anything if 0 items are on the stack.
      */
     function pop() {
         internal.finishPreviousAction();
@@ -218,13 +218,12 @@ PageTreeNode {
     Action {
         // used when the Page has a Page.header property set.
         id: backAction
-        visible: pageStack.depth > 0
+        visible: pageStack.depth > 1
         iconName: "back"
         text: "Back"
         onTriggered: pageStack.pop()
         objectName: "pagestack_back_action"
     }
-
 
     Component {
         id: pageWrapperComponent

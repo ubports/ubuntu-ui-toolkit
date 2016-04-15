@@ -1,8 +1,9 @@
 [Desktop Entry]
-Name=converter
+Name=unit-converter
 Comment=My project description
-Exec=/usr/bin/qmlscene $@ /usr/lib/ubuntu-ui-toolkit/examples/unit-converter/unit-converter.qml
+Exec=qmlscene $@ unit-converter.qml
 Icon=qmlscene
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
+X-Ubuntu-Gettext-Domain=com.ubuntu.developer.bzoltan.unit-converter

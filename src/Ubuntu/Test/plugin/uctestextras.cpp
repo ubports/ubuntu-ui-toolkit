@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qobject_p.h>
 #include <QSysInfo>
+#include <MouseTouchAdaptor>
 
 const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using registerTouchDevice() before using %1";
 
@@ -40,7 +41,6 @@ const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using
         return; \
     }
 
-QTouchDevice *UCTestExtras::m_touchDevice = 0;
 UCTestExtras *UCTestExtras::m_testExtras = 0;
 
 /*!
@@ -118,24 +118,8 @@ bool UCTestExtras::touchDevicePresent()
  */
 void UCTestExtras::registerTouchDevice()
 {
-    // check if there is any touch device registered in the system
-    if (!m_touchDevice) {
-        QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
-        Q_FOREACH(const QTouchDevice *device, touchDevices) {
-            if (device->type() == QTouchDevice::TouchScreen) {
-                m_touchDevice = const_cast<QTouchDevice*>(device);
-                break;
-            }
-        }
-    }
-    // if none, register one
-    if (!m_touchDevice) {
-        m_touchDevice = new QTouchDevice;
-        m_touchDevice->setType(QTouchDevice::TouchScreen);
-        QWindowSystemInterface::registerTouchDevice(m_touchDevice);
-        if (m_testExtras) {
-            Q_EMIT m_testExtras->touchDevicePresentChanged();
-        }
+    if (UbuntuToolkit::MouseTouchAdaptor::registerTouchDevice() && m_testExtras) {
+        Q_EMIT m_testExtras->touchDevicePresentChanged();
     }
 }
 
@@ -148,7 +132,7 @@ void UCTestExtras::registerTouchDevice()
 void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), m_touchDevice).press(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).press(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchRelease(touchId, item, point)
@@ -158,7 +142,7 @@ void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point
 void UCTestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), m_touchDevice).release(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).release(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchClick(touchId, item, point)
@@ -207,7 +191,7 @@ void UCTestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint 
 void UCTestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), m_touchDevice).move(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).move(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchDrag(touchId, item, from, delta, steps = 5)

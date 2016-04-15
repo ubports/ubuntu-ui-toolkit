@@ -1,20 +1,47 @@
 TEMPLATE = subdirs
 
+#load Ubuntu specific features
+load(ubuntu-click)
+
+# specify the manifest file, this file is required for click
+# packaging and for the IDE to create runconfigurations
+UBUNTU_MANIFEST_FILE=manifest.json.in
+
+TARGET = calculator
+
 SUBDIRS += components
 
-filetypes = qml png svg js qmltheme jpg qmlproject desktop wav
+QML_FILES += $$files(*.qml,true) \
+             $$files(*.js,true) \
+             components
 
-OTHER_FILES = ""
+CONF_FILES +=  $${TARGET}.apparmor \
+               $${TARGET}.png \
+	       $${TARGET}.wav
 
-for(filetype, filetypes) {
-  OTHER_FILES += *.$$filetype
+OTHER_FILES += $${CONF_FILES} \
+               $${QML_FILES} \
+               $${TARGET}.desktop \
+            ``
+
+#specify where the qml/js files are installed to
+qml_files.path = /
+qml_files.files += $${QML_FILES}
+
+#specify where the config files are installed to
+config_files.path = /
+config_files.files += $${CONF_FILES}
+
+#install the desktop file, a translated version is
+#automatically created in the build directory
+desktop_file.path = /
+desktop_file.files = $${TARGET}.desktop
+desktop_file.CONFIG += no_check_exist
+
+exists($$PWD/../examples.pro) {
+	desktop_file.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/$${TARGET}
+	config_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/$${TARGET}
+	qml_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/$${TARGET}
 }
 
-desktop_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/calculator
-desktop_files.files = calculator.desktop
-
-other_files.path = $$[QT_INSTALL_EXAMPLES]/ubuntu-ui-toolkit/examples/calculator
-other_files.files = $$OTHER_FILES
-
-INSTALLS += other_files desktop_files
-
+INSTALLS+=config_files qml_files desktop_file

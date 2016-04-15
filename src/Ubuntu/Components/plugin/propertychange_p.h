@@ -21,6 +21,10 @@
 #include <QtCore/QObject>
 #include <QtQml/QQmlProperty>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+#include <QtCore/QExplicitlySharedDataPointer>
+#endif
+
 class QQmlAbstractBinding;
 class PropertyChange
 {
@@ -41,7 +45,12 @@ private:
     bool backedUp;
     QQmlProperty qmlProperty;
     QVariant backupValue;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    QExplicitlySharedDataPointer<QQmlAbstractBinding> backupBinding;
+#else
     QQmlAbstractBinding *backupBinding;
+#endif
 
     void backup();
 };
