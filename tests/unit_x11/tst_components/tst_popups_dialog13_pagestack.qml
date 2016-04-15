@@ -129,7 +129,9 @@ Item {
             pageStack.pop();
 
             dialogCloseSpy.wait();
-            waitForHeaderAnimation(mainview); // give time for the dialog to disappear
+            // Introduce a short delay to wait for the pagestack to finish.
+            //  Without this, the test becomes flaky.
+            waitForHeaderAnimation(mainview);
 
             compare(pageStack.depth, 1, "PageStack.pop() failed.");
             compare(pageStack.currentPage, startPage, "Incorrect current page on PageStack.");
