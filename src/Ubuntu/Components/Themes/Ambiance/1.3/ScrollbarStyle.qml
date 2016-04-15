@@ -87,7 +87,7 @@ Item {
     property color troughColorThumbStyle: theme.palette.normal.foreground
     property color troughColorSteppersStyle: theme.palette.normal.foreground
 
-    property color sliderColor: theme.palette.normal.foregroundText
+    property color sliderColor: theme.palette.normal.overlayText
     property color stepperBgColor: trough.color
     //used for hover and pressed states
     property color secondaryStepperBgColor: theme.palette.normal.base
