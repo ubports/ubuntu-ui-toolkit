@@ -69,11 +69,20 @@ Item {
                         title: "2. Page"
                     }
 
-                    Button {
+                    Column {
                         anchors.centerIn: parent
-                        text: "Open dialog"
-                        onClicked: {
-                            pageStack.popup = PopupUtils.open(dialogComponent);
+
+                        Button {
+                            text: "Open dialog"
+                            onClicked: {
+                                pageStack.popup = PopupUtils.open(dialogComponent);
+                            }
+                        }
+                        Button {
+                            text: "Open popover"
+                            onClicked: {
+                                pageStack.popup = PopupUtils.open(popoverComponent);
+                            }
                         }
                     }
 
@@ -93,6 +102,31 @@ Item {
                             }
                         }
                     }
+                    property alias popoverComponent: popoverComponent
+                    Component {
+                        id: popoverComponent
+                        Popover {
+                            id: popover
+                            objectName: "popover"
+                            Rectangle {
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                }
+                                height: units.gu(35)
+                                color: UbuntuColors.ash
+
+                                Button {
+                                    anchors.centerIn: parent
+                                    text: "Close and pop page"
+                                    onClicked: {
+                                        PopupUtils.close(pageStack.popup);
+                                        pageStack.pop();
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -104,7 +138,7 @@ Item {
         id: testCase
 
         SignalSpy {
-            id: dialogCloseSpy
+            id: popupCloseSpy
             signalName: "onDestruction"
         }
 
@@ -119,16 +153,31 @@ Item {
             pageStack.push(startPage);
         }
 
-        function test_close_and_pop_bug1568016() {
-            pageStack.push(secondPageComponent);
-            var dialog = PopupUtils.open(pageStack.currentPage.dialogComponent);
-            dialogCloseSpy.target = dialog.Component;
-            dialogCloseSpy.clear();
+        function test_close_and_pop_bug1568016_data() {
+            return [
+                        {   tag: "Dialog component"     },
+                        {   tag: "Popover component"    }
+                    ];
+        }
 
-            PopupUtils.close(dialog);
+        function test_close_and_pop_bug1568016(data) {
+            pageStack.push(secondPageComponent);
+            waitForHeaderAnimation(mainview); // wait for the push() to finish
+
+            var popup;
+            if (data.tag === "Dialog component") {
+                popup = PopupUtils.open(pageStack.currentPage.dialogComponent);
+            } else { // Popover component
+                popup = PopupUtils.open(pageStack.currentPage.popoverComponent);
+            }
+
+            popupCloseSpy.target = popup.Component;
+            popupCloseSpy.clear();
+
+            PopupUtils.close(popup);
             pageStack.pop();
 
-            dialogCloseSpy.wait();
+            popupCloseSpy.wait();
             // Introduce a short delay to wait for the pagestack to finish.
             //  Without this, the test becomes flaky.
             waitForHeaderAnimation(mainview);
