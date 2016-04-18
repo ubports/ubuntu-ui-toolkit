@@ -73,12 +73,14 @@ Item {
                         anchors.centerIn: parent
 
                         Button {
+                            objectName: "open_dialog_button"
                             text: "Open dialog"
                             onClicked: {
                                 pageStack.popup = PopupUtils.open(dialogComponent);
                             }
                         }
                         Button {
+                            objectName: "open_popover_button"
                             text: "Open popover"
                             onClicked: {
                                 pageStack.popup = PopupUtils.open(popoverComponent);
@@ -155,8 +157,12 @@ Item {
 
         function test_close_and_pop_bug1568016_data() {
             return [
-                        {   tag: "Dialog component"     },
-                        {   tag: "Popover component"    }
+                        {   tag: "Dialog component",
+                            buttonName: "open_dialog_button"
+                        },
+                        {   tag: "Popover component",
+                            buttonName: "open_popover_button"
+                        }
                     ];
         }
 
@@ -164,13 +170,13 @@ Item {
             pageStack.push(secondPageComponent);
             waitForHeaderAnimation(mainview); // wait for the push() to finish
 
-            var popup;
-            if (data.tag === "Dialog component") {
-                popup = PopupUtils.open(pageStack.currentPage.dialogComponent);
-            } else { // Popover component
-                popup = PopupUtils.open(pageStack.currentPage.popoverComponent);
-            }
+            var popupButton = findChild(pageStack.currentPage, data.buttonName);
+            mouseClick(popupButton, popupButton.width/2, popupButton.height/2);
+            waitForRendering(pageStack.currentPage);
+            verify(pageStack.popup,
+                       "Clicking the popup button did not set pageStack.popup.");
 
+            var popup = pageStack.popup;
             popupCloseSpy.target = popup.Component;
             popupCloseSpy.clear();
 
