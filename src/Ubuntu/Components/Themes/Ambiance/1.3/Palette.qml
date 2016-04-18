@@ -65,8 +65,9 @@ Palette {
 
     highlighted: AmbianceNormal {
         background: UbuntuColors.silk
-        base: UbuntuColors.jet
+        base: UbuntuColors.ash
         foreground: UbuntuColors.silk
+        raised: UbuntuColors.silk
     }
 
     focused: AmbianceNormal {
