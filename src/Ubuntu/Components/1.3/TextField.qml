@@ -825,7 +825,8 @@ Ubuntu.ActionItem {
     }
 
     // internals
-    activeFocusOnPress: true
+    // Overload focus mechanics to avoid bubbling up of focus from children
+    property bool activeFocusOnPress: true
 
     // Escape should close the context menu even if the menu takes no input focus
     Keys.onEscapePressed: {
