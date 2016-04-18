@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -77,6 +77,11 @@ function open(popup, caller, params) {
     // so popups will be removed together with the caller.
     if (caller)
         caller.Component.onDestruction.connect(popupObject.__closePopup);
+
+    // Instantly (no fading) close and destroy the popup when the component
+    //  gets destroyed because that invalidates the QML context of the popup
+    //  and prevents the closing after fadeout. See bug 1568016.
+    popupComponent.Component.destruction.connect(popupObject.__closePopup);
 
     popupObject.show();
     popupObject.onVisibleChanged.connect(popupObject.__closeIfHidden);
