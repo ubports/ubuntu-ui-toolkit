@@ -904,6 +904,14 @@ Item {
             //because the img is loaded async
             waitForRendering(obj)
             compare(obj !== null, true, "QML ListItemLayout: testing labels' QML context.")
+
+            //Tentative fix for lp:1571426, CI once (in months) managed to fail this test because
+            //the warning was received after the test had already finished.
+            //The fail could not be reproduced locally.
+            tryCompare(obj.title, "text", "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>")
+            tryCompare(obj.subtitle, "text", "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>")
+            tryCompare(obj.summary, "text", "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>")
+
             obj.destroy()
         }
 
