@@ -87,9 +87,10 @@ Item {
         ListView {
             id: sectionsListView
             objectName: "sections_listview"
+            onActiveFocusChanged: print("active focus of "+styledItem+" = "+activeFocus)
 
             property bool animateContentX: false
-            activeFocusOnTab: false // FIXME: Enable proper focus handling
+            activeFocusOnTab: true // FIXME: Enable proper focus handling
 
             // Position the selected item correctly.
             // For a scrollable ListView, if the item was already fully visible,
@@ -167,6 +168,8 @@ Item {
                 x: sectionsListView.currentItem ? sectionsListView.currentItem.x : -width
                 width: sectionsListView.currentItem ? sectionsListView.currentItem.width : 0
                 height: sectionsListView.currentItem ? sectionsListView.currentItem.height : 0
+                // hide when focus frame is visible:
+//                visible: !sectionsListView.currentItem.activeFocus
 
                 Rectangle {
                     anchors {
@@ -178,6 +181,25 @@ Item {
                     color: sectionsStyle.selectedSectionColor
                 }
                 Behavior on x { UbuntuNumberAnimation {} }
+
+                Rectangle {
+                    id: focusFrame
+                    anchors {
+                        fill: parent
+                        bottomMargin: units.gu(1)
+                    }
+
+//                    visible: sectionButton.activeFocus
+                    visible: sectionsListView.activeFocus
+                    color: "transparent"
+                    z: 3 // show the focus frame on top of the highlight underline
+                    border {
+                        width: units.dp(1)
+                        color: enabled
+                                   ? theme.palette.normal.focus
+                                   : theme.palette.disabled.focus
+                    }
+                }
             }
 
             delegate: AbstractButton {
@@ -233,6 +255,37 @@ Item {
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.underlineColor
                 }
+
+                //                Frame {
+                //                    anchors.fill: parent
+                //                    anchors.margins: -units.gu(0.46)
+                //                    color: styledItem.enabled
+                //                                ? theme.palette.normal.focus
+                //                                : theme.palette.disabled.focus
+                //                    thickness: units.gu(0.21)
+                //                    radius: units.gu(1.7)
+                //                    visible: sectionButton.activeFocus // styledItem.keyNavigationFocus
+
+                //                    Behavior on anchors.margins {
+                //                        UbuntuNumberAnimation {
+                //                            duration: UbuntuAnimation.FastDuration
+                //                        }
+                //                    }
+                //                }
+
+//                Rectangle {
+//                    id: focusFrame
+//                    anchors.fill: parent
+//                    visible: sectionButton.activeFocus
+//                    color: "transparent"
+//                    z: 3 // show the focus frame on top of the highlight underline
+//                    border {
+//                        width: units.dp(1)
+//                        color: enabled
+//                                   ? theme.palette.normal.focus
+//                                   : theme.palette.disabled.focus
+//                    }
+//                }
             }
 
             SmoothedAnimation {
