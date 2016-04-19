@@ -88,7 +88,7 @@ Item {
     property color troughColorSteppersStyle: theme.palette.normal.foreground
 
     property color sliderColor: theme.palette.normal.overlayText
-    property color stepperBgColor: trough.color
+    property color stepperBgColor: background.color
     //used for hover and pressed states
     property color secondaryStepperBgColor: theme.palette.normal.base
     property real sliderRadius: units.dp(3)
@@ -446,10 +446,19 @@ Item {
             interval: scrollbarThicknessAnimation.duration * 10
         }
 
+        // represents the visible area of the scrollbar where
+        //slider and thumb connector are placed
+        Rectangle {
+            id: background
+            anchors.fill: flowContainer
+            objectName: "background"
+            visible: flowContainer.showBackground
+        }
+
         Flow {
             id: flowContainer
             property bool showSteppers: false
-            property bool showTrough: false
+            property bool showBackground: false
             property bool showCornerRect: false
             //thickness of trough and thumb
             property real thickness: 0
@@ -468,21 +477,13 @@ Item {
             flow: (isVertical) ? Flow.TopToBottom : Flow.LeftToRight
 
             Item {
-                id: troughContainer
+                id: trough
                 //account for 2 steppers at the end of the scrollbar
                 width: isVertical ? parent.width
                                   : parent.width - steppersMouseArea.width
                 height: isVertical ? parent.height - steppersMouseArea.height
                                    : parent.height
-
-                // represents the visible area of the scrollbar where
-                //slider and thumb connector are placed
-                Rectangle {
-                    id: trough
-                    objectName: "trough"
-                    anchors.fill: parent
-                    visible: flowContainer.showTrough
-                }
+                objectName: "trough"
 
                 Rectangle {
                     id: slider
@@ -668,7 +669,8 @@ Item {
                         //mouse has previously hovered over the area and activated the steppers style
                         //checking for the value of visuals.state wouldn't be useful here, the value could be
                         //"hidden" even if the values have only just started transitioning from "steppers" state
-                        if (trough.visible) {
+
+                        if (firstStepper.visible) {
                             var mouseScrollingProp = isVertical ? mouseY : mouseX
                             //don't start the press and hold timer to avoid conflicts with the drag
                             if (mouseScrollingProp < slider[scrollingProp] ||
@@ -831,6 +833,9 @@ Item {
                     } else if (secondStepper.contains(Qt.point(mappedCoordSecondStepper.x, mappedCoordSecondStepper.y))) {
                         hoveringFirstStepper = false
                         hoveringSecondStepper = true
+                    } else {
+                        hoveringFirstStepper = false
+                        hoveringSecondStepper = false
                     }
                 }
 
@@ -879,7 +884,7 @@ Item {
                     color: steppersMouseArea.hoveringFirstStepper
                            ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
                                    secondaryStepperBgColor.a * (steppersMouseArea.pressed ? 1.0 : 0.63))
-                           : stepperBgColor
+                           : "transparent"
                     visible: parent.visible
                     clip: true
 
@@ -900,8 +905,7 @@ Item {
                         //if the trough is 9px wide, the arrow would look not perfectly centered
                         x: parent.width/2 - width/2
                         y: parent.height/2 - height/2
-                        width: troughThicknessSteppersStyle - units.dp(3)
-                        height: width
+                        width: troughThicknessSteppersStyle - units.dp(5)
                         rotation: isVertical ? 180 : 90
                         source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
@@ -923,7 +927,7 @@ Item {
                     color: steppersMouseArea.hoveringSecondStepper
                            ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
                                    secondaryStepperBgColor.a * (steppersMouseArea.pressed ? 1.0 : 0.63))
-                           : stepperBgColor
+                           : "transparent"
                     clip: true
                     visible: parent.visible
 
@@ -940,12 +944,12 @@ Item {
                         value: visible ? __targetStepperSize : 0
                     }
                     Icon {
+                        id: icon
                         //can't use anchors.centerIn: parent because anchors are rounded to integer, so
                         //if the trough is 9px wide, the arrow would look not perfectly centered
                         x: parent.width/2 - width/2
                         y: parent.height/2 - height/2
-                        width: troughThicknessSteppersStyle - units.dp(3)
-                        height: width
+                        width: troughThicknessSteppersStyle - units.dp(5)
                         rotation: isVertical ? 0 : -90
                         source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
@@ -1020,7 +1024,7 @@ Item {
             //so we want to bind the right side to the thickness of the scrollbar
             width: isVertical ? flowContainer.thickness : troughThicknessSteppersStyle
             height: isVertical ? troughThicknessSteppersStyle : flowContainer.thickness
-            color: trough.color
+            color: background.color
             visible: flowContainer.showCornerRect
                      && styledItem.__buddyScrollbar
                      && styledItem.__buddyScrollbar.__styleInstance.isScrollable
@@ -1085,7 +1089,7 @@ Item {
                 thickness: troughThicknessIndicatorStyle
                 thumbThickness: indicatorThickness
                 showSteppers: false
-                showTrough: alwaysOnScrollbars
+                showBackground: alwaysOnScrollbars
                 showCornerRect: false
             }
             PropertyChanges {
@@ -1094,7 +1098,7 @@ Item {
                 height: 0
             }
             PropertyChanges {
-                target: trough
+                target: background
                 color: Qt.rgba(troughColorThumbStyle.r,
                                troughColorThumbStyle.g,
                                troughColorThumbStyle.b,
@@ -1109,7 +1113,7 @@ Item {
                 thickness: visuals.troughThicknessThumbStyle
                 thumbThickness: visuals.thumbThickness
                 showSteppers: false
-                showTrough: alwaysOnScrollbars
+                showBackground: alwaysOnScrollbars
                 showCornerRect: false
             }
             PropertyChanges {
@@ -1118,7 +1122,7 @@ Item {
                 height: 0
             }
             PropertyChanges {
-                target: trough
+                target: background
                 color: Qt.rgba(troughColorThumbStyle.r,
                                troughColorThumbStyle.g,
                                troughColorThumbStyle.b,
@@ -1133,7 +1137,7 @@ Item {
                 thickness: visuals.troughThicknessSteppersStyle
                 thumbThickness: visuals.thumbThickness
                 showSteppers: visuals.useSteppers
-                showTrough: true
+                showBackground: true
                 showCornerRect: true
             }
             PropertyChanges {
@@ -1146,7 +1150,7 @@ Item {
                                    : trough.height
             }
             PropertyChanges {
-                target: trough
+                target: background
                 color: Qt.rgba(troughColorSteppersStyle.r,
                                troughColorSteppersStyle.g,
                                troughColorSteppersStyle.b,
@@ -1194,11 +1198,11 @@ Item {
                         duration: scrollbarThicknessAnimation.duration
                         easing: scrollbarThicknessAnimation.easing
                     }
-                    ColorAnimation { target: trough; duration: scrollbarThicknessAnimation.duration }
+                    ColorAnimation { target: background; duration: scrollbarThicknessAnimation.duration }
                 }
                 PropertyAction {
                     target: flowContainer
-                    properties: "showSteppers,showTrough,showCornerRect"
+                    properties: "showSteppers,showBackground,showCornerRect"
                 }
                 PropertyAction {
                     target: slider
@@ -1224,7 +1228,7 @@ Item {
                         duration: scrollbarThicknessAnimation.duration
                         easing: scrollbarThicknessAnimation.easing
                     }
-                    ColorAnimation { target: trough; duration: scrollbarThicknessAnimation.duration }
+                    ColorAnimation { target: background; duration: scrollbarThicknessAnimation.duration }
                 }
                 //this covers the case when scrollbar is still transitioning from steppers style to hidden,
                 //but the transition is not yet finished, and we flick the view. At that point the state is "hidden"
@@ -1233,7 +1237,7 @@ Item {
                 //as well to avoid immediate changes in the UI.
                 PropertyAction {
                     target: flowContainer
-                    properties: "showSteppers,showTrough,showCornerRect"
+                    properties: "showSteppers,showBackground,showCornerRect"
                 }
                 PropertyAction {
                     target: slider
@@ -1250,7 +1254,7 @@ Item {
             SequentialAnimation {
                 PropertyAction {
                     target: flowContainer
-                    properties: "showSteppers,showTrough,showCornerRect"
+                    properties: "showSteppers,showBackground,showCornerRect"
                 }
                 PropertyAction {
                     target: steppersMouseArea
@@ -1275,7 +1279,7 @@ Item {
                         duration: scrollbarThicknessAnimation.duration
                         easing: scrollbarThicknessAnimation.easing
                     }
-                    ColorAnimation { target: trough; duration: scrollbarThicknessAnimation.duration }
+                    ColorAnimation { target: background; duration: scrollbarThicknessAnimation.duration }
                 }
                 PropertyAction {
                     target: slider
@@ -1291,7 +1295,7 @@ Item {
             SequentialAnimation {
                 PropertyAction {
                     target: flowContainer
-                    properties: "showSteppers,showTrough,showCornerRect"
+                    properties: "showSteppers,showBackground,showCornerRect"
                 }
                 PropertyAction {
                     target: steppersMouseArea
@@ -1328,7 +1332,7 @@ Item {
                         duration: visuals.opacity > 0 ? scrollbarThicknessAnimation.duration : 0
                         easing: scrollbarThicknessAnimation.easing
                     }
-                    ColorAnimation { target: trough; duration: visuals.opacity > 0 ? scrollbarThicknessAnimation.duration : 0 }
+                    ColorAnimation { target: background; duration: visuals.opacity > 0 ? scrollbarThicknessAnimation.duration : 0 }
                 }
             }
         },
@@ -1350,10 +1354,10 @@ Item {
                 }
                 PropertyAction {
                     target: flowContainer
-                    properties: "thickness,thumbThickness,showSteppers,showTrough,showCornerRect"
+                    properties: "thickness,thumbThickness,showSteppers,showBackground,showCornerRect"
                 }
                 PropertyAction {
-                    target: trough
+                    target: background
                     properties: "color"
                 }
                 PropertyAction {

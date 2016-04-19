@@ -777,7 +777,7 @@ Item {
              *      STYLING PROPERTIES                           *
              *****************************************************/
             compare(style.interactive, style.isMouseConnected || style.veryLongContentItem, "Wrong styling property default value.")
-            compare(style.minimumSliderSize, units.gu(3), "Wrong styling property default value.")
+            compare(style.minimumSliderSize, units.gu(1), "Wrong styling property default value.")
             compare(style.overlay, !style.alwaysOnScrollbars, "Wrong styling property default value.")
             compare(style.overlayOpacityWhenShown, 1.0, "Wrong styling property default value.")
             compare(style.overlayOpacityWhenHidden, 0.0, "Wrong styling property default value.")
