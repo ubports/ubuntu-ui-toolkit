@@ -151,8 +151,8 @@ MainView {
 
         function test_popover_follows_pointerTarget_bug1199502_data() {
             return [
-                { tag: "Moving pointerTarget", button: pressMe, dir: "down", y: 318 },
-                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up", y: 142.8 },
+                { tag: "Moving pointerTarget", button: pressMe, dir: "down" },
+                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up" },
                 // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1427557
             ]
         }
@@ -160,7 +160,9 @@ MainView {
             mouseClick(data.button, data.button.width / 2, data.button.height / 2);
             waitForRendering(data.button);
             var dir = popoverSpy.target.direction
-            var popoverY = popoverSpy.target.y
+            var popover = popoverSpy.target;
+            var popoverY = popover.y;
+            var popoverH = popover.height;
 
             // dismiss
             mouseClick(main, 10, 10, Qt.LeftButton);
@@ -168,7 +170,10 @@ MainView {
 
             // ensure popover was next to caller
             compare(dir, data.dir, "Popover arrow is wrong")
-            compare(popoverY, data.y, "Popover isn't pointing at the caller")
+            if (dir == 'down')
+                verify(popoverY + popoverH > data.button.y, "Popover isn't pointing at the caller")
+            else
+                verify(popoverY > data.button.y, "Popover isn't pointing at the caller")
         }
     }
 }
