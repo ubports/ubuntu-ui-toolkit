@@ -23,9 +23,8 @@ import QtQuick.Window 2.2
     \qmltype MainView
     \inqmlmodule Ubuntu.Components 1.3
     \ingroup ubuntu
+    \inherits StyledItem
     \brief MainView is the root Item that should be used for all applications.
-        It automatically adds a header and toolbar for its contents and can
-        rotate its content based on the device orientation.
 
     The simplest way to use a MainView is to include a single \l Page object
     inside the MainView:
@@ -38,27 +37,30 @@ import QtQuick.Window 2.2
             height: units.gu(60)
 
             Page {
-                title: "Simple page"
+                header: PageHeader {
+                    id: pageHeader
+                    title: "Simple page"
+                }
                 Button {
-                    anchors.centerIn: parent
-                    text: "Push me"
+                    anchors {
+                        horizontalCenter: parent.horizontalCenter
+                        top: pageHeader.bottom
+                        topMargin: units.gu(5)
+                    }
                     width: units.gu(15)
+                    text: "Push me"
                     onClicked: print("Click!")
                 }
             }
         }
     \endqml
     It is not required to set the anchors of the \l Page as it will automatically fill its parent.
-    The MainView has a header that automatically shows the title of the \l Page.
 
-    Do not include multiple Pages directly inside the MainView, but use \l Tabs
-    or \l PageStack inside MainView to navigate between several Pages.
+    Do not include multiple Pages directly inside the MainView, but use \l AdaptivePageLayout
+    inside MainView to navigate between several Pages.
 
-    For the MainView to automatically rotate its content following the orientation
-    of the device, set the \l automaticOrientation property to true.
-
-    If the \l Page inside the MainView includes a Flickable with enough contents for scrolling,
-    the header will automatically hide and show when the user scrolls up or down:
+    If the \l Page inside the MainView includes a Flickable, set the flickable property of
+    the PageHeader to automatically hide and show the header when the user scrolls up or down:
     \qml
         import QtQuick 2.4
         import Ubuntu.Components 1.3
@@ -68,9 +70,13 @@ import QtQuick.Window 2.2
             height: units.gu(60)
 
             Page {
-                title: "Page with Flickable"
+                header: PageHeader {
+                    title: "Page with Flickable"
+                    flickable: myFlickable
+                }
 
                 Flickable {
+                    id: myFlickable
                     anchors.fill: parent
                     contentHeight: column.height
 
@@ -91,20 +97,12 @@ import QtQuick.Window 2.2
     example.
 
     The examples above show how to include a single \l Page inside a MainView, but more
-    advanced application structures are possible using \l PageStack and \l Tabs.
+    advanced application structures are possible using \l AdaptivePageLayout.
 */
-MainViewBase {
+Toolkit.MainViewBase {
     id: mainView
 
-    /*!
-      \qmlproperty bool MainView::automaticOrientation
-      \deprecated
-
-      Sets whether the application will be automatically rotating when the
-      device is.
-
-      This property has no significance anymore as the shell rotates.
-    */
+    /*! \deprecated */
     property bool automaticOrientation: false
 
     /*!
@@ -121,28 +119,10 @@ MainViewBase {
                     UbuntuApplication.inputMethod.keyboardRectangle.height : 0
         }
 
-        // clip the contents so that it does not overlap the header
         Item {
-            id: contentsClipper
+            id: contents
             anchors {
-                left: parent.left
-                right: parent.right
-                top: headerItem.bottom
-                bottom: parent.bottom
-            }
-            // only clip when necessary
-            // ListView headers may be positioned at the top, independent from
-            // flickable.contentY, so do not clip depending on activePage.flickable.contentY.
-            clip: headerItem.bottomY > 0 && internal.activePage && internal.activePage.flickable
-
-            Item {
-                id: contents
-                anchors {
-                    fill: parent
-                    
-                    // compensate so that the actual y is always 0
-                    topMargin: -parent.y
-                }
+                fill: parent
             }
         }
 
@@ -159,6 +139,7 @@ MainViewBase {
             property real bottomY: headerItem.y + headerItem.height
             dividerColor: Qt.darker(mainView.headerColor, 1.1)
             panelColor: Qt.lighter(mainView.headerColor, 1.1)
+            backgroundColor: mainView.headerColor
 
             title: internal.activePage ? internal.activePage.title : ""
             pageStack: internal.activePage ? internal.activePage.pageStack : null
@@ -179,7 +160,8 @@ MainViewBase {
             // don't show the application header if the page has its own header.
             visible: !(internal.activePage &&
                        internal.activePage.hasOwnProperty("header") &&
-                       internal.activePage.header)
+                       internal.activePage.header) &&
+                     internal.activePage
 
             height: visible ? implicitHeight : 0
 
@@ -250,12 +232,12 @@ MainViewBase {
           Used by PageStack. This property only exists in MainView 1.2 and later.
          */
         readonly property bool animateHeader: false
+    }
 
-        // FIXME: Currently disabled to prevent bug 1461729
-//        readonly property bool animateHeader: headerItem.__styleInstance &&
-//                                              headerItem.__styleInstance.hasOwnProperty("animateIn") &&
-//                                              headerItem.__styleInstance.hasOwnProperty("animateOut") &&
-//                                              headerItem.__styleInstance.hasOwnProperty("animateInFinished") &&
-//                                              headerItem.__styleInstance.hasOwnProperty("animateOutFinished")
+    backgroundColor: theme.palette.normal.background
+
+    PerformanceOverlay {
+        id: performanceOverlay
+        active: false
     }
 }

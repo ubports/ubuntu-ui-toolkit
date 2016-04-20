@@ -62,7 +62,7 @@ MainView {
 
         function test_bug1511839() {
             for (var i = 0; i < stack.currentPage.head.sections.model.length; i++) {
-                verifySelectedSection(i, false);
+                verifySelectedSection(i, false, "Section " + i + " is selected.");
             }
         }
 

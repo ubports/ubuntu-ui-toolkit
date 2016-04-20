@@ -27,18 +27,30 @@
 #include <QObject>
 #include <QEventLoop>
 
+#include "uctestcase.h"
+#include "uctheme.h"
+
 class Tst_Animator : public QObject
 {
     Q_OBJECT
 
 private Q_SLOTS:
+    void tst_animatorRegression_data() {
+        QTest::addColumn<QString>("filename");
+        QTest::addColumn<QString>("suppressDeprecatedNote");
+        QTest::newRow("1.1") << QString("tst_animator.qml") << QString("yes");
+        QTest::newRow("1.3") << QString("tst_animator13.qml") << QString("no");
+    }
+
     void tst_animatorRegression ()
     {
+        QFETCH(QString, filename);
+        QFETCH(QString, suppressDeprecatedNote);
+
+        UCTheme::previousVersion = 0;
+        qputenv("SUPPRESS_DEPRECATED_NOTE", qPrintable(suppressDeprecatedNote));
         QEventLoop l;
-        QScopedPointer<QQuickView> w(new QQuickView());
-        w->setResizeMode(QQuickView::SizeRootObjectToView);
-        w->setSource(QUrl::fromLocalFile("tst_animator.qml"));
-        w->show();
+        QScopedPointer<UbuntuTestCase> w(new UbuntuTestCase(filename));
 
         int countdown = 20;
 

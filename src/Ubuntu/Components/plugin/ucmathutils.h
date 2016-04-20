@@ -33,8 +33,6 @@ public:
     Q_INVOKABLE double lerp(double delta, double from, double to);
     Q_INVOKABLE double projectValue(double x, double xmin, double xmax, double ymin, double ymax);
     Q_INVOKABLE double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax);
-
-    static QObject *qmlRegisterTypeCallback(QQmlEngine *engine, QJSEngine *scriptEngine);
 };
 
 #endif // UCMATHUTILS_H

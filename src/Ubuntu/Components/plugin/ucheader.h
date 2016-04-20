@@ -23,7 +23,6 @@
 class QQuickFlickable;
 class QQuickNumberAnimation;
 class UCUbuntuAnimation;
-class PropertyChange;
 
 class UCHeader : public UCStyledItemBase
 {
@@ -47,8 +46,9 @@ Q_SIGNALS:
     void movingChanged();
 
 protected:
-    void show(bool animate = true);
-    void hide(bool animate = true);
+    virtual void show(bool animate);
+    virtual void hide(bool animate);
+    virtual void itemChange(ItemChange change, const ItemChangeData &value);
 
 private Q_SLOTS:
     void _q_scrolledContents();
@@ -61,9 +61,9 @@ private Q_SLOTS:
 private:
     QPointer<QQuickFlickable> m_flickable;
     QQuickNumberAnimation* m_showHideAnimation;
-    PropertyChange* m_flickableTopMarginBackup;
 
     qreal m_previous_contentY;
+    qreal m_previous_header_height;
     bool m_exposed:1;
     bool m_moving:1;
 

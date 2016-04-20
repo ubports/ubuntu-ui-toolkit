@@ -25,20 +25,19 @@ import "conversion.js" as Converter
     - i18n
     - units
     - Label
-    - Tabs
-    - Tab
+    - Loader
     - Page
-    - ToolbarActions
+    - PageHeader
     - Action
     - TextField and
     - Button components
 
   The application converts length and weight units between several metrics.
-  Related units are grouped in the same page (Tab) and conversion happens when
+  Related units are grouped in the same page and conversion happens when
   pressing Enter/Return after entering a number in one of the input fields (i.e.
   accepting the entered text), or by pressing the "Convert" button.
 
-  The navigation between converter pages is provided by the Tabs component.
+  The navigation between converter pages is provided by the PageHeader component.
 */
 
 MainView {
@@ -85,6 +84,42 @@ MainView {
     Component {
         id: pageContent
         Page {
+            header: PageHeader {
+                title: "Ubuntu header"
+                leadingActionBar.actions: [
+                    Action {
+                        text: "Lengths"
+                        onTriggered: {
+                            if (status === Loader.Ready && item) {
+                                item.parent = parent;
+                                item.model = lengthModel;
+                                header.title="Lengths"
+                            }
+                        }
+                    },
+                    Action {
+                        text: "Weights"
+                        onTriggered: {
+                            if (status === Loader.Ready && item) {
+                                item.parent = parent;
+                                item.model = weightModel;
+                                header.title="Weights"
+
+                            }
+                        }
+                    }
+                ]
+                trailingActionBar.actions: [
+                    Action {
+                        objectName: "action"
+                        iconName: "clear"
+                        text: i18n.tr("Clear")
+                        onTriggered: Converter.clear(converter)
+                    }
+
+                ]
+            }
+
             // expose Repeater's model for reusability, so we can set it from
             // outside, when we build the tabs
             property alias model: converter.model
@@ -133,58 +168,25 @@ MainView {
                                 font.pixelSize: FontUtils.sizeToPixels("large")
                                 height: units.gu(4)
                                 // on-the-fly conversion
-                                onTextChanged: if (activeFocus) Converter.convert(input, converter, index)
+                                onTextChanged: if (activeFocus) Converter.convert(input, converter, index); else cursorPosition = 0
                                 onAccepted: Qt.inputMethod.hide()
                             }
                         }
                     }
                 }
             }
+        }
+    }
+    Loader {
+        sourceComponent: pageContent
+        onStatusChanged: {
+            if (status === Loader.Ready && item) {
+                item.parent = parent;
+                item.model = lengthModel;
+                item.header.title="Lengths"
+            }
 
-            head.actions: Action {
-                objectName: "action"
-                iconName: "clear"
-                text: i18n.tr("Clear")
-                onTriggered: Converter.clear(converter)
-            }
         }
     }
-    
-    Tabs {
-        id: tabs
-        
-        // First tab begins here
-        Tab {
-            objectName: "Tab1"
-            
-            title: i18n.tr("Lengths")
-            
-            // Tab content begins here
-            page: Loader {
-                sourceComponent: pageContent
-                onStatusChanged: {
-                    if (status === Loader.Ready && item) {
-                        item.parent = parent;
-                        item.model = lengthModel;
-                    }
-                }
-            }
-        }
-        
-        // Second tab begins here
-        Tab {
-            objectName: "Tab2"
-            
-            title: i18n.tr("Weights")
-            page: Loader {
-                sourceComponent: pageContent
-                onStatusChanged: {
-                    if (status === Loader.Ready && item) {
-                        item.parent = parent;
-                        item.model = weightModel;
-                    }
-                }
-            }
-        }
-    }
+
 }

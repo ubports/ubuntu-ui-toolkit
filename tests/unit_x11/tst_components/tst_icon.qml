@@ -91,11 +91,11 @@ Item {
 
         function test_source() {
             icon2.name = "search";
-            icon2.source = "/usr/share/icons/suru/actions/scalable/search.svg";
+            icon2.source = "/usr/share/icons/suru/actions/scalable/edit-find.svg";
 
             var image = findChild(icon2, "image");
             compare(image.source,
-                    "file:///usr/share/icons/suru/actions/scalable/search.svg",
+                    "file:///usr/share/icons/suru/actions/scalable/edit-find.svg",
                     "Source of the image should equal icon2.source.");
         }
 
@@ -110,7 +110,10 @@ Item {
             compare(shader.status, ShaderEffect.Uncompiled)
             icon.color = UbuntuColors.orange;
             shaderSpy.wait();
-            compare(shader.status, ShaderEffect.Compiled)
+            compare(shader.log, '')
+            // https://bugreports.qt.io/browse/QTBUG-49713
+            // status may be Error with no log even if successful
+            verify(shader.status !== ShaderEffect.Uncompiled)
             compare(shader.keyColorOut, icon.color);
             compare(shader.visible, true);
             compare(shader.source, image);

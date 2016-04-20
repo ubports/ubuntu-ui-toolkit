@@ -33,12 +33,17 @@ class UbuntuI18n : public QObject
 private:
     Q_DISABLE_COPY(UbuntuI18n)
     explicit UbuntuI18n(QObject* parent = 0);
-
+    ~UbuntuI18n();
 
 public:
-    static UbuntuI18n& instance() {
-        static UbuntuI18n instance;
-        return instance;
+    static UbuntuI18n *instance(QObject *parent = Q_NULLPTR) {
+        if (!m_i18) {
+            if (!parent) {
+                qFatal("Creating i18n singleton requires a parent object!");
+            }
+            m_i18 = new UbuntuI18n(parent);
+        }
+        return m_i18;
     }
 
     Q_INVOKABLE void bindtextdomain(const QString& domain_name, const QString& dir_name);
@@ -65,6 +70,7 @@ Q_SIGNALS:
     void languageChanged();
 
 private:
+    static UbuntuI18n *m_i18;
     QString m_domain;
     QString m_language;
 };

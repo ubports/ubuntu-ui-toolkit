@@ -24,7 +24,7 @@
 class UnityThemeIconProvider: public QQuickImageProvider
 {
 public:
-    UnityThemeIconProvider(const QString &themeName = "suru");
+    UnityThemeIconProvider(const QString &themeName = QStringLiteral("suru"));
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 
 private:

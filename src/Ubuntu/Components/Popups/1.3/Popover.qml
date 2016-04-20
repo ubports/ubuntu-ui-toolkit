@@ -205,6 +205,30 @@ PopupBase {
 
     y: parent ? (parent.height - height) / 2 : 0
 
+    /*!
+      \qmlproperty ThemeSettings theme
+      \since Ubuntu.Components 1.3
+      Configure the theme of the Popover foreground and all its subcomponents.
+      \sa StyledItem::theme, Dialog::theme
+     */
+    property alias theme: foreground.theme
+
+    /*!
+      \qmlproperty string styleName
+      The style name of the foreground of the Popover.
+      \since Ubuntu.Components 1.3
+      \sa StyledItem::styleName
+     */
+    property alias styleName: foreground.styleName
+
+    /*!
+      \qmlproperty Component style
+      The style of the foreground of the Popover.
+      This property takes precedence over \l styleName
+      \since Ubuntu.Components 1.3
+      \sa StyledItem::style
+     */
+    property alias style: foreground.style
     StyledItem {
         id: foreground
         objectName: "popover_foreground"
@@ -227,6 +251,14 @@ PopupBase {
                 right: parent.right
             }
             height: childrenRect.height
+
+            // put the PopupContext inside the container to save one step
+            // in the context lookup
+            PopupContext {
+                id: popupContext
+                objectName: popover.objectName + "PopupContext"
+                active: foreground.visible
+            }
         }
 
         onWidthChanged: internal.updatePosition()

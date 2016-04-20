@@ -47,8 +47,14 @@ public:
     // Does a breadth-first search for an icon with any name in @names. Parent
     // themes are only looked at if the current theme doesn't contain any icon
     // in @names.
-    QImage findBestIcon(const QStringList &names, QSize *impsize, const QSize &size)
+    QImage findBestIcon(const QStringList &names, QSize *impsize, const QSize &size, QSet<QString> *alreadySearchedThemes)
     {
+        if (alreadySearchedThemes) {
+            if (alreadySearchedThemes->contains(name))
+                return QImage();
+            alreadySearchedThemes->insert(name);
+        }
+
         Q_FOREACH(const QString &name, names) {
             QImage image = lookupIcon(name, impsize, size);
             if (!image.isNull())
@@ -56,7 +62,7 @@ public:
         }
 
         Q_FOREACH(IconThemePointer theme, parents) {
-            QImage image = theme->findBestIcon(names, impsize, size);
+            QImage image = theme->findBestIcon(names, impsize, size, alreadySearchedThemes);
             if (!image.isNull())
                 return image;
         }
@@ -99,8 +105,11 @@ private:
                     directories.append(dir);
                 }
 
-                Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList())
-                    parents.append(IconTheme::get(name));
+                Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList()) {
+                    if (name != QLatin1String("hicolor")) {
+                        parents.append(IconTheme::get(name));
+                    }
+                }
 
                 // there can only be one index.theme
                 break;
@@ -110,11 +119,11 @@ private:
 
     SizeType sizeTypeFromString(const QString &string)
     {
-        if (string == "Fixed")
+        if (string == QLatin1String("Fixed"))
             return Fixed;
-        if (string == "Scalable")
+        if (string == QLatin1String("Scalable"))
             return Scalable;
-        if (string == "Threshold")
+        if (string == QLatin1String("Threshold"))
             return Threshold;
         qWarning() << "IconTheme: unknown size type '" << string << "'. Assuming 'Fixed'.";
         return Fixed;
@@ -125,7 +134,8 @@ private:
         QImage image;
         QImageReader imgio(filename);
 
-        const bool force_scale = imgio.format() == "svg" || imgio.format() == "svgz";
+        const bool force_scale = imgio.format() == QStringLiteral("svg")
+            || imgio.format() == QStringLiteral("svgz");
 
         if (requestSize.width() > 0 || requestSize.height() > 0) {
             QSize s = imgio.size();
@@ -159,8 +169,8 @@ private:
 
     QString lookupIconFile(const QString &dir, const QString &name)
     {
-        QString png = QString("%1/%2.png").arg(dir).arg(name);
-        QString svg = QString("%1/%2.svg").arg(dir).arg(name);
+        QString png = QStringLiteral("%1/%2.png").arg(dir, name);
+        QString svg = QStringLiteral("%1/%2.svg").arg(dir, name);
 
         Q_FOREACH(const QString &baseDir, baseDirs) {
             QString filename = baseDir + "/" + png;
@@ -266,5 +276,16 @@ UnityThemeIconProvider::UnityThemeIconProvider(const QString &themeName):
 
 QImage UnityThemeIconProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    return theme->findBestIcon(id.split(",", QString::SkipEmptyParts), size, requestedSize);
+    // The hicolor theme will be searched last as per
+    // https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
+    QSet<QString> alreadySearchedThemes;
+    const QStringList names = id.split(QLatin1Char(','), QString::SkipEmptyParts);
+    QImage image = theme->findBestIcon(names, size, requestedSize, &alreadySearchedThemes);
+
+    if (image.isNull()) {
+        IconTheme::IconThemePointer theme = IconTheme::get(QStringLiteral("hicolor"));
+        return theme->findBestIcon(names, size, requestedSize, nullptr);
+    }
+
+    return image;
 }

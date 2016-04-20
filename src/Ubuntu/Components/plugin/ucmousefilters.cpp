@@ -47,8 +47,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 {
     QQuickItem *item = qobject_cast<QQuickItem*>(owner);
     if (!item) {
-        qmlInfo(owner) << UbuntuI18n::instance().
-                          tr(QString("Warning: %1 filter can only be attached to Items.").arg(qmlName));
+        qmlInfo(owner) << QStringLiteral("Warning: %1 filter can only be attached to Items.").arg(qmlName);
     }
 
     T *filter = new T(owner);
@@ -609,7 +608,8 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
             m_pressAndHoldTimer.stop();
         }
 
-        setHovered(true, 0);
+        setHovered(m_owner->contains(m_lastPos), Q_NULLPTR);
+
         m_moved = true;
         m_doubleClicked = false;
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
@@ -1122,7 +1122,7 @@ void UCInverseMouse::setEnabled(bool enabled)
 void UCInverseMouse::setPriority(Priority priority)
 {
     if (priority != m_priority) {
-        qmlInfo(m_owner) << UbuntuI18n::instance().tr("Ignoring AfterItem priority for InverseMouse filters.");
+        qmlInfo(m_owner) << QStringLiteral("Ignoring AfterItem priority for InverseMouse filters.");
     }
 }
 

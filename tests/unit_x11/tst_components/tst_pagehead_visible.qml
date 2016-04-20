@@ -187,6 +187,9 @@ Item {
         }
 
         function test_set_visible_to_hide_and_show() {
+            // FIXME: Don't skip the test on i386/ amd64, bug #1541385
+            if(TestExtras.cpuArchitecture() != "arm")
+                skip("This test is flaky on non-arm right now.");
             page.head.visible = false;
             wait_for_visible(false, "Cannot hide unlocked header by setting visible to false.");
             page.head.visible = true;
@@ -200,6 +203,9 @@ Item {
         }
 
         function test_scroll_when_unlocked_updates_visible() {
+            // FIXME: Don't skip the test on i386/ amd64, bug #1541385
+            if(TestExtras.cpuArchitecture() != "arm")
+                skip("This test is flaky on non-arm right now.");
             scroll_down();
             wait_for_visible(false, "Scrolling down does not hide header.");
             scroll_up();
@@ -207,6 +213,9 @@ Item {
         }
 
         function test_scroll_when_locked_does_not_update_visible() {
+            // FIXME: Don't skip the test on i386/ amd64, bug #1541385
+            if(TestExtras.cpuArchitecture() != "arm")
+                skip("This test is flaky on non-arm right now.");
             // Note that with a locked header, scrolling up and down does not
             //  cause the header to move, so the wait_for_visible() calls below
             //  will return almost instantly.

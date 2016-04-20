@@ -48,7 +48,7 @@ bool DBusServiceProperties::init()
 
     if (service.isEmpty() || path.isEmpty()) {
         setStatus(UCServiceProperties::ConnectionError);
-        setError(UbuntuI18n::instance().tr("No service/path specified"));
+        setError("No service/path specified");
         return false;
     }
 
@@ -66,7 +66,7 @@ bool DBusServiceProperties::init()
         default:
         {
             setStatus(UCServiceProperties::ConnectionError);
-            setError(UbuntuI18n::instance().tr("Invalid bus type: %1.").arg(type));
+            setError(QStringLiteral("Invalid bus type: %1.").arg(type));
             return false;
         }
     }

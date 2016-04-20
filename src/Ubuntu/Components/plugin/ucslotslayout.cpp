@@ -52,7 +52,7 @@ void UCSlotsLayoutPrivate::init()
     QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_relayout()));
     QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_relayout()));
 
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
     //FIXME (if possible): this will cause relayout to be called 4-5 times when the layout has "anchors.fill: parent"
     //defined on QML side
@@ -76,16 +76,16 @@ void UCSlotsLayoutPrivate::updateTopBottomPaddingIfNeeded()
 {
     if (!padding.topWasSetFromQml) {
         padding.setTop((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                        && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                       ? UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN1_GU)
-                       : UCUnits::instance().gu(SLOTSLAYOUT_TOPMARGIN2_GU));
+                        && maxSlotsHeight > UCUnits::instance()->gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                       ? UCUnits::instance()->gu(SLOTSLAYOUT_TOPMARGIN1_GU)
+                       : UCUnits::instance()->gu(SLOTSLAYOUT_TOPMARGIN2_GU));
     }
 
     if (!padding.bottomWasSetFromQml) {
         padding.setBottom((getVerticalPositioningMode() == UCSlotPositioningMode::CenterVertically
-                           && maxSlotsHeight > UCUnits::instance().gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
-                          ? UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
-                          : UCUnits::instance().gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
+                           && maxSlotsHeight > UCUnits::instance()->gu(SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU))
+                          ? UCUnits::instance()->gu(SLOTSLAYOUT_BOTTOMMARGIN1_GU)
+                          : UCUnits::instance()->gu(SLOTSLAYOUT_BOTTOMMARGIN2_GU));
     }
 
     return;
@@ -197,11 +197,11 @@ void UCSlotsLayoutPrivate::_q_updateCachedHeight()
 void UCSlotsLayoutPrivate::_q_updateGuValues()
 {
     if (!padding.leadingWasSetFromQml) {
-        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_LEFTMARGIN_GU));
+        padding.setLeading(UCUnits::instance()->gu(SLOTSLAYOUT_LEFTMARGIN_GU));
     }
 
     if (!padding.trailingWasSetFromQml) {
-        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
+        padding.setTrailing(UCUnits::instance()->gu(SLOTSLAYOUT_RIGHTMARGIN_GU));
     }
 
     updateTopBottomPaddingIfNeeded();
@@ -299,7 +299,7 @@ void UCSlotsLayoutPrivate::_q_updateSize()
         return;
 
     Q_Q(UCSlotsLayout);
-    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance().gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
+    q->setImplicitWidth(parentItem ? parentItem->width() : UCUnits::instance()->gu(IMPLICIT_SLOTSLAYOUT_WIDTH_GU));
     q->setImplicitHeight(qMax<qreal>(maxSlotsHeight, mainSlotHeight)
                          + padding.top() + padding.bottom());
 
@@ -617,12 +617,12 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
     There are three conceptual types of slots:
     \list
-    \li * The \b {leading slots}, which are the ones positioned at the
+    \li The \b {leading slots}, which are the ones positioned at the
             beginning of the layout (i.e. they are the leftmost elements
             in left-to-right locales).
-    \li * The \b {trailing slots}, which are positioned after \l mainSlot,
+    \li The \b {trailing slots}, which are positioned after \l mainSlot,
             if any, or after the leading slots otherwise.
-    \li * The \b {main slot}, which drives the positioning of
+    \li The \b {main slot}, which drives the positioning of
             the vertical dimension of each slot as described in section
             \l {Automatic vertical positioning of slots}. This slot sits
             between leading and trailing slots, and can be set using the
@@ -738,12 +738,12 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     platform, SlotsLayout automatically handles the vertical positioning of its
     slots so that they comply with the following rules:
     \list
-        \li * if there's any slot which is taller or as tall as \l {mainSlot} or if
+        \li if there's any slot which is taller or as tall as \l {mainSlot} or if
             no \l {mainSlot} is defined, all slots will be \b {vertically centered} within the
             layout (still taking \l {SlotsLayout::padding.top} and \l {SlotsLayout::padding.bottom}
             into account).
             \image SlotsLayout_centerVertically.png
-        \li * \b{Otherwise}, all the slots (including \l {mainSlot}) will be \b {aligned to
+        \li \b{Otherwise}, all the slots (including \l {mainSlot}) will be \b {aligned to
             the top} of the layout with a padding of \l {SlotsLayout::padding.top} plus
             the top padding of the slot, defined in its attached properties.
             \image SlotsLayout_alignToTop.png
@@ -1035,10 +1035,10 @@ void UCSlotsLayout::setMainSlot(QQuickItem *item, bool fireSignal)
     The value of padding.top and padding.bottom depends on the size
     of the slots which are in the layout:
     \list
-    \li * if, according to the rules defined in \l {Automatic vertical positioning of slots},
+    \li if, according to the rules defined in \l {Automatic vertical positioning of slots},
         the slots are supposed to align to the top of the layout, padding.top
         and padding.bottom will have a value of \b{2} Grid Units.
-    \li * otherwise, if according to the rules defined in \l {Automatic vertical positioning of slots}
+    \li otherwise, if according to the rules defined in \l {Automatic vertical positioning of slots}
         the slots are supposed to be vertically centered in the layout, \b {and}
         the tallest slot (\l {mainSlot} excluded) has a height of at least 4 Grid Units,
         padding.top and padding.bottom will be set to \b{1} Grid Unit.
@@ -1065,16 +1065,16 @@ UCSlotsAttachedPrivate::UCSlotsAttachedPrivate()
 void UCSlotsAttachedPrivate::_q_onGuValueChanged()
 {
     if (!padding.leadingWasSetFromQml)
-        padding.setLeading(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+        padding.setLeading(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!padding.trailingWasSetFromQml)
-        padding.setTrailing(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
+        padding.setTrailing(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU));
 
     if (!padding.topWasSetFromQml)
-        padding.setTop(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+        padding.setTop(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 
     if (!padding.bottomWasSetFromQml)
-        padding.setBottom(UCUnits::instance().gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
+        padding.setBottom(UCUnits::instance()->gu(SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU));
 }
 
 /******************************************************************************
@@ -1085,7 +1085,7 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
 {
     Q_D(UCSlotsAttached);
     d->_q_onGuValueChanged();
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
+    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_onGuValueChanged()));
 }
 
 /*!
@@ -1096,18 +1096,18 @@ UCSlotsAttached::UCSlotsAttached(QObject *object)
 
     Valid values for \l position are:
     \list
-    \li * SlotsLayout.First: the slot will be positioned at the
+    \li SlotsLayout.First: the slot will be positioned at the
         beginning of the layout
-    \li * SlotsLayout.Leading: the slot will be positioned in
+    \li SlotsLayout.Leading: the slot will be positioned in
         the leading slots
-    \li * SlotsLayout.Trailing: the slot will be positioned in
+    \li SlotsLayout.Trailing: the slot will be positioned in
         the trailing slots, i.e. the one towards the end of the
         layout.
-    \li * SlotsLayout.End: the slot will be positioned at
+    \li SlotsLayout.Last: the slot will be positioned at
         the end of the layout.
     \endlist
 
-    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.End,
+    \l {ProgressionSlot}, for instance, has its position set to SlotsLayout.Last,
     in order to make sure the chevron is always displayed as the last trailing slot.
 
     Whenever there are more slots with the same \l {SlotsLayout::position},

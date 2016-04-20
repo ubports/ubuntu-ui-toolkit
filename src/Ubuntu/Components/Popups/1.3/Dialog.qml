@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -99,7 +99,7 @@ PopupBase {
       the caller, if possible.
      */
     property Item caller
-    onCallerChanged: console.debug("caller DEPRECATED")
+    onCallerChanged: console.warn("'caller' is DEPRECATED. It has no effect.")
 
     /*!
       The property holds the margins from the dialog's dismissArea. The property
@@ -136,6 +136,68 @@ PopupBase {
       Specifies the height of the dialog content.
       */
     property alias contentHeight: foreground.height
+
+    /*!
+      \qmlproperty ThemeSettings theme
+      \since Ubuntu.Components 1.3
+      Configure the theme of the Dialog foreground and all its subcomponents.
+      Example:
+      \qml
+        import QtQuick 2.4
+        import Ubuntu.Components 1.3
+        import Ubuntu.Components.Popups 1.3
+        MainView {
+            width: units.gu(40)
+            height: units.gu(71)
+
+            // make sure the main theme is Ambiance
+            theme.name: "Ubuntu.Components.Themes.Ambiance"
+
+            Component {
+                id: dialogComponent
+                Dialog {
+                    id: dialog
+                    title: "Input dialog"
+                    // the dialog and its children will use SuruDark
+                    theme: ThemeSettings {
+                        name: "Ubuntu.Components.Themes.SuruDark"
+                    }
+                    TextField {
+                        placeholderText: "enter text"
+                    }
+                    Button {
+                        text: "Close"
+                        onClicked: PopupUtils.close(dialog)
+                    }
+                }
+            }
+
+            Button {
+                text: "Open dialog"
+                onClicked: PopupUtils.open(dialogComponent)
+            }
+        }
+      \endqml
+      \sa StyledItem::theme
+     */
+    property alias theme: foreground.theme
+
+    /*!
+      \qmlproperty string styleName
+      The style name of the foreground of the Dialog.
+      \since Ubuntu.Components 1.3
+      \sa StyledItem::styleName
+     */
+    property alias styleName: foreground.styleName
+
+    /*!
+      \qmlproperty Component style
+      The style of the foreground of the Dialog.
+      This property takes precedence over \l styleName
+      \since Ubuntu.Components 1.3
+      \sa StyledItem::style
+     */
+    property alias style: foreground.style
 
     __foreground: foreground
     __eventGrabber.enabled: modal
@@ -180,6 +242,13 @@ PopupBase {
                 height: childrenRect.height + foreground.margins
                 onWidthChanged: updateChildrenWidths();
 
+                // put the context into this component to save ActionContext lookup
+                PopupContext {
+                    id: localContext
+                    objectName: dialog.objectName + "DialogContext"
+                    active: foreground.visible
+                }
+
                 Label {
                     horizontalAlignment: Text.AlignHCenter
                     text: dialog.title
@@ -187,14 +256,14 @@ PopupBase {
                     maximumLineCount: 2
                     elide: Text.ElideRight
                     textSize: Label.Large
-                    color: UbuntuColors.darkGrey
+                    color: theme.palette.normal.overlayText
                     visible: (text !== "")
                 }
 
                 Label {
                     horizontalAlignment: Text.AlignHCenter
                     text: dialog.text
-                    color: UbuntuColors.darkGrey
+                    color: theme.palette.normal.overlayText
                     wrapMode: Text.Wrap
                     visible: (text !== "")
                 }

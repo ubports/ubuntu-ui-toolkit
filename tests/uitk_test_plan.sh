@@ -19,6 +19,9 @@ LAZY=true
 SERIALNUMBER=086e443edf51b915
 RESET=false
 COMISSION=false
+COMISSION_SILO=false
+COMISSION_FLASH=false
+COMISSION_BOOTSTRAP=false
 DONOTRUNTESTS=false
 PPA="ubuntu-sdk-team/staging"
 TIMESTAMP=`date +"%Y_%m_%d-%H_%M_%S"`
@@ -35,30 +38,30 @@ PASSWORD="0000"
 BOOTTIME=250
 ONLYCOMPARE=false
 DISTUPGRADE=false
-BOOTSTRAP=false
 UNLOCK_ONLY=false
 NORMAL_USE=false
 WIPE="--wipe"
+VERBOSE=true
 
 declare -a TEST_SUITE=(
+    " -p mediaplayer-app-autopilot mediaplayer_app"
+    " -p dialer-app-autopilot dialer_app"
+    " -p reminders-app-autopilot reminders"
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
     " -p webbrowser-app-autopilot webbrowser_app"
     " -p address-book-app-autopilot address_book_app" 
     " sudoku_app"
     " ubuntu_calculator_app"
-    " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
     " music_app"
     " gallery_app"
-    " -p dialer-app-autopilot dialer_app"
-    " -p reminders-app-autopilot reminders"
     " -p messaging-app-autopilot messaging_app"
     " camera_app"
 #   " filemanager"
 #   " ubuntu_terminal_app"
-#   " -n unity8"
+    " -n unity8"
 #   " ubuntu_clock_app"
 #   " shorts_app"
 #   " online_accounts_ui"
@@ -87,14 +90,21 @@ AP_PACKAGES="address-book-service-dummy \
              unity-webapps-qml-autopilot \
              ubuntu-system-settings-autopilot\
              ubuntu-html5-ui-toolkit-autopilot \
-             ubuntu-system-settings-online-accounts-autopilot"
-#             messaging-app-autopilot \
+             ubuntu-system-settings-online-accounts-autopilot \
+             messaging-app-autopilot \
+             unity8"
 
 declare -a UNREGISTERED_APPS=(
 	"com.ubuntu.terminal"
 	"com.ubuntu.calculator"
 	"com.ubuntu.shorts"
 )
+
+function echo(){
+        if [[ $VERBOSE == true ]]; then
+                builtin echo $@;
+        fi
+}
 
 wait_for_shell()
 {
@@ -167,7 +177,7 @@ function network {
 function reset {
      if [ ${RESET} == true  -o  x"$1" == x-f ]; then
 	if [ ${UNLOCK_ONLY} == false ]; then
-            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
+             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
              sleep_indicator 120
              wait_for_shell 
              sleep_indicator 10
@@ -177,7 +187,7 @@ function reset {
 	        phablet-config -s ${SERIALNUMBER} autopilot --dbus-probe enable 2>&1 > /dev/null
 	        adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
 	        adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
-	        sleep_indicator 10
+	        #sleep_indicator 10
 	        adb -s ${SERIALNUMBER} shell amixer -D pulse set Master 1+ mute 2>&1 > /dev/null
 	        adb -s ${SERIALNUMBER} shell "gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
 	        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dbus-send   --system --print-reply \
@@ -191,10 +201,10 @@ function reset {
 }
 
 function device_comission {
-    if [ ${BOOTSTRAP} == true ]; then
+    if [ ${COMISSION_BOOTSTRAP} == true ]; then
         # bootstrap the device with the latest image
-	ubuntu-device-flash touch --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000
-    else
+	ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --bootstrap --developer-mode --password=0000
+    elif [ ${COMISSION_FLASH} == true ]; then
         adb -s ${SERIALNUMBER} wait-for-device
         # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
         adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
@@ -202,12 +212,14 @@ function device_comission {
         echo -e "Flashing \e[31m${CHANNEL}\e[0m"
         ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} ${WIPE} --developer-mode --password=${PASSWORD}
     fi
-    sleep_indicator ${BOOTTIME}
-    reset -f
-    echo -e "Disable the intro wizard"
-    phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
-    echo -e "Disable the edge swiping lecture "
-    phablet-config -s ${SERIALNUMBER} edges-intro --disable
+    if [[ ${COMISSION_BOOTSTRAP} == true || ${COMISSION_FLASH} == true ]]; then
+	    sleep_indicator ${BOOTTIME}
+	    reset -f
+	    echo -e "Disable the intro wizard"
+	    phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
+	    echo -e "Disable the edge swiping lecture "
+	    phablet-config -s ${SERIALNUMBER} edges-intro --disable
+    fi
     echo -e "Clone the network "
     network
     sleep_indicator 10
@@ -248,6 +260,9 @@ function device_comission {
 	    sleep_indicator 120
             network
             # TODO: hide the sudo output
+            adb -s ${SERIALNUMBER} shell "test -e /usr/sbin/policy-rc.d && cp /usr/sbin/policy-rc.d /tmp/policy-rc.d"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"exit 101\" > /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'chmod +x /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'  2>&1|grep -v password > /dev/null "
             # pin up the silo
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo -e \"Package: *\nPin: release o=LP-PPA-ci-train-ppa-service-landing-${PPA}\nPin-Priority: 1100\" > /etc/apt/preferences.d/silo.pref' 2>&1|grep -v password > /dev/null "
@@ -261,6 +276,9 @@ function device_comission {
 	    echo "Sleep after turning the device writable";
 	    sleep_indicator 120
             network
+            adb -s ${SERIALNUMBER} shell "test -e /usr/sbin/policy-rc.d && cp /usr/sbin/policy-rc.d /tmp/policy-rc.d"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"exit 101\" > /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'chmod +x /usr/sbin/policy-rc.d'  2>&1|grep -v password > /dev/null"
             adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/ppa.list' 2>&1|grep -v password > /dev/null"
            #pin up the PPA
            PIN_UP_PPA=${PPA/\//-}
@@ -293,6 +311,7 @@ function device_comission {
 
 function compare_results {
     sed -i 's/\r//g' *tests
+    rm ${MAINFILE} 2> /dev/null
     for RESULT_FILE in *${PPA}.tests;
     do
         echo "$RESULT_FILE" >> ${MAINFILE};
@@ -314,25 +333,27 @@ function compare_results {
                 echo -e "\tPossible regression"  >> ${MAINFILE}
             fi
         done
-
-
-        do
-	    FAILED=${FAILED/ERROR:/FAIL:}
-	    FAILED_TEST=${FAILED/ERROR:/}
-            FAILED_TEST=${FAILED_TEST/FAIL:/}
-
-            echo -e "\tFailed with ${PPA} - $FAILED"  >> ${MAINFILE}
-            if grep --quiet "$FAILED_TEST" *archive.tests; then
-                echo -e "\tSame on archive"  >> ${MAINFILE}
-            else
-                echo -e "\tPossible regression"  >> ${MAINFILE}
-            fi
-        done
     done
 }
 
-while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
+while getopts ":hrintduc:slqwbvi:o:p:e:f:a:" opt; do
     case $opt in
+        c)
+		COMISSION=true
+		case $OPTARG in
+			"flash")
+				COMISSION_FLASH=true
+				;;
+			"bootstrap")
+				COMISSION_BOOTSTRAP=true
+				;;
+			"silo")
+				COMISSION_SILO=true
+				;;
+			*)
+				echo "Invalid parameter for for -c [silo|flash|bootstrap]"
+        	esac
+        	;;
         r)
             RESET=true
             ;;
@@ -340,6 +361,9 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             SERIALNUMBER=$OPTARG
             LAZY=false
             ;;
+        e)
+	    PASSWORD=$OPTARG
+	    ;;
         o)
             if [ -d "$OPTARG" ]; then
                 OUTPUTDIR=$OPTARG
@@ -356,11 +380,8 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
         f)
             FILTER=$OPTARG
             ;;
-        v)
+        i)
             REVISION=$OPTARG
-            ;;
-        c)
-            COMISSION=true
             ;;
         d)
             ONLYCOMPARE=true
@@ -372,37 +393,38 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             RTM=false
             CHANNEL="ubuntu-touch/devel-proposed/ubuntu"
             DISTRO="ubuntu"
-            SERIES="wily"
+            SERIES="xenial"
             ;;
         w)
             DISTUPGRADE=true
             ;;
-        b)
-	   BOOTSTRAP=true
-	   ;;
         l)
            UNLOCK_ONLY=true
+	   VERBOSE=false
            ;;
 	q)
 	   NORMAL_USE=true
 	   DONOTRUNTESTS=true
            COMISSION=true
-	   WIPE=""
+           WIPE=""
+	   ;;
+        v)
+	   VERBOSE=true
 	   ;;
         h)
-            echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
+            echo "Usage: uitk_test_plan.sh -s [serial number] -m -c [mode]"
+            echo -e "\t-v : Enable verbose output. Default: ${VERBOSE}"
             echo -e "\t-r : Reset after each tests. Default: ${RESET}"
             echo -e "\t-s : Use the device with the given serial number. Default: ${SERIALNUMBER}"
-            echo -e "\t-c : Comission the device with the ${PPA} enabled"
+            echo -e "\t-c : Comission the device with the ${PPA} enabled in [silo|flash|bootstrap]"
             echo -e "\t-d : Only compare the -p ${PPA} results with the archive test results. Default: ${ONLYCOMPARE}"
             echo -e "\t-n : Do not run the test set. Default ${DONOTRUNTESTS}"
             echo -e "\t-o : Output directory. Default $OUTPUTDIR"
             echo -e "\t-p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
             echo -e "\t-f : Filter for the test suite. Default $FILTER"
             echo -e "\t-a : Start the test suite from the given test."
-            echo -e "\t-u : Provision the Development release of Ubuntu, Wily. Default is vivid-overlay (formerly RTM)."
+            echo -e "\t-u : Provision the Development release of Ubuntu, Xenial. Default is vivid-overlay (formerly RTM)."
             echo -e "\t-w : dist-upgrade to the whole PPA instead of just Ubuntu UI Toolkit. Default is only UITK."
-            echo -e "\t-b : Bootstrap the device with the ${PPA} enabled."
             echo -e "\t-q : Provision the device for normal use with the ${PPA} enabled"
             echo ""
             echo "By default tihe uitk_test_plan.sh flashes the latest vivid-overlay image on the device, installs the click application"
@@ -420,13 +442,13 @@ while getopts ":hrcintduslqwbv:o:p:f:a:" opt; do
             echo "Validate the UITK from teh archive on an vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive"
             echo ""
-            echo "Validate the UITK from a specific CI silo on an Ubuntu Wily image"
+            echo "Validate the UITK from a specific CI silo on an Ubuntu Xenial image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p 001 -u"
             echo ""
             echo "Provision the device for manual testing with the latest vivid-overlay image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive -n"
             echo ""
-            echo "Provision the device for manual testing with the latest Ubuntu Wily image"
+            echo "Provision the device for manual testing with the latest Ubuntu Xenial image"
             echo -e "\t$ ./uitk_test_plan.sh -c -p archive -u -n"
             echo ""
             echo "Run the test plan on an already provisioned device"
@@ -452,11 +474,17 @@ if [ ${ONLYCOMPARE} == true ]; then
    echo "Comparing results with the archive tests" > $MAINFILE
    PPA=${PPA/\//_}
    compare_results
-   egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"|sed 's/2//g'
+   rm ${MAINFILE}-regressing_cases 2> /dev/null
+   egrep "regression" -B1 ${MAINFILE} |grep Failed|sort|uniq -c|grep " 2"|sed 's/2//g' >${MAINFILE}-regressing_cases
+   rm ${MAINFILE}-regression_backtraces 2> /dev/null
+   for i in $(cat ${MAINFILE}|egrep "regression" -B1   |grep Failed|sort|uniq -c|grep " 2"|awk '{print $7}');    
+   do       
+      sed -n "/$i/,/=====/p" *.tests|sed -e '/Traceback/,/=====/p'|uniq -c|egrep "FAIL\:|ERROR\:|    2"|perl -p -e "s/^\s+\d //g;s/^ERROR:/\nERROR:/;s/^FAIL:/\nFAIL:/" >> ${MAINFILE}-regression_backtraces
+   done
    exit
 fi
 
-if [ ${BOOTSTRAP} == false ]; then
+if [ ${COMISSION_BOOTSTRAP} == false ]; then
     # Use the first available device for testing
     if [ ${LAZY} == true ]; then
         echo "Waiting for a device"
@@ -468,7 +496,7 @@ if [ ${BOOTSTRAP} == false ]; then
     fi
 fi
 
-echo "*** Settings ***"
+echo "=== Settings ==="
 echo ""
 echo "Serial number: ${SERIALNUMBER}"
 echo "Output directory: ${OUTPUTDIR}"
@@ -479,19 +507,20 @@ echo ""
 echo "Unlock only: ${UNLOCK_ONLY}"
 echo "Reset: ${RESET}"
 echo "Commission: ${COMISSION}"
-echo "Bootstrap: ${BOOTSTRAP}"
 echo "Only compare: ${ONLYCOMPARE}"
 echo "Do not run tests: ${DONOTRUNTESTS}"
 echo "Provision for normal use: ${NORMAL_USE}"
 echo "RTM: ${RTM}"
 echo "Dist-upgrade: ${DISTUPGRADE}"
 echo "Main logs: ${MAINFILE}"
-echo "*** Starting ***"
+echo "=== Starting ==="
 echo ""
 
 if [ ${UNLOCK_ONLY} == true ]; then
-   reset -f
-   exit
+	adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
+	adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
+	adb -s ${SERIALNUMBER} shell "gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
+	exit
 fi
 # Check if the device need to be flashed and set up for testing
 if [ ${COMISSION} == true ]; then
@@ -548,7 +577,7 @@ if [ ${DONOTRUNTESTS} != true ]; then
     done
 fi
 
-if [[ ${NORMAL_USE} != true  && ${PPA} != "archive" ]]; then
+if [[ ${NORMAL_USE} != true  && ${PPA} != "archive" && ${DONOTRUNTESTS} != true ]]; then
    echo "Comparing results with the archive tests"  > $MAINFILE
    compare_results
 fi

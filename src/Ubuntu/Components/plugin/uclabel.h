@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,21 +19,33 @@
 
 #include <QtQuick/private/qquicktext_p.h>
 #include "ucthemingextension.h"
+// C++ std lib for std::function declaration
+#include <functional>
 
+class UCLabelPrivate;
 class UCLabel : public QQuickText, public UCThemingExtension
 {
     Q_OBJECT
     Q_INTERFACES(UCThemingExtension)
     Q_ENUMS(TextSize)
-    Q_PROPERTY(TextSize textSize MEMBER m_textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
+    Q_PROPERTY(TextSize textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
+
+    // Overriden from QQuickText
+    Q_PROPERTY(RenderType renderType READ renderType WRITE setRenderType)
+    Q_PROPERTY(QFont font READ font WRITE setFont2 NOTIFY fontChanged2)
+    Q_PROPERTY(QColor color READ color WRITE setColor2 NOTIFY colorChanged2)
 
     // Deprecated.
     Q_PROPERTY(QString fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 
 public:
+
+    typedef std::function<QColor (QQuickItem*, UCTheme*)> ColorProviderFunc;
+
     UCLabel(QQuickItem* parent=0);
-    //QQuickTextPrivate is not exported as of 5.4.1 so we need the init here
-    void init();
+    // custom constructor to create the label with a different default color provider
+    UCLabel(ColorProviderFunc defaultColor, QQuickItem *parent = 0);
+    ~UCLabel();
 
     enum TextSize {
         XxSmall = 0,
@@ -44,18 +56,16 @@ public:
         XLarge = 5
     };
 
+    TextSize textSize() const;
     void setTextSize(TextSize size);
 
+    // overriden from QQuickText
+    void setFont2(const QFont &font);
+    void setColor2(const QColor &color);
+    void setRenderType(RenderType renderType);
+
     // Deprecated.
-    QString fontSize() const
-    {
-        if (m_flags & TextSizeSet) {
-            return "";
-        }
-        const char* const sizes[] =
-            { "xx-small", "x-small", "small", "medium", "large", "x-large" };
-        return QString(sizes[m_textSize]);
-    }
+    QString fontSize() const;
     void setFontSize(const QString& fontSize);
 
 protected:
@@ -69,25 +79,18 @@ protected:
 Q_SIGNALS:
     void textSizeChanged();
 
+    // overrides
+    void fontChanged2();
+    void colorChanged2();
+
     // Deprecated.
     void fontSizeChanged();
 
 private:
-    void updatePixelSize();
-    Q_SLOT void _q_updateFontFlag(const QFont &font);
-    Q_SLOT void _q_customColor();
-
-    enum {
-        TextSizeSet = 1,
-        PixelSizeSet = 2,
-        ColorSet = 4
-    };
-
-    QFont m_defaultFont;
-    TextSize m_textSize;
-    quint8 m_flags;
-
+    QScopedPointer<UCLabelPrivate> d_ptr;
+    Q_DECLARE_PRIVATE_D(d_ptr.data(), UCLabel)
     Q_DISABLE_COPY(UCLabel)
+    Q_PRIVATE_SLOT(d_func(), void updateRenderType())
 };
 
 QML_DECLARE_TYPE(UCLabel)

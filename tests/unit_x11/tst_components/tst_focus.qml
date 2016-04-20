@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -51,10 +51,25 @@ Item {
         TextField {
             id: textField
             text: "This is a text field with some text handling focus"
+            primaryItem: MouseArea {
+                id: textFieldPrimaryItem
+                height: parent.height
+                width: height
+            }
+            secondaryItem: TextField {
+                id: textFieldSecondaryItem
+                height: parent.height
+                width: height
+            }
         }
         TextArea {
             id: textArea
             text: "This is a text area with some text handling focus"
+        }
+        Item {
+            BottomEdgeHint {
+                id: bottomEdgeHint
+            }
         }
         Button {
             id: button
@@ -65,6 +80,9 @@ Item {
         }
         Switch {
             id: switchbox
+        }
+        Slider {
+            id: slider
         }
         Button {
             id: dummy2
@@ -95,9 +113,6 @@ Item {
             property date date: new Date()
             text: Qt.formatDateTime(date, "yyyy/MMMM")
             onClicked: PickerPanel.openDatePicker(pickerPanel, "date", "Years|Months")
-        }
-        Slider {
-            id: slider
         }
         Button {
             id: disabledButton
@@ -164,6 +179,12 @@ Item {
             signalName: "onDestruction"
         }
 
+        SignalSpy {
+            id: textFieldPrimaryItemClickedSpy
+            target: textFieldPrimaryItem
+            signalName: "onClicked"
+        }
+
         function initTestCase() {
             main.hasOSK = QuickUtils.inputMethodProvider !== ""
             textField.forceActiveFocus();
@@ -182,11 +203,16 @@ Item {
                 {tag: "TextField(back)", from: textField, to: dummy, key: Qt.Key_Backtab},
                 {tag: "TextArea", from: textField, to: textArea, key: Qt.Key_Tab},
                 {tag: "TextArea(back)", from: textArea, to: textField, key: Qt.Key_Backtab},
-                {tag: "Button(back)", from: button, to: textArea, key: Qt.Key_Backtab},
+                {tag: "BottomEdgeHint", from: textArea, to: bottomEdgeHint, key: Qt.Key_Tab},
+                {tag: "BottomEdgeHint(back)", from: bottomEdgeHint, to: textArea, key: Qt.Key_Backtab},
+                {tag: "Button", from: bottomEdgeHint, to: button, key: Qt.Key_Tab},
+                {tag: "Button(back)", from: button, to: bottomEdgeHint, key: Qt.Key_Backtab},
                 {tag: "CheckBox", from: checkbox, to: switchbox, key: Qt.Key_Tab},
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
-                {tag: "Switch", from: switchbox, to: dummy2, key: Qt.Key_Tab},
-                {tag: "Switch(back)", from: dummy2, to: switchbox, key: Qt.Key_Backtab},
+                {tag: "Switch", from: switchbox, to: slider, key: Qt.Key_Tab},
+                {tag: "Switch(back)", from: slider, to: switchbox, key: Qt.Key_Backtab},
+                {tag: "Slider", from: slider, to: dummy2, key: Qt.Key_Tab},
+                {tag: "Slider(back)", from: dummy2, to: slider, key: Qt.Key_Backtab},
                 /* FIXME: Figure out how to test ActionBar delegate focus
                 {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
                 {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
@@ -197,12 +223,16 @@ Item {
                 // FIXME: lp#1368390: Buttons shouldn't grab input focus on click
                 {tag: "Button(click)", from: dummy, to: button, key: Qt.LeftButton},
                 {tag: "CheckBox(click)", from: dummy, to: checkbox, key: Qt.LeftButton},
-                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton}
+                {tag: "Switch(click)", from: dummy, to: switchbox, key: Qt.LeftButton},
+                {tag: "Slider(click)", from: dummy, to: slider, key: Qt.LeftButton},
             ];
         }
         function test_tab_focus(data) {
-            data.from.forceActiveFocus();
-            verify(data.from.activeFocus, "Source component is not focused");
+            data.from.focus = true;
+            verify(data.from.enabled, "Source component is invalid");
+            verify(data.to.enabled, "Target component is invalid");
+            verify(data.from.activeFocus, "Source component is not focused - focus is on %1"
+                .arg(String(window.activeFocusItem).split("(")[0]));
             if (data.key == Qt.LeftButton) {
                 verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
                 mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
@@ -212,7 +242,8 @@ Item {
             }
             waitForRendering(data.to, 500);
             verify(!data.from.activeFocus, "Source component still keeps focus");
-            verify(data.to.activeFocus, "Target component is not focused");
+            verify(data.to.activeFocus, "Target component is not focused - focus is on %1"
+                .arg(String(window.activeFocusItem).split("(")[0]));
         }
 
         function test_hide_osk_when_pickerpanel_opens() {
@@ -242,6 +273,24 @@ Item {
 
             //restore
             textField.text = text;
+        }
+
+        function test_textfield_primary_and_secondary_items_keeps_focus() {
+            textFieldPrimaryItemClickedSpy.clear();
+            textField.forceActiveFocus();
+            verify(textField.activeFocus);
+            verify(!textFieldSecondaryItem.activeFocusOnPress);
+
+            var center = centerOf(textFieldPrimaryItem);
+            mouseClick(textFieldPrimaryItem, center.x, center.y);
+            compare(textFieldPrimaryItemClickedSpy.count, 1);
+            verify(textField.activeFocus);
+            verify(!textFieldPrimaryItem.activeFocus);
+
+            center = centerOf(textFieldSecondaryItem);
+            mouseClick(textFieldSecondaryItem, center.x, center.y);
+            verify(textField.activeFocus);
+            verify(!textFieldSecondaryItem.activeFocus);
         }
 
         function test_combo_button_dropdown_focuses_component() {

@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import "../1.2/stack.js" as Stack
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Private 1.3
 
 /*!
     \qmltype PageStack
@@ -217,11 +218,17 @@ PageTreeNode {
     Action {
         // used when the Page has a Page.header property set.
         id: backAction
-        visible: pageStack.depth > 0
+        visible: pageStack.depth > 1
         iconName: "back"
         text: "Back"
         onTriggered: pageStack.pop()
         objectName: "pagestack_back_action"
+    }
+
+    Component {
+        id: pageWrapperComponent
+        PageWrapper{
+        }
     }
 
     QtObject {
@@ -282,8 +289,7 @@ PageTreeNode {
         property var stack: new Stack.Stack()
 
         function createWrapper(page, properties) {
-            var wrapperComponent = Qt.createComponent("PageWrapper.qml");
-            var wrapperObject = wrapperComponent.createObject(pageStack);
+            var wrapperObject = pageWrapperComponent.createObject(pageStack);
             wrapperObject.pageStack = pageStack;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object

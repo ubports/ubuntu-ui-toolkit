@@ -131,18 +131,18 @@ void UCListItemStyle::updateFlickable(QQuickFlickable *flickable)
  *
  * The \c event object properties are:
  * \list
- * \li * \c status - enumeration of \c {Started, Updated, Finished} values representing
+ * \li \c status - enumeration of \c {Started, Updated, Finished} values representing
  *                  the swipe event status
- * \li * \c to - (x, y) coordinates of the current mouse/touch point - read-only
- * \li * \c from - (x, y) coordinates of the previous mouse/touch point - read-only
- * \li * \c content - (x, y) updated coordinates of the \l {ListItem::contentItem}
+ * \li \c to - (x, y) coordinates of the current mouse/touch point - read-only
+ * \li \c from - (x, y) coordinates of the previous mouse/touch point - read-only
+ * \li \c content - (x, y) updated coordinates of the \l {ListItem::contentItem}
  *                  {ListItem.contentItem}, read-write
  * \endlist
  */
 void UCListItemStyle::swipeEvent(UCSwipeEvent *event)
 {
     Q_UNUSED(event);
-    qmlInfo(this) << UbuntuI18n::instance().tr("consider overriding swipeEvent() slot!");
+    qmlInfo(this) << QStringLiteral("consider overriding swipeEvent() slot!");
 }
 void UCListItemStyle::invokeSwipeEvent(UCSwipeEvent *event)
 {
@@ -162,7 +162,7 @@ void UCListItemStyle::invokeSwipeEvent(UCSwipeEvent *event)
  */
 void UCListItemStyle::rebound()
 {
-    qmlInfo(this) << UbuntuI18n::instance().tr("consider overriding rebound() slot!");
+    qmlInfo(this) << QStringLiteral("consider overriding rebound() slot!");
 }
 void UCListItemStyle::invokeRebound()
 {

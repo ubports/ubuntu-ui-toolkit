@@ -24,6 +24,8 @@ Page {
     header: PageHeader {
         title: mainPage.title
         flickable: layout.columns === 1 ? widgetList : null
+        // avoid header staying hidden when resizing back to two columns, bug #1556860
+        onFlickableChanged: exposed = true
         trailingActionBar.actions: [
             Action {
                 text: i18n.tr('Right to Left')
@@ -117,7 +119,10 @@ Page {
             // Used by Autopilot
             property string text: label
             onClicked: widgetList.currentIndex = index
+            //follow ListItemLayout size
+            height: layout.height + (divider.visible ? divider.height : 0)
             ListItemLayout {
+                id: layout
                 title.text: label
                 ProgressionSlot {}
             }

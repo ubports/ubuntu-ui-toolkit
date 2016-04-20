@@ -1,8 +1,8 @@
 TEMPLATE = subdirs
 
-SUBDIRS += Gallery.pro po
+SUBDIRS += po
 
-filetypes = qml png svg js jpg qmlproject desktop
+filetypes = qml png svg js jpg pro desktop in apparmor
 
 OTHER_FILES = ""
 

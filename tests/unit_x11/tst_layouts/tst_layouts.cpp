@@ -29,6 +29,7 @@
 #include "ullayouts.h"
 #include "ucunits.h"
 #include "uctestcase.h"
+#include "uctheme.h"
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
 
@@ -95,10 +96,12 @@ public:
 private Q_SLOTS:
     void initTestCase()
     {
+        qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
     }
 
-    void cleanupTestCase()
+    void cleanup()
     {
+        UCTheme::previousVersion = 0;
     }
 
     void testCase_NoLayouts()
@@ -149,8 +152,8 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(55));
-        QCOMPARE(root->width(), UCUnits::instance().gu(55));
+        root->setWidth(UCUnits::instance()->gu(55));
+        QCOMPARE(root->width(), UCUnits::instance()->gu(55));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -181,8 +184,8 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(65));
-        QCOMPARE(root->width(), UCUnits::instance().gu(65));
+        root->setWidth(UCUnits::instance()->gu(65));
+        QCOMPARE(root->width(), UCUnits::instance()->gu(65));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -245,7 +248,7 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(55));
+        root->setWidth(UCUnits::instance()->gu(55));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -264,7 +267,7 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(65));
+        root->setWidth(UCUnits::instance()->gu(65));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
@@ -289,7 +292,8 @@ private Q_SLOTS:
 
     void testCase_NestedLayouts_ExtraLarge()
     {
-        QTest::ignoreMessage(QtWarningMsg, "\"There are still \"1\" items in the process of being created at engine destruction.\"");
+        QRegularExpression expression(".+ items in the process of being created at engine destruction.+");
+        QTest::ignoreMessage(QtWarningMsg, expression);
         QScopedPointer<QQuickView> view(loadTest("NestedLayouts.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -300,13 +304,13 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(90));
+        root->setWidth(UCUnits::instance()->gu(90));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("extra-large"));
 
-        root->setWidth(UCUnits::instance().gu(50));
+        root->setWidth(UCUnits::instance()->gu(50));
         layoutChangeSpy.wait(100);
         QCOMPARE(layoutChangeSpy.count(), 2);
 
@@ -333,27 +337,27 @@ private Q_SLOTS:
         QVERIFY(!layouts->layoutList().isEmpty());
         QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
-        root->setWidth(UCUnits::instance().gu(50));
+        root->setWidth(UCUnits::instance()->gu(50));
         layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("small"));
-        QCOMPARE(item->width(), UCUnits::instance().gu(10));
-        QCOMPARE(item->height(), UCUnits::instance().gu(10));
+        QCOMPARE(item->width(), UCUnits::instance()->gu(10));
+        QCOMPARE(item->height(), UCUnits::instance()->gu(10));
 
-        root->setWidth(UCUnits::instance().gu(60));
+        root->setWidth(UCUnits::instance()->gu(60));
         layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("large"));
-        QCOMPARE(item->width(), UCUnits::instance().gu(22));
-        QCOMPARE(item->height(), UCUnits::instance().gu(22));
+        QCOMPARE(item->width(), UCUnits::instance()->gu(22));
+        QCOMPARE(item->height(), UCUnits::instance()->gu(22));
 
-        root->setWidth(UCUnits::instance().gu(80));
+        root->setWidth(UCUnits::instance()->gu(80));
         layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("xlarge"));
-        QCOMPARE(item->width(), UCUnits::instance().gu(30));
-        QCOMPARE(item->height(), UCUnits::instance().gu(30));
-        QCOMPARE(item2->width(), UCUnits::instance().gu(40));
-        QCOMPARE(item2->height(), UCUnits::instance().gu(50));
+        QCOMPARE(item->width(), UCUnits::instance()->gu(30));
+        QCOMPARE(item->height(), UCUnits::instance()->gu(30));
+        QCOMPARE(item2->width(), UCUnits::instance()->gu(40));
+        QCOMPARE(item2->height(), UCUnits::instance()->gu(50));
 
-        root->setWidth(UCUnits::instance().gu(40));
+        root->setWidth(UCUnits::instance()->gu(40));
         layoutChangeSpy.wait(100);
         QCOMPARE(item->width(), width);
         QCOMPARE(item->height(), height);

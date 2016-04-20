@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,17 +25,14 @@
 class QQmlComponent;
 class QQmlContext;
 class UCTheme;
+class QQmlEngine;
 class UCDeprecatedTheme : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)
     Q_PROPERTY(QObject* palette READ palette NOTIFY paletteChanged)
 public:
-    static UCDeprecatedTheme& instance() {
-        static UCDeprecatedTheme instance;
-        return instance;
-    }
-    explicit UCDeprecatedTheme(QObject *parent = 0);
+    explicit UCDeprecatedTheme(UCTheme *theme);
 
     // getter/setters
     QString name();
@@ -44,7 +41,7 @@ public:
     QObject* palette();
 
     Q_INVOKABLE QQmlComponent* createStyleComponent(const QString& styleName, QObject* parent);
-    void registerToContext(QQmlContext* context);
+    static void registerToContext(QQmlContext* context);
 
 Q_SIGNALS:
     void nameChanged();
@@ -52,6 +49,7 @@ Q_SIGNALS:
 
 private:
     void showDeprecatedNote(QObject *onItem, const char *note);
+    UCTheme *defaultTheme();
     QHash<QString, bool> m_notes;
 };
 

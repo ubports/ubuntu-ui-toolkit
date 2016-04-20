@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Ubuntu.Components.Styles 1.3 as Style
@@ -21,7 +22,7 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-    contentHeight: units.gu(6)
+    contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
     fontWeight: Font.Light
     textSize: Label.Large
     textLeftMargin: units.gu(2)
@@ -44,6 +45,15 @@ Style.PageHeadStyle {
      */
     property color titleColor: headerStyle.config.foregroundColor
 
+    /*!
+      The background color of the header.
+     */
+    property color backgroundColor: styledItem.backgroundColor
+    Rectangle {
+        anchors.fill: parent
+        color: headerStyle.backgroundColor
+    }
+
     // FIXME: When the three panel color properties below are removed,
     //  update unity8/Dash/PageHeader to use the new theming (currently
     //  in progress) to set these colors.
@@ -57,28 +67,34 @@ Style.PageHeadStyle {
        \deprecated
        The background color of the tapped item in the panel.
       */
-    property color panelHighlightColor: theme.palette.selected.background
+    property color panelHighlightColor: theme.palette.highlighted.background
 
     /*!
        \deprecated
        The foreground color (icon and text) of actions in the panel.
       */
-    property color panelForegroundColor: theme.palette.selected.backgroundText
+    property color panelForegroundColor: styledItem.enabled
+                                            ? theme.palette.normal.backgroundText
+                                            : theme.palette.disabled.backgroundText
 
     /*!
       The text color of unselected sections and the section divider.
      */
-    property color sectionColor: theme.palette.selected.backgroundText
+    property color sectionColor: styledItem.enabled
+                                    ? theme.palette.normal.backgroundText
+                                    : theme.palette.disabled.backgroundText
 
     /*!
       The text color of the selected section.
      */
-    property color selectedSectionColor: UbuntuColors.orange
+    property color selectedSectionColor: styledItem.enabled
+                                            ? theme.palette.selected.backgroundText
+                                            : theme.palette.selectedDisabled.backgroundText
 
     /*!
       The background color of the pressed section.
      */
-    property color sectionHighlightColor: theme.palette.selected.background
+    property color sectionHighlightColor: theme.palette.highlighted.background
 
     implicitHeight: headerStyle.contentHeight + divider.height + sectionsItem.height
 

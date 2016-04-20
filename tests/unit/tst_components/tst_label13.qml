@@ -81,8 +81,8 @@ TestCase {
         ];
     }
     function test_fontSize_equals_textSize(data) {
-        textCustom.textSize = data.size;
-        fuzzyCompare(textCustom.font.pixelSize, FontUtils.sizeToPixels(data.tag), 0.999, "pixelSize differs for " + data.tag);
+        textFontSize.textSize = data.size;
+        fuzzyCompare(textFontSize.font.pixelSize, FontUtils.sizeToPixels(data.tag), 0.999, "pixelSize differs for " + data.tag);
     }
 
     function test_fontWeight_data() {
@@ -107,8 +107,62 @@ TestCase {
         compare(lightLabel2.font.weight, Font.Light, "font.weight takes precedence over font.bold")
     }
 
+
+    function verifyAutomaticRenderType(label) {
+        if (units.gridUnit <= 10) {
+            compare(label.renderType, Text.NativeRendering,
+                    "On low dpi screen renderType is Text.NativeRendering by default");
+        } else {
+            compare(label.renderType, Text.QtRendering,
+                    "On high dpi screen renderType is Text.QtRendering by default");
+        }
+    }
+
+    function verifyManualRenderType(label, renderType) {
+        compare(label.renderType, renderType,
+                "renderType was set manually, no automatic change should happen to it");
+    }
+
+    function test_renderTypeDefault_data() {
+        return [
+            {tag: "Default", gridUnit: 8.0},
+            {tag: "HighDPI", gridUnit: 16.0},
+            {tag: "LowDPI", gridUnit: 10.0},
+        ];
+    }
+
+    function test_renderTypeDefault(data) {
+        verifyAutomaticRenderType(textRenderTypeDefault);
+        units.gridUnit = data.gridUnit;
+        verifyAutomaticRenderType(textRenderTypeDefault);
+    }
+
+    function test_presetRenderType_data() {
+        return test_renderTypeDefault_data();
+    }
+
+    function test_setRenderType() {
+        units.gridUnit = 8;
+        verifyAutomaticRenderType(textSetRenderType);
+        units.gridUnit = 16;
+        verifyAutomaticRenderType(textSetRenderType);
+
+        // set renderType manually
+        textSetRenderType.renderType = Text.NativeRendering;
+        verifyManualRenderType(textSetRenderType, Text.NativeRendering);
+
+        units.gridUnit = 8;
+        verifyManualRenderType(textSetRenderType, Text.NativeRendering);
+
+        units.gridUnit = 16;
+        verifyManualRenderType(textSetRenderType, Text.NativeRendering);
+    }
+
     Label {
         id: textCustom
+    }
+    Label {
+        id: textFontSize
     }
 
     Label {
@@ -124,5 +178,18 @@ TestCase {
 
     Label {
         id: textSizeTest
+    }
+
+    Label {
+        id: textRenderTypeDefault
+    }
+
+    Label {
+        id: textRenderTypePreset
+        renderType: Text.QtRendering
+    }
+
+    Label {
+        id: textSetRenderType
     }
 }

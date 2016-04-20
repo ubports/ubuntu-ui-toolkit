@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
-
+const char *CONTEXT_THEME = "theme";
 quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
@@ -148,6 +148,17 @@ quint16 UCTheme::previousVersion = 0;
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
+static inline void updateBinding (QQmlAbstractBinding *binding)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    if (binding->isValueTypeProxy())
+        return;
+    static_cast<QQmlBinding *>(binding)->update();
+#else
+    binding->update();
+#endif
+}
+
 QStringList themeSearchPath()
 {
     QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
@@ -205,7 +216,7 @@ QString parentThemeName(const UCTheme::ThemeRecord& themePath)
 {
     QString parentTheme;
     if (!themePath.isValid()) {
-        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themePath.name));
+        qWarning() << qPrintable(QStringLiteral("Theme not found: \"%1\"").arg(themePath.name));
     } else {
         QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -248,7 +259,11 @@ void UCTheme::PaletteConfig::restorePalette()
         }
 
         // restore the config binding to the config target
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        if (config.configBinding && !config.configBinding->isValueTypeProxy()) {
+#else
         if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+#endif
             QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
             qmlBinding->removeFromObject();
             qmlBinding->setTarget(config.configProperty);
@@ -256,11 +271,21 @@ void UCTheme::PaletteConfig::restorePalette()
 
         if (config.paletteBinding) {
             // restore the binding to the palette
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(config.paletteProperty));
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+#else
             QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+#endif
             if (prev && prev != config.paletteBinding && prev != config.configBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                prev->removeFromObject();
+                prev.reset();
+#else
                 prev->destroy();
+#endif
             }
-            config.paletteBinding->update();
+            updateBinding(config.paletteBinding);
         } else {
             config.paletteProperty.write(config.paletteValue);
         }
@@ -324,7 +349,11 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
         // apply configuration
         if (config.configBinding) {
             // transfer binding's target
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            if (!config.configBinding->isValueTypeProxy()) {
+#else
             if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+#endif
                 QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
                 qmlBinding->setTarget(config.paletteProperty);
             }
@@ -345,24 +374,35 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
  */
 UCTheme::UCTheme(QObject *parent)
     : QObject(parent)
-    , m_palette(UCTheme::defaultTheme().m_palette)
-    , m_engine(UCTheme::defaultTheme().m_engine)
-    , m_defaultStyle(false)
+    , m_parentTheme(Q_NULLPTR)
+    , m_palette(Q_NULLPTR)
+    , m_completed(false)
 {
     init();
 }
 
-UCTheme::UCTheme(bool defaultStyle, QObject *parent)
-    : QObject(parent)
-    , m_palette(NULL)
-    , m_engine(NULL)
-    , m_defaultStyle(defaultStyle)
+UCTheme *UCTheme::defaultTheme(QQmlEngine *engine)
 {
-    init();
+    if (!engine || !engine->rootContext()) {
+        return Q_NULLPTR;
+    }
+    UCTheme *theme = Q_NULLPTR;
+    for (int tryCount = 0; !theme && tryCount < 2; tryCount++) {
+        theme = engine->rootContext()->contextProperty(CONTEXT_THEME).value<UCTheme*>();
+        if (!theme) {
+            createDefaultTheme(engine);
+        }
+    }
+    return theme;
+}
+
+void UCTheme::setupDefault()
+{
+    // FIXME: move this into QPA
     // set the default font
     QFont defaultFont = QGuiApplication::font();
     defaultFont.setFamily("Ubuntu");
-    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
+    defaultFont.setPixelSize(UCFontUtils::instance()->sizeToPixels("medium"));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
     setObjectName("default");
@@ -378,21 +418,24 @@ void UCTheme::init()
 
 void UCTheme::classBegin()
 {
-    m_engine = qmlEngine(this);
-    updateEnginePaths();
-    loadPalette();
+    QQmlEngine *engine = qmlEngine(this);
+    updateEnginePaths(engine);
+    m_palette = UCTheme::defaultTheme(engine)->m_palette;
+    if (!m_palette) {
+        loadPalette(engine);
+    }
 }
 
-void UCTheme::updateEnginePaths()
+void UCTheme::updateEnginePaths(QQmlEngine *engine)
 {
-    if (!m_engine) {
+    if (!engine) {
         return;
     }
 
     QStringList paths = themeSearchPath();
     Q_FOREACH(const QString &path, paths) {
-        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
-            m_engine->addImportPath(path);
+        if (QDir(path).exists() && !engine->importPathList().contains(path)) {
+            engine->addImportPath(path);
         }
     }
 }
@@ -458,7 +501,7 @@ void UCTheme::setName(const QString& name)
                             this, &UCTheme::_q_defaultThemeChanged);
         updateThemePaths();
     }
-    loadPalette();
+    loadPalette(qmlEngine(this));
     Q_EMIT nameChanged();
     updateThemedItems();
 }
@@ -523,10 +566,14 @@ void UCTheme::resetName()
  * The palette doesn't need to be reset as it automatically resets when the
  * palette used for configuration is destroyed.
  */
-QObject* UCTheme::palette()
+QObject* UCTheme::palette(quint16 version)
 {
     if (!m_palette) {
-        loadPalette(false);
+        if (version) {
+            // force version to be used
+            previousVersion = version;
+        }
+        loadPalette(qmlEngine(this), false);
     }
     return m_palette;
 }
@@ -536,7 +583,7 @@ void UCTheme::setPalette(QObject *config)
         return;
     }
     if (config && !QuickUtils::inherits(config, "Palette")) {
-        qmlInfo(config) << UbuntuI18n::instance().tr("Not a Palette component.");
+        qmlInfo(config) << QStringLiteral("Not a Palette component.");
         return;
     }
 
@@ -569,25 +616,30 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
     if (isFallback) {
         (*isFallback) = false;
     }
-    Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
-        QUrl styleUrl;
-        /*
-         * There are two cases where we have to deal with non-versioned styles: application
-         * themes made for the previous theming and deprecated themes. For shared themes,
-         * we have to check the fallback case.
-         */
-        quint16 styleVersion = version;
-        if (themePath.deprecated) {
-            styleVersion = 0;
-        }
-        if (themePath.shared && (version < BUILD_VERSION(1, 2))) {
-            styleVersion = LATEST_UITK_VERSION;
-        }
 
-        // loop through the versions to see if we have one matching
-        // we stop at version 1.2 as we do not have support for earlier themes anymore.
-        for (int minor = MINOR_VERSION(styleVersion); minor >= 2; minor--) {
-            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(styleVersion)).arg(minor).arg(styleName);
+    // loop through the versions first, so we will look after the style in all
+    // the parents, then fall back to the older version
+    quint16 major = MAJOR_VERSION(version);
+    // loop through the versions to see if we have one matching
+    // we stop at version 1.2 as we do not have support for earlier themes anymore.
+    for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
+        // check with each path of the theme
+        Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
+            QUrl styleUrl;
+            /*
+             * There are two cases where we have to deal with non-versioned styles: application
+             * themes made for the previous theming and deprecated themes. For shared themes,
+             * we have to check the fallback case.
+             */
+            quint16 styleVersion = BUILD_VERSION(major, minor);
+            if (themePath.deprecated) {
+                styleVersion = 0;
+            }
+            if (themePath.shared && (minor < 2)) {
+                styleVersion = LATEST_UITK_VERSION;
+            }
+
+            QString versionedName = QStringLiteral("%1.%2/%3").arg(major).arg(minor).arg(styleName);
             styleUrl = themePath.path.resolved(versionedName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 // set fallback warning if the theme is shared
@@ -596,13 +648,13 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
                 }
                 return styleUrl;
             }
-        }
 
-        // if we don't get any style, get the non-versioned ones for non-shared and deprecated styles
-        if (!themePath.shared || themePath.deprecated) {
-            styleUrl = themePath.path.resolved(styleName);
-            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                return styleUrl;
+            // if we don't get any style, get the non-versioned ones for non-shared and deprecated styles
+            if (!themePath.shared || themePath.deprecated) {
+                styleUrl = themePath.path.resolved(styleName);
+                if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                    return styleUrl;
+                }
             }
         }
     }
@@ -611,16 +663,20 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
 }
 
 // registers the default theme property to the root context
-void UCTheme::registerToContext(QQmlContext* context)
+void UCTheme::createDefaultTheme(QQmlEngine* engine)
 {
-    UCTheme *defaultTheme = &UCTheme::defaultTheme();
-    defaultTheme->m_engine = context->engine();
-    defaultTheme->updateEnginePaths();
+    QQmlContext *context = engine->rootContext();
 
-    context->setContextProperty("theme", defaultTheme);
+    UCTheme *theme = new UCTheme(engine);
+    QQmlEngine::setContextForObject(theme, context);
+    context->setContextProperty(CONTEXT_THEME, theme);
+
+    theme->setupDefault();
+    theme->updateEnginePaths(engine);
+
     ContextPropertyChangeListener *listener =
-        new ContextPropertyChangeListener(context, "theme");
-    QObject::connect(defaultTheme, &UCTheme::nameChanged,
+        new ContextPropertyChangeListener(context, CONTEXT_THEME);
+    QObject::connect(theme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
 
@@ -674,42 +730,41 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
-        if (engine != m_engine && !m_engine) {
-            m_engine = engine;
-            updateEnginePaths();
+        if (!engine) {
+            // we may be in the phase when the qml context is not yet defined for the parent
+            // so for now we return NULL
+            return Q_NULLPTR;
         }
         // make sure we have the paths
-        if (engine != NULL) {
-            bool fallback = false;
-            QUrl url = styleUrl(styleName, version, &fallback);
-            if (url.isValid()) {
-                if (fallback) {
-                    qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
-                                       .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
-                                       .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
-                }
-                component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
-                if (component->isError()) {
-                    qmlInfo(parent) << component->errorString();
-                    delete component;
-                    component = NULL;
-                } else {
-                    // set context for the component
-                    QQmlEngine::setContextForObject(component, qmlContext(parent));
-                }
-            } else {
-                qmlInfo(parent) <<
-                   UbuntuI18n::instance().tr(QString("Warning: Style %1 not found in theme %2").arg(styleName).arg(name()));
+        bool fallback = false;
+        QUrl url = styleUrl(styleName, version, &fallback);
+        if (url.isValid()) {
+            if (fallback) {
+                qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
+                                   .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
+                                   .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
             }
+            component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
+            if (component->isError()) {
+                qmlInfo(parent) << component->errorString();
+                delete component;
+                component = NULL;
+            } else {
+                // set context for the component
+                QQmlEngine::setContextForObject(component, qmlContext(parent));
+            }
+        } else {
+            qmlInfo(parent) <<
+               QStringLiteral("Warning: Style %1 not found in theme %2").arg(styleName).arg(name());
         }
     }
 
     return component;
 }
 
-void UCTheme::loadPalette(bool notify)
+void UCTheme::loadPalette(QQmlEngine *engine, bool notify)
 {
-    if (!m_engine) {
+    if (!engine) {
         return;
     }
     if (m_palette) {
@@ -721,7 +776,7 @@ void UCTheme::loadPalette(bool notify)
     // theme may not have palette defined
     QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
-        m_palette = QuickUtils::instance().createQmlObject(paletteUrl, m_engine);
+        m_palette = QuickUtils::instance()->createQmlObject(paletteUrl, engine);
         if (m_palette) {
             m_palette->setParent(this);
         }
@@ -731,7 +786,7 @@ void UCTheme::loadPalette(bool notify)
         }
     } else {
         // use the default palette if none defined
-        m_palette = defaultTheme().m_palette;
+        m_palette = defaultTheme(engine)->m_palette;
     }
 }
 
@@ -747,4 +802,3 @@ QColor UCTheme::getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
-

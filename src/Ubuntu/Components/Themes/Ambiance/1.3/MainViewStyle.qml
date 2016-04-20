@@ -22,6 +22,7 @@ Item {
     id: mainViewStyle
 
     /*!
+      \deprecated
       Color of the header's background.
 
       \sa backgroundColor, footerColor
@@ -39,29 +40,23 @@ Item {
     property color backgroundColor: styledItem.backgroundColor
 
     /*!
+      \deprecated
       Color of the footer's background.
 
       \sa backgroundColor, headerColor
     */
     property color footerColor: styledItem.footerColor
 
-    Gradient {
-        id: backgroundGradient
-        GradientStop { position: 0.0; color: mainViewStyle.headerColor }
-        GradientStop { position: 0.83; color: mainViewStyle.backgroundColor }
-        GradientStop { position: 1.0; color: mainViewStyle.footerColor }
-    }
-
     Rectangle {
-        id: backgroundColor
         anchors.fill: parent
-        color: mainViewStyle.backgroundColor
-        gradient: internals.isGradient ? backgroundGradient : null
-    }
-
-    QtObject {
-        id: internals
-        property bool isGradient: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
-                                  mainViewStyle.backgroundColor != mainViewStyle.footerColor
+        // Hide the gradient if the style was loaded and afterwards the header
+        //  and footer color are set to the same value as backgroundColor.
+        visible: mainViewStyle.backgroundColor != mainViewStyle.headerColor ||
+                 mainViewStyle.backgroundColor != mainViewStyle.footerColor
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: mainViewStyle.headerColor }
+            GradientStop { position: 0.83; color: mainViewStyle.backgroundColor }
+            GradientStop { position: 1.0; color: mainViewStyle.footerColor }
+        }
     }
 }

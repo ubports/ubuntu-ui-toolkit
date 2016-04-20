@@ -26,4 +26,5 @@ SUBDIRS += \
     tst_argument \
     tst_alarms \
     tst_theme \
-    tst_quickutils
+    tst_quickutils \
+    tst_tree

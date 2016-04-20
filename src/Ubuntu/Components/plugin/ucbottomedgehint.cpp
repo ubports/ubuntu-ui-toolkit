@@ -38,7 +38,7 @@ UCBottomEdgeHintPrivate::UCBottomEdgeHintPrivate()
     , deactivateTimeout(800)
     // FIXME: we need QInputDeviceInfo to be complete with the locked!!
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
-    , status(QuickUtils::instance().mouseAttached() ? UCBottomEdgeHint::Locked : UCBottomEdgeHint::Inactive)
+    , status(QuickUtils::instance()->mouseAttached() ? UCBottomEdgeHint::Locked : UCBottomEdgeHint::Inactive)
     , pressed(false)
 {
 }
@@ -63,7 +63,7 @@ void UCBottomEdgeHintPrivate::init()
 
     // FIXME: use QInputDeviceInfo once available
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
-    QObject::connect(&QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, q, &UCBottomEdgeHint::onMouseAttached);
+    QObject::connect(QuickUtils::instance(), &QuickUtils::mouseAttachedChanged, q, &UCBottomEdgeHint::onMouseAttached);
 
     // accept mouse events
     q->setAcceptedMouseButtons(Qt::LeftButton);
@@ -128,13 +128,13 @@ void UCBottomEdgeHint::init()
     anchors->setLeft(thisPrivate->left());
     anchors->setBottom(thisPrivate->bottom());
     anchors->setRight(thisPrivate->right());
-    d->swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    d->swipeArea->setImplicitHeight(UCUnits::instance()->gu(SWIPE_AREA_HEIGHT_GU));
 
     // direction
     d->swipeArea->setDirection(UCSwipeArea::Upwards);
 
     // grid unit sync
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCBottomEdgeHint::onGridUnitChanged);
+    connect(UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCBottomEdgeHint::onGridUnitChanged);
 
     // connect to gesture detection
     connect(d->swipeArea, &UCSwipeArea::draggingChanged,
@@ -144,7 +144,7 @@ void UCBottomEdgeHint::init()
 void UCBottomEdgeHint::onMouseAttached()
 {
     Q_D(UCBottomEdgeHint);
-    setStatus(QuickUtils::instance().mouseAttached() ? Locked : Active);
+    setStatus(QuickUtils::instance()->mouseAttached() ? Locked : Active);
     if (d->status == Active) {
         d->deactivationTimer.start(d->deactivateTimeout, this);
         if (d->flickableBottomMargin) {
@@ -169,7 +169,7 @@ void UCBottomEdgeHint::adjustFlickableBottomMargin()
 void UCBottomEdgeHint::onGridUnitChanged()
 {
     Q_D(UCBottomEdgeHint);
-    d->swipeArea->setImplicitHeight(UCUnits::instance().gu(SWIPE_AREA_HEIGHT_GU));
+    d->swipeArea->setImplicitHeight(UCUnits::instance()->gu(SWIPE_AREA_HEIGHT_GU));
 }
 
 void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
@@ -198,8 +198,16 @@ void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
     UCActionItem::keyPressEvent(event);
-    if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
-        Q_EMIT clicked();
+    if (status() == Hidden)
+        return;
+    switch (event->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Space:
+            Q_EMIT clicked();
+            break;
+        default:
+            break;
     }
 }
 
@@ -394,7 +402,7 @@ UCBottomEdgeHint::Status UCBottomEdgeHint::status()
     // FIXME: we won't need this once we get the QInputDeviceInfo reporting mouse attach/detach
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     Q_D(UCBottomEdgeHint);
-    if (QuickUtils::instance().mouseAttached()) {
+    if (QuickUtils::instance()->mouseAttached()) {
         d->status = Locked;
     }
     return d->status;
@@ -406,7 +414,7 @@ void UCBottomEdgeHint::setStatus(Status status)
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     // cannot unlock if mouse is attached or we don't have touch screen available
     Q_D(UCBottomEdgeHint);
-    if (status == d->status || (status != Locked && QuickUtils::instance().mouseAttached())) {
+    if (status == d->status || (status != Locked && QuickUtils::instance()->mouseAttached())) {
         return;
     }
     // if the previous state was Locked and the new one is Active, start deactivation timer

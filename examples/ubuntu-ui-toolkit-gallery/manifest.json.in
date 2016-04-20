@@ -1,0 +1,15 @@
+{
+    "architecture": "all",
+    "description": "Component showcase gallery of the Ubuntu user interface toolkit (UITK)",
+    "framework": "ubuntu-sdk-15.04.3",
+    "hooks": {
+        "ubuntu-ui-toolkit-gallery": {
+            "apparmor": "ubuntu-ui-toolkit-gallery.apparmor",
+            "desktop": "ubuntu-ui-toolkit-gallery.desktop"
+        }
+    },
+    "maintainer": "Zoltán Balogh <zoltan.balogh@ubuntu.com>",
+    "name": "com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery",
+    "title": "Ubuntu UI Toolkit Gallery",
+    "version": "0.5"
+}

@@ -54,6 +54,7 @@ public:
     }
 
     static void ignoreWarning(const QString& fileName, uint line, uint column, const QString& message, uint occurences=1);
+    static void ignoreWarning(const QString& fileName, uint line, const QString& message, uint occurences=1);
 
     static inline void waitForSignal(QSignalSpy *spy, int timeout = 5000)
     {

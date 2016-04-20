@@ -24,7 +24,9 @@ Item {
     /*!
       Specifies the background color
       */
-    property color backgroundColor: "#0A000000"
+    property color backgroundColor: styledItem.enabled
+                                        ? theme.palette.normal.foreground
+                                        : theme.palette.disabled.foreground
     /*!
       Background color for highlight.
       */
@@ -32,7 +34,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: UbuntuColors.orange
+    property color highlightColor: theme.palette.highlighted.baseText
     /*!
       Scale of the highlight item
       */

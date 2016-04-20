@@ -36,7 +36,7 @@ Template {
                 spacing: units.gu(1)
                 CheckBox {
                     id: contentToLayout
-                    text: i18n.tr("push content into the layout")
+                    text: i18n.tr("push content into the column")
                     enabled: bottomEdge.hint.status >= BottomEdgeHint.Active
                 }
                 Label {
@@ -52,20 +52,38 @@ Template {
         className: "BottomEdge"
 
         TemplateRow {
+            title: i18n.tr("Content")
+            Row {
+                spacing: units.gu(1)
+                CheckBox {
+                    id: preloadContent
+                    text: i18n.tr("preload content")
+                    checked: bottomEdge.preloadContent
+                    onTriggered: bottomEdge.preloadContent = checked
+                }
+                Label {
+                    text: preloadContent.text
+                    anchors.verticalCenter: preloadContent.verticalCenter
+                }
+            }
+        }
+
+        TemplateFlow {
             title: i18n.tr("Top")
             Slider {
                 id: bottomEdgeHeight
+                width: Math.min(units.gu(30), parent.width)
                 maximumValue: page.height
                 value: bottomEdge.height
                 onValueChanged: bottomEdge.height = value
             }
         }
 
-        TemplateRow {
+        TemplateFlow {
             title: i18n.tr("Regions")
             Slider {
                 id: regionCount
-                width: units.gu(20)
+                width: Math.min(units.gu(20), parent.width)
                 maximumValue: 3.0
                 live: true
             }
@@ -132,13 +150,29 @@ Template {
                 objectName: "CustomRegion1"
                 enabled: regionConfig.model >= 1
                 to: 0.3
-                property color baseColor: UbuntuColors.lightGrey
+                property color baseColor: UbuntuColors.silk
+                contentComponent: Rectangle {
+                    PageHeader {
+                        title: i18n.tr("CustomRegion #1")
+                    }
+                    width: bottomEdge.width - units.gu(10)
+                    height: bottomEdge.height
+                    color: UbuntuColors.blue
+                }
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion2"
                 enabled: regionConfig.model >= 2
                 from: 0.3
                 to: 0.6
+                contentComponent: Rectangle {
+                    PageHeader {
+                        title: i18n.tr("CustomRegion #2")
+                    }
+                    width: bottomEdge.width - units.gu(30)
+                    height: bottomEdge.height
+                    color: UbuntuColors.red
+                }
             },
             BottomEdgeRegion {
                 objectName: "CustomRegion3"

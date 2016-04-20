@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,6 +24,14 @@ Item {
     implicitHeight: units.gu(4)
 
     readonly property BottomEdgeHint hint: styledItem
+
+    property color backgroundColor: styledItem.enabled
+                                    ? theme.palette.normal.overlay
+                                    : theme.palette.disabled.overlay
+
+    property color foregroundColor: styledItem.enabled
+                                    ? theme.palette.normal.overlayText
+                                    : theme.palette.disabled.overlayText
 
     // translate hint status into state
     state: {
@@ -96,13 +104,17 @@ Item {
 
     Icon {
         id: h1
-        width: units.gu(2)
-        height: width
+        width: units.gu(3)
+        height: units.gu(1.5)
         anchors {
             centerIn: parent
             topMargin: styledItem.height
         }
-        name: "up"
+        name: "toolkit_bottom-edge-hint"
+        color: foregroundColor
+
+        FocusShape {
+        }
     }
 
     Rectangle {
@@ -114,11 +126,22 @@ Item {
             topMargin: styledItem.height
         }
         height: styledItem.height
-        color: theme.palette.normal.overlay
+        color: backgroundColor
         ThinDivider {
             anchors.top: parent.top
         }
 
+        FocusShape {
+            anchors {
+                fill: undefined
+                margins: 0
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            // icon, spacing, label, margin on either side
+            width: icon.width + units.gu(1) + label.width + units.gu(0.46) * 2
+        }
         Row {
             anchors {
                 top: parent.top
@@ -133,13 +156,13 @@ Item {
                 width: height
                 height: units.gu(2)
                 anchors.verticalCenter: parent.verticalCenter
-                color: theme.palette.normal.overlayText
+                color: foregroundColor
             }
             Label {
                 id: label
                 text: styledItem.text
                 textSize: Label.Medium
-                color: theme.palette.normal.overlayText
+                color: foregroundColor
                 height: styledItem.height
                 anchors.verticalCenter: parent.verticalCenter
                 verticalAlignment: Text.AlignVCenter
