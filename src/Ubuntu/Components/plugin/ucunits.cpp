@@ -27,6 +27,12 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
 
+#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtGui/qpa/qplatformwindow.h>
+#include <QtGui/qpa/qplatformscreen.h>
+
+#include <QDebug>
+
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
 
@@ -106,6 +112,10 @@ UCUnits::UCUnits(QObject *parent) :
     } else {
         m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
     }
+
+    auto nativeInterface = qGuiApp->platformNativeInterface();
+    QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                     this, &UCUnits::windowPropertyChanged);
 }
 
 UCUnits::~UCUnits()
@@ -125,8 +135,12 @@ float UCUnits::gridUnit()
 
 void UCUnits::setGridUnit(float gridUnit)
 {
+    if (qFuzzyCompare(gridUnit, m_gridUnit)) {
+        return;
+    }
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
+    qDebug() << "GRID UNIT changed to " << m_gridUnit;
 }
 
 /*!
@@ -245,4 +259,34 @@ float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
     } else {
         return 0;
     }
+}
+
+void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &propertyName)
+{
+    if (propertyName != QStringLiteral("scale")) { //don't care otherwise
+        return;
+    }
+
+    // I've no idea what my window is, but any messages I get should only be about my window!
+
+    // HACK - if multimonitor situation, ignore any scale changes reported by the LVDS screen (unity8-specific policy)
+    if (qGuiApp->allWindows().count() > 1) {
+        if (window && window->screen()
+                && window->screen()->name().contains("LVDS")) {
+            return;
+        }
+    }
+
+    auto nativeInterface = qGuiApp->platformNativeInterface();
+    QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
+    if (!scaleVal.isValid()) {
+        return;
+    }
+    bool ok;
+    float scale = scaleVal.toFloat(&ok);
+    if (!ok || scale <= 0) {
+        return;
+    }
+    // choose integral grid unit value closest to requested scale
+    setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }
