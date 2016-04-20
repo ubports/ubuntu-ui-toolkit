@@ -168,9 +168,8 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
  * The topMargin of the flickable will automatically be updated by adding the height
  * of the header to the current topMargin. When changing the flickable, the topMargin
  * of the previous flickable is reverted by subtracting the header height from it.
- * When the header is invisible because its visible property is false, or the header
- * has no parent, the flickable topMargin is reverted as if Header.flickable would be
- * unset, and does not reflect the header height.
+ * Making the header invisible has the same effect on the topMargin as unsetting
+ * the flickable.
  *
  * It is permitted to use a ListView as the value of flickable, but this works
  * well only if the ListView.header property is not set. Alternatively,
