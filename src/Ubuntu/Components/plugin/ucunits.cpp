@@ -114,8 +114,10 @@ UCUnits::UCUnits(QObject *parent) :
     }
 
     auto nativeInterface = qGuiApp->platformNativeInterface();
-    QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
-                     this, &UCUnits::windowPropertyChanged);
+    if (nativeInterface) {
+        QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                         this, &UCUnits::windowPropertyChanged);
+    }
 }
 
 UCUnits::~UCUnits()
