@@ -167,7 +167,7 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
  *
  * The topMargin of the flickable will automatically be updated by adding the height
  * of the header to the current topMargin. When changing the flickable, the topMargin
- * of the previous flickable is reverted by subtracting the header height from it.
+ * of the previous flickable is restored by subtracting the header height from it.
  * Making the header invisible has the same effect on the topMargin as unsetting
  * the flickable.
  *
@@ -203,7 +203,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         m_previous_header_height = 0;
         delta -= m_flickable->topMargin() + m_flickable->contentY();
 
-        // revert the flickable content Y.
+        // restore the flickable content Y.
         m_flickable->setContentY(m_flickable->contentY() + delta);
     }
 
