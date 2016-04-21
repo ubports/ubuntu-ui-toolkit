@@ -1,3 +1,19 @@
+ubuntu-ui-toolkit (1.3.1938+16.04.20160416) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Install the apparmor file with the UITK showcase gallery example
+    application
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Sat, 16 Apr 2016 18:00:00 +0000
+
+ubuntu-ui-toolkit (1.3.1938+16.04.20160414) xenial; urgency=medium
+
+  [ Zoltán Balogh ]
+  * Fix the toolkit examples for the case when they are used from the
+    IDE
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Thu, 14 Apr 2016 16:30:09 +0000
+
 ubuntu-ui-toolkit (1.3.1938+16.04.20160412) xenial; urgency=medium
 
   [ Tim Peeters ]
