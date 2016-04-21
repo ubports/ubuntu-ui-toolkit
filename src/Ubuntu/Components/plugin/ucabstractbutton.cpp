@@ -246,11 +246,14 @@ void UCAbstractButton::touchEvent(QTouchEvent *event)
         Q_EMIT d->mouseArea->pressedChanged();
         event->accept();
         break;
+    case QEvent::TouchCancel:
     case QEvent::TouchEnd:
         d->touchPressed = false;
         // use MouseArea's signal to sync all logic
         Q_EMIT d->mouseArea->pressedChanged();
-        if (contains(event->touchPoints()[0].pos()) && !d->pressAndHoldConnected) {
+        if (contains(event->touchPoints()[0].pos())
+                && !d->pressAndHoldConnected
+                && (event->type() != QEvent::TouchCancel)) {
             d->_q_mouseAreaClicked();
         }
         break;
