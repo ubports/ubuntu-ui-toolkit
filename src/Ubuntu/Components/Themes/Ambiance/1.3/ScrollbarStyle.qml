@@ -88,9 +88,10 @@ Item {
     property color troughColorSteppersStyle: theme.palette.normal.foreground
 
     property color sliderColor: theme.palette.normal.overlayText
-    property color stepperBgColor: background.color
-    //used for hover and pressed states
-    property color secondaryStepperBgColor: theme.palette.normal.base
+
+    //used for hover and pressed states, otherwise they're transparent in order to show the same
+    //background as the trough
+    property color stepperBgColor: theme.palette.normal.base
     property real sliderRadius: units.dp(3)
     property real thumbThickness: units.gu(1)
     property real indicatorThickness : units.dp(3)
@@ -165,9 +166,9 @@ Item {
                                        ? visuals[scrollbarUtils.propSize]/2
                                        : __idealStepperSize
     property real __idealStepperSize: troughThicknessSteppersStyle
-    property real __stepperOpacityOnPressed: 1.0
-    property real __stepperOpacityOnHover: 0.7
-    property real __stepperOpacityNormal: 0.4
+    property real __stepperImgOpacityOnPressed: 1.0
+    property real __stepperImgOpacityOnHover: 0.7
+    property real __stepperImgOpacityNormal: 0.4
 
     property real __stepperBgOpacityOnPressed: 1.0
     property real __stepperBgOpacityOnHover: 0.63
@@ -893,8 +894,8 @@ Item {
                         bottom: !isVertical ? parent.bottom : undefined
                     }
                     color: steppersMouseArea.hoveringFirstStepper
-                           ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
-                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
+                           ? Qt.rgba(stepperBgColor.r, stepperBgColor.g, stepperBgColor.b,
+                                   stepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
                            : "transparent"
                     visible: parent.visible
                     clip: true
@@ -912,14 +913,15 @@ Item {
                         value: visible ? __targetStepperSize : 0
                     }
                     Icon {
+                        objectName: "firstStepperIcon"
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
                         source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * (steppersMouseArea.hoveringFirstStepper
-                                                        ? (steppersMouseArea.pressed ? __stepperOpacityOnPressed : __stepperOpacityOnHover)
-                                                        : __stepperOpacityNormal))
+                                                        ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
+                                                        : __stepperImgOpacityNormal))
                     }
                 }
                 Rectangle {
@@ -932,8 +934,8 @@ Item {
                         bottom: !isVertical ? parent.bottom : undefined
                     }
                     color: steppersMouseArea.hoveringSecondStepper
-                           ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
-                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
+                           ? Qt.rgba(stepperBgColor.r, stepperBgColor.g, stepperBgColor.b,
+                                   stepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
                            : "transparent"
                     clip: true
                     visible: parent.visible
@@ -952,14 +954,15 @@ Item {
                     }
                     Icon {
                         id: icon
+                        objectName: "secondStepperIcon"
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
                         source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * (steppersMouseArea.hoveringSecondStepper
-                                                        ? (steppersMouseArea.pressed ? __stepperOpacityOnPressed : __stepperOpacityOnHover)
-                                                        : __stepperOpacityNormal))
+                                                        ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
+                                                        : __stepperImgOpacityNormal))
                     }
                 }
             }
