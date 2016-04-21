@@ -40,10 +40,7 @@ MainView {
             anchors.top: parent.top
             text: "Press me"
             onClicked: {
-                testCase.resetPositions();
-                var popover = PopupUtils.open(popoverComponent, pressMe);
-                popoverSpy.target = testCase.findChild(popover, "popover_foreground");
-                popoverSpy.clear();
+                var popover = testCase.openPopup(popoverComponent, pressMe);
                 pressMe.parent.height = units.gu(25)
                 pressMe.anchors.top = parent.bottom
             }
@@ -54,10 +51,7 @@ MainView {
             anchors.bottom: parent.bottom
             text: "Push me"
             onClicked: {
-                testCase.resetPositions();
-                var popover = PopupUtils.open(popoverComponent, pushMe);
-                popoverSpy.target = testCase.findChild(popover, "popover_foreground");
-                popoverSpy.clear();
+                var popover = testCase.openPopup(popoverComponent, pushMe);
                 rect.y = main.height / 10
             }
         }
@@ -68,6 +62,10 @@ MainView {
         anchors.centerIn: parent
     }
 
+    SignalSpy {
+        id: popoverShownSpy
+        signalName: "showCompleted"
+    }
     // spy to listen on the popover foreground's hideCompleted() signal
     SignalSpy {
         id: popoverSpy
@@ -101,10 +99,26 @@ MainView {
             rect.y = main.height / 2
         }
 
-        function cleanup() {
-            resetPositions()
-            popoverSpy.target = null;
+        function openPopup(popupComponent, caller) {
+            resetPositions();
+            var popover = PopupUtils.open(popoverComponent, caller);
+            var foreground = findChild(popover, "popover_foreground");
+            popoverSpy.target = foreground;
             popoverSpy.clear();
+            popoverShownSpy.target = foreground;
+            popoverShownSpy.clear()
+        }
+
+        function cleanup() {
+            // Dismiss via click to avoid false negatives on other cases
+            if (popoverSpy.target) {
+                mouseClick(main, 10, 10, Qt.LeftButton);
+                popoverSpy.wait();
+                popoverSpy.target = null;
+                popoverShownSpy.target = null;
+            }
+
+            resetPositions()
             waitForRendering(main, 500);
         }
 
@@ -133,8 +147,6 @@ MainView {
 
             keyClick(Qt.Key_Escape);
             popoverSpy.wait();
-            // Dismiss via click to avoid false negatives on other cases
-            mouseClick(main, 10, 10, Qt.LeftButton);
         }
 
         function test_popover_consumes_clicks_bug1488540_data() {
@@ -162,29 +174,26 @@ MainView {
 
         function test_popover_follows_pointerTarget_bug1199502_data() {
             return [
-                { tag: "Moving pointerTarget", button: pressMe, dir: "down" },
-                // FIXME: { tag: "Moving parent", button: pushMe, dir: "up" },
+                { tag: "Moving pointerTarget", button: pressMe, otherButton: pushMe, dir: "down" },
+                // FIXME: { tag: "Moving parent", button: pushMe, otherButton: pressMe, dir: "up" },
                 // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1427557
             ]
         }
         function test_popover_follows_pointerTarget_bug1199502(data) {
             mouseClick(data.button, data.button.width / 2, data.button.height / 2);
-            waitForRendering(data.button);
-            var dir = popoverSpy.target.direction
+            popoverShownSpy.wait();
             var popover = popoverSpy.target;
-            var popoverY = popover.y;
-            var popoverH = popover.height;
-
-            // dismiss
-            mouseClick(main, 10, 10, Qt.LeftButton);
-            popoverSpy.wait();
 
             // ensure popover was next to caller
-            compare(dir, data.dir, "Popover arrow is wrong")
-            if (dir == 'down')
-                verify(popoverY + popoverH > data.button.y, "Popover isn't pointing at the caller")
-            else
-                verify(popoverY > data.button.y, "Popover isn't pointing at the caller")
+            compare(popover.direction, data.dir, "Popover arrow is wrong");
+            // Compare button in context of the root coordinate space
+            var buttonY = main.mapFromItem(data.button, data.button.x, data.button.y).y
+            if (data.dir == 'down') {
+                verify((popover.y + popover.height) < buttonY, "Popover is above the caller (%1 + %2 < %3)".arg(popover.y).arg(popover.height).arg(buttonY));
+                verify((popover.y + popover.height) > data.otherButton.y, "Popover is close to the caller");
+            } else {
+                verify((popover.y) > (buttonY + data.button.height), "Popover is below the caller");
+            }
         }
     }
 }
