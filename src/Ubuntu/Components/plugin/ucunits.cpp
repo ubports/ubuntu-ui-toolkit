@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,8 +30,6 @@
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/qpa/qplatformscreen.h>
-
-#include <QDebug>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -142,7 +140,6 @@ void UCUnits::setGridUnit(float gridUnit)
     }
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
-    qDebug() << "GRID UNIT changed to " << m_gridUnit;
 }
 
 /*!
