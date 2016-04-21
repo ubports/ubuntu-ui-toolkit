@@ -266,9 +266,21 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
         return;
     }
 
-    // I've no idea what my window is, but any messages I get should only be about my window!
-
-    // HACK - if multimonitor situation, ignore any scale changes reported by the LVDS screen (unity8-specific policy)
+    /*
+     * FIXME - hack to work around LP bug #1573118.
+     *
+     * The "units" context property has no idea about which screen it is on, making it impossible
+     * to have different grid unit values per window in a single app. This would be the case, for
+     * example, when one app has multiple windows on different screens.
+     *
+     * The below ensures that the internal screen (LVDS for all our devices today) scale is ignored
+     * when an external screen is connected, for which a different scale is required. Otherwise
+     * the two screens would fight for which scale gets applied.
+     *
+     * This is only currently supported for unity8, which has a window per screen, but we want the
+     * external (non-LVDS) screen's scale applied across the shell.
+     *
+     */
     if (qGuiApp->allWindows().count() > 1) {
         if (window && window->screen()
                 && window->screen()->name().contains("LVDS")) {
