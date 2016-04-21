@@ -89,7 +89,7 @@ Item {
             objectName: "sections_listview"
 
             property bool animateContentX: false
-            activeFocusOnTab: true // FIXME: Enable proper focus handling
+            activeFocusOnTab: true
 
             // Position the selected item correctly.
             // For a scrollable ListView, if the item was already fully visible,
@@ -167,8 +167,6 @@ Item {
                 x: sectionsListView.currentItem ? sectionsListView.currentItem.x : -width
                 width: sectionsListView.currentItem ? sectionsListView.currentItem.width : 0
                 height: sectionsListView.currentItem ? sectionsListView.currentItem.height : 0
-                // hide when focus frame is visible:
-//                visible: !sectionsListView.currentItem.activeFocus
 
                 Rectangle {
                     anchors {
@@ -184,7 +182,6 @@ Item {
 
             delegate: ListItem {
                 id: sectionButton
-
                 activeFocusOnTab: false
                 objectName: "section_button_" + index
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
@@ -192,7 +189,7 @@ Item {
                 // Leave space for the underline, which should not be covered
                 //  by the focus frame.
                 height: sectionsStyle.height - sectionsStyle.underlineHeight
-                // ensure the underline is visible
+                // Ensure the underline is visible.
                 contentItem.clip: false
 
                 property bool selected: index === styledItem.selectedIndex
@@ -201,6 +198,8 @@ Item {
                     sectionsListView.forceActiveFocus();
                 }
 
+                // FIXME: This line may be removed when bug #1573215 is fixed and
+                //  ListItems in a horizontal ListView don't show the divider by default
                 divider.visible: false
 
                 // Section title
