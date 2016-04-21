@@ -246,7 +246,6 @@ void UCAbstractButton::touchEvent(QTouchEvent *event)
         Q_EMIT d->mouseArea->pressedChanged();
         event->accept();
         break;
-    case QEvent::TouchCancel:
     case QEvent::TouchEnd:
         d->touchPressed = false;
         // use MouseArea's signal to sync all logic
@@ -276,25 +275,25 @@ void UCAbstractButtonPrivate::_q_adjustSensingArea()
             - (q->height() + (sensingMargins ? (sensingMargins->top() + sensingMargins->bottom()) : 0.0));
 
     // adjust the sensing area
-    qreal dx, dy, dw, dh;
+    qreal dx1, dy1, dx2, dy2;
     if (hDelta >= 0) {
         // the horizontal size is still smaller than the minimum
-        dx = -(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0));
-        dw = (hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0));
+        dx1 = -(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0));
+        dx2 = (hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0));
     } else {
-        dx = sensingMargins ? -sensingMargins->left() : 0.0;
-        dw = sensingMargins ? sensingMargins->right() : 0.0;
+        dx1 = sensingMargins ? -sensingMargins->left() : 0.0;
+        dx2 = sensingMargins ? sensingMargins->right() : 0.0;
     }
     if (vDelta >= 0) {
         // the vertical size is still smaller than the minimum
-        dy = -(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0));
-        dh = (vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0));
+        dy1 = -(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0));
+        dy2 = (vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0));
     } else {
-        dy = sensingMargins ? -sensingMargins->top() : 0.0;
-        dh = sensingMargins ? sensingMargins->bottom() : 0.0;
+        dy1 = sensingMargins ? -sensingMargins->top() : 0.0;
+        dy2 = sensingMargins ? sensingMargins->bottom() : 0.0;
     }
     sensingArea = q->boundingRect();
-    sensingArea.adjust(dx, dy, dw, dh);
+    sensingArea.adjust(dx1, dy1, dx2, dy2);
 }
 
 void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
