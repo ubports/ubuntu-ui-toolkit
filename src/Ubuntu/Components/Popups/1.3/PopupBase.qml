@@ -110,6 +110,9 @@ OrientationHelper {
       */
     function __closePopup() {
         if (popupBase !== undefined) {
+            if (eventGrabber.enabled) {
+                stateWrapper.restoreActiveFocus();
+            }
             popupBase.destroy();
         }
     }
@@ -250,9 +253,6 @@ OrientationHelper {
                     ScriptAction {
                         script: {
                             popupBase.visible = false;
-                            if (eventGrabber.enabled) {
-                                stateWrapper.restoreActiveFocus();
-                            }
                         }
                     }
                 }
