@@ -192,7 +192,8 @@ def is_maliit_process_running():
     """Return True if malitt-server process is running, False otherwise."""
     # FIXME: lp#1542224 Use Maliit by default
     if 'UITK_USE_MALIIT' not in os.environ:
-        logger.info("Not going to use Maliit - set UITK_USE_MALIIT to enable it")
+        logger.info("Not going to use Maliit\
+            - set UITK_USE_MALIIT to enable it")
         return False
     if is_process_running(MALIIT):
         logger.info('Using Maliit for keyboard input')
