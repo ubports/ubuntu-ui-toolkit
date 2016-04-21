@@ -87,7 +87,6 @@ Item {
         ListView {
             id: sectionsListView
             objectName: "sections_listview"
-            onActiveFocusChanged: print("active focus of "+styledItem+" = "+activeFocus)
 
             property bool animateContentX: false
             activeFocusOnTab: true // FIXME: Enable proper focus handling
@@ -173,7 +172,7 @@ Item {
 
                 Rectangle {
                     anchors {
-                        bottom: parent.bottom
+                        top: parent.bottom
                         left: parent.left
                         right: parent.right
                     }
@@ -185,10 +184,17 @@ Item {
 
             delegate: ListItem {
                 id: sectionButton
+
                 activeFocusOnTab: false
                 objectName: "section_button_" + index
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
-                height: sectionsStyle.height
+
+                // Leave space for the underline, which should not be covered
+                //  by the focus frame.
+                height: sectionsStyle.height - sectionsStyle.underlineHeight
+                // ensure the underline is visible
+                contentItem.clip: false
+
                 property bool selected: index === styledItem.selectedIndex
                 onClicked: {
                     styledItem.selectedIndex = index;
@@ -205,12 +211,7 @@ Item {
                     text: modelData.hasOwnProperty("text") ? modelData.text : modelData
                     textSize: sectionsStyle.textSize
                     font.weight: Font.Light
-                    anchors {
-                        baseline: underline.bottom
-                        baselineOffset: sectionsStyle.height < units.gu(4) ? -units.gu(1) : -units.gu(2)
-                        horizontalCenter: parent.horizontalCenter
-                    }
-
+                    anchors.centerIn: parent
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :
                                sectionsStyle.sectionColor
@@ -224,44 +225,14 @@ Item {
                 Rectangle {
                     id: underline
                     anchors {
-                        bottom: parent.bottom
+                        // show the underline below the ListItem
+                        top: parent.bottom
                         left: parent.left
                         right: parent.right
                     }
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.underlineColor
                 }
-
-                //                Frame {
-                //                    anchors.fill: parent
-                //                    anchors.margins: -units.gu(0.46)
-                //                    color: styledItem.enabled
-                //                                ? theme.palette.normal.focus
-                //                                : theme.palette.disabled.focus
-                //                    thickness: units.gu(0.21)
-                //                    radius: units.gu(1.7)
-                //                    visible: sectionButton.activeFocus // styledItem.keyNavigationFocus
-
-                //                    Behavior on anchors.margins {
-                //                        UbuntuNumberAnimation {
-                //                            duration: UbuntuAnimation.FastDuration
-                //                        }
-                //                    }
-                //                }
-
-//                Rectangle {
-//                    id: focusFrame
-//                    anchors.fill: parent
-//                    visible: sectionButton.activeFocus
-//                    color: "transparent"
-//                    z: 3 // show the focus frame on top of the highlight underline
-//                    border {
-//                        width: units.dp(1)
-//                        color: enabled
-//                                   ? theme.palette.normal.focus
-//                                   : theme.palette.disabled.focus
-//                    }
-//                }
             }
 
             SmoothedAnimation {
