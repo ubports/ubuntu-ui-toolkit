@@ -195,6 +195,8 @@ Item {
                     sectionsListView.forceActiveFocus();
                 }
 
+                divider.visible: false
+
                 // Section title
                 Label {
                     id: label
