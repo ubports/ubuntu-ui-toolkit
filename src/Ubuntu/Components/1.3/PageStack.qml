@@ -185,7 +185,7 @@ PageTreeNode {
 
     /*!
       Pop the top item from the stack if the stack size is at least 1.
-      Do not do anything if 0 or 1 items are on the stack.
+      Do not do anything if 0 items are on the stack.
      */
     function pop() {
         internal.finishPreviousAction();

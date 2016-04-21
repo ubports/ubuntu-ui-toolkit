@@ -70,16 +70,16 @@ class QQuickListView(_flickable.QQuickFlickable):
                 direction = 'right'
 
         if direction == 'below':
-            fail_condition = lambda: self.atYEnd
+            def fail_condition(): return self.atYEnd
             swipe_method = self.swipe_to_show_more_below
         elif direction == 'above':
-            fail_condition = lambda: self.atYBeginning
+            def fail_condition(): return self.atYBeginning
             swipe_method = self.swipe_to_show_more_above
         elif direction == 'left':
-            fail_condition = lambda: self.atXBeginning
+            def fail_condition(): return self.atYBeginning
             swipe_method = self.swipe_to_show_more_left
         elif direction == 'right':
-            fail_condition = lambda: self.atXEnd
+            def fail_condition(): return self.atXEnd
             swipe_method = self.swipe_to_show_more_right
         else:
             raise _common.ToolkitException(
@@ -117,7 +117,7 @@ class QQuickListView(_flickable.QQuickFlickable):
         """
         child = self._is_element_cached(object_name)
         if not child:
-            return False;
+            return False
 
         containers = self._get_containers()
         return self._is_child_visible(child, containers)

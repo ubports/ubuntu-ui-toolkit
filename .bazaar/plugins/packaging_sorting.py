@@ -20,7 +20,8 @@ from bzrlib import errors
 import os
 import subprocess
 
-def pre_commit_hook(local, master, old_revno, old_revid, future_revno, 
+
+def pre_commit_hook(local, master, old_revno, old_revid, future_revno,
                     future_revid, tree_delta, future_tree):
     """Ensure packaging has gone through wrap-and-sort command"""
 
@@ -28,19 +29,27 @@ def pre_commit_hook(local, master, old_revno, old_revid, future_revno,
         return
 
     if not os.path.exists("/usr/bin/wrap-and-sort"):
-      raise errors.BzrError("Please install 'devscripts' package.")
-      return
+        raise errors.BzrError("Please install 'devscripts' package.")
+        return
 
-    subprocess.call(["cp", "-a", "debian", "debian-packaging-wraptest-temporary"])
+    subprocess.call(["cp",
+                     "-a",
+                     "debian",
+                     "debian-packaging-wraptest-temporary"])
 
     subprocess.call(["wrap-and-sort", "-a", "-t"])
 
-    returncode = subprocess.call(["diff", "-urN",
-        "debian-packaging-wraptest-temporary", "debian"])
+    returncode = subprocess.call(["diff",
+                                  "-urN",
+                                  "debian-packaging-wraptest-temporary",
+                                  "debian"])
     if returncode == 1:
-      subprocess.call(["rm", "-rf", "debian-packaging-wraptest-temporary"])
-      raise errors.BzrError("Please run wrap-and-sort -a -t to clean up packaging.")
+        subprocess.call(["rm", "-rf", "debian-packaging-wraptest-temporary"])
+        raise errors.BzrError("Please run wrap-and-sort\
+                              -a -t to clean up packaging.")
 
     subprocess.call(["rm", "-rf", "debian-packaging-wraptest-temporary"])
 
-branch.Branch.hooks.install_named_hook("pre_commit", pre_commit_hook, "Check packaging sorting")
+branch.Branch.hooks.install_named_hook("pre_commit",
+                                       pre_commit_hook,
+                                       "Check packaging sorting")
