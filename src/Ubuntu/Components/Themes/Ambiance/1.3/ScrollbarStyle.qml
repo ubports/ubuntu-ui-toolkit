@@ -165,6 +165,17 @@ Item {
                                        ? visuals[scrollbarUtils.propSize]/2
                                        : __idealStepperSize
     property real __idealStepperSize: troughThicknessSteppersStyle
+    property real __stepperOpacityOnPressed: 1.0
+    property real __stepperOpacityOnHover: 0.7
+    property real __stepperOpacityNormal: 0.4
+
+    property real __stepperBgOpacityOnPressed: 1.0
+    property real __stepperBgOpacityOnHover: 0.63
+
+    //the stepper arrow svg is designed to scale nicely to the lowest
+    //px-per-GU display (i.e. 8px/GU). Please consider updating the asset if
+    //you change this size to avoid blurry steppers on low px-per-GU displays.
+    property real __stepperAssetWidth: units.dp(8)
 
     property bool __recursionGuard: false
     property bool __disableStateBinding: false
@@ -883,7 +894,7 @@ Item {
                     }
                     color: steppersMouseArea.hoveringFirstStepper
                            ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
-                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? 1.0 : 0.63))
+                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
                            : "transparent"
                     visible: parent.visible
                     clip: true
@@ -901,18 +912,14 @@ Item {
                         value: visible ? __targetStepperSize : 0
                     }
                     Icon {
-                        //can't use anchors.centerIn: parent because anchors are rounded to integer, so
-                        //if the trough is 9px wide, the arrow would look not perfectly centered
-                        x: parent.width/2 - width/2
-                        y: parent.height/2 - height/2
-                        width: troughThicknessSteppersStyle - units.dp(5)
+                        anchors.centerIn: parent
+                        width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
-                        source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                        source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * (steppersMouseArea.hoveringFirstStepper
-                                                        ? (steppersMouseArea.pressed ? 1.0 : 0.7)
-                                                        : 0.4))
-                        keyColor: "#5d5d5d"
+                                                        ? (steppersMouseArea.pressed ? __stepperOpacityOnPressed : __stepperOpacityOnHover)
+                                                        : __stepperOpacityNormal))
                     }
                 }
                 Rectangle {
@@ -926,7 +933,7 @@ Item {
                     }
                     color: steppersMouseArea.hoveringSecondStepper
                            ? Qt.rgba(secondaryStepperBgColor.r, secondaryStepperBgColor.g, secondaryStepperBgColor.b,
-                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? 1.0 : 0.63))
+                                   secondaryStepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
                            : "transparent"
                     clip: true
                     visible: parent.visible
@@ -945,18 +952,14 @@ Item {
                     }
                     Icon {
                         id: icon
-                        //can't use anchors.centerIn: parent because anchors are rounded to integer, so
-                        //if the trough is 9px wide, the arrow would look not perfectly centered
-                        x: parent.width/2 - width/2
-                        y: parent.height/2 - height/2
-                        width: troughThicknessSteppersStyle - units.dp(5)
+                        anchors.centerIn: parent
+                        width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
-                        source: Qt.resolvedUrl("../artwork/scrollbar_arrow.png")
+                        source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * (steppersMouseArea.hoveringSecondStepper
-                                                        ? (steppersMouseArea.pressed ? 1.0 : 0.7)
-                                                        : 0.4))
-                        keyColor: "#5d5d5d"
+                                                        ? (steppersMouseArea.pressed ? __stepperOpacityOnPressed : __stepperOpacityOnHover)
+                                                        : __stepperOpacityNormal))
                     }
                 }
             }

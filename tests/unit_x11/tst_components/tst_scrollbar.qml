@@ -212,8 +212,6 @@ Item {
             /*****************************************************
              *      HELPER PROPERTIES                            *
              *****************************************************/
-            var slider = getThumb(scrollbar)
-            var trough = getTrough(scrollbar)
             verify(!!style.thumb, "Sanity check: invalid property value.")
             verify(!!style.trough, "Sanity check: invalid property value.")
             //flickable helper properties
@@ -222,11 +220,13 @@ Item {
             /*****************************************************
              *      INTERNAL PROPERTIES AND FUNCTIONS            *
              *****************************************************/
-            var thumbArea = getThumbArea(scrollbar)
-            var scrollAnimation = getScrollAnimation(scrollbar)
             verify(style.nonOverlayScrollbarMargin >= 0, "Sanity check: invalid property value.")
             verify(style.touchDragStartMargin >= 0, "Sanity check: invalid property value.")
             verify(style.dragThreshold >= 0, "Sanity check: invalid property value.")
+            verify(style.__stepperAssetWidth <= style.troughThicknessSteppersStyle, "Sanity check: check that the stepper arrow is narrower than the trough.")
+            verify(style.__stepperOpacityNormal < style.__stepperOpacityOnHover, "Sanity check: check that stepper is darker on hover than on normal state.")
+            verify(style.__stepperOpacityOnHover < style.__stepperOpacityOnPressed, "Sanity check: check that stepper is darker on pressed than on hover state.")
+            verify(style.__stepperBgOpacityOnHover < style.__stepperBgOpacityOnPressed, "Sanity check: check that stepper background is darker on pressed than on hover state.")
         }
 
         function test_bottomAlign_anchors() {
