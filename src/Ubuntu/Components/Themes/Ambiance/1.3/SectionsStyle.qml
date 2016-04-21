@@ -181,28 +181,9 @@ Item {
                     color: sectionsStyle.selectedSectionColor
                 }
                 Behavior on x { UbuntuNumberAnimation {} }
-
-                Rectangle {
-                    id: focusFrame
-                    anchors {
-                        fill: parent
-                        bottomMargin: units.gu(1)
-                    }
-
-//                    visible: sectionButton.activeFocus
-                    visible: sectionsListView.activeFocus
-                    color: "transparent"
-                    z: 3 // show the focus frame on top of the highlight underline
-                    border {
-                        width: units.dp(1)
-                        color: enabled
-                                   ? theme.palette.normal.focus
-                                   : theme.palette.disabled.focus
-                    }
-                }
             }
 
-            delegate: AbstractButton {
+            delegate: ListItem {
                 id: sectionButton
                 activeFocusOnTab: false
                 objectName: "section_button_" + index
@@ -212,13 +193,6 @@ Item {
                 onClicked: {
                     styledItem.selectedIndex = index;
                     sectionsListView.forceActiveFocus();
-                }
-
-                // Background pressed highlight
-                Rectangle {
-                    visible: parent.pressed
-                    anchors.fill: parent
-                    color: sectionsStyle.pressedBackgroundColor
                 }
 
                 // Section title
