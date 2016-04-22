@@ -81,7 +81,7 @@ private:
 
     IconTheme(const QString &name): name(name)
     {
-        QStringList paths = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+        const QStringList paths = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
 
         Q_FOREACH(const QString &path, paths) {
             QDir dir(path + "/icons/" + name);
@@ -140,10 +140,10 @@ private:
         if (requestSize.width() > 0 || requestSize.height() > 0) {
             QSize s = imgio.size();
             qreal ratio = 0.0;
-            if (requestSize.width() && (force_scale || requestSize.width() < s.width())) {
+            if (requestSize.width() > 0 && (force_scale || requestSize.width() < s.width())) {
                 ratio = qreal(requestSize.width())/s.width();
             }
-            if (requestSize.height() && (force_scale || requestSize.height() < s.height())) {
+            if (requestSize.height() > 0 && (force_scale || requestSize.height() < s.height())) {
                 qreal hr = qreal(requestSize.height())/s.height();
                 if (ratio == 0.0 || hr < ratio)
                     ratio = hr;
@@ -156,10 +156,10 @@ private:
         }
 
         if (impsize)
-            *impsize = imgio.size();
+            *impsize = imgio.scaledSize();
 
         if (imgio.read(&image)) {
-            if (impsize && impsize->width() < 0)
+            if (impsize)
                 *impsize = image.size();
             return image;
         } else {

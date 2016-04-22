@@ -39,13 +39,13 @@ private Q_SLOTS:
         QTest::addColumn<QSize>("requestSize");
         QTest::addColumn<QSize>("resultSize");
 
-        QTest::newRow("battery0") << "battery-100-charging" << QSize(-1, -1) << QSize(256, 165);
-        QTest::newRow("battery1") << "battery-100-charging" << QSize(-1, 16) << QSize(24, 16);
+        QTest::newRow("battery0") << "battery-100-charging" << QSize(-1, -1) << QSize(256, 166);
+        QTest::newRow("battery1") << "battery-100-charging" << QSize(-1, 16) << QSize(25, 16);
         QTest::newRow("battery2") << "battery-100-charging" << QSize(16, -1) << QSize(16, 10);
-        QTest::newRow("battery3") << "battery-100-charging" << QSize(0, 16) << QSize(24, 16);
+        QTest::newRow("battery3") << "battery-100-charging" << QSize(0, 16) << QSize(25, 16);
         QTest::newRow("battery4") << "battery-100-charging" << QSize(16, 0) << QSize(16, 10);
         QTest::newRow("battery5") << "battery-100-charging" << QSize(24, 16) << QSize(24, 16);
-        QTest::newRow("battery6") << "battery-100-charging" << QSize(24, 24) << QSize(24, 15);
+        QTest::newRow("battery6") << "battery-100-charging" << QSize(24, 24) << QSize(24, 16);
         QTest::newRow("battery7") << "battery-100-charging" << QSize(37, 24) << QSize(37, 24);
 
         QTest::newRow("gallery0") << "gallery-app" << QSize(-1, -1) << QSize(512, 512);
