@@ -1076,6 +1076,8 @@ Item {
                 // NOTE: we use steppersMouseArea.pressed to keep steppers state even when the user presses on the steppers
                 // then holds and moves the pointer outside the window (probably by mistake) without releasing
                 if (proximityArea.containsMouseDevice || steppersMouseArea.pressed
+                        //if the user is press-and-holding on the trough to scroll page by page
+                        || (pressHoldTimer.running && pressHoldTimer.startedBy === thumbArea)
                         || (draggingThumb && slider.mouseDragging) || __overshootTimer.running) {
                     return 'steppers'
                 } else if (thumbStyleFlag
