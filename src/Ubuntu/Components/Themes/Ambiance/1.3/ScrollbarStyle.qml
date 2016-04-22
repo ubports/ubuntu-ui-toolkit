@@ -169,6 +169,7 @@ Item {
     property real __stepperImgOpacityOnPressed: 1.0
     property real __stepperImgOpacityOnHover: 0.7
     property real __stepperImgOpacityNormal: 0.4
+    property real __stepperImgOpacityDisabled: 0.2
 
     property real __stepperBgOpacityOnPressed: 1.0
     property real __stepperBgOpacityOnHover: 0.63
@@ -307,6 +308,8 @@ Item {
         property string propSizeRatio: (isVertical) ? "heightRatio" : "widthRatio"
         property string propCoordinate: (isVertical) ? "y" : "x"
         property string propSize: (isVertical) ? "height" : "width"
+        property string propAtBeginning: (isVertical) ? "atYBeginning" : "atXBeginning"
+        property string propAtEnd: (isVertical) ? "atYEnd" : "atXEnd"
 
         /*!
           Calculates the slider position based on the visible area's ratios.
@@ -854,6 +857,7 @@ Item {
                 enabled: isScrollable && interactive
                 visible: flowContainer.showSteppers
 
+                preventStealing: true
                 //Logic that handles hovering on steppers
                 hoverEnabled: true
                 Mouse.enabled: true
@@ -893,9 +897,9 @@ Item {
                         top: parent.top
                         bottom: !isVertical ? parent.bottom : undefined
                     }
-                    color: steppersMouseArea.hoveringFirstStepper
+                    color: (steppersMouseArea.hoveringFirstStepper && flickableItem && !flickableItem[scrollbarUtils.propAtBeginning])
                            ? Qt.rgba(stepperBgColor.r, stepperBgColor.g, stepperBgColor.b,
-                                   stepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
+                                     stepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
                            : "transparent"
                     visible: parent.visible
                     clip: true
@@ -919,9 +923,11 @@ Item {
                         rotation: isVertical ? 180 : 90
                         source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
-                                       sliderColor.a * (steppersMouseArea.hoveringFirstStepper
+                                       sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtBeginning])
+                                                        ? __stepperImgOpacityDisabled
+                                                        : (steppersMouseArea.hoveringFirstStepper
                                                         ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
-                                                        : __stepperImgOpacityNormal))
+                                                        : __stepperImgOpacityNormal)))
                     }
                 }
                 Rectangle {
@@ -933,9 +939,9 @@ Item {
                         top: !isVertical ? parent.top : firstStepper.bottom
                         bottom: !isVertical ? parent.bottom : undefined
                     }
-                    color: steppersMouseArea.hoveringSecondStepper
+                    color: (steppersMouseArea.hoveringSecondStepper && flickableItem && !flickableItem[scrollbarUtils.propAtEnd])
                            ? Qt.rgba(stepperBgColor.r, stepperBgColor.g, stepperBgColor.b,
-                                   stepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
+                                     stepperBgColor.a * (steppersMouseArea.pressed ? __stepperBgOpacityOnPressed : __stepperBgOpacityOnHover))
                            : "transparent"
                     clip: true
                     visible: parent.visible
@@ -960,9 +966,11 @@ Item {
                         rotation: isVertical ? 0 : -90
                         source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
-                                       sliderColor.a * (steppersMouseArea.hoveringSecondStepper
-                                                        ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
-                                                        : __stepperImgOpacityNormal))
+                                       sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtEnd])
+                                                        ? __stepperImgOpacityDisabled
+                                                        : (steppersMouseArea.hoveringSecondStepper
+                                                           ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
+                                                           : __stepperImgOpacityNormal)))
                     }
                 }
             }
