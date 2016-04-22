@@ -179,6 +179,9 @@ Item {
     //you change this size to avoid blurry steppers on low px-per-GU displays.
     property real __stepperAssetWidth: units.dp(8)
 
+    //UX requested to disable this feature for the moment
+    property bool __disableDragResetFeature: true
+
     property bool __recursionGuard: false
     property bool __disableStateBinding: false
     property alias __overshootTimer: overshootTimer
@@ -207,6 +210,7 @@ Item {
     //True --> Steppers style, non-overlay scrollbars
     //False --> Indicator, Trough and Steppers styles, overlaid to the content
     property bool alwaysOnScrollbars: styledItem.__alwaysOnScrollbars
+
     function scrollBy(amount, animate) {
         if (isNaN(amount)) {
             console.log("BUG: Invalid scrolling delta.")
@@ -596,6 +600,8 @@ Item {
                     property real previousX: 0
                     property real previousY: 0
 
+
+                    //THIS BEHAVIOUR IS CURRENTLY DISABLED, SEE __disableDragResetFeature
                     //following UX spec, if during a drag the mouse goes far away from the scrollbar
                     //we want to temporarily lock the drag and reset the scrollbar to where it was when
                     //the drag started, WITHOUT losing the drag (if the mouse gets back within the distance
@@ -716,8 +722,9 @@ Item {
                         cacheMousePosition(mouse)
 
                         if (pressedButtons == Qt.LeftButton && (slider.mouseDragging || slider.touchDragging)) {
-                            if ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
-                                    || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10)) {
+                            if (!__disableDragResetFeature &&
+                                    ((isVertical && Math.abs(mouse.x - thumbArea.x) >= flowContainer.thickness * 10)
+                                     || (!isVertical && Math.abs(mouse.y - thumbArea.y) >= flowContainer.thickness * 10))) {
                                 //don't reset it if the user is already scrolling the view (via keyboard or similar)
                                 if (!scrollAnimation.running) {
                                     resetFlickableToPreDragState()
@@ -926,8 +933,8 @@ Item {
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtBeginning])
                                                         ? __stepperImgOpacityDisabled
                                                         : (steppersMouseArea.hoveringFirstStepper
-                                                        ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
-                                                        : __stepperImgOpacityNormal)))
+                                                           ? (steppersMouseArea.pressed ? __stepperImgOpacityOnPressed : __stepperImgOpacityOnHover)
+                                                           : __stepperImgOpacityNormal)))
                     }
                 }
                 Rectangle {

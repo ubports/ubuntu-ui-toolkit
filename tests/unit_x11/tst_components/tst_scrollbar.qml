@@ -850,6 +850,10 @@ Item {
             var thumb = getThumb(scrollbar)
             var style = freshTestItem.scrollbar.__styleInstance
 
+            //SKIP THE TEST IF THE FEATURE IS DISABLED
+            verify(style.__disableDragResetFeature !== undefined, "Check that __disableDragResetFeature exists. Remember to enable this test again when the feature is added back.")
+            if (style.__disableDragResetFeature) return
+
             compare(style.isScrollable, true, "Item is assumed to be scrollable.")
             triggerSteppersMode(scrollbar)
 
