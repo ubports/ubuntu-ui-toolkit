@@ -623,7 +623,7 @@ Item {
             mouseRelease(secondStepper, secondStepper.width/2, secondStepper.height/2)
         }
 
-        function test_dragThumb(data) {
+        function test_dragThumbAndCheckStyling(data) {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
@@ -638,6 +638,23 @@ Item {
             setContentPositionToTopLeft(flickable)
 
             triggerSteppersMode(scrollbar)
+
+            //check colour of the thumb in normal state
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 0.4)), true,
+                    "Wrong thumb color in normal state.")
+            //check hovered colour
+            mouseMove(thumb, thumb.width/2, thumb.height/2)
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 0.7)), true,
+                    "Wrong thumb color in hover state.")
+
+            //check pressed state colour
+            mousePress(thumb, thumb.width/2, thumb.height/2)
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 1.0)), true,
+                    "Wrong thumb color in hover state.")
+            mouseRelease(thumb, thumb.width/2, thumb.height/2)
 
             if (style.isVertical) {
                 mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
