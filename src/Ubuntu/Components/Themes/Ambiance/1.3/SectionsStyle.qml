@@ -172,7 +172,7 @@ Item {
 
                 Rectangle {
                     anchors {
-                        top: parent.bottom
+                        bottom: parent.bottom
                         left: parent.left
                         right: parent.right
                     }
@@ -187,11 +187,8 @@ Item {
                 activeFocusOnTab: false
                 objectName: "section_button_" + index
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
-
-                // Leave space for the underline, which should not be covered
-                //  by the focus frame.
-                height: sectionsStyle.height - sectionsStyle.underlineHeight
-                // Ensure the underline is visible.
+                height: sectionsStyle.height
+                // No need to clip
                 contentItem.clip: false
 
                 property bool selected: index === styledItem.selectedIndex
@@ -226,13 +223,14 @@ Item {
                 Rectangle {
                     id: underline
                     anchors {
-                        // show the underline below the ListItem
-                        top: parent.bottom
+                        bottom: parent.bottom
                         left: parent.left
                         right: parent.right
                     }
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.underlineColor
+                    // Don't cover the focus frame:
+                    visible: !sectionButton.keyNavigationFocus
                 }
             }
 
