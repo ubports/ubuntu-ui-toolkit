@@ -53,7 +53,6 @@ public: // yet for cpp use
     static void mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = 0, int delay = -1);
 
 private:
-    static QTouchDevice *m_touchDevice;
     static UCTestExtras *m_testExtras;
 
     friend class UCMouseTouchAdaptor;
