@@ -887,6 +887,14 @@ Item {
                 //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
                 clip: true
                 onPressed: {
+                    //This additional trigger of the hovering logic is useful especially in testing
+                    //environments, where simulating a click on the first stepper will generate onEntered,
+                    //but then clicking on the second one (without a mouseMove) won't, because they're
+                    //handled by the same mouse area, which is already hovered. With this trigger
+                    //we ensure that the hovering logic is correct even when there are no mouse moves between
+                    //clicks on different steppers (like it happens in tst_actionSteppers test).
+                    handleHover(mouse)
+
                     handlePress()
                     pressHoldTimer.startTimer(steppersMouseArea)
                 }
