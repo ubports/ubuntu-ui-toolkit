@@ -644,7 +644,10 @@ Item {
 
                     function handleHover(mouseX, mouseY) {
                         var mouseScrollingProp = isVertical ? mouseY : mouseX
-                        hoveringThumb = mouseScrollingProp >= slider[scrollingProp] &&
+                        //don't count as hover if the user is already press-and-holding the trough to
+                        //scroll page by page
+                        hoveringThumb = !(pressHoldTimer.running && pressHoldTimer.startedBy === thumbArea)
+                                && mouseScrollingProp >= slider[scrollingProp] &&
                                 mouseScrollingProp <= slider[scrollingProp] + slider[sizeProp]
                     }
 
