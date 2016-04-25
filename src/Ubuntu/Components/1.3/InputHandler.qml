@@ -293,14 +293,12 @@ MultiPointTouchArea {
         ignoreUnknownSignals: true
         onActiveFocusChanged: {
             if (!main.activeFocus) {
-                main.keyNavigationFocus = false
                 input.focus = false;
             }
         }
         onKeyNavigationFocusChanged: {
             if (main.keyNavigationFocus) {
                 input.forceActiveFocus();
-                main.keyNavigationFocus = true;
             }
         }
         onFocusChanged: {

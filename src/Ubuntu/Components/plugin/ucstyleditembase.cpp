@@ -541,6 +541,10 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     if (change == ItemParentHasChanged) {
         // update parentItem
         d_func()->oldParentItem = data.item;
+    } else if (change == ItemActiveFocusHasChanged) {
+        // Children may retain focus as if it was the StyledItem itself
+        if (!hasActiveFocus())
+            setKeyNavigationFocus(false);
     }
 }
 
@@ -557,13 +561,6 @@ void UCStyledItemBase::focusInEvent(QFocusEvent *event)
             // Mouse or window focus don't affect keyNavigationFocus status
             break;
     }
-}
-
-void UCStyledItemBase::focusOutEvent(QFocusEvent *event)
-{
-    QQuickItem::focusOutEvent(event);
-
-    setKeyNavigationFocus(false);
 }
 
 // grab pressed state and focus if it can be
