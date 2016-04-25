@@ -84,6 +84,14 @@ Item {
         Slider {
             id: slider
         }
+        Sections {
+            id: sections
+            actions: [
+                Action { text: "Section 1" },
+                Action { text: "Section 2" },
+                Action { text: "Section 3" }
+            ]
+        }
         Button {
             id: dummy2
         }
@@ -238,8 +246,12 @@ Item {
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
                 {tag: "Switch", from: switchbox, to: slider, key: Qt.Key_Tab},
                 {tag: "Switch(back)", from: slider, to: switchbox, key: Qt.Key_Backtab},
-                {tag: "Slider", from: slider, to: dummy2, key: Qt.Key_Tab},
-                {tag: "Slider(back)", from: dummy2, to: slider, key: Qt.Key_Backtab},
+                {tag: "Slider", from: slider, to: sections, key: Qt.Key_Tab},
+                {tag: "Slider(back)", from: sections, to: slider, key: Qt.Key_Backtab},
+                // NOTE: Navigation INSIDE the sections using the arrow keys is tested
+                //  in tst_sections.qml.
+                {tag: "Sections", from: sections, to: dummy2, key: Qt.Key_Tab},
+                {tag: "Sections(back)", from:dummy2, to: sections, key: Qt.Key_Backtab},
                 /* FIXME: Figure out how to test ActionBar delegate focus
                 {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
                 {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},

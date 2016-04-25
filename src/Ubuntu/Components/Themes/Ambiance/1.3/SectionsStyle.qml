@@ -89,7 +89,6 @@ Item {
             objectName: "sections_listview"
 
             property bool animateContentX: false
-            activeFocusOnTab: true
 
             // Position the selected item correctly.
             // For a scrollable ListView, if the item was already fully visible,
