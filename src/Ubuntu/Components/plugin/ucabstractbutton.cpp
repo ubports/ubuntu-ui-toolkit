@@ -33,7 +33,6 @@ UCAbstractButtonPrivate::UCAbstractButtonPrivate()
     , mouseArea(new QQuickMouseArea)
     , acceptEvents(true)
     , pressAndHoldConnected(false)
-    , touchPressed(false)
 {
 }
 void UCAbstractButtonPrivate::init()
@@ -241,22 +240,21 @@ void UCAbstractButton::touchEvent(QTouchEvent *event)
     Q_D(UCAbstractButton);
     switch (event->type()) {
     case QEvent::TouchBegin:
-        d->touchPressed = true;
-        // use MouseArea's signal to sync all logic
-        Q_EMIT d->mouseArea->pressedChanged();
+    {
+        // send an event to MouseArea to handle the event
+        QMouseEvent mouse(QEvent::MouseButtonPress, QPointF(0,0), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        qApp->sendEvent(d->mouseArea, &mouse);
         event->accept();
         break;
+    }
     case QEvent::TouchCancel:
     case QEvent::TouchEnd:
-        d->touchPressed = false;
-        // use MouseArea's signal to sync all logic
-        Q_EMIT d->mouseArea->pressedChanged();
-        if (contains(event->touchPoints()[0].pos())
-                && !d->pressAndHoldConnected
-                && (event->type() != QEvent::TouchCancel)) {
-            d->_q_mouseAreaClicked();
-        }
+    {
+        QMouseEvent mouse(QEvent::MouseButtonRelease, QPointF(0,0), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        qApp->sendEvent(d->mouseArea, &mouse);
+        event->accept();
         break;
+    }
     default:
         break;
     }
@@ -314,7 +312,7 @@ void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &
 bool UCAbstractButton::pressed() const
 {
     Q_D(const UCAbstractButton);
-    return d->mouseArea ? (d->mouseArea->pressed() | d->touchPressed): false;
+    return d->mouseArea ? d->mouseArea->pressed() : false;
 }
 
 /*!

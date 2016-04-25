@@ -48,7 +48,6 @@ public:
     UCMargins *sensingMargins = nullptr;
     bool acceptEvents:1;
     bool pressAndHoldConnected:1;
-    bool touchPressed:1;
 };
 
 #endif // UCABSTRACTBUTTON_P
