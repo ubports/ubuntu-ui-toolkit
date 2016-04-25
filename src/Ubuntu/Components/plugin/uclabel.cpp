@@ -130,7 +130,7 @@ void UCLabelPrivate::init()
     q->postThemeChanged();
 
     updatePixelSize();
-    defaultFont = q->font();
+    QFont defaultFont = q->font();
     defaultFont.setFamily("Ubuntu");
     defaultFont.setWeight(QFont::Light);
     q->setFont(defaultFont);
@@ -202,7 +202,7 @@ void UCLabel::setFont2(const QFont &font)
     Q_D(UCLabel);
     // we must restrict ourself to the pixelSize change as any font property change will
     // lead to the setter call.
-    if (d->defaultFont.pixelSize() != font.pixelSize()) {
+    if (this->font().pixelSize() != font.pixelSize()) {
         d->flags |= UCLabelPrivate::PixelSizeSet;
     }
     QQuickText::setFont(font);
