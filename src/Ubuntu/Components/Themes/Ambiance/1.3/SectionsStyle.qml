@@ -168,7 +168,8 @@ Item {
                 width: sectionsListView.currentItem ? sectionsListView.currentItem.width : 0
                 height: sectionsListView.currentItem ? sectionsListView.currentItem.height : 0
                 // Hide the highlight underline when the ListItem has the focus frame enabled:
-                visible: !sectionsListView.currentItem.keyNavigationFocus
+                visible: sectionsListView.currentItem &&
+                         !sectionsListView.currentItem.keyNavigationFocus
 
                 Rectangle {
                     anchors {
