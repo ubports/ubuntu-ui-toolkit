@@ -63,19 +63,19 @@ Style.PageHeaderStyle {
             if (landscape) {
                 if (hasSubtitle) {
                     // with subtitle, and with or without extension
-                    titleAreaHeight = units.gu(4);
-                    titleBottomSpacing = units.gu(2);
+                    titleAreaHeight = Qt.binding(function() { return units.gu(4) });
+                    titleBottomSpacing = Qt.binding(function() { return units.gu(2) });
                 } else if (hasExtension) {
-                    titleAreaHeight = units.gu(4);
-                    titleBottomSpacing = units.gu(1);
+                    titleAreaHeight = Qt.binding(function() { return units.gu(4) });
+                    titleBottomSpacing = Qt.binding(function() { return units.gu(1) });
                 } else {
-                    titleAreaHeight = units.gu(5)
+                    titleAreaHeight = Qt.binding(function() { return units.gu(5) });
                     titleBottomSpacing = 0;
                 }
             } else { // portrait
-                titleAreaHeight = units.gu(6);
+                titleAreaHeight = Qt.binding(function() { return units.gu(6) });
                 if (hasSubtitle) {
-                    titleBottomSpacing = units.gu(1);
+                    titleBottomSpacing = Qt.binding(function() { return units.gu(1) });
                 } else {
                     titleBottomSpacing = 0;
                 }
