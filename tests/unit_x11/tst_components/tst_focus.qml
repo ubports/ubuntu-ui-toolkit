@@ -247,12 +247,12 @@ Item {
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
                 {tag: "Switch", from: switchbox, to: slider, key: Qt.Key_Tab},
                 {tag: "Switch(back)", from: slider, to: switchbox, key: Qt.Key_Backtab},
-                {tag: "Slider", from: slider, to: sections, key: Qt.Key_Tab},
+                {tag: "Slider", from: slider, to: sections, key: Qt.Key_Tab, keyFocusItem: "section_button_0"},
                 {tag: "Slider(back)", from: sections, to: slider, key: Qt.Key_Backtab},
                 // NOTE: Navigation INSIDE the sections using the arrow keys is tested
                 //  in tst_sections.qml.
                 {tag: "Sections", from: sections, to: dummy2, key: Qt.Key_Tab},
-                {tag: "Sections(back)", from:dummy2, to: sections, key: Qt.Key_Backtab},
+                {tag: "Sections(back)", from:dummy2, to: sections, key: Qt.Key_Backtab, keyFocusItem: "section_button_0"},
                 /* FIXME: Figure out how to test ActionBar delegate focus
                 {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
                 {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
@@ -273,13 +273,21 @@ Item {
             verify(data.to.enabled, "Target component is invalid");
             verify(data.from.activeFocus, "Source component is not focused - focus is on %1"
                 .arg(String(window.activeFocusItem).split("(")[0]));
+
+            var keyFocusItem;
+            if (data.keyFocusItem) {
+                keyFocusItem = findChild(data.to, data.keyFocusItem);
+                verify(keyFocusItem, "Target does not have child with objectName "+data.keyFocusItem);
+            } else {
+                keyFocusItem = data.to;
+            }
             if (data.key == Qt.LeftButton) {
                 verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
                 mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
             } else {
                 verify(data.to.activeFocusOnTab, "Target doesn't take keyboard focus");
                 keyClick(data.key);
-                verify(data.to.keyNavigationFocus, "Target doesn't have keyNavigationFocus");
+                verify(keyFocusItem.keyNavigationFocus, "Target doesn't have keyNavigationFocus");
             }
             waitForRendering(data.to, 500);
             verify(!data.from.activeFocus, "Source component still keeps focus");
