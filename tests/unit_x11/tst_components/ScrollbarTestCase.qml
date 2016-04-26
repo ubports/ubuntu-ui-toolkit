@@ -224,8 +224,14 @@ UbuntuTestCase {
     function getFirstStepper(scrollbar) {
         return findChildAndCheckValidInstance(scrollbar.__styleInstance, "firstStepper")
     }
+    function getFirstStepperIcon(scrollbar) {
+        return findChildAndCheckValidInstance(scrollbar.__styleInstance, "firstStepperIcon")
+    }
     function getSecondStepper(scrollbar) {
         return findChildAndCheckValidInstance(scrollbar.__styleInstance, "secondStepper")
+    }
+    function getSecondStepperIcon(scrollbar) {
+        return findChildAndCheckValidInstance(scrollbar.__styleInstance, "secondStepperIcon")
     }
     function getTrough(scrollbar) {
         return findChildAndCheckValidInstance(scrollbar.__styleInstance, "trough")
