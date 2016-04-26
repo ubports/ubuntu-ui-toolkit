@@ -60,6 +60,7 @@ Item {
                 id: textFieldSecondaryItem
                 height: parent.height
                 width: height
+                Component.onCompleted: activeFocusOnTab = false
             }
         }
         TextArea {
@@ -266,6 +267,7 @@ Item {
             } else {
                 verify(data.to.activeFocusOnTab, "Target doesn't take keyboard focus");
                 keyClick(data.key);
+                verify(data.to.keyNavigationFocus, "Target doesn't have keyNavigationFocus");
             }
             waitForRendering(data.to, 500);
             verify(!data.from.activeFocus, "Source component still keeps focus");
