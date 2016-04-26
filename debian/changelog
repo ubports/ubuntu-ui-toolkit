@@ -1,3 +1,26 @@
+ubuntu-ui-toolkit (1.3.1957+16.04) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Run pep8 as part of 'make check' unit test runs. The MR includes fixes to 
+    make pep8 pass on Jenkins as well as a regression in the test method 
+    introduced by the previous, larger pep8-related reformattings. 
+    Fixes LP: #1454322, LP: #1572981.
+  * Use gu in expected position for test_popover_follows_pointerTarget. 
+    Fixes LP: #1569794.
+  * XML test results all may not start with test_tst_. Fixes LP: #1573629
+  * Handle keyNavigationFocus in InputHandler. Fixes LP: #1522739
+
+  [ Zsombor Egri ]
+  * Fix binding loops in AbstractButton. Fixes LP: #1553090
+
+  [ Gerry Boland ]
+  * Enable dynamic changing of grid units instigated by the shell. Fixes LP: #1573532
+
+  [ Tim Peeters ]
+  * Fix horizontal keyboard navigation in ListView. Fixes LP: #1572991
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 26 Apr 2016 15:55:07 +0200
+
 ubuntu-ui-toolkit (1.3.1949+16.04.20160421) xenial; urgency=medium
 
   [ Zoltan Balogh ]
