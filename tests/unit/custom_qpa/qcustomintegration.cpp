@@ -37,10 +37,33 @@
 #include <QtGui/private/qguiapplication_p.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformfontdatabase.h>
+#include <qpa/qplatformnativeinterface.h>
 
 #include <QtPlatformSupport/private/qgenericunixeventdispatcher_p.h>
 
 static const char devicePixelRatioEnvironmentVariable[] = "QT_DEVICE_PIXEL_RATIO";
+
+class QCustomNativeInterface : public QPlatformNativeInterface
+{
+    Q_OBJECT
+public:
+    QVariant windowProperty(QPlatformWindow */*window*/, const QString &name) const override
+    {
+        if (name == QStringLiteral("scale"))
+            return m_scale;
+
+        return QVariant();
+    }
+
+    Q_INVOKABLE void changeScale(float scale)
+    {
+        m_scale = scale;
+        Q_EMIT windowPropertyChanged(nullptr, "scale");
+    }
+
+private:
+    float m_scale = 1;
+};
 
 QCustomScreen::QCustomScreen()
     : mDepth(32), mFormat(QImage::Format_ARGB32_Premultiplied), mDpr(1.0)
@@ -55,6 +78,7 @@ QCustomScreen::QCustomScreen()
 }
 
 QCustomIntegration::QCustomIntegration()
+ : m_nativeInterface(new QCustomNativeInterface())
 {
     QCustomScreen *mPrimaryScreen = new QCustomScreen();
 
@@ -63,6 +87,11 @@ QCustomIntegration::QCustomIntegration()
     mPrimaryScreen->mFormat = QImage::Format_ARGB32_Premultiplied;
 
     screenAdded(mPrimaryScreen);
+}
+
+QCustomIntegration::~QCustomIntegration()
+{
+    delete m_nativeInterface;
 }
 
 bool QCustomIntegration::hasCapability(QPlatformIntegration::Capability cap) const
@@ -88,6 +117,10 @@ QPlatformFontDatabase *QCustomIntegration::fontDatabase() const
     return new DummyFontDatabase;
 }
 
+QPlatformNativeInterface *QCustomIntegration::nativeInterface() const
+{
+    return m_nativeInterface;
+}
 
 QPlatformWindow *QCustomIntegration::createPlatformWindow(QWindow *window) const
 {
@@ -110,3 +143,5 @@ QCustomIntegration *QCustomIntegration::instance()
 {
     return static_cast<QCustomIntegration *>(QGuiApplicationPrivate::platformIntegration());
 }
+
+#include "qcustomintegration.moc"
