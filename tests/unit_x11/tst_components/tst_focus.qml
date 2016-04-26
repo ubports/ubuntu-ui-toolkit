@@ -273,7 +273,6 @@ Item {
             verify(data.to.enabled, "Target component is invalid");
             verify(data.from.activeFocus, "Source component is not focused - focus is on %1"
                 .arg(String(window.activeFocusItem).split("(")[0]));
-
             if (data.key == Qt.LeftButton) {
                 verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
                 mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
