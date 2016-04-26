@@ -429,7 +429,6 @@ Item {
             buttonTriggerSpy.target = button;
             button.forceActiveFocus();
             keyClick(data.key);
-            waitForRendering(button);
             buttonTriggerSpy.wait();
         }
 
