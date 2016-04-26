@@ -37,6 +37,26 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
 {
 }
 
+/*!
+ * \qmlproperty string StyledItem::keyNavigationFocus
+ * If \l activeFocusOnTab is true and Tab or Shift+Tab is used to focus
+ * the item this property will be true - unlike \l activeFocus which is also
+ * true if the item gained focus by click, tap or programmatically.
+ *
+ * The implementation of focus rings as provided by the default Ambiance theme
+ * sets \l activeFocusOnTab in the style of each component and only indicates
+ * focus as long as \l keyNavigationFocus is true, similar to the below example.
+ * \qml
+ * StyledItem {
+ *     id: myItem
+ *     activeFocusOnTab: true
+ *     Rectangle {
+ *         anchors.fill: parent
+ *         color: keyNavigationFocus ? UbuntuColors.orange : UbuntuColors.blue
+ *     }
+ * }
+ * \endqml
+ */
 bool UCStyledItemBase::keyNavigationFocus() const
 {
     Q_D(const UCStyledItemBase);
