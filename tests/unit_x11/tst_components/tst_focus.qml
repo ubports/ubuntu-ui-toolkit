@@ -274,20 +274,20 @@ Item {
             verify(data.from.activeFocus, "Source component is not focused - focus is on %1"
                 .arg(String(window.activeFocusItem).split("(")[0]));
 
-            var keyFocusItem;
-            if (data.keyFocusItem) {
-                keyFocusItem = findChild(data.to, data.keyFocusItem);
-                verify(keyFocusItem, "Target does not have child with objectName "+data.keyFocusItem);
-            } else {
-                keyFocusItem = data.to;
-            }
             if (data.key == Qt.LeftButton) {
                 verify(data.to.activeFocusOnPress, "Target doesn't take focus on click");
                 mouseClick(data.to, centerOf(data.to).x, centerOf(data.to).y);
             } else {
                 verify(data.to.activeFocusOnTab, "Target doesn't take keyboard focus");
                 keyClick(data.key);
-                verify(keyFocusItem.keyNavigationFocus, "Target doesn't have keyNavigationFocus");
+
+                if (data.keyFocusItem) {
+                    var child = findChild(data.to, data.keyFocusItem);
+                    verify(child, "Target does not have child with objectName "+data.keyFocusItem);
+                    verify(child.keyNavigationFocus, "Target child does not have keyNavigationFocus");
+                } else {
+                    verify(data.to.keyNavigationFocus, "Target does not have keyNavigationFocus");
+                }
             }
             waitForRendering(data.to, 500);
             verify(!data.from.activeFocus, "Source component still keeps focus");
