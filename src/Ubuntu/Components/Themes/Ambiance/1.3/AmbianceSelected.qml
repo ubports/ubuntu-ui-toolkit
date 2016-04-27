@@ -20,6 +20,7 @@ import Ubuntu.Components 1.3
 AmbianceNormal {
     background: UbuntuColors.porcelain
     base: UbuntuColors.ash
+    baseText: UbuntuColors.graphite
     foreground: UbuntuColors.ash
     overlay: UbuntuColors.porcelain
 }

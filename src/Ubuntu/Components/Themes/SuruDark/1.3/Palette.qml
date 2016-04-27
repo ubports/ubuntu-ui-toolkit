@@ -35,7 +35,7 @@ Palette {
                 if (p == "objectName"|| p.indexOf("Changed") > 0) continue;
                 disabled[p] = diff[p] || (
                     // if not specific, colors are 30% opaque normal
-                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3)
+                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.4)
                 );
             }
         }
@@ -57,7 +57,7 @@ Palette {
                 if (p == "objectName"|| p.indexOf("Changed") > 0) continue;
                 selectedDisabled[p] = diff[p] || (
                     // if not specific, colors are 30% opaque normal
-                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3)
+                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.4)
                 );
             }
         }
@@ -65,9 +65,12 @@ Palette {
 
     highlighted: SuruDarkNormal {
         background: UbuntuColors.slate
-        base: UbuntuColors.graphite
+        base: UbuntuColors.inkstone
+        baseText: UbuntuColors.graphite
         foreground: UbuntuColors.slate
         raised: UbuntuColors.silk
+        raisedText: UbuntuColors.inkstone
+        raisedSecondaryText: UbuntuColors.ash
     }
 
     focused: SuruDarkNormal {

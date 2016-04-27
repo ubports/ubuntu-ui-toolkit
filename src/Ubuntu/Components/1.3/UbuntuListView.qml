@@ -196,7 +196,9 @@ ListView {
 
     // highlight current item
     highlight: Rectangle {
-        color: theme.palette.selected.background
+        color: root.activeFocus
+               ? theme.palette.focused.background
+               : theme.palette.selected.background
     }
     highlightMoveDuration: 0
 }
