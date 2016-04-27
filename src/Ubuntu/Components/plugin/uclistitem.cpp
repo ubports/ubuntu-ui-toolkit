@@ -1140,6 +1140,8 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
         updateNode = true;
     }
     QRectF rect(boundingRect());
+    // FIXME: The 1dp margin is here so that part of the focus frame
+    //  is not hidden by the APL divider. See bug #1575060.
     rect -= QMarginsF(0, 0, UCUnits::instance()->dp(1), 0);
     d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
     rectNode->setRect(rect);
