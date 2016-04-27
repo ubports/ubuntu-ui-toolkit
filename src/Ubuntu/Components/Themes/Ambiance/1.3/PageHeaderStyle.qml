@@ -40,13 +40,13 @@ Style.PageHeaderStyle {
     implicitHeight: contentHeight + divider.height + internal.extensionHeight
 
     Component.onCompleted: internal.updateHeights()
-    Object {
+    QtObject {
         id: internal
         property real extensionHeight: styledItem.extension
                                        ? styledItem.extension.height
                                        : styledItem.sections.height
 
-        property bool landscape: Screen.height <= units.gu(50)
+        property bool landscape: pageHeaderStyle.Screen.height <= units.gu(50)
         property bool hasSubtitle: styledItem.subtitle && !styledItem.contents
         property bool hasExtension: styledItem.extension
 
