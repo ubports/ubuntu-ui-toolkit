@@ -66,9 +66,9 @@ _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 function create_fallback_xml {
   cat << EOF > $_XML
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="1" failures="1" tests="1" name="$_TESTFILE">
+<testsuite errors="$1" failures="1" tests="1" name="$_TESTFILE">
   <testcase result="fail" name="${_TESTFILE}_Execution">
-    <failure message="$1" result="fail"/>
+    $2
   </testcase>
 </testsuite>
 EOF
@@ -112,12 +112,17 @@ function execute_test_cmd {
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
 	
+    # QV4_MM_AGGRESSIVE_GC=1 \
     ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     QT_LOGGING_RULES="[PERFORMANCE].warning=false" \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     if [ ! -s $_XML ]; then
         # Write fallback in case it crashed and the file is empty
-        create_fallback_xml "Test results corrupted (crash)"
+        if [[ $_XML == *".SEGFAULT"* ]]; then
+            create_fallback_xml 0 '<!-- message="Test results corrupted (crashed)" type="qwarn" -->'
+        else
+            create_fallback_xml 1 '<failure message="Test results corrupted (crashed)" result="fail"/>'
+        fi
     fi
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
         ${BUILD_DIR}/tests/checkresults.sh $_XML
@@ -140,7 +145,7 @@ function execute_test_cmd {
 }
 
 # Always create XML in case the test can't be run, eg. .so file missing
-create_fallback_xml "Test couldn't be run"
+create_fallback_xml 1 '<failure message="Test couldnt be run" result="fail"/>'
 create_test_cmd
 execute_test_cmd
 RESULT=$?
