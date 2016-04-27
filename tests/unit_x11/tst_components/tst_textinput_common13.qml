@@ -131,7 +131,7 @@ Item {
         }
     }
 
-    MockKeyboard {
+    MockKeyboard13 {
         Component.onCompleted: UbuntuApplication.inputMethod = this
     }
 
