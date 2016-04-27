@@ -40,7 +40,7 @@ Style.PageHeaderStyle {
     implicitHeight: contentHeight + divider.height + internal.extensionHeight
 
     Component.onCompleted: internal.updateHeights()
-    Object {
+    Item { // use of an Item is required to have access to the Screen attached property.
         id: internal
         property real extensionHeight: styledItem.extension
                                        ? styledItem.extension.height
