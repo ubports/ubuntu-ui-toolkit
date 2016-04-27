@@ -76,10 +76,11 @@ Item {
         }
     }
 
+    property int listViewModelSize: 10
     Component {
         id: listView
         ListView {
-            model: 10
+            model: listViewModelSize
         }
     }
 
@@ -142,37 +143,117 @@ Item {
             verify(listItem.keyNavigationFocus);
         }
 
-        // vertical key navigation in ListView between ListItems
+        // key navigation in ListView between ListItems
         function test_focus_and_navigate_in_listview_data() {
+            var n = main.listViewModelSize;
             return [
-                {tag: "No content", delegate: simpleListItem, key: Qt.Key_Down, keyTimes: 3, focusItems: ["simple1", "simple2", "simple3"]},
-                {tag: "With content", delegate: listItemWithContent, key: Qt.Key_Down, keyTimes: 3, focusItems: ["withContent1", "withContent2", "withContent3"]},
+                        {   tag: "Down, no content, from beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            initialIndex: 0,
+                            key: Qt.Key_Down,
+                            keyTimes: 3,
+                            focusItems: ["simple1", "simple2", "simple3"]
+                        },
+                        {
+                            tag: "Down, no contents, near end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            initialIndex: n - 3,
+                            key: Qt.Key_Down,
+                            keyTimes: 3,
+                            // Don't navigate beyond the last item:
+                            focusItems: ["simple"+(n-2), "simple"+(n-1), "simple"+(n-1)]
+                        },
+                        {   tag: "Up, no content, near beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            initialIndex: 2,
+                            key: Qt.Key_Up,
+                            keyTimes: 3,
+                            focusItems: ["simple1", "simple0", "simple0"]
+                        },
+                        {
+                            tag: "Up, no contents, from end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            initialIndex: n - 1,
+                            key: Qt.Key_Up,
+                            keyTimes: 3,
+                            focusItems: ["simple"+(n-2), "simple"+(n-3), "simple"+(n-4)]
+                        },
+                        {   tag: "Left, no content, near beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            initialIndex: 2,
+                            key: Qt.Key_Left,
+                            keyTimes: 3,
+                            focusItems: ["simple1", "simple0", "simple0"]
+                        },
+                        {   tag: "Left, no content, from end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            initialIndex: n - 1,
+                            key: Qt.Key_Left,
+                            keyTimes: 3,
+                            focusItems: ["simple"+(n-2), "simple"+(n-3), "simple"+(n-4)]
+                        },
+                        {   tag: "Right, no content, from beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            initialIndex: 0,
+                            key: Qt.Key_Right,
+                            keyTimes: 5,
+                            focusItems: ["simple1", "simple2", "simple3", "simple4", "simple5"]
+                        },
+                        {   tag: "Right, no content, near end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            initialIndex: n - 3,
+                            key: Qt.Key_Right,
+                            keyTimes: 2,
+                            focusItems: ["simple"+(n-2), "simple"+(n-1), "simple"+(n-1)]
+                        },
+                        {   tag: "Down, with content, from beginning",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            initialIndex: 0,
+                            key: Qt.Key_Down,
+                            keyTimes: 3,
+                            focusItems: ["withContent1", "withContent2", "withContent3"]
+                        },
+                        {   tag: "Down, with content, near end",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            initialIndex: n - 3,
+                            key: Qt.Key_Down,
+                            keyTimes: 3,
+                            focusItems: ["withContent"+(n-2), "withContent"+(n-1), "withContent"+(n-1)]
+                        },
+                        {   tag: "Up, with content, near beginning",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            initialIndex: 2,
+                            key: Qt.Key_Up,
+                            keyTimes: 3,
+                            focusItems: ["withContent1", "withContent0", "withContent0"]
+                        },
+                        {   tag: "Up, with content, from end",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            initialIndex: n - 1,
+                            key: Qt.Key_Up,
+                            keyTimes: 2,
+                            focusItems: ["withContent"+(n-2), "withContent"+(n-3)]
+                        }
+                        // Horizontal navigation for ListItems with content is not supported.
             ];
         }
         function test_focus_and_navigate_in_listview(data) {
             var test = loadTest(listView);
+            test.orientation = data.orientation;
             test.delegate = data.delegate;
-            waitForRendering(test, 500);
-            keyClick(Qt.Key_Tab);
-            for (var i = 0; i < data.keyTimes; i++) {
-                keyClick(data.key);
-                var item = findChild(test, data.focusItems[i]);
-                verify(item);
-                tryCompare(item, "activeFocus", true, 500, "Focus hasn't been gained by the ListItem");
-                verify(item.keyNavigationFocus, "failure on key navigation on " + data.focusItems[i]);
-            }
-        }
-
-        // vertical navigation updates ListView.currentItem (as well as currentIndex)
-        function test_focus_and_navigate_in_listview_updates_currentItem_data() {
-            return [
-                {tag: "No content", delegate: simpleListItem, key: Qt.Key_Down, keyTimes: 3, focusItems: ["simple1", "simple2", "simple3"]},
-                {tag: "With content", delegate: listItemWithContent, key: Qt.Key_Down, keyTimes: 3, focusItems: ["withContent1", "withContent2", "withContent3"]},
-            ];
-        }
-        function test_focus_and_navigate_in_listview_updates_currentItem(data) {
-            var test = loadTest(listView);
-            test.delegate = data.delegate;
+            test.currentIndex = data.initialIndex;
             waitForRendering(test, 500);
             keyClick(Qt.Key_Tab);
             for (var i = 0; i < data.keyTimes; i++) {

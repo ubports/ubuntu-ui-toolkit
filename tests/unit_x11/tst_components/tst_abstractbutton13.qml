@@ -24,6 +24,18 @@ Item {
     height: units.gu(71)
 
     Column {
+        anchors.horizontalCenter: parent.horizontalCenter
+        AbstractButton {
+            id: bindingLoopGuard
+            implicitWidth: childrenRect.width
+            implicitHeight: childrenRect.height
+
+            Rectangle {
+                width: units.gu(2)
+                height: width
+                color: "green"
+            }
+        }
         AbstractButton {
             id: absButton
             width: units.gu(10)
@@ -155,6 +167,7 @@ Item {
         }
 
         function initTestCase() {
+            TestExtras.registerTouchDevice();
             compare(buttonWithSensing.sensingMargins.left, 0);
             compare(buttonWithSensing.sensingMargins.right, 0);
             compare(buttonWithSensing.sensingMargins.top, 0);
@@ -237,60 +250,84 @@ Item {
             compare(loader.click, true, "clicked not captured by Connection");
         }
 
+        // the sensing area only refers to touch gestures, not to mouse events
+        // the area minimum size is 4x4 GU, meaning if a component defines a size of 3x3, the sensing area
+        // will increase it with 0.5GU all around to reach 4x4 size
         function test_sensing_area_data() {
             return [
                 // margins is [left, top, right, bottom]
-                {tag: "zero size, no margins, click in visual", sizeGU: [0, 0], clickGU: [0, 0], sensingGU: [4, 4]},
-                {tag: "zero size, no margins, click in sensing", sizeGU: [0, 0], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "zero size, 1GU margins, click in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], sensingGU: [4, 4]},
-                {tag: "zero size, 1GU margins, click in sensing", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "zero size, 3GU margins horizontal, click in sensing", sizeGU: [0, 0], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [6, 4]},
-                {tag: "zero size, 3GU margins vertical, click in sensing", sizeGU: [0, 0], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [4, 6]},
-                {tag: "zero size, 3GU margins around, click in sensing", sizeGU: [0, 0], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [6, 6]},
+                {tag: "zero size, no margins, tap in visual", sizeGU: [0, 0], clickGU: [0, 0], touch: true},
+                {tag: "zero size, no margins, click in visual", sizeGU: [0, 0], clickGU: [0, 0], fail: true},
+                {tag: "zero size, no margins, tap in sensing +", sizeGU: [0, 0], clickGU: [2, 2], touch: true},
+                {tag: "zero size, no margins, tap in sensing -", sizeGU: [0, 0], clickGU: [-2, -2], touch: true},
+                {tag: "zero size, no margins, click in sensing", sizeGU: [0, 0], clickGU: [2, 2], fail: true},
+                {tag: "zero size, 1GU margins, tap in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], touch: true},
+                {tag: "zero size, 1GU margins, click in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], fail: true},
+                {tag: "zero size, 1GU margins, tap in sensing", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [2, 2], touch: true},
+                {tag: "zero size, 1GU margins, click in sensing", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [2, 2], fail: true},
+                {tag: "zero size, 3GU margins horizontal, tap in sensing", sizeGU: [0, 0], marginsGU: [3, 0, 3, 0], clickGU: [3, 2], touch: true},
+                {tag: "zero size, 3GU margins horizontal, click in sensing", sizeGU: [0, 0], marginsGU: [3, 0, 3, 0], clickGU: [3, 2], fail: true},
+                {tag: "zero size, 3GU margins vertical, tap in sensing", sizeGU: [0, 0], marginsGU: [0, 3, 0, 3], clickGU: [2, 3], touch: true},
+                {tag: "zero size, 3GU margins vertical, click in sensing", sizeGU: [0, 0], marginsGU: [0, 3, 0, 3], clickGU: [2, 3], fail: true},
+                {tag: "zero size, 3GU margins around, tap in sensing", sizeGU: [0, 0], marginsGU: [3, 3, 3, 3], clickGU: [3, 3], touch: true},
+                {tag: "zero size, 3GU margins around, click in sensing", sizeGU: [0, 0], marginsGU: [3, 3, 3, 3], clickGU: [3, 3], fail: true},
 
-                {tag: "3x3GU size, no margins, click in visual", sizeGU: [3, 3], clickGU: [0, 0], sensingGU: [4, 4]},
-                {tag: "3x3GU size, no margins, click in sensing", sizeGU: [3, 3], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "3x3GU size, 1GU margins, click in visual", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], sensingGU: [5, 5]},
-                {tag: "3x3GU size, 1GU margins, click in sensing", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], sensingGU: [5, 5]},
-                {tag: "3x3GU size, 3GU margins horizontal, click in sensing", sizeGU: [3, 3], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [9, 4]},
-                {tag: "3x3GU size, 3GU margins vertical, click in sensing", sizeGU: [3, 3], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [4, 9]},
-                {tag: "3x3GU size, 3GU margins around, click in sensing", sizeGU: [3, 3], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [9, 9]},
+                {tag: "3x3GU size, no margins, tap in visual", sizeGU: [3, 3], clickGU: [0, 0], touch: true},
+                {tag: "3x3GU size, no margins, click in visual", sizeGU: [3, 3], clickGU: [0, 0]},
+                {tag: "3x3GU size, no margins, tap in sensing", sizeGU: [3, 3], clickGU: [3.5, 3.5], touch: true},
+                {tag: "3x3GU size, no margins, click in sensing", sizeGU: [3, 3], clickGU: [3.5, 3.5], fail: true},
+                {tag: "3x3GU size, 1GU margins, tap in visual", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], touch: true},
+                {tag: "3x3GU size, 1GU margins, click in visual", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [0, 0]},
+                {tag: "3x3GU size, 1GU margins, tap in sensing", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], touch: true},
+                {tag: "3x3GU size, 1GU margins, click in sensing", sizeGU: [3, 3], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], fail: true},
+                {tag: "3x3GU size, 3GU margins horizontal, tap in sensing", sizeGU: [3, 3], marginsGU: [3, 0, 3, 0], clickGU: [6, 3.5], touch: true},
+                {tag: "3x3GU size, 3GU margins horizontal, click in sensing", sizeGU: [3, 3], marginsGU: [3, 0, 3, 0], clickGU: [6, 3.5], fail: true},
+                {tag: "3x3GU size, 3GU margins vertical, tap in sensing", sizeGU: [3, 3], marginsGU: [0, 3, 0, 3], clickGU: [3.5, 6], touch: true},
+                {tag: "3x3GU size, 3GU margins vertical, click in sensing", sizeGU: [3, 3], marginsGU: [0, 3, 0, 3], clickGU: [3.5, 6], fail: true},
+                {tag: "3x3GU size, 3GU margins around, tap in sensing", sizeGU: [3, 3], marginsGU: [3, 3, 3, 3], clickGU: [6, 6], touch: true},
+                {tag: "3x3GU size, 3GU margins around, click in sensing", sizeGU: [3, 3], marginsGU: [3, 3, 3, 3], clickGU: [6, 6], fail: true},
 
-                {tag: "5x5GU size, no margins, click in visual", sizeGU: [5, 5], clickGU: [0, 0], sensingGU: [5, 5]},
-                {tag: "5x5GU size, no margins, click in sensing", sizeGU: [5, 5], clickGU: [4, 4], sensingGU: [5, 5]},
-                {tag: "5x5GU size, 1GU margins, click in visual", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], sensingGU: [7, 7]},
-                {tag: "5x5GU size, 1GU margins, click in sensing", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [4, 4], sensingGU: [7, 7]},
-                {tag: "5x5GU size, 3GU margins horizontal, click in sensing", sizeGU: [5, 5], marginsGU: [3, 0, 3, 0], clickGU: [4, 4], sensingGU: [11, 5]},
-                {tag: "5x5GU size, 3GU margins vertical, click in sensing", sizeGU: [5, 5], marginsGU: [0, 3, 0, 3], clickGU: [4, 4], sensingGU: [5, 11]},
-                {tag: "5x5GU size, 3GU margins around, click in sensing", sizeGU: [5, 5], marginsGU: [3, 3, 3, 3], clickGU: [4, 4], sensingGU: [11, 11]},
+                {tag: "5x5GU size, no margins, tap in visual", sizeGU: [5, 5], clickGU: [0, 0], touch: true},
+                {tag: "5x5GU size, no margins, tap in visual limit", sizeGU: [5, 5], clickGU: [5, 5], touch: true},
+                {tag: "5x5GU size, 1GU margins, tap in visual", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [5, 5], touch: true},
+                {tag: "5x5GU size, 1GU margins, tap in sensing+", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [6, 6], touch: true},
+                {tag: "5x5GU size, 1GU margins, tap in sensing-", sizeGU: [5, 5], marginsGU: [1, 1, 1, 1], clickGU: [-1, -1], touch: true},
+                {tag: "5x5GU size, 3GU margins horizontal, tap in sensing+", sizeGU: [5, 5], marginsGU: [3, 0, 3, 0], clickGU: [8, 5], touch: true},
+                {tag: "5x5GU size, 3GU margins horizontal, tap in sensing-", sizeGU: [5, 5], marginsGU: [3, 0, 3, 0], clickGU: [-3, 0], touch: true},
+                {tag: "5x5GU size, 3GU margins vertical, tap in sensing+", sizeGU: [5, 5], marginsGU: [0, 3, 0, 3], clickGU: [5, 8], touch: true},
+                {tag: "5x5GU size, 3GU margins vertical, tap in sensing-", sizeGU: [5, 5], marginsGU: [0, 3, 0, 3], clickGU: [0, -3], touch: true},
+                {tag: "5x5GU size, 3GU margins around, click in sensing+", sizeGU: [5, 5], marginsGU: [3, 3, 3, 3], clickGU: [8, 8], touch: true},
+                {tag: "5x5GU size, 3GU margins around, click in sensing-", sizeGU: [5, 5], marginsGU: [3, 3, 3, 3], clickGU: [-3, -3], touch: true},
 
-                {tag: "zero size, no margins, click out of sensing area", sizeGU: [0, 0], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
-                {tag: "2x2GU size, no margins, click out of sensing area", sizeGU: [2, 2], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
-                {tag: "4x4GU size, no margins, click out of sensing area", sizeGU: [4, 4], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
-                {tag: "2x2GU size, 1GU margins around, click out of sensing area", sizeGU: [2, 2], marginsGU: [1, 1, 1, 1], clickGU: [5, 5], sensingGU: [4, 4], fail: true},
-                {tag: "4x4GU size, 1GU margins around, click out of sensing area", sizeGU: [4, 4], marginsGU: [1, 1, 1, 1], clickGU: [6.1, 6.1], sensingGU: [6, 6], fail: true},
+                {tag: "zero size, no margins, tap out of sensing area", sizeGU: [0, 0], clickGU: [5, 5], touch: true, fail: true},
+                {tag: "2x2GU size, no margins, tap out of sensing area", sizeGU: [2, 2], clickGU: [5, 5], touch: true, fail: true},
+                {tag: "4x4GU size, no margins, tap out of sensing area", sizeGU: [4, 4], clickGU: [5, 5], touch: true, fail: true},
+                {tag: "2x2GU size, 1GU margins around, tap out of sensing area", sizeGU: [2, 2], marginsGU: [1, 1, 1, 1], clickGU: [5, 5], touch: true, fail: true},
+                {tag: "4x4GU size, 1GU margins around, tap out of sensing area", sizeGU: [4, 4], marginsGU: [1, 1, 1, 1], clickGU: [5.1, 5.1], touch: true, fail: true},
 
                 // test margins.all
-                {tag: "zero size, 5GU margins.all, click in sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [5, 5], sensingGU: [10, 10]},
-                {tag: "2x2 size, 2GU margins.all, click in sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [6, 6], sensingGU: [6, 6]},
-                {tag: "zero size, 5GU margins.all, click out of sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [10.1, 10.1], sensingGU: [10, 10], fail: true},
-                {tag: "2x2 size, 2GU margins.all, click out of sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [6.1, 6.1], sensingGU: [6, 6], fail: true},
+                {tag: "zero size, 5GU margins.all, tap in sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [5, 5], touch: true},
+                {tag: "2x2 size, 2GU margins.all, tap in sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [4, 4], touch: true},
+                {tag: "zero size, 5GU margins.all, tap out of sensing area", sizeGU: [0, 0], marginsAll: units.gu(5), clickGU: [5.1, 5.1], touch: true, fail: true},
+                {tag: "2x2 size, 2GU margins.all, tap out of sensing area", sizeGU: [2, 2], marginsAll: units.gu(2), clickGU: [4.1, 4.1], touch: true, fail: true},
 
                 // test negative margins
-                {tag: "zero size, -1GU margins.all, click in sensing area", sizeGU: [0, 0], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "2x2 size, -1GU margins.all, click in sensing area", sizeGU: [2, 2], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "zero size, -1GU margins horizontal, click in sensing area", sizeGU: [0, 0], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "zero size, -1GU margins vertical, click in sensing area", sizeGU: [0, 0], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "2x2 size, -1GU margins horizontal, click in sensing area", sizeGU: [2, 2], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "2x2 size, -1GU margins vertical, click in sensing area", sizeGU: [2, 2], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "4x4 size, -1GU margins.all, click in sensing area", sizeGU: [4, 4], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "4x4 size, -1GU margins horizontal, click in sensing area", sizeGU: [4, 4], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "4x4 size, -1GU margins vertical, click in sensing area", sizeGU: [4, 4], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], sensingGU: [4, 4]},
+                {tag: "zero size, -1GU margins.all, tap in sensing area+", sizeGU: [0, 0], marginsAll: -units.gu(1), clickGU: [2, 2], touch: true},
+                {tag: "zero size, -1GU margins.all, tap in sensing area-", sizeGU: [0, 0], marginsAll: -units.gu(1), clickGU: [-2, -2], touch: true},
+                {tag: "2x2 size, -1GU margins.all, tap in sensing area+", sizeGU: [2, 2], marginsAll: -units.gu(1), clickGU: [3, 3], touch: true},
+                {tag: "2x2 size, -1GU margins.all, tap in sensing area-", sizeGU: [2, 2], marginsAll: -units.gu(1), clickGU: [-1, -1], touch: true},
+                {tag: "zero size, -1GU margins horizontal, tap in sensing area", sizeGU: [0, 0], marginsGU: [-1, 0, -1, 0], clickGU: [2, 2], touch: true},
+                {tag: "zero size, -1GU margins vertical, tap in sensing area", sizeGU: [0, 0], marginsGU: [0, -1, 0, -1], clickGU: [2, 2], touch: true},
+                {tag: "2x2 size, -1GU margins horizontal, tap in sensing area", sizeGU: [2, 2], marginsGU: [-1, 0, -1, 0], clickGU: [3, 3], touch: true},
+                {tag: "2x2 size, -1GU margins vertical, tap in sensing area", sizeGU: [2, 2], marginsGU: [0, -1, 0, -1], clickGU: [3, 3], touch: true},
+                {tag: "4x4 size, -1GU margins.all, tap in sensing area", sizeGU: [4, 4], marginsAll: -units.gu(1), clickGU: [4, 4], touch: true},
+                {tag: "4x4 size, -1GU margins horizontal, tap in sensing area", sizeGU: [4, 4], marginsGU: [-1, 0, -1, 0], clickGU: [4, 4], touch: true},
+                {tag: "4x4 size, -1GU margins vertical, click in sensing area", sizeGU: [4, 4], marginsGU: [0, -1, 0, -1], clickGU: [4, 4], touch: true},
 
                 // bigger size than minimum, decrease sensing area
-                {tag: "5x5 size, -1GU margins.all, click in sensing area", sizeGU: [5, 5], marginsAll: -units.gu(1), clickGU: [4, 4], sensingGU: [4, 4]},
-                {tag: "5x5 size, -1GU margins horizontal, click in sensing area", sizeGU: [5, 5], marginsGU: [-1, 0, -1, 0], clickGU: [4, 5], sensingGU: [4, 5]},
-                {tag: "5x5 size, -1GU margins vertical, click in sensing area", sizeGU: [5, 5], marginsGU: [0, -1, 0, -1], clickGU: [5, 4], sensingGU: [5, 4]},
+                {tag: "5x5 size, -1GU margins.all, tap in sensing area", sizeGU: [5, 5], marginsAll: -units.gu(1), clickGU: [4, 4], touch: true},
+                {tag: "5x5 size, -1GU margins horizontal, tap in sensing area", sizeGU: [5, 5], marginsGU: [-1, 0, -1, 0], clickGU: [4, 5], touch: true},
+                {tag: "5x5 size, -1GU margins vertical, tap in sensing area", sizeGU: [5, 5], marginsGU: [0, -1, 0, -1], clickGU: [5, 4], touch: true},
             ];
         }
         function test_sensing_area(data) {
@@ -307,14 +344,14 @@ Item {
                 buttonWithSensing.sensingMargins.all = data.marginsAll;
             }
 
-            if (data.sensingGU) {
-                compare(buttonWithSensing.__mouseArea.width, units.gu(data.sensingGU[0]), "unexpected horizontal sensing size");
-                compare(buttonWithSensing.__mouseArea.height, units.gu(data.sensingGU[1]), "unexpected vertical sensing size");
+            if (data.touch) {
+                TestExtras.touchClick(0, buttonWithSensing, Qt.point(units.gu(data.clickGU[0]), units.gu(data.clickGU[1])));
+            } else {
+                mouseClick(buttonWithSensing.__mouseArea, units.gu(data.clickGU[0]), units.gu(data.clickGU[1]));
             }
             if (data.fail) {
                 expectFailContinue(data.tag, "no signal");
             }
-            mouseClick(buttonWithSensing.__mouseArea, units.gu(data.clickGU[0]), units.gu(data.clickGU[1]));
             signalSpy.wait(500);
         }
 
