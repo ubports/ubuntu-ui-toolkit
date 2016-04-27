@@ -47,7 +47,7 @@ private Q_SLOTS:
         QTest::newRow("battery5") << "battery-100-charging" << QSize(24, 16) << QSize(24, 16);
         QTest::newRow("battery6") << "battery-100-charging" << QSize(24, 24) << QSize(24, 16);
         QTest::newRow("battery7") << "battery-100-charging" << QSize(37, 24) << QSize(37, 24);
-        QTest::newRow("battery8") << "battery-100-charging" << QSize(16, 512) << QSize(16, 10);
+        QTest::newRow("battery8") << "battery-100-charging" << QSize(15, 512) << QSize(15, 10);
 
         QTest::newRow("gallery0") << "gallery-app" << QSize(-1, -1) << QSize(512, 512);
         QTest::newRow("gallery1") << "gallery-app" << QSize(-1, 16) << QSize(16, 16);
