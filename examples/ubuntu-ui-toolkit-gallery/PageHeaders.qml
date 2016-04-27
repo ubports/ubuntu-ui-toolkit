@@ -29,7 +29,6 @@ Template {
             text: "Use the icons in the header for search and edit header."
         }
 
-
         Grid {
             id: switchGrid
             columns: 2
