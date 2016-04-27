@@ -788,7 +788,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
-                    rightMargin: dividerThickness
+                    rightMargin: dividerThickness + verticalDivider.width
                 }
                 Item {
                     id: hiddenItem
@@ -806,6 +806,7 @@ PageTreeNode {
                     left: parent.left
                     top: parent.top
                     right: parent.right
+                    rightMargin: dividerThickness + verticalDivider.width
                 }
                 height: body.headerHeight
 
