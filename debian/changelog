@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1959+16.04) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1960+16.04) UNRELEASED; urgency=medium
 
   [ Andrea Bernabei ]
   * Scrollbar: new visual update for pressed/hovered states plus handling of 
@@ -23,6 +23,7 @@ ubuntu-ui-toolkit (1.3.1959+16.04) UNRELEASED; urgency=medium
   [ Tim Peeters ]
   * Fix horizontal keyboard navigation in ListView. Fixes LP: #1572991
   * Sections keyboard and focus handling. Fixes LP: #1523840
+  * Fix header screen orientation detection. Fixes LP: #1574663
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 26 Apr 2016 15:55:07 +0200
 
