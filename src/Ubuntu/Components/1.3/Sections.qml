@@ -29,6 +29,7 @@ import Ubuntu.Components 1.3
 StyledItem {
     id: sections
     styleName: "SectionsStyle"
+    activeFocusOnTab: true
 
     /*!
       List of actions that represent the sections.

@@ -37,10 +37,48 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
 {
 }
 
+/*!
+ * \qmlproperty string StyledItem::keyNavigationFocus
+ * If \l activeFocusOnTab is true and Tab or Shift+Tab is used to focus
+ * the item this property will be true - unlike \l activeFocus which is also
+ * true if the item gained focus by click, tap or programmatically.
+ * Note that only one component at a time has \b keyNavigationFocus. The
+ * parent will have \l activeFocus and usually won't draw a focus ring.
+ *
+ * In case of complex components arrow keys may be the preferred way to move
+ * between children that can take focus. Examples of that are ListView and
+ * ListItem. This currently requires overriding \b keyNavigationFocus in C++.
+ *
+ * The implementation of focus rings as provided by the default Ambiance theme
+ * sets \l activeFocusOnTab in the style of each component and only indicates
+ * focus as long as \b keyNavigationFocus is true, similar to the below example.
+ * \qml
+ * StyledItem {
+ *     id: myItem
+ *     activeFocusOnTab: true
+ *     Rectangle {
+ *         anchors.fill: parent
+ *         color: keyNavigationFocus ? UbuntuColors.orange : UbuntuColors.blue
+ *     }
+ * }
+ * \endqml
+ */
 bool UCStyledItemBase::keyNavigationFocus() const
 {
     Q_D(const UCStyledItemBase);
     return d->keyNavigationFocus;
+}
+void UCStyledItemBase::setKeyNavigationFocus(bool v)
+{
+    // FIXME: Behavior of nested StyledItem is currently undefined
+    // Docs should be updated once the behavior is sorted out
+    // See https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1575257
+    Q_D(UCStyledItemBase);
+    if (d->keyNavigationFocus == v)
+        return;
+
+    d->keyNavigationFocus = v;
+    Q_EMIT keyNavigationFocusChanged();
 }
 
 bool UCStyledItemBase::activeFocusOnTab2() const
@@ -532,6 +570,10 @@ void UCStyledItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     if (change == ItemParentHasChanged) {
         // update parentItem
         d_func()->oldParentItem = data.item;
+    } else if (change == ItemActiveFocusHasChanged) {
+        // Children may retain focus as if it was the StyledItem itself
+        if (!hasActiveFocus())
+            setKeyNavigationFocus(false);
     }
 }
 
@@ -539,32 +581,15 @@ void UCStyledItemBase::focusInEvent(QFocusEvent *event)
 {
     QQuickItem::focusInEvent(event);
 
-    Q_D(UCStyledItemBase);
-    if (d->keyNavigationFocus)
-        return;
-
     switch (event->reason()) {
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
-            d->keyNavigationFocus = true;
-            Q_EMIT keyNavigationFocusChanged();
+            setKeyNavigationFocus(true);
             break;
         default:
             // Mouse or window focus don't affect keyNavigationFocus status
             break;
     }
-}
-
-void UCStyledItemBase::focusOutEvent(QFocusEvent *event)
-{
-    QQuickItem::focusOutEvent(event);
-
-    Q_D(UCStyledItemBase);
-    if (!d->keyNavigationFocus)
-        return;
-
-    d->keyNavigationFocus = false;
-    Q_EMIT keyNavigationFocusChanged();
 }
 
 // grab pressed state and focus if it can be

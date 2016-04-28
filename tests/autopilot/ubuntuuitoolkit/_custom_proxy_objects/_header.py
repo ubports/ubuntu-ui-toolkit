@@ -188,8 +188,9 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             'QQuickItem', objectName='tabsModelProperties')
         if tabs_model_properties.count == 0:
             raise _common.ToolkitException(_NO_TABS_ERROR)
-        next_tab_index = (tabs_model_properties.selectedIndex
-                          + 1) % tabs_model_properties.count
+        next_tab_index =\
+            (tabs_model_properties.selectedIndex + 1)\
+            % tabs_model_properties.count
         self._switch_to_tab_in_drawer_by_index(next_tab_index)
 
     @autopilot_logging.log_action(logger.info)

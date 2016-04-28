@@ -233,6 +233,33 @@ void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
+void UCAbstractButton::touchEvent(QTouchEvent *event)
+{
+    UCActionItem::touchEvent(event);
+
+    Q_D(UCAbstractButton);
+    switch (event->type()) {
+    case QEvent::TouchBegin:
+    {
+        // send an event to MouseArea to handle the event
+        QMouseEvent mouse(QEvent::MouseButtonPress, QPointF(0,0), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        qApp->sendEvent(d->mouseArea, &mouse);
+        event->accept();
+        break;
+    }
+    case QEvent::TouchCancel:
+    case QEvent::TouchEnd:
+    {
+        QMouseEvent mouse(QEvent::MouseButtonRelease, QPointF(0,0), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        qApp->sendEvent(d->mouseArea, &mouse);
+        event->accept();
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void UCAbstractButtonPrivate::_q_adjustSensingArea()
 {
     Q_Q(UCAbstractButton);
@@ -247,24 +274,27 @@ void UCAbstractButtonPrivate::_q_adjustSensingArea()
             - (q->width() + (sensingMargins ? (sensingMargins->left() + sensingMargins->right()) : 0.0));
     qreal vDelta = minimumHeight
             - (q->height() + (sensingMargins ? (sensingMargins->top() + sensingMargins->bottom()) : 0.0));
+
     // adjust the sensing area
-    QQuickAnchors *mouseAreaAnchors = QQuickItemPrivate::get(mouseArea)->anchors();
+    qreal dx1, dy1, dx2, dy2;
     if (hDelta >= 0) {
         // the horizontal size is still smaller than the minimum
-        mouseAreaAnchors->setLeftMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0)));
-        mouseAreaAnchors->setRightMargin(-(hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0)));
+        dx1 = -(hDelta / 2 + (sensingMargins ? sensingMargins->left() : 0.0));
+        dx2 = (hDelta / 2 + (sensingMargins ? sensingMargins->right() : 0.0));
     } else {
-        mouseAreaAnchors->setLeftMargin(sensingMargins ? -sensingMargins->left() : 0.0);
-        mouseAreaAnchors->setRightMargin(sensingMargins ? -sensingMargins->right() : 0.0);
+        dx1 = sensingMargins ? -sensingMargins->left() : 0.0;
+        dx2 = sensingMargins ? sensingMargins->right() : 0.0;
     }
     if (vDelta >= 0) {
         // the vertical size is still smaller than the minimum
-        mouseAreaAnchors->setTopMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0)));
-        mouseAreaAnchors->setBottomMargin(-(vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0)));
+        dy1 = -(vDelta / 2 + (sensingMargins ? sensingMargins->top() : 0.0));
+        dy2 = (vDelta / 2 + (sensingMargins ? sensingMargins->bottom() : 0.0));
     } else {
-        mouseAreaAnchors->setTopMargin(sensingMargins ? -sensingMargins->top() : 0.0);
-        mouseAreaAnchors->setBottomMargin(sensingMargins ? -sensingMargins->bottom() : 0.0);
+        dy1 = sensingMargins ? -sensingMargins->top() : 0.0;
+        dy2 = sensingMargins ? sensingMargins->bottom() : 0.0;
     }
+    sensingArea = q->boundingRect();
+    sensingArea.adjust(dx1, dy1, dx2, dy2);
 }
 
 void UCAbstractButton::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
@@ -320,10 +350,11 @@ QQuickMouseArea *UCAbstractButton::privateMouseArea() const
  * \qmlproperty real AbstractButton::sensingMargins.bottom
  * \qmlproperty real AbstractButton::sensingMargins.all
  * The property group specifies the margins extending the visual area where the
- * touch and mouse events are sensed. Positive values mean the area will be extended
+ * touch events are sensed. Positive values mean the area will be extended
  * on the specified direction outside of the visual area, negative values mean
  * the sensing will fall under the component's visual border.
- * All values default to 0.
+ * All values default to 0. This does not affect mouse sensing area, which only
+ * covers the visual area of the component.
  *
  * \note If the visual area and the sensing margins are not reaching the 4x4 grid
  * units limit, the component will fall back to these minimum limits.
@@ -364,6 +395,12 @@ UCMargins *UCAbstractButton::sensingMargins()
         connect(d->sensingMargins, SIGNAL(allChanged()), this, SLOT(_q_adjustSensingArea()));
     }
     return d->sensingMargins;
+}
+
+bool UCAbstractButton::contains(const QPointF &point) const
+{
+    Q_D(const UCAbstractButton);
+    return d->sensingArea.contains(point);
 }
 
 #include "moc_ucabstractbutton.cpp"
