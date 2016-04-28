@@ -77,7 +77,7 @@ protected:
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void focusInEvent(QFocusEvent *key);
-    void focusOutEvent(QFocusEvent *key);
+    void setKeyNavigationFocus(bool value);
     void mousePressEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
 

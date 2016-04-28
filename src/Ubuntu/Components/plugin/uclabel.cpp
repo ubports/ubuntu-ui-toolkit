@@ -137,6 +137,10 @@ void UCLabelPrivate::init()
     updateRenderType();
 
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(updateRenderType()));
+    QObject::connect(UCUnits::instance(), &UCUnits::gridUnitChanged, q, [this](){
+                updatePixelSize();
+            }, Qt::DirectConnection);
+
     QObject::connect(q, &UCLabel::enabledChanged, q, &UCLabel::postThemeChanged, Qt::DirectConnection);
 
     QObject::connect(q, &UCLabel::fontChanged, q, &UCLabel::fontChanged2, Qt::DirectConnection);

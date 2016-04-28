@@ -212,8 +212,6 @@ Item {
             /*****************************************************
              *      HELPER PROPERTIES                            *
              *****************************************************/
-            var slider = getThumb(scrollbar)
-            var trough = getTrough(scrollbar)
             verify(!!style.thumb, "Sanity check: invalid property value.")
             verify(!!style.trough, "Sanity check: invalid property value.")
             //flickable helper properties
@@ -222,11 +220,13 @@ Item {
             /*****************************************************
              *      INTERNAL PROPERTIES AND FUNCTIONS            *
              *****************************************************/
-            var thumbArea = getThumbArea(scrollbar)
-            var scrollAnimation = getScrollAnimation(scrollbar)
             verify(style.nonOverlayScrollbarMargin >= 0, "Sanity check: invalid property value.")
             verify(style.touchDragStartMargin >= 0, "Sanity check: invalid property value.")
             verify(style.dragThreshold >= 0, "Sanity check: invalid property value.")
+            verify(style.__stepperAssetWidth <= style.troughThicknessSteppersStyle, "Sanity check: check that the stepper arrow is narrower than the trough.")
+            verify(style.__stepperImgOpacityNormal < style.__stepperImgOpacityOnHover, "Sanity check: check that stepper is darker on hover than on normal state.")
+            verify(style.__stepperImgOpacityOnHover < style.__stepperImgOpacityOnPressed, "Sanity check: check that stepper is darker on pressed than on hover state.")
+            verify(style.__stepperBgOpacityOnHover < style.__stepperBgOpacityOnPressed, "Sanity check: check that stepper background is darker on pressed than on hover state.")
         }
 
         function test_bottomAlign_anchors() {
@@ -380,6 +380,7 @@ Item {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
+            var style = scrollbar.__styleInstance
             var steppersTransition = findInListProperty(scrollbar.__styleInstance.transitions, "indicatorToThumbSteppersTransition")
             verify(steppersTransition !== null, "Could not find transition object")
 
@@ -407,15 +408,222 @@ Item {
             compare(anotherSignalSpy.count, 2, "State transition does not complete.")
             compare(steppersTransition.running, false, "State transition does not stop.")
 
-            if (scrollbar.__styleInstance.isVertical) {
+            if (style.isVertical) {
                 compare(trough.width, scrollbar.__styleInstance.troughThicknessSteppersStyle, "Wrong trough thickness in steppers style")
             } else {
                 compare(trough.height, scrollbar.__styleInstance.troughThicknessSteppersStyle, "Wrong trough thickness in steppers style")
             }
         }
 
+        function test_checkStepperStatesStyling(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var style = scrollbar.__styleInstance
+            var firstStepper = getFirstStepper(scrollbar)
+            var secondStepper = getSecondStepper(scrollbar)
 
-        function test_dragThumb(data) {
+            triggerSteppersMode(scrollbar)
+
+            //the following tests are assuming that the steppers are not disabled
+            compare(style.isScrollable, true, "Scrollbar is not scrollable, cannot test steppers hover/pressed state.")
+
+            var firstStepperIcon = getFirstStepperIcon(scrollbar)
+            var secondStepperIcon = getSecondStepperIcon(scrollbar)
+
+            //bg color on hover/pressed. Otherwise it should be transparent so that it shows the same bg as the trough
+            var stepperBgColorBase = style.stepperBgColor
+
+            var stepperImgColor = style.sliderColor
+            var stepperImgColorOnHover = Qt.rgba(stepperImgColor.r, stepperImgColor.g, stepperImgColor.b,
+                                                 stepperImgColor.a * style.__stepperImgOpacityOnHover)
+            var stepperBgColorOnHover = Qt.rgba(stepperBgColorBase.r, stepperBgColorBase.g, stepperBgColorBase.b,
+                                                stepperBgColorBase.a *  style.__stepperBgOpacityOnHover)
+            var stepperImgColorOnPressed = Qt.rgba(stepperImgColor.r, stepperImgColor.g, stepperImgColor.b,
+                                                   stepperImgColor.a * style.__stepperImgOpacityOnPressed)
+            var stepperBgColorOnPressed = Qt.rgba(stepperBgColorBase.r, stepperBgColorBase.g, stepperBgColorBase.b,
+                                                  stepperBgColorBase.a *  style.__stepperBgOpacityOnPressed)
+            var stepperBgColorNormal = "transparent"
+            var stepperImgColorNormal = Qt.rgba(stepperImgColor.r, stepperImgColor.g, stepperImgColor.b,
+                                                stepperImgColor.a * style.__stepperImgOpacityNormal)
+            var stepperBgColorDisabled = "transparent"
+            var stepperImgColorDisabled = Qt.rgba(stepperImgColor.r, stepperImgColor.g, stepperImgColor.b,
+                                                  stepperImgColor.a * style.__stepperImgOpacityDisabled)
+
+            if (style.isVertical) {
+                compare(style.flickableItem.atYBeginning, true, "View not scrolled to the beginning as expected.")
+                compare(style.flickableItem.atYEnd, false, "View unexpectedly already scrolled to the end.")
+            } else {
+                compare(style.flickableItem.atXBeginning, true, "View not scrolled to the beginning as expected.")
+                compare(style.flickableItem.atXEnd, false, "View unexpectedly already scrolled to the end.")
+            }
+
+            //Check that the first stepper is disabled and the second one is in normal state
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorDisabled), true,
+                    "Wrong first stepper bg color in disabled state.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorDisabled), true,
+                    "Wrong first stepper img color in disabled state.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorNormal), true,
+                    "Wrong second stepper bg color when it should be in normal state.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong second stepper img color when it should be in normal state.")
+
+            //Check that tapping on a disabled stepper does not change its colour
+            mousePress(firstStepper, firstStepper.width/2, firstStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorDisabled), true,
+                    "Pressing first stepper changes its bg colour even when it's disabled.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorDisabled), true,
+                    "Pressing first stepper changes its img colour even when it's disabled.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorNormal), true,
+                    "Wrong second stepper bg color when it should be in normal state.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong second stepper img color when it should be in normal state.")
+            mouseRelease(firstStepper, firstStepper.width/2, firstStepper.height/2)
+
+            //Check that hovering on a disabled stepper does not change its colour
+            mouseMove(firstStepper, firstStepper.width/2, firstStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorDisabled), true,
+                    "Hovering on first stepper changes its bg colour even when it's disabled.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorDisabled), true,
+                    "Hovering on first stepper changes its img colour even when it's disabled.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorNormal), true,
+                    "Wrong second stepper bg color when it should be in normal state.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong second stepper img color when it should be in normal state.")
+
+            //move mouse away from the steppers
+            mouseMove(scrollbar, 0, 0)
+
+            //Scroll to the bottom to check disabled state of the second stepper
+            var thumb = getThumb(scrollbar)
+            var trough = getTrough(scrollbar)
+            if (style.isVertical) {
+                mouseMove(thumb, 0, 0)
+                mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
+                compare(style.flickableItem.atYBeginning, false, "View not scrolled to the bottom as expected.")
+                compare(style.flickableItem.atYEnd, true, "View unexpectedly at the beginning.")
+            } else {
+                mouseMove(thumb, 0, 0)
+                mouseDrag(thumb, thumb.width/2, thumb.height/2, trough.width, 0)
+                compare(style.flickableItem.atXBeginning, false, "View not scrolled to the bottom as expected.")
+                compare(style.flickableItem.atXEnd, true, "View unexpectedly at the beginning.")
+            }
+
+
+            //Check that the first stepper is disabled and the second one is in normal state
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorNormal), true,
+                    "Wrong first stepper bg color when it should be in normal state.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong first stepper img color when it should be in normal state.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorDisabled), true,
+                    "Wrong second stepper bg color in disabled state.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorDisabled), true,
+                    "Wrong second stepper img color in disabled state.")
+
+            //Check that tapping on a disabled stepper does not change its colour
+            mousePress(secondStepper, secondStepper.width/2, secondStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorNormal), true,
+                    "Wrong first stepper bg color when it should be in normal state.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong first stepper img color when it should be in normal state.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorDisabled), true,
+                    "Pressing second stepper changes its bg colour even when it's disabled.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorDisabled), true,
+                    "Pressing second stepper changes its img colour even when it's disabled.")
+            mouseRelease(secondStepper, secondStepper.width/2, secondStepper.height/2)
+
+            //Check that hovering on a disabled stepper does not change its colour
+            mouseMove(secondStepper, secondStepper.width/2, secondStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorNormal), true,
+                    "Wrong first stepper bg color when it should be in normal state.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong first stepper img color when it should be in normal state.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorDisabled), true,
+                    "Hovering on second stepper changes its bg colour even when it's disabled.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorDisabled), true,
+                    "Hovering on second stepper changes its img colour even when it's disabled.")
+
+            //move mouse away from the steppers
+            mouseMove(scrollbar, 0, 0)
+
+            //trigger first stepper to scroll down a bit, so that they're both not disabled
+            //scrolling down with a stepper should not scroll to the top, unless there's a bug somewhere else
+            //or the flickable test item gets changed
+            clickInTheMiddle(firstStepper)
+            checkScrolling(flickable, style.flickableItem.contentX, style.flickableItem.contentY, style,
+                           false, -1, "First stepper, click")
+
+            //the previous click ungrabs the mouse after release, so we can't directly send a Move outside
+            //the stepper's area because QQuickWindow will just deliver it to the item at that coord, given
+            //that there is no item grabbing the mouse. So we have to send a mouse move
+            //to the second stepper INSIDE its area, before we can send it an event outside
+            //its area in order to trigger HoverLeave.
+            mouseMove(secondStepper, 0, 0)
+
+            //send an event outside the area of the second stepper (read comment above). This will
+            //trigger HoverLeave for the secondStepper. If you want to know why, see
+            //https://github.com/qtproject/qtdeclarative/blob/5.4/src/quick/items/qquickwindow.cpp#L1666
+            mouseMove(scrollbar, 0, 0)
+
+            //Check colours in normal state
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorNormal), true,
+                    "Wrong first stepper bg color in normal state.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong first stepper img color in normal state.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorNormal), true,
+                    "Wrong second stepper bg color in normal state.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong second stepper img color in normal state.")
+
+            //Hover on first stepper and check colour of both steppers
+            mouseMove(firstStepper, firstStepper.width/2, firstStepper.height/2)
+            //compare() returns pass on different colours, see https://bugreports.qt.io/browse/QTBUG-34878
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorOnHover), true,
+                    "Wrong first stepper bg color on hover.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorOnHover), true,
+                    "Wrong first stepper img color on hover.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorNormal), true,
+                    "Wrong second stepper bg color when hovering on first stepper.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong second stepper img color when hovering on first stepper.")
+
+            //Press on first stepper and check colour of both steppers
+            mousePress(firstStepper, firstStepper.width/2, firstStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorOnPressed), true,
+                    "Wrong first stepper bg color on pressed.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorOnPressed), true,
+                    "Wrong first stepper img color on pressed.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorNormal), true,
+                    "Wrong second stepper bg color when pressing on first stepper.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong second stepper img color when pressing on first stepper.")
+            mouseRelease(firstStepper, firstStepper.width/2, firstStepper.height/2)
+
+            //Hover on second stepper and check colour of both steppers
+            mouseMove(secondStepper, secondStepper.width/2, secondStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorNormal), true,
+                    "Wrong first stepper bg color when hovering on second stepper.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong first stepper img color when hovering on second stepper.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorOnHover), true,
+                    "Wrong second stepper bg color on hover.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorOnHover), true,
+                    "Wrong second stepper img color on hover.")
+
+            //Press on second stepper and check colour of both steppers
+            mousePress(secondStepper, secondStepper.width/2, secondStepper.height/2)
+            compare(Qt.colorEqual(firstStepper.color, stepperBgColorNormal), true,
+                    "Wrong first stepper bg color when pressing on second stepper.")
+            compare(Qt.colorEqual(firstStepperIcon.color, stepperImgColorNormal), true,
+                    "Wrong first stepper img color when pressing on second stepper.")
+            compare(Qt.colorEqual(secondStepper.color, stepperBgColorOnPressed), true,
+                    "Wrong second stepper bg color on pressed.")
+            compare(Qt.colorEqual(secondStepperIcon.color, stepperImgColorOnPressed), true,
+                    "Wrong second stepper img color on pressed.")
+            mouseRelease(secondStepper, secondStepper.width/2, secondStepper.height/2)
+        }
+
+        function test_dragThumbAndCheckStyling(data) {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
@@ -430,6 +638,23 @@ Item {
             setContentPositionToTopLeft(flickable)
 
             triggerSteppersMode(scrollbar)
+
+            //check colour of the thumb in normal state
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 0.4)), true,
+                    "Wrong thumb color in normal state.")
+            //check hovered colour
+            mouseMove(thumb, thumb.width/2, thumb.height/2)
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 0.7)), true,
+                    "Wrong thumb color in hover state.")
+
+            //check pressed state colour
+            mousePress(thumb, thumb.width/2, thumb.height/2)
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 1.0)), true,
+                    "Wrong thumb color in hover state.")
+            mouseRelease(thumb, thumb.width/2, thumb.height/2)
 
             if (style.isVertical) {
                 mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
@@ -625,6 +850,10 @@ Item {
             var thumb = getThumb(scrollbar)
             var style = freshTestItem.scrollbar.__styleInstance
 
+            //SKIP THE TEST IF THE FEATURE IS DISABLED
+            verify(style.__disableDragResetFeature !== undefined, "Check that __disableDragResetFeature exists. Remember to enable this test again when the feature is added back.")
+            if (style.__disableDragResetFeature) return
+
             compare(style.isScrollable, true, "Item is assumed to be scrollable.")
             triggerSteppersMode(scrollbar)
 
@@ -777,7 +1006,7 @@ Item {
              *      STYLING PROPERTIES                           *
              *****************************************************/
             compare(style.interactive, style.isMouseConnected || style.veryLongContentItem, "Wrong styling property default value.")
-            compare(style.minimumSliderSize, units.gu(3), "Wrong styling property default value.")
+            compare(style.minimumSliderSize, units.gu(1), "Wrong styling property default value.")
             compare(style.overlay, !style.alwaysOnScrollbars, "Wrong styling property default value.")
             compare(style.overlayOpacityWhenShown, 1.0, "Wrong styling property default value.")
             compare(style.overlayOpacityWhenHidden, 0.0, "Wrong styling property default value.")
@@ -786,6 +1015,7 @@ Item {
             compare(style.troughThicknessIndicatorStyle, units.dp(9), "Wrong styling property default value.")
             compare(style.troughColorThumbStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
             compare(style.troughColorSteppersStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
+            compare(style.stepperBgColor, theme.palette.normal.base, "Wrong styling property default value.")
             compare(style.sliderColor, theme.palette.normal.foregroundText, "Wrong styling property default value.")
             compare(style.sliderRadius, units.dp(3), "Wrong styling property default value.")
             compare(style.thumbThickness, units.gu(1), "Wrong styling property default value.")

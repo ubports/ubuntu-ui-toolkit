@@ -103,7 +103,7 @@ Ubuntu.StyledItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: activeFocus
+    property bool highlighted
     /*!
       Text that appears when there is no focus and no content in the component
       (hint text).
@@ -538,13 +538,6 @@ Ubuntu.StyledItem {
       */
     property alias wrapMode:editor.wrapMode
 
-    /*!
-      Whether the TextArea should gain active focus on a mouse press. By default
-      this is set to true.
-      \qmlproperty bool activeFocusOnPress
-    */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
-
     // signals
     /*!
       This handler is called when the user clicks on a link embedded in the text.
@@ -756,15 +749,7 @@ Ubuntu.StyledItem {
     }
 
     //internals
-
     activeFocusOnPress: true
-    activeFocusOnTab: true
-
-    /*!\internal */
-    onVisibleChanged: {
-        if (!visible)
-            control.focus = false;
-    }
 
     // Escape should close the context menu even if the menu takes no input focus
     Keys.onEscapePressed: {
@@ -832,7 +817,7 @@ Ubuntu.StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.base
+        color: theme.palette.normal.baseText
         font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
@@ -868,14 +853,11 @@ Ubuntu.StyledItem {
             objectName: "text_input"
             readOnly: false
             id: editor
-            focus: true
             width: control.contentWidth
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: true
-            activeFocusOnPress: true
-            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
