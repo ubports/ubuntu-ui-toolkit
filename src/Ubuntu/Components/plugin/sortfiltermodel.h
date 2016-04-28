@@ -40,10 +40,10 @@ public:
     Q_INVOKABLE QVariantMap get(int row);
     QVariant data(int row, int role);
     Q_INVOKABLE int count();
-    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 
     /* getters */
-    QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> roleNames() const override;
 
     /* setters */
     void setFilterProperty(const QString& property);

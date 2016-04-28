@@ -70,8 +70,8 @@ public:
     // from UCStyledItemBase
     bool loadStyleItem(bool animated = true) override;
     // from QQuickItemChangeListener
-    void itemChildAdded(QQuickItem *item, QQuickItem *child);
-    void itemChildRemoved(QQuickItem *item, QQuickItem *child);
+    void itemChildAdded(QQuickItem *item, QQuickItem *child) override;
+    void itemChildRemoved(QQuickItem *item, QQuickItem *child) override;
 
     void setCurrentContent();
     void resetCurrentContent(QQuickItem *newItem);

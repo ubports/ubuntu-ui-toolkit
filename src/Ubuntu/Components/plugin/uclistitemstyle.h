@@ -96,8 +96,8 @@ public Q_SLOTS:
     void rebound();
 
 protected:
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
 private:
 

@@ -59,7 +59,7 @@ public:
     virtual void completeComponentInitialization();
 
     // from UCImportVersionChecker
-    virtual QString propertyForVersion(quint16 version) const;
+    QString propertyForVersion(quint16 version) const override;
 
 public:
 
