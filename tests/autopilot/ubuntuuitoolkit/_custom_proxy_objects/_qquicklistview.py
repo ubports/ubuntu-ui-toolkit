@@ -79,7 +79,7 @@ class QQuickListView(_flickable.QQuickFlickable):
             swipe_method = self.swipe_to_show_more_above
         elif direction == 'left':
             def fail_condition():
-                return self.atYBeginning
+                return self.atXBeginning
             swipe_method = self.swipe_to_show_more_left
         elif direction == 'right':
             def fail_condition():
