@@ -70,16 +70,20 @@ class QQuickListView(_flickable.QQuickFlickable):
                 direction = 'right'
 
         if direction == 'below':
-            def fail_condition(): return self.atYEnd
+            def fail_condition():
+                return self.atYEnd
             swipe_method = self.swipe_to_show_more_below
         elif direction == 'above':
-            def fail_condition(): return self.atYBeginning
+            def fail_condition():
+                return self.atYBeginning
             swipe_method = self.swipe_to_show_more_above
         elif direction == 'left':
-            def fail_condition(): return self.atYBeginning
+            def fail_condition():
+                return self.atYBeginning
             swipe_method = self.swipe_to_show_more_left
         elif direction == 'right':
-            def fail_condition(): return self.atXEnd
+            def fail_condition():
+                return self.atXEnd
             swipe_method = self.swipe_to_show_more_right
         else:
             raise _common.ToolkitException(
