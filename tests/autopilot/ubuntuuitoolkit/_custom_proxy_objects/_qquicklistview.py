@@ -55,18 +55,6 @@ class QQuickListView(_flickable.QQuickFlickable):
         self.pointing_device.click_object(element)
         return element
 
-    def _at_y_end():
-        return self.atYEnd
-
-    def _at_y_beginning():
-        return self.atYBeginning
-
-    def _at_x_beginning():
-        return self.atXBeginning
-
-    def _at_x_end():
-        return self.atXEnd
-
     @autopilot_logging.log_action(logger.info)
     def _find_element(self, object_name, direction=None):
         if direction is None:
@@ -82,16 +70,16 @@ class QQuickListView(_flickable.QQuickFlickable):
                 direction = 'right'
 
         if direction == 'below':
-            fail_condition = self._at_y_end
+            def fail_condition(): return self.atYEnd
             swipe_method = self.swipe_to_show_more_below
         elif direction == 'above':
-            fail_condition = self._at_y_beginning
+            def fail_condition(): return self.atYBeginning
             swipe_method = self.swipe_to_show_more_above
         elif direction == 'left':
-            fail_condition = self._at_x_beginning
+            def fail_condition(): return self.atYBeginning
             swipe_method = self.swipe_to_show_more_left
         elif direction == 'right':
-            fail_condition = self._at_x_end
+            def fail_condition(): return self.atXEnd
             swipe_method = self.swipe_to_show_more_right
         else:
             raise _common.ToolkitException(
