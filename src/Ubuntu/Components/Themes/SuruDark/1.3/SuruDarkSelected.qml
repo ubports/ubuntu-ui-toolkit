@@ -21,7 +21,7 @@ import Ubuntu.Components.Themes 1.3
 SuruDarkNormal {
     background: UbuntuColors.inkstone
     base: UbuntuColors.inkstone
-    baseText: UbuntuColors.graphite
+    baseText: UbuntuColors.ash
     foreground: UbuntuColors.slate
     overlay: UbuntuColors.slate
 }

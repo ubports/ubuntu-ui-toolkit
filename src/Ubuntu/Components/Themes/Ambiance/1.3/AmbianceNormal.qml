@@ -24,7 +24,7 @@ PaletteValues {
     backgroundSecondaryText: UbuntuColors.slate
     backgroundTertiaryText: UbuntuColors.ash
     base: UbuntuColors.silk
-    baseText: UbuntuColors.ash
+    baseText: UbuntuColors.graphite
     foreground: UbuntuColors.porcelain
     foregroundText: UbuntuColors.jet
     raised: "#FFFFFF"

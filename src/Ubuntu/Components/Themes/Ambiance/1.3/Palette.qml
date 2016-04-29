@@ -26,6 +26,7 @@ Palette {
             // specific disabled colors
             var diff = {
                 field: UbuntuColors.porcelain,
+                selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
                 positiveText: "#FFFFFF",
                 negativeText: "#FFFFFF",
                 activityText: "#FFFFFF",
@@ -36,7 +37,7 @@ Palette {
                 if (p === "objectName" || p.indexOf("Changed") > 0) continue;
                 disabled[p] = diff[p] || (
                     // if not specific, colors are 30% opaque normal
-                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.4)
+                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.5)
                 );
             }
         }
@@ -53,6 +54,7 @@ Palette {
                 background: UbuntuColors.porcelain,
                 base: UbuntuColors.porcelain,
                 foreground: UbuntuColors.porcelain,
+                selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
                 positiveText: "#FFFFFF",
                 negativeText: "#FFFFFF",
                 activityText: "#FFFFFF",
@@ -63,7 +65,7 @@ Palette {
                 if (p === "objectName" || p.indexOf("Changed") > 0) continue;
                 selectedDisabled[p] = diff[p] || (
                     // if not specific, colors are 30% opaque normal
-                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.4)
+                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.5)
                 );
             }
         }
@@ -72,7 +74,7 @@ Palette {
     highlighted: AmbianceNormal {
         background: UbuntuColors.silk
         base: UbuntuColors.ash
-        baseText: UbuntuColors.graphite
+        baseText: UbuntuColors.inkstone
         foreground: UbuntuColors.silk
         raised: UbuntuColors.silk
         raisedText: UbuntuColors.inkstone
