@@ -27,8 +27,10 @@ Palette {
             var diff = {
                 foreground: UbuntuColors.inkstone,
                 field: UbuntuColors.inkstone,
-                positiveText: normal.positiveText,
-                negativeText: normal.negativeText,
+                positiveText: UbuntuColors.porcelain,
+                negativeText: UbuntuColors.porcelain,
+                activityText: UbuntuColors.porcelain,
+                focusText: UbuntuColors.porcelain
             };
             for (var p in normal) {
                 // skip objectName and all change signals
@@ -51,6 +53,10 @@ Palette {
                 background: UbuntuColors.inkstone,
                 base: UbuntuColors.inkstone,
                 foreground: UbuntuColors.inkstone,
+                positiveText: UbuntuColors.porcelain,
+                negativeText: UbuntuColors.porcelain,
+                activityText: UbuntuColors.porcelain,
+                focusText: UbuntuColors.porcelain
             };
             for (var p in selected) {
                 // skip objectName and all change signals

@@ -26,8 +26,10 @@ Palette {
             // specific disabled colors
             var diff = {
                 field: UbuntuColors.porcelain,
-                positiveText: normal.positiveText,
-                negativeText: normal.negativeText,
+                positiveText: "#FFFFFF",
+                negativeText: "#FFFFFF",
+                activityText: "#FFFFFF",
+                focusText: "#FFFFFF"
             };
             for (var p in normal) {
                 // skip objectName and all change signals
@@ -51,6 +53,10 @@ Palette {
                 background: UbuntuColors.porcelain,
                 base: UbuntuColors.porcelain,
                 foreground: UbuntuColors.porcelain,
+                positiveText: "#FFFFFF",
+                negativeText: "#FFFFFF",
+                activityText: "#FFFFFF",
+                focusText: "#FFFFFF"
             };
             for (var p in selected) {
                 // skip objectName and all change signals
