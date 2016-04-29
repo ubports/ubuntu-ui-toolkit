@@ -81,7 +81,7 @@ Item {
             button.anchors.left = container.left;
             button.anchors.right = container.right;
             button.anchors.verticalCenter = container.verticalCenter;
-            button.anchors.margins = Qt.binding(function() { return units.gu(1) });
+            button.anchors.margins = units.gu(1);
         }
 
         Connections {

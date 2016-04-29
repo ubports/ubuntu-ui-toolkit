@@ -127,7 +127,7 @@ ListItem.Empty {
     }
 
     Component.onCompleted: {
-        height = listView.itemHeight = Qt.binding(function() { return childrenRect.height; });
+        height = listView.itemHeight = childrenRect.height;
     }
 
     //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.
