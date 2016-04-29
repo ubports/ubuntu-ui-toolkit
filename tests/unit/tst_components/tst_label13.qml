@@ -161,15 +161,15 @@ TestCase {
     function test_colorGUPixelSize() {
         units.gridUnit = 8;
         textTestColorGUPixelSize.font.bold = true;
-        var pixelSize = textTestColorGUPixelSize.font.pixelSize;
+        var pixelSizeAt8GU = textTestColorGUPixelSize.font.pixelSize;
 
         units.gridUnit = 16;
         textTestColorGUPixelSize.font.bold = false;
-        verify(textTestColorGUPixelSize.font.pixelSize != pixelSize);
+        verify(textTestColorGUPixelSize.font.pixelSize > pixelSizeAt8GU);
 
         units.gridUnit = 8;
         textTestColorGUPixelSize.font.bold = true;
-        compare(textTestColorGUPixelSize.font.pixelSize, pixelSize);
+        compare(textTestColorGUPixelSize.font.pixelSize, pixelSizeAt8GU);
     }
 
     Label {
