@@ -47,7 +47,6 @@ public:
     };
 
     UCLabel *q_ptr;
-    QFont defaultFont;
     UCLabel::ColorProviderFunc defaultColor;
     UCLabel::TextSize textSize;
     quint8 flags;
