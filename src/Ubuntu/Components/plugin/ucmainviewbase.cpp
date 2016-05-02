@@ -53,7 +53,9 @@ void UCMainViewBasePrivate::init()
 
     m_actionContext->setObjectName(QStringLiteral("RootContext"));
     m_actionContext->setActive(true);
-    q->setActive(true);
+    // setActive(true) is called in componentComplete to wait
+    // until the MainView (and all its children) are complete
+    // to prevent bug #1570886.
 
     QObject::connect(m_actionManager,&UCActionManager::quit, [](){
         // FIXME Wire this up to the application lifecycle management API instead of quit().
@@ -307,6 +309,9 @@ void UCMainViewBase::componentComplete()
 {
     Q_D(UCMainViewBase);
     UCPageTreeNode::componentComplete();
+    // Do not call setActive() in d->init() but delay it until the
+    // component is complete to avoid bug #1570886.
+    this->setActive(true);
     d->doAutoTheme();
 
     if (d->m_actionContext)
