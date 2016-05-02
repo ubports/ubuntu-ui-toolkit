@@ -309,7 +309,7 @@ void UCMainViewBase::componentComplete()
 {
     Q_D(UCMainViewBase);
     UCPageTreeNode::componentComplete();
-    // Do not call setActive() in d->init() but delay it until the
+    // Do not call setActive() in d->init() but postpone until the
     // component is complete to avoid bug #1570886.
     this->setActive(true);
     d->doAutoTheme();
