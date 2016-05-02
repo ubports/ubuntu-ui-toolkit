@@ -50,10 +50,9 @@ import Ubuntu.Components 1.3 as Toolkit
                             text: "A centered label"
                         }
                         tools: ToolbarItems {
-                                ToolbarButton {
-                                    text: "action"
-                                    onTriggered: print("action triggered")
-                                }
+                            ToolbarButton {
+                                text: "action"
+                                onTriggered: print("action triggered")
                             }
                         }
                     }
