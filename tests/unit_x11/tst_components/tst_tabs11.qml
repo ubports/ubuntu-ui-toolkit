@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -94,6 +94,13 @@ MainView {
                 sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
             }
         }
+        Tab {
+            // Test for bug #1570886, see initTestCase().
+            id: tabWithTitleFromPage
+            page: Page {
+                title: "Title from Page"
+            }
+        }
     }
     Component {
         id: pageComponent
@@ -117,6 +124,12 @@ MainView {
     UbuntuTestCase {
         name: "TabsAPINewHeader"
         when: windowShown
+
+        function initTestCase() {
+            // Test for bug #1570886.
+            compare(mainView.__propagated.header.title, tab1.title,
+                     "Incorrect initial header title.");
+        }
 
         function test_tabsDefaults() {
             compare(tabs.selectedTabIndex, 0, "The default selectedTabIndex is 0 when Tabs has contents");
