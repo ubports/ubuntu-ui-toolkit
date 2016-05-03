@@ -27,6 +27,8 @@ tmpdir=$(mktemp -d)
 cp -a ../debian $tmpdir
 
 wrap-and-sort -a -t -d $tmpdir/debian/
+# Verify control.gles which otherwise isn't picked up
+wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
 
 diff -urN ../debian $tmpdir/debian
 

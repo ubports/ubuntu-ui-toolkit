@@ -58,6 +58,19 @@ Item {
             height: width
             source: Qt.resolvedUrl("tst_icon-select.png")
         }
+
+        // Regression test for bug #1421293
+        Icon {
+            id: icon4
+            height: units.gu(2)
+            source: Qt.resolvedUrl("logo.png")
+        }
+        Icon {
+            id: icon5
+            height: units.gu(2)
+            width: implicitWidth > 0 && implicitHeight > 0 ? (implicitWidth / implicitHeight * height) : implicitWidth
+            source: Qt.resolvedUrl("logo.png")
+        }
     }
 
     UbuntuTestCase {
@@ -130,6 +143,12 @@ Item {
             // Unsetting the keyColor should also disable the shader
             icon.color = Qt.rgba(0.0, 0.0, 0.0, 0.0);
             compare(shader.visible, false);
+        }
+
+        function test_iconScaling_bug1421293() {
+            // make sure both icons end up the same size
+            compare(icon4.width, icon5.width);
+            compare(icon4.height, icon5.height);
         }
     }
 }
