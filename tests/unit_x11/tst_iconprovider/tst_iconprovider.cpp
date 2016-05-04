@@ -39,14 +39,15 @@ private Q_SLOTS:
         QTest::addColumn<QSize>("requestSize");
         QTest::addColumn<QSize>("resultSize");
 
-        QTest::newRow("battery0") << "battery-100-charging" << QSize(-1, -1) << QSize(256, 165);
-        QTest::newRow("battery1") << "battery-100-charging" << QSize(-1, 16) << QSize(24, 16);
+        QTest::newRow("battery0") << "battery-100-charging" << QSize(-1, -1) << QSize(256, 166);
+        QTest::newRow("battery1") << "battery-100-charging" << QSize(-1, 16) << QSize(25, 16);
         QTest::newRow("battery2") << "battery-100-charging" << QSize(16, -1) << QSize(16, 10);
-        QTest::newRow("battery3") << "battery-100-charging" << QSize(0, 16) << QSize(24, 16);
+        QTest::newRow("battery3") << "battery-100-charging" << QSize(0, 16) << QSize(25, 16);
         QTest::newRow("battery4") << "battery-100-charging" << QSize(16, 0) << QSize(16, 10);
         QTest::newRow("battery5") << "battery-100-charging" << QSize(24, 16) << QSize(24, 16);
-        QTest::newRow("battery6") << "battery-100-charging" << QSize(24, 24) << QSize(24, 15);
+        QTest::newRow("battery6") << "battery-100-charging" << QSize(24, 24) << QSize(24, 16);
         QTest::newRow("battery7") << "battery-100-charging" << QSize(37, 24) << QSize(37, 24);
+        QTest::newRow("battery8") << "battery-100-charging" << QSize(15, 512) << QSize(15, 10);
 
         QTest::newRow("gallery0") << "gallery-app" << QSize(-1, -1) << QSize(512, 512);
         QTest::newRow("gallery1") << "gallery-app" << QSize(-1, 16) << QSize(16, 16);
@@ -65,13 +66,13 @@ private Q_SLOTS:
 
         UnityThemeIconProvider provider("mockTheme");
         QSize returnedSize;
-        QPixmap p = provider.requestPixmap(icon, &returnedSize, requestSize);
-        QCOMPARE(p.size(), resultSize);
+        QImage i = provider.requestImage(icon, &returnedSize, requestSize);
+        QCOMPARE(i.size(), resultSize);
         QCOMPARE(returnedSize, resultSize);
 
         // Search again to make sure subsequent searches still work
-        p = provider.requestPixmap(icon, &returnedSize, requestSize);
-        QCOMPARE(p.size(), resultSize);
+        i = provider.requestImage(icon, &returnedSize, requestSize);
+        QCOMPARE(i.size(), resultSize);
         QCOMPARE(returnedSize, resultSize);
     }
 
@@ -82,14 +83,14 @@ private Q_SLOTS:
 
         // myapp is in MockTheme3 (white) and hicolor (black)
         // MockTheme3 one is returned since hicolor is last per spec
-        QPixmap p = provider.requestPixmap("myapp", &returnedSize, QSize(-1, -1));
-        QVERIFY(!p.isNull());
-        QCOMPARE(QColor(p.toImage().pixel(0,0)), QColor(Qt::white));
+        QImage i = provider.requestImage("myapp", &returnedSize, QSize(-1, -1));
+        QVERIFY(!i.isNull());
+        QCOMPARE(QColor(i.pixel(0,0)), QColor(Qt::white));
 
         // myapp2 is only in hicolor (black) so that's the one returned
-        p = provider.requestPixmap("myapp2", &returnedSize, QSize(-1, -1));
-        QVERIFY(!p.isNull());
-        QCOMPARE(QColor(p.toImage().pixel(0,0)), QColor(Qt::black));
+        i = provider.requestImage("myapp2", &returnedSize, QSize(-1, -1));
+        QVERIFY(!i.isNull());
+        QCOMPARE(QColor(i.pixel(0,0)), QColor(Qt::black));
     }
 };
 
