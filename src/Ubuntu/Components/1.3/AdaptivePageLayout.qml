@@ -857,7 +857,7 @@ PageTreeNode {
                     right: parent.right
                     rightMargin: dividerThickness
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
+                width: (column == (d.columns - 1)) ? 0 : units.dp(1)
                 color: theme.palette.normal.base
                 MouseArea {
                     id: resizerSensing
@@ -924,7 +924,7 @@ PageTreeNode {
                 wrapper.active = false;
                 subHeader.config = null;
                 pageWrapper = null;
-                wrapper.parent = hiddenPool;
+                wrapper.parent = hiddenItem;
                 wrapper.pageHolder = null;
                 return wrapper;
             }
