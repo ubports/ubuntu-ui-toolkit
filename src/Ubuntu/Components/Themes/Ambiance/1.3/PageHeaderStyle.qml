@@ -40,13 +40,13 @@ Style.PageHeaderStyle {
     implicitHeight: contentHeight + divider.height + internal.extensionHeight
 
     Component.onCompleted: internal.updateHeights()
-    Object {
+    QtObject {
         id: internal
         property real extensionHeight: styledItem.extension
                                        ? styledItem.extension.height
                                        : styledItem.sections.height
 
-        property bool landscape: Screen.height <= units.gu(50)
+        property bool landscape: pageHeaderStyle.Screen.height <= units.gu(50)
         property bool hasSubtitle: styledItem.subtitle && !styledItem.contents
         property bool hasExtension: styledItem.extension
 
@@ -63,19 +63,19 @@ Style.PageHeaderStyle {
             if (landscape) {
                 if (hasSubtitle) {
                     // with subtitle, and with or without extension
-                    titleAreaHeight = units.gu(4);
-                    titleBottomSpacing = units.gu(2);
+                    titleAreaHeight = Qt.binding(function() { return units.gu(4) });
+                    titleBottomSpacing = Qt.binding(function() { return units.gu(2) });
                 } else if (hasExtension) {
-                    titleAreaHeight = units.gu(4);
-                    titleBottomSpacing = units.gu(1);
+                    titleAreaHeight = Qt.binding(function() { return units.gu(4) });
+                    titleBottomSpacing = Qt.binding(function() { return units.gu(1) });
                 } else {
-                    titleAreaHeight = units.gu(5)
+                    titleAreaHeight = Qt.binding(function() { return units.gu(5) });
                     titleBottomSpacing = 0;
                 }
             } else { // portrait
-                titleAreaHeight = units.gu(6);
+                titleAreaHeight = Qt.binding(function() { return units.gu(6) });
                 if (hasSubtitle) {
-                    titleBottomSpacing = units.gu(1);
+                    titleBottomSpacing = Qt.binding(function() { return units.gu(1) });
                 } else {
                     titleBottomSpacing = 0;
                 }

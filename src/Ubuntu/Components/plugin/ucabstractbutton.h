@@ -47,11 +47,15 @@ public:
     void setAcceptEvents(bool value);
     QQuickMouseArea *privateMouseArea() const;
 
+    // override containment check
+    bool contains(const QPointF &point) const override;
+
 protected:
     void classBegin();
     virtual void geometryChanged(const QRectF &newGeometry,
                                  const QRectF &oldGeometry);
     void keyReleaseEvent(QKeyEvent *key);
+    void touchEvent(QTouchEvent *event);
 
 Q_SIGNALS:
     void pressedChanged();

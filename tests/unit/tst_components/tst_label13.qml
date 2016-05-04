@@ -158,6 +158,20 @@ TestCase {
         verifyManualRenderType(textSetRenderType, Text.NativeRendering);
     }
 
+    function test_colorGUPixelSize() {
+        units.gridUnit = 8;
+        textTestColorGUPixelSize.font.bold = true;
+        var pixelSizeAt8GU = textTestColorGUPixelSize.font.pixelSize;
+
+        units.gridUnit = 16;
+        textTestColorGUPixelSize.font.bold = false;
+        verify(textTestColorGUPixelSize.font.pixelSize > pixelSizeAt8GU);
+
+        units.gridUnit = 8;
+        textTestColorGUPixelSize.font.bold = true;
+        compare(textTestColorGUPixelSize.font.pixelSize, pixelSizeAt8GU);
+    }
+
     Label {
         id: textCustom
     }
@@ -191,5 +205,9 @@ TestCase {
 
     Label {
         id: textSetRenderType
+    }
+
+    Label {
+        id: textTestColorGUPixelSize
     }
 }

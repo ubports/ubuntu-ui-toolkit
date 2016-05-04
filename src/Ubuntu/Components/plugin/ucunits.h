@@ -21,8 +21,10 @@
 
 #include <QObject>
 #include <QtCore/QHash>
+#include <QtCore/QString>
 #include <QtCore/QUrl>
 
+class QPlatformWindow;
 class UCUnits : public QObject
 {
     Q_OBJECT
@@ -58,6 +60,9 @@ Q_SIGNALS:
 protected:
     QString suffixForGridUnit(float gridUnit);
     float gridUnitSuffixFromFileName(const QString &fileName);
+
+private Q_SLOTS:
+    void windowPropertyChanged(QPlatformWindow *window, const QString &propertyName);
 
 private:
     static UCUnits *m_units;
