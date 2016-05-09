@@ -23,7 +23,7 @@ import Ubuntu.Components.Popups 1.3
 Item {
     id: testMain
     width: units.gu(40)
-    height: units.gu(50)
+    height: units.gu(70)
 
     Component {
         id: popoverComponent
@@ -95,6 +95,34 @@ Item {
 
         TextField {
             id: textField
+        }
+
+        FocusScope {
+            id: scope
+            width: textFieldInMouseArea.implicitWidth
+            height: textFieldInMouseArea.implicitHeight
+            TextField {
+                anchors.fill: parent
+                id: textFieldInMouseArea
+                text: 'Lorem ipsum dolor sit amet'
+                color: UbuntuColors.blue
+                focus: true
+                onVisibleChanged: if (visible) focus = true
+            }
+            MouseArea {
+                anchors.fill: parent
+                enabled: !scope.activeFocus
+                onClicked: {
+                    textFieldInMouseArea.forceActiveFocus()
+                    textFieldInMouseArea.selectAll()
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    color: UbuntuColors.blue
+                    opacity: 0.1
+                    visible: parent.enabled
+                }
+            }
         }
 
         TextField {
@@ -198,6 +226,11 @@ Item {
             cursorRectSpy.clear();
             scrollerSpy.clear();
             escapePressedSpy.clear();
+            // Hide OSK if showing
+            UbuntuApplication.inputMethod.visible = false;
+            // Dismiss popover if any
+            mouseClick(testMain, testMain.width - units.gu(1), testMain.height - units.gu(1));
+            waitForRendering(testMain);
         }
 
         function test_context_menu_items_data() {
@@ -267,10 +300,6 @@ Item {
             keyClick(Qt.Key_Backspace);
             waitForRendering(data.input, 1000);
             compare(data.input.text, "", "The text has not been deleted");
-
-            // dismiss popover
-            mouseClick(testMain, testMain.width / 2, testMain.height / 2);
-            wait(200);
         }
 
         SignalSpy {
@@ -373,11 +402,6 @@ Item {
             waitForRendering(data.input);
             popupSpy.wait();
             verify(data.input.cursorPosition !== 0, "Cursor should be moved to the mouse click position.")
-
-            // dismiss popover
-            mouseClick(testMain, 0, 0);
-            // add some timeout to get the event buffer cleaned
-            wait(500);
         }
 
         function test_clear_selection_on_click_data() {
@@ -542,6 +566,21 @@ Item {
 
             keyClick(Qt.Key_Escape);
             compare(escapePressedSpy.count, 1);
+        }
+
+        function test_text_field_evokes_osk_data() {
+            return [
+                { tag: 'textField', input: textField },
+                { tag: 'textField with icons', input: customTextField },
+                { tag: 'textArea', input: textArea },
+                { tag: 'focusScope', input: textFieldInMouseArea },
+            ];
+        }
+        function test_text_field_evokes_osk(data) {
+            mouseClick(data.input);
+            waitForRendering(data.input);
+            compare(data.input.activeFocus, true, 'TextField is focused');
+            compare(UbuntuApplication.inputMethod.visible, true, 'OSK is visible');
         }
     }
 }
