@@ -60,6 +60,11 @@ QtObject {
     property PaletteValues disabled: PaletteValues{}
 
     /*!
+       Color palette to use when the widget is focused.
+    */
+    property PaletteValues focused: PaletteValues{}
+
+    /*!
        Color palette to use when the widget is selected, for example when
        a tab is the current one.
     */
