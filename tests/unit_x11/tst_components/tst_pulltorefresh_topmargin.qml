@@ -37,7 +37,7 @@ Item {
             compare(view.topMargin, initialTopMargin,
                     "Initial topMargin of flickable is not restored after refreshing.");
             compare(view.contentY, initialContentY,
-                    "Initial contentY of flickable is not restored after refereshing.")
+                    "Initial contentY of flickable is not restored after refreshing.")
         }
     }
 }
