@@ -72,8 +72,6 @@ Style.PullToRefreshStyle {
     property real initialContentY: 0.0
     // drives the refreshing state
     property bool refreshing: false
-    // point of release used in rebind animation between the ready-to-refresh and refreshing states
-    property real pointOfRelease
     // specifies the component completion
     property bool ready: false
     // root item
@@ -187,7 +185,6 @@ Style.PullToRefreshStyle {
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && style.releaseToRefresh) {
-                pointOfRelease = -(control.target.contentY - control.target.originY);
                 style.refreshing = true;
                 style.releaseToRefresh = false;
             }
@@ -242,14 +239,8 @@ Style.PullToRefreshStyle {
         Transition {
             from: "ready-to-refresh"
             to: "refreshing"
-            SequentialAnimation {
-                UbuntuNumberAnimation {
-                    target: control.target
-                    property: "topMargin"
-                }
-                ScriptAction {
-                    script: control.refresh()
-                }
+            ScriptAction {
+                script: control.refresh()
             }
         },
         // transition to be applied when the model is auto-updating
