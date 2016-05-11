@@ -115,6 +115,7 @@ void UCHeader::_q_heightChanged() {
 
 void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
     if (change == ItemVisibleHasChanged || change == ItemParentHasChanged) {
+        qDebug() <<"ItemVisibleChanged. Calling updateFlickableMargins";
         updateFlickableMargins();
     }
     UCStyledItemBase::itemChange(change, value);
@@ -236,6 +237,9 @@ void UCHeader::updateFlickableMargins() {
     } // else: header is not visible, so do not add to the topMargin.
     if (headerHeight != m_previous_header_height) {
         qreal previousContentY = m_flickable->contentY();
+        qDebug()<<"topMargin ="<<m_flickable->topMargin();
+        qDebug()<<"updateFlickableMargins(): topMargin += "<<headerHeight<<" - "<<m_previous_header_height;//<<" = "<<m_flickable->topMargin();
+
         m_flickable->setTopMargin(m_flickable->topMargin() + headerHeight - m_previous_header_height);
         // Push down contents when header grows,
         //  pull up contents when header shrinks.

@@ -57,7 +57,17 @@ Style.PullToRefreshStyle {
       */
     readonly property PullToRefresh control: styledItem
     // property to store Flickable's toipMargin at the time the pull or auto-refresh is started
-    property real flickableTopMargin: 0.0
+//    property real flickableTopMargin: 0.0
+    property bool extendTopMargin: false
+    onExtendTopMarginChanged: {
+        print("extendTopMargin = "+extendTopMargin)
+        if (extendTopMargin) {
+            control.target.topMargin += control.height;
+        } else {
+            control.target.topMargin -= control.height;
+        }
+    }
+
     // store when the drag has happened at the beginning of the Flickable's content
     property bool wasAtYBeginning: false
     // initial contentY value when pull started
@@ -101,6 +111,7 @@ Style.PullToRefreshStyle {
     }
 
     function fixTopMargin() {
+        print("FIX TOP MARGIN!")
         if (style.state === "refreshing") {
             /*
               Fetch the topMargin, force state to disabled (idle will be turned on
@@ -110,6 +121,7 @@ Style.PullToRefreshStyle {
             var topMargin = control.target.topMargin;
             style.state = "disabled";
             control.target.topMargin = topMargin;
+//            control.target.returnToBounds();
         }
     }
 
@@ -136,13 +148,13 @@ Style.PullToRefreshStyle {
     Connections {
         target: control
         onRefreshingChanged: {
-            print("refreshing changed to "+refreshing)
+            print("refreshing changed to "+control.refreshing)
             if (!ready || !control.enabled) {
                 return;
             }
             if (!style.releaseToRefresh && target.refreshing) {
                 // not a manual refresh, update flickable's starting topMargin
-                style.flickableTopMargin = control.target.topMargin;
+//                style.flickableTopMargin = control.target.topMargin;
                 style.wasAtYBeginning = control.target.atYBeginning;
             }
             /*
@@ -177,7 +189,7 @@ Style.PullToRefreshStyle {
             if (!control.parent.dragging && style.releaseToRefresh) {
                 print("dragging stopped!");
                 pointOfRelease = -(control.target.contentY - control.target.originY);
-                style.flickableTopMargin = control.target.topMargin;
+//                style.flickableTopMargin = control.target.topMargin;
                 style.refreshing = true;
                 style.releaseToRefresh = false;
             }
@@ -223,8 +235,10 @@ Style.PullToRefreshStyle {
                 running: true
             }
             PropertyChanges {
-                target: control.target
-                topMargin: style.flickableTopMargin + control.height
+//                target: control.target
+//                topMargin: style.flickableTopMargin + control.height
+                target: style
+                extendTopMargin: true
             }
         }
     ]
@@ -237,8 +251,8 @@ Style.PullToRefreshStyle {
                 UbuntuNumberAnimation {
                     target: control.target
                     property: "topMargin"
-                    from: style.pointOfRelease
-                    to: style.flickableTopMargin + control.height
+//                    from: style.pointOfRelease
+//                    to: style.flickableTopMargin + control.height
                 }
                 ScriptAction {
                     script: control.refresh()
@@ -249,12 +263,12 @@ Style.PullToRefreshStyle {
         Transition {
             from: "idle"
             to: "refreshing"
-            UbuntuNumberAnimation {
-                target: control.target
-                property: "contentY"
-                from: -style.flickableTopMargin
-                to: -style.flickableTopMargin - control.height
-            }
+//            UbuntuNumberAnimation {
+//                target: control.target
+//                property: "contentY"
+//                from: -style.flickableTopMargin
+//                to: -style.flickableTopMargin - control.height
+//            }
         },
         Transition {
             from: "refreshing"
@@ -262,12 +276,13 @@ Style.PullToRefreshStyle {
             UbuntuNumberAnimation {
                 target: control.target
                 property: "topMargin"
+//                alwaysRunToEnd: true
             }
             UbuntuNumberAnimation {
                 target: control.target
                 property: "contentY"
                 to: style.initialContentY
-                alwaysRunToEnd: true
+//                alwaysRunToEnd: true
                 onRunningChanged: print("contentY animation running = "+running)
             }
         }

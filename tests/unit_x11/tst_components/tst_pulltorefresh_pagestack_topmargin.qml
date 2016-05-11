@@ -14,6 +14,11 @@ Item {
             id: pageStack
             Page {
                 id: page0
+                header: PageHeader {
+                    title: "0ne"
+                    flickable: view
+                }
+
                 title: "One"
                 visible: false
 
@@ -26,13 +31,16 @@ Item {
                         height: units.gu(5)
                         text: index
                     }
+                    onTopMarginChanged: print("topMargin = "+topMargin)
                     PullToRefresh {
                         id: pullMe
+                        onRefreshingChanged: print("refreshing = "+refreshing)
                         onRefresh: {
                             refreshing = true;
                             refreshing = false;
                             pageStack.push(page1)
                         }
+                        onHeightChanged: print("PTR.height = "+height)
                     }
                 }
             }
@@ -71,7 +79,7 @@ Item {
             var initialTopMargin = view.topMargin;
             var initialContentY = view.contentY;
             flick(view, view.width/2, units.gu(10), 0, units.gu(40));
-            wait(500);
+            wait(1000);
             pageStack.pop();
             tryCompare(view, "moving", false);
             tryCompare(view, "topMargin", initialTopMargin, 500,
