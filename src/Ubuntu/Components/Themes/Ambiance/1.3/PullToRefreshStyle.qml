@@ -239,8 +239,15 @@ Style.PullToRefreshStyle {
         Transition {
             from: "ready-to-refresh"
             to: "refreshing"
-            ScriptAction {
-                script: control.refresh()
+            SequentialAnimation {
+                UbuntuNumberAnimation {
+                    target: control.target
+                    property: "contentY"
+                    to: style.initialContentY - control.height
+                }
+                ScriptAction {
+                    script: control.refresh()
+                }
             }
         },
         // transition to be applied when the model is auto-updating
