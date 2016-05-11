@@ -90,7 +90,7 @@ Style.PullToRefreshStyle {
             rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
         }
         ready = true;
-        print("initial intialContentY = "+initialContentY)
+        print("initial initialContentY = "+initialContentY)
     }
 
     Component.onDestruction: {
