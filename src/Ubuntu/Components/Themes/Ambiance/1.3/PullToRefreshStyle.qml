@@ -157,7 +157,7 @@ Style.PullToRefreshStyle {
             style.refreshing = target.refreshing;
         }
     }
-    onInitialContentYChanged: print("intialContentY = "+intialContentY)
+    onInitialContentYChanged: print("intialContentY = "+initialContentY)
     Connections {
         target: control.target
         onMovementStarted: {
