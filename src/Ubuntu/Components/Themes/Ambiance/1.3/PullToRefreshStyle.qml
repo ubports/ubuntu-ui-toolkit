@@ -190,7 +190,7 @@ Style.PullToRefreshStyle {
     }
 
     onStateChanged: {
-        print("state changed to "+state)
+        print("state changed to "+state+" visible ="+visible)
         /*
            Label might not be ready when the component enters in refreshing
            state, therefore the visible property will not be properly returned to
@@ -267,6 +267,8 @@ Style.PullToRefreshStyle {
                 target: control.target
                 property: "contentY"
                 to: style.initialContentY
+                alwaysRunToEnd: true
+                onRunningChanged: print("contentY animation running = "+running)
             }
         }
     ]
