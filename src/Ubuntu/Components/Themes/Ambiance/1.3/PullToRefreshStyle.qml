@@ -74,6 +74,7 @@ Style.PullToRefreshStyle {
     anchors.fill: parent
 
     Component.onCompleted: {
+        print("pulltorefreshstyle completed!")
         /*
           When the model attached to the component is refreshing during initialization,
           this refresh will happen after the style gets completed. This refresh will
@@ -89,6 +90,7 @@ Style.PullToRefreshStyle {
             rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
         }
         ready = true;
+        print("initial intialContentY = "+initialContentY)
     }
 
     Component.onDestruction: {
@@ -134,6 +136,7 @@ Style.PullToRefreshStyle {
     Connections {
         target: control
         onRefreshingChanged: {
+            print("refreshing changed to "+refreshing)
             if (!ready || !control.enabled) {
                 return;
             }
@@ -154,20 +157,26 @@ Style.PullToRefreshStyle {
             style.refreshing = target.refreshing;
         }
     }
+    onInitialContentYChanged: print("intialContentY = "+intialContentY)
     Connections {
         target: control.target
         onMovementStarted: {
+            print("flickable movement started!")
             style.wasAtYBeginning = control.target.atYBeginning;
             style.initialContentY = control.target.contentY;
             style.refreshing = false;
             style.releaseToRefresh = false;
         }
-        onMovementEnded: style.wasAtYBeginning = control.target.atYBeginning
+        onMovementEnded: {
+            print("flickable movement ended!")
+            style.wasAtYBeginning = control.target.atYBeginning;
+        }
 
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && style.releaseToRefresh) {
-                pointOfRelease = -(control.target.contentY - control.target.originY)
+                print("dragging stopped!");
+                pointOfRelease = -(control.target.contentY - control.target.originY);
                 style.flickableTopMargin = control.target.topMargin;
                 style.refreshing = true;
                 style.releaseToRefresh = false;
@@ -181,6 +190,7 @@ Style.PullToRefreshStyle {
     }
 
     onStateChanged: {
+        print("state changed to "+state)
         /*
            Label might not be ready when the component enters in refreshing
            state, therefore the visible property will not be properly returned to
@@ -252,6 +262,11 @@ Style.PullToRefreshStyle {
             UbuntuNumberAnimation {
                 target: control.target
                 property: "topMargin"
+            }
+            UbuntuNumberAnimation {
+                target: control.target
+                property: "contentY"
+                to: style.initialContentY
             }
         }
     ]

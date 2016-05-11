@@ -11,6 +11,7 @@ Item {
         id: view
         anchors.fill: parent
         contentHeight: 1.6*view.height
+        onContentYChanged: print("contentY = "+contentY )
         Label {
             anchors.centerIn: parent
             text: "void"
@@ -34,9 +35,9 @@ Item {
             var initialContentY = view.contentY;
             flick(view, view.width/2, units.gu(10), 0, units.gu(40));
             tryCompare(view, "moving", false);
-            compare(view.topMargin, initialTopMargin,
+            tryCompare(view, "topMargin", initialTopMargin, 500,
                     "Initial topMargin of flickable is not restored after refreshing.");
-            compare(view.contentY, initialContentY,
+            tryCompare(view, "contentY", initialContentY, 500,
                     "Initial contentY of flickable is not restored after refreshing.")
         }
     }
