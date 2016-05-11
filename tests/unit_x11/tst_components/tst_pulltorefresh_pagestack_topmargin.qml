@@ -14,11 +14,6 @@ Item {
             id: pageStack
             Page {
                 id: page0
-                header: PageHeader {
-                    title: "0ne"
-                    flickable: view
-                }
-
                 title: "One"
                 visible: false
 
@@ -31,18 +26,13 @@ Item {
                         height: units.gu(5)
                         text: index
                     }
-                    onTopMarginChanged: print("topMargin = "+topMargin)
-                    onContentYChanged: print("contentY = "+contentY)
-                    onVisibleChanged: print("visible = "+visible)
                     PullToRefresh {
                         id: pullMe
-                        onRefreshingChanged: print("refreshing = "+refreshing)
                         onRefresh: {
                             refreshing = true;
                             refreshing = false;
                             pageStack.push(page1)
                         }
-                        onHeightChanged: print("PTR.height = "+height)
                     }
                 }
             }
@@ -58,23 +48,6 @@ Item {
             }
             Component.onCompleted: pageStack.push(page0)
         }
-
-//        Timer {
-//            id: refreshTimer
-//            interval: 800
-//            onTriggered: pullMe.refreshing = false;
-//        }
-
-//        Timer {
-//            id: visibleTimer
-//            interval: 1000
-//            onTriggered: page0.visible = true
-//        }
-//        Timer {
-//            id: popTimer
-//            interval: 1000
-//            onTriggered: pageStack.pop()
-//        }
     }
 
     UbuntuTestCase {
