@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -56,17 +56,14 @@ Style.PullToRefreshStyle {
       Local properties
       */
     readonly property PullToRefresh control: styledItem
-    // property to store Flickable's toipMargin at the time the pull or auto-refresh is started
-//    property real flickableTopMargin: 0.0
+    // property to control adding of control.height to the Flickable's topMargin.
     property bool extendTopMargin: false
     onExtendTopMarginChanged: {
-        print("extendTopMargin = "+extendTopMargin)
         if (extendTopMargin) {
             control.target.topMargin += control.height;
         } else {
             control.target.topMargin -= control.height;
         }
-//        control.target.returnToBounds();
     }
 
     // store when the drag has happened at the beginning of the Flickable's content
@@ -85,7 +82,6 @@ Style.PullToRefreshStyle {
     anchors.fill: parent
 
     Component.onCompleted: {
-        print("pulltorefreshstyle completed!")
         /*
           When the model attached to the component is refreshing during initialization,
           this refresh will happen after the style gets completed. This refresh will
@@ -101,7 +97,6 @@ Style.PullToRefreshStyle {
             rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
         }
         ready = true;
-        print("initial initialContentY = "+initialContentY)
     }
 
     Component.onDestruction: {
@@ -112,7 +107,6 @@ Style.PullToRefreshStyle {
     }
 
     function fixTopMargin() {
-        print("FIX TOP MARGIN!")
         if (style.state === "refreshing") {
             /*
               Fetch the topMargin, force state to disabled (idle will be turned on
@@ -122,7 +116,6 @@ Style.PullToRefreshStyle {
             var topMargin = control.target.topMargin;
             style.state = "disabled";
             control.target.topMargin = topMargin;
-//            control.target.returnToBounds();
         }
     }
 
@@ -160,13 +153,11 @@ Style.PullToRefreshStyle {
     Connections {
         target: control
         onRefreshingChanged: {
-            print("refreshing changed to "+control.refreshing)
             if (!ready || !control.enabled) {
                 return;
             }
             if (!style.releaseToRefresh && target.refreshing) {
-                // not a manual refresh, update flickable's starting topMargin
-//                style.flickableTopMargin = control.target.topMargin;
+                // not a manual refresh
                 style.wasAtYBeginning = control.target.atYBeginning;
             }
             /*
@@ -181,27 +172,22 @@ Style.PullToRefreshStyle {
             style.refreshing = target.refreshing;
         }
     }
-    onInitialContentYChanged: print("intialContentY = "+initialContentY)
     Connections {
         target: control.target
         onMovementStarted: {
-            print("flickable movement started!")
             style.wasAtYBeginning = control.target.atYBeginning;
             style.initialContentY = control.target.contentY;
             style.refreshing = false;
             style.releaseToRefresh = false;
         }
         onMovementEnded: {
-            print("flickable movement ended!")
             style.wasAtYBeginning = control.target.atYBeginning;
         }
 
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && style.releaseToRefresh) {
-                print("dragging stopped!");
                 pointOfRelease = -(control.target.contentY - control.target.originY);
-//                style.flickableTopMargin = control.target.topMargin;
                 style.refreshing = true;
                 style.releaseToRefresh = false;
             }
@@ -211,14 +197,6 @@ Style.PullToRefreshStyle {
                 style.releaseToRefresh = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
             }
         }
-//        onTopMarginChanged: {
-//            print("topMargin changed to "+control.target.topMargin);
-//            control.target.returnToBounds();
-////            control.target.contentY = 0;
-//            if (control.target.contentY + control.target.topMargin < 0) {
-//                control.target.contentY = -control.target.topMargin;
-//            }
-//        }
     }
 
     onStateChanged: {
@@ -255,8 +233,6 @@ Style.PullToRefreshStyle {
                 running: true
             }
             PropertyChanges {
-//                target: control.target
-//                topMargin: style.flickableTopMargin + control.height
                 target: style
                 extendTopMargin: true
             }
@@ -271,8 +247,6 @@ Style.PullToRefreshStyle {
                 UbuntuNumberAnimation {
                     target: control.target
                     property: "topMargin"
-//                    from: style.pointOfRelease
-//                    to: style.flickableTopMargin + control.height
                 }
                 ScriptAction {
                     script: control.refresh()
@@ -296,14 +270,11 @@ Style.PullToRefreshStyle {
             UbuntuNumberAnimation {
                 target: control.target
                 property: "topMargin"
-//                alwaysRunToEnd: true
             }
             UbuntuNumberAnimation {
                 target: control.target
                 property: "contentY"
                 to: style.initialContentY
-//                alwaysRunToEnd: true
-                onRunningChanged: print("contentY animation running = "+running)
             }
         }
     ]
