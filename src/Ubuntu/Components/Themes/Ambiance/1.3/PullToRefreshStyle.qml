@@ -200,7 +200,6 @@ Style.PullToRefreshStyle {
     }
 
     onStateChanged: {
-        print("state changed to "+state+" visible ="+visible)
         /*
            Label might not be ready when the component enters in refreshing
            state, therefore the visible property will not be properly returned to
@@ -257,12 +256,11 @@ Style.PullToRefreshStyle {
         Transition {
             from: "idle"
             to: "refreshing"
-//            UbuntuNumberAnimation {
-//                target: control.target
-//                property: "contentY"
-//                from: -style.flickableTopMargin
-//                to: -style.flickableTopMargin - control.height
-//            }
+            UbuntuNumberAnimation {
+                target: control.target
+                property: "contentY"
+                to: style.initialContentY - control.height
+            }
         },
         Transition {
             from: "refreshing"

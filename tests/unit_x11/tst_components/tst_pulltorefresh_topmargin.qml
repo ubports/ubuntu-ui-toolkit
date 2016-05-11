@@ -11,7 +11,6 @@ Item {
         id: view
         anchors.fill: parent
         contentHeight: 1.6*view.height
-        onContentYChanged: print("contentY = "+contentY )
         Label {
             anchors.centerIn: parent
             text: "void"
