@@ -32,6 +32,8 @@ Item {
                         text: index
                     }
                     onTopMarginChanged: print("topMargin = "+topMargin)
+                    onContentYChanged: print("contentY = "+contentY)
+                    onVisibleChanged: print("visible = "+visible)
                     PullToRefresh {
                         id: pullMe
                         onRefreshingChanged: print("refreshing = "+refreshing)
@@ -48,10 +50,14 @@ Item {
                 id: page1
                 title: "Two"
                 visible: false
-
+                Button {
+                    anchors.centerIn: parent
+                    onClicked: pageStack.pop()
+                    text: "back"
+                }
             }
+            Component.onCompleted: pageStack.push(page0)
         }
-        Component.onCompleted: pageStack.push(page0)
 
 //        Timer {
 //            id: refreshTimer

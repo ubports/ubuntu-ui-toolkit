@@ -229,12 +229,14 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
 
 void UCHeader::updateFlickableMargins() {
     if (m_flickable.isNull()) {
+        qDebug()<<"ufm: flickable = null.";
         return;
     }
     qreal headerHeight = 0.0;
     if (isVisible() && parentItem()) {
         headerHeight = height();
     } // else: header is not visible, so do not add to the topMargin.
+    qDebug()<<"new header height = "<<headerHeight;
     if (headerHeight != m_previous_header_height) {
         qreal previousContentY = m_flickable->contentY();
         qDebug()<<"topMargin ="<<m_flickable->topMargin();

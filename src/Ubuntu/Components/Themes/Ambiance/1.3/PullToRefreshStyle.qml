@@ -66,6 +66,7 @@ Style.PullToRefreshStyle {
         } else {
             control.target.topMargin -= control.height;
         }
+//        control.target.returnToBounds();
     }
 
     // store when the drag has happened at the beginning of the Flickable's content
@@ -144,6 +145,17 @@ Style.PullToRefreshStyle {
         anchors.centerIn: parent
     }
 
+    onVisibleChanged: {
+        // Updates to contentY may be interrupted if the flickable becomes
+        //  invisible (for example when a new Page is pushed on a stack
+        //  while PullToRefresh is in refreshing state. See bug #1578619.
+        if (visible) {
+            // Make sure the flickable is back inside its bounds when
+            //  the Page becomes visible again:
+            view.returnToBounds();
+        }
+    }
+
     // state and content controlling
     Connections {
         target: control
@@ -199,6 +211,14 @@ Style.PullToRefreshStyle {
                 style.releaseToRefresh = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
             }
         }
+//        onTopMarginChanged: {
+//            print("topMargin changed to "+control.target.topMargin);
+//            control.target.returnToBounds();
+////            control.target.contentY = 0;
+//            if (control.target.contentY + control.target.topMargin < 0) {
+//                control.target.contentY = -control.target.topMargin;
+//            }
+//        }
     }
 
     onStateChanged: {
