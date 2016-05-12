@@ -879,7 +879,11 @@ Ubuntu.StyledItem {
         id: rightScrollbar
         flickableItem: flicker
         // Attach right inside the frame
+        // Flickable uses anchors.margins relative to the frame
+        // rather than *Margin which would scroll with the content
+        anchors.topMargin: -internal.frameSpacing
         anchors.rightMargin: -internal.frameSpacing
+        anchors.bottomMargin: -internal.frameSpacing
         Ubuntu.StyleHints {
             // No background color
             troughColorSteppersStyle: Qt.rgba(0, 0, 0, 0)
