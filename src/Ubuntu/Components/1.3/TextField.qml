@@ -995,11 +995,11 @@ Ubuntu.ActionItem {
         anchors {
             left: leftPane.right
             right: clearButton.left
-            top: parent.top
-            bottom: parent.bottom
             margins: internal.spacing
+            verticalCenter: parent.verticalCenter
         }
         topMargin: internal.spacing
+        bottomMargin: internal.spacing
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
         // need to forward events as events occurred on topMargin area are not grabbed by the MouseArea.
@@ -1008,13 +1008,12 @@ Ubuntu.ActionItem {
         clip: true
         contentWidth: editor.contentWidth
         contentHeight: editor.contentHeight
+        height: editor.contentHeight
 
         TextInput {
             id: editor
             objectName: "text_input"
             // FocusScope will forward focus to this component
-            anchors.verticalCenter: parent.verticalCenter
-            verticalAlignment: TextInput.AlignVCenter
             width: flicker.width
             height: flicker.height
             cursorDelegate: TextCursor {

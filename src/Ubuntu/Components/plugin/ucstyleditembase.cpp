@@ -37,6 +37,32 @@ UCStyledItemBasePrivate::UCStyledItemBasePrivate()
 {
 }
 
+/*!
+ * \qmlproperty string StyledItem::keyNavigationFocus
+ * If \l activeFocusOnTab is true and Tab or Shift+Tab is used to focus
+ * the item this property will be true - unlike \l activeFocus which is also
+ * true if the item gained focus by click, tap or programmatically.
+ * Note that only one component at a time has \b keyNavigationFocus. The
+ * parent will have \l activeFocus and usually won't draw a focus ring.
+ *
+ * In case of complex components arrow keys may be the preferred way to move
+ * between children that can take focus. Examples of that are ListView and
+ * ListItem. This currently requires overriding \b keyNavigationFocus in C++.
+ *
+ * The implementation of focus rings as provided by the default Ambiance theme
+ * sets \l activeFocusOnTab in the style of each component and only indicates
+ * focus as long as \b keyNavigationFocus is true, similar to the below example.
+ * \qml
+ * StyledItem {
+ *     id: myItem
+ *     activeFocusOnTab: true
+ *     Rectangle {
+ *         anchors.fill: parent
+ *         color: keyNavigationFocus ? UbuntuColors.orange : UbuntuColors.blue
+ *     }
+ * }
+ * \endqml
+ */
 bool UCStyledItemBase::keyNavigationFocus() const
 {
     Q_D(const UCStyledItemBase);
@@ -44,6 +70,9 @@ bool UCStyledItemBase::keyNavigationFocus() const
 }
 void UCStyledItemBase::setKeyNavigationFocus(bool v)
 {
+    // FIXME: Behavior of nested StyledItem is currently undefined
+    // Docs should be updated once the behavior is sorted out
+    // See https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1575257
     Q_D(UCStyledItemBase);
     if (d->keyNavigationFocus == v)
         return;

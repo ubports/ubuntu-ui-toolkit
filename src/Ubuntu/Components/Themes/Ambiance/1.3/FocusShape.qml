@@ -26,7 +26,7 @@ Frame {
     color: styledItem.enabled
                 ? theme.palette.normal.focus
                 : theme.palette.disabled.focus
-    thickness: units.gu(0.21)
+    thickness: units.dp(1)
     radius: units.gu(1.7)
     visible: styledItem.keyNavigationFocus
 
