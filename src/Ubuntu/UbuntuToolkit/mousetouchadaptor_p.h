@@ -35,7 +35,7 @@ public:
     ~MouseTouchAdaptorPrivate();
 
     virtual void init() {}
-    virtual bool nativeEventFilter(const QByteArray & eventType, void *message, long *result)
+    bool nativeEventFilter(const QByteArray & eventType, void *message, long *result) override
             { Q_UNUSED(eventType); Q_UNUSED(message); Q_UNUSED(result); return false; }
     bool isEnabled() const;
     virtual void setEnabled(bool enabled);
@@ -55,7 +55,7 @@ public:
 
     void init() Q_DECL_OVERRIDE;
     bool nativeEventFilter(const QByteArray & eventType, void *message, long *result) Q_DECL_OVERRIDE;
-    void setEnabled(bool value);
+    void setEnabled(bool value) override;
 
     bool xi2HandleEvent(xcb_ge_event_t *event);
     bool handleButtonPress(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
