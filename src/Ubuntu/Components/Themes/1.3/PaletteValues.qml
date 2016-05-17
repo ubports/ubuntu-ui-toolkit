@@ -140,7 +140,7 @@ QtObject {
     property color activityText
 
     /*!
-       Color applied to selected text in editable components.
+       Color applied to selected text background in editable components.
     */
     property color selection
     /*!
@@ -159,4 +159,14 @@ QtObject {
       Color applied to elements placed on top of the \l focus color.
       */
     property color focusText
+
+    /*!
+     Color applied to navigation elements' background.
+     */
+    property color position
+
+    /*!
+     Color applied to navigation elements to indicate current position.
+     */
+    property color positionText
 }
