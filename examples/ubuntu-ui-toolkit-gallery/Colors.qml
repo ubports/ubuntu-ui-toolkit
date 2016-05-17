@@ -29,7 +29,7 @@ Template {
         className: "Palette"
         documentation: "qml-palette.html"
 
-        property var palettes: ["normal", "disabled", "selected", "selectedDisabled", "highlighted"]
+        property var palettes: ["normal", "disabled", "selected", "selectedDisabled", "highlighted", "focused"]
         property var paletteValues: [["background", ["backgroundText", "backgroundSecondaryText", "backgroundTertiaryText"]],
             ["base", ["baseText"]],
             ["foreground", ["foregroundText"]],
@@ -40,7 +40,9 @@ Template {
             ["overlay", ["overlayText", "overlaySecondaryText"]],
             ["positive", ["positiveText"]],
             ["raised", ["raisedText", "raisedSecondaryText"]],
-            ["selection", ["selectionText"]]]
+            ["selection", ["selectionText"]],
+            ["position", ["positionText"]],
+        ]
 
         Flow {
             id: paletteFlow
@@ -75,7 +77,7 @@ Template {
                                 property string mainColor: modelData[0]
                                 property var textColors: modelData[1]
                                 property bool previewed: paletteFlow.previewed == paletteColor
-                                width: units.gu(4)
+                                width: units.gu(8)
                                 height: units.gu(5)
                                 z: previewed ? 10 : 0
 
@@ -106,7 +108,7 @@ Template {
 
                                     Rectangle {
                                         anchors.fill: parent
-                                        color: palette[mainColor]
+                                        color: palette ? palette[mainColor] : "transparent"
                                         border.width: color == theme.palette.normal.background ? units.dp(1) : 0
                                         border.color: theme.palette.normal.backgroundText
                                     }
@@ -124,8 +126,8 @@ Template {
                                             model: textColors
                                             Label {
                                                 width: previewed ? implicitWidth : parent.width
-                                                text: previewed ? modelData : modelData.slice(0, 4)
-                                                color: palette[modelData]
+                                                text: previewed ? modelData : modelData.slice(0, 10)
+                                                color: palette ? palette[modelData] : "transparent"
                                                 textSize: previewed ? Label.Medium : Label.XSmall
                                                 elide: Text.ElideRight
                                             }
