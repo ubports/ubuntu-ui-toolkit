@@ -301,6 +301,15 @@ AbstractButton {
 
     // update sensing area to report clicks only on the main button area
     // area excluding dropDown button and combo list
+    Component.onCompleted: {
+        __mouseArea.anchors.rightMargin = Qt.binding(function() {
+            return combo.__styleInstance.dropDownWidth;
+        });
+        __mouseArea.anchors.bottomMargin = Qt.binding(function () {
+            return combo.expanded ? (combo.height - combo.collapsedHeight) : 0;
+        });
+    }
+
     sensingMargins {
         bottom: -(combo.height - combo.collapsedHeight)
         right: -combo.__styleInstance.dropDownWidth
