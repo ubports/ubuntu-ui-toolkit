@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1978+16.04) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1979+16.04) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Fix flickable topMargin adjustments by PullToRefreshStyle. 
@@ -12,6 +12,7 @@ ubuntu-ui-toolkit (1.3.1978+16.04) UNRELEASED; urgency=medium
     Fixes LP: #1575060
   * Fix palette colors, add focused palette value set. 
     Fixes LP: #1554473, LP: #1555245
+  * Fix section colors. Fixes LP: #1582339
 
   [ Christian Dywan ]
   * TextField flickable mustn't have the height of the parent. 

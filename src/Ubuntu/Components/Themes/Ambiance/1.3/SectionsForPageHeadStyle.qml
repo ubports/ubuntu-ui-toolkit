@@ -35,8 +35,8 @@ Item {
       The foreground color of the selected section.
      */
     property color selectedSectionColor: enabled
-                                            ? theme.palette.selected.backgroundTertiaryText
-                                            : theme.palette.selectedDisabled.backgroundTertiaryText
+                                            ? theme.palette.selected.positionText
+                                            : theme.palette.selectedDisabled.positionText
 
     /*!
       The background color for the pressed section button.
