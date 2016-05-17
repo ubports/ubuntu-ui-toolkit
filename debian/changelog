@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1977+16.04) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1978+16.04) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Fix flickable topMargin adjustments by PullToRefreshStyle. 
@@ -19,6 +19,7 @@ ubuntu-ui-toolkit (1.3.1977+16.04) UNRELEASED; urgency=medium
   * ToolbarButton example is specific to 1.3. Fixes LP: #1576463.
   * Size swipe area rectangles relative to the parent.
   * Verify control.gles which isn't picked up automatically. Fixes LP: #1576112
+  * Interactive Scrollbar in TextArea with spacing. Fixes LP: #1526726
 
   [ Lukáš Tinkl ]
   * Fix some image scaling issues by reusing Qt code (QImage instead of QPixmap). 
