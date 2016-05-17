@@ -40,7 +40,9 @@ Template {
             ["overlay", ["overlayText", "overlaySecondaryText"]],
             ["positive", ["positiveText"]],
             ["raised", ["raisedText", "raisedSecondaryText"]],
-            ["selection", ["selectionText"]]]
+            ["selection", ["selectionText"]],
+            ["position", ["positionText"]],
+        ]
 
         Flow {
             id: paletteFlow
