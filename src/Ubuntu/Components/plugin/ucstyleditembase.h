@@ -70,16 +70,16 @@ protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
     // from UCThemingExtension interface
-    virtual void preThemeChanged();
-    virtual void postThemeChanged();
+    void preThemeChanged() override;
+    void postThemeChanged() override;
 
-    void classBegin();
-    void componentComplete();
-    void itemChange(ItemChange change, const ItemChangeData &data);
-    void focusInEvent(QFocusEvent *key);
+    void classBegin() override;
+    void componentComplete() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
+    void focusInEvent(QFocusEvent *key) override;
     void setKeyNavigationFocus(bool value);
-    void mousePressEvent(QMouseEvent *event);
-    bool childMouseEventFilter(QQuickItem *child, QEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    bool childMouseEventFilter(QQuickItem *child, QEvent *event) override;
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)

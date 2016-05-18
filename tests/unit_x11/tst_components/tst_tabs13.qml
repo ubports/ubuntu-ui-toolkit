@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,15 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.4
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 
 MainView {
     id: mainView
     width: units.gu(50)
     height: units.gu(80)
-    useDeprecatedToolbar: false
 
     Tabs {
         id: tabs
@@ -94,6 +93,13 @@ MainView {
                 sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
             }
         }
+        Tab {
+            // Test for bug #1570886, see initTestCase().
+            id: tabWithTitleFromPage
+            page: Page {
+                title: "Title from Page"
+            }
+        }
     }
     Component {
         id: pageComponent
@@ -117,6 +123,12 @@ MainView {
     UbuntuTestCase {
         name: "TabsAPINewHeader"
         when: windowShown
+
+        function initTestCase() {
+            // Test for bug #1570886.
+            compare(mainView.__propagated.header.title, tab1.title,
+                     "Incorrect initial header title.");
+        }
 
         function test_tabsDefaults() {
             compare(tabs.selectedTabIndex, 0, "The default selectedTabIndex is 0 when Tabs has contents");

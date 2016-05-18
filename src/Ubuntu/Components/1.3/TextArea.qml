@@ -769,6 +769,7 @@ Ubuntu.StyledItem {
         property string displayText: editor.getText(0, editor.length)
         property real frameSpacing: control.__styleInstance.frameSpacing
         property real minimumSize: units.gu(4)
+        property real scrollbarSpacing: rightScrollbar.__interactive ? units.gu(2) : 0
 
         function linesHeight(lines)
         {
@@ -824,15 +825,6 @@ Ubuntu.StyledItem {
     }
 
     //scrollbars and flickable
-    Scrollbar {
-        id: rightScrollbar
-        flickableItem: flicker
-    }
-    Scrollbar {
-        id: bottomScrollbar
-        flickableItem: flicker
-        align: Qt.AlignBottom
-    }
     Flickable {
         id: flicker
         objectName: "input_scroller"
@@ -853,7 +845,7 @@ Ubuntu.StyledItem {
             objectName: "text_input"
             readOnly: false
             id: editor
-            width: control.contentWidth
+            width: control.contentWidth - internal.scrollbarSpacing
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
@@ -881,6 +873,20 @@ Ubuntu.StyledItem {
                 input: editor
                 flickable: flicker
             }
+        }
+    }
+    Scrollbar {
+        id: rightScrollbar
+        flickableItem: flicker
+        // Attach right inside the frame
+        // Flickable uses anchors.margins relative to the frame
+        // rather than *Margin which would scroll with the content
+        anchors.topMargin: -internal.frameSpacing
+        anchors.rightMargin: -internal.frameSpacing
+        anchors.bottomMargin: -internal.frameSpacing
+        Ubuntu.StyleHints {
+            // No background color
+            troughColorSteppersStyle: Qt.rgba(0, 0, 0, 0)
         }
     }
 

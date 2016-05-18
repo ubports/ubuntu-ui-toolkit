@@ -28,9 +28,9 @@ class TabsModel : public QAbstractListModel
 
 public:
     TabsModel();
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex&, int) const;
-    QHash<int, QByteArray> roleNames() const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex&, int) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void append(const QString &title);
     Q_INVOKABLE QVariantMap get(int index);

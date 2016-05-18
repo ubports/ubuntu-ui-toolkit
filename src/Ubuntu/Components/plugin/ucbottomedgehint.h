@@ -70,12 +70,12 @@ Q_SIGNALS:
     void stateChanged();
 protected:
     UCBottomEdgeHint(UCBottomEdgeHintPrivate &&, QQuickItem *parent);
-    void classBegin();
-    void itemChange(ItemChange change, const ItemChangeData &data);
-    void timerEvent(QTimerEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    void classBegin() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
+    void timerEvent(QTimerEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
     void handleFlickableActivation();
     void onDraggingChanged(bool dragging);

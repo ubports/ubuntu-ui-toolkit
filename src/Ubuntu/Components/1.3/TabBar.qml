@@ -21,6 +21,7 @@ import Ubuntu.Components 1.3 as Toolkit
     \qmltype TabBar
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
+    \deprecated
     \brief Tab bar that will be shown in the header when \l Tabs is active.
         This component does not need to be instantiated by the developer, it is
         automatically created by the \l Tabs.

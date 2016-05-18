@@ -27,9 +27,9 @@ class UCFrameMaterial : public QSGMaterial
 {
 public:
     UCFrameMaterial();
-    virtual QSGMaterialType* type() const;
-    virtual QSGMaterialShader* createShader() const;
-    virtual int compare(const QSGMaterial* other) const;
+    QSGMaterialType* type() const override;
+    QSGMaterialShader* createShader() const override;
+    int compare(const QSGMaterial* other) const override;
 
     quint32 textureId() const { return m_textureId; }
 
@@ -87,7 +87,7 @@ Q_SIGNALS:
     void colorChanged();
 
 private:
-    virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data);
+    QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data) override;
 
     QRgb m_color;
     float m_thickness;

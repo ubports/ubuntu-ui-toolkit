@@ -50,8 +50,8 @@ public:
 
     explicit UCServiceProperties(QObject *parent = 0);
     ~UCServiceProperties();
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
     ServiceType type() const;
     void setType(ServiceType type);

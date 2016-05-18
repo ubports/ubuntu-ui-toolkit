@@ -45,4 +45,6 @@ PaletteValues {
     negativeText: "#FFFFFF"
     activity: UbuntuColors.blue
     activityText: "#FFFFFF"
+    position: "#00000000"
+    positionText: UbuntuColors.blue
 }
