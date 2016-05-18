@@ -44,8 +44,8 @@ Q_SIGNALS:
     void themeChanged2();
 
 protected:
-    virtual void show(bool animate);
-    virtual void hide(bool animate);
+    void show(bool animate) override;
+    void hide(bool animate) override;
 
 private:
     bool m_animate:1;

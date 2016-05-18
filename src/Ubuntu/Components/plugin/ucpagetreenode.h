@@ -58,7 +58,7 @@ public:
     bool isPageTreeNode() const;
 
     // QQmlParserStatus interface
-    virtual void componentComplete() override;
+    void componentComplete() override;
 
     Q_INVOKABLE void dumpNodeTree ();
 
@@ -78,7 +78,7 @@ protected:
     void setActiveLeafNode(QQuickItem* activeLeafNode);
 
     // QQuickItem interface
-    virtual void itemChange(ItemChange change, const ItemChangeData &value) override;
+    void itemChange(ItemChange change, const ItemChangeData &value) override;
 
 private:
     Q_DECLARE_PRIVATE(UCPageTreeNode)

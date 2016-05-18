@@ -56,8 +56,8 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(UCSlotsLayout)
-    void componentComplete();
-    void itemChange(ItemChange change, const ItemChangeData &data);
+    void componentComplete() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())

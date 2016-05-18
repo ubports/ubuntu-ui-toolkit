@@ -90,8 +90,8 @@ Q_SIGNALS:
     void versionChanged();
 
 protected:
-    void classBegin();
-    void componentComplete()
+    void classBegin() override;
+    void componentComplete() override
     {
         m_completed = true;
     }

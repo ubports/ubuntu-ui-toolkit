@@ -31,10 +31,10 @@ class FrameShader : public QSGMaterialShader
 {
 public:
     FrameShader();
-    virtual char const* const* attributeNames() const;
-    virtual void initialize();
-    virtual void updateState(
-        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
+    char const* const* attributeNames() const override;
+    void initialize() override;
+    void updateState(
+        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect) override;
 
 private:
     int m_matrixId;

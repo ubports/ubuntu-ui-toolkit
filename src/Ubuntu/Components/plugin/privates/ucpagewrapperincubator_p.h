@@ -36,7 +36,7 @@ public:
     ~UCPageWrapperIncubator();
 
     // QQmlIncubator interface
-    virtual void statusChanged(Status status) override;
+    void statusChanged(Status status) override;
     Q_INVOKABLE void forceCompletion();
 
     QJSValue onStatusChanged() const;
@@ -44,7 +44,7 @@ public:
 
 protected:
     // QQmlIncubator interface
-    virtual void setInitialState(QObject *target) override;
+    void setInitialState(QObject *target) override;
 
 
 Q_SIGNALS:
