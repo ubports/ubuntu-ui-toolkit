@@ -20,8 +20,8 @@ import Ubuntu.Components 1.3
 
 Item {
     id: root
-    width: 400
-    height: 600
+    width: units.gu(50)
+    height: units.gu(60)
 
     property list<Action> actionList:  [
         Action {
@@ -61,11 +61,31 @@ Item {
         }
     ]
 
+
+    Row {
+        id: scrollingSwitchRow
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            margins: units.gu(2)
+        }
+        spacing: units.gu(2)
+
+        Label { text: "Overflow" }
+        Switch {
+            id: scrollingSwitch
+        }
+        Label { text: "Scrolling" }
+    }
+    property string actionBarStyleName: scrollingSwitch.checked ?
+                                            "ScrollingActionBarStyle" :
+                                            "ActionBarStyle"
+
     Column {
         anchors {
             left: parent.left
             right: parent.right
-            top: parent.top
+            top: scrollingSwitchRow.bottom
             margins: units.gu(2)
         }
         height: childrenRect.height
@@ -87,6 +107,7 @@ Item {
                 id: shortBar
                 anchors.right: parent.right
                 actions: root.shortActionList
+                styleName: root.actionBarStyleName
             }
         }
 
@@ -107,6 +128,7 @@ Item {
                 anchors.right: parent.right
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
+                styleName: root.actionBarStyleName
             }
         }
 
@@ -143,6 +165,7 @@ Item {
                     strokeColor: UbuntuColors.purple
                     objectName: "custom_delegate_button_" + index
                 }
+                styleName: root.actionBarStyleName
             }
         }
 
@@ -167,6 +190,7 @@ Item {
                         foregroundColor: UbuntuColors.green
                     }
                 }
+                styleName: root.actionBarStyleName
             }
         }
     }

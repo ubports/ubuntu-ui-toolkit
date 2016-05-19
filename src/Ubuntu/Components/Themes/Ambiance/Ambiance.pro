@@ -103,6 +103,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.3/ProgressionVisualStyle.qml \
              1.3/PullToRefreshStyle.qml \
              1.3/ScrollbarStyle.qml \
+	     1.3/ScrollingActionBarStyle.qml \
              1.3/SectionsStyle.qml \
              1.3/SheetForegroundStyle.qml \
              1.3/SliderStyle.qml \
