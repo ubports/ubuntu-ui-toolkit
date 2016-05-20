@@ -28,6 +28,9 @@ Item {
 
     property bool hasOSK: false
 
+    property bool keysReleased
+    Keys.onReleased: keysReleased = true
+
     Flow {
         anchors {
             fill: parent
@@ -426,10 +429,12 @@ Item {
             ];
         }
         function test_button_trigger_via_keyboard(data) {
+            main.keysReleased = false;
             buttonTriggerSpy.target = button;
             button.forceActiveFocus();
             keyClick(data.key);
             buttonTriggerSpy.wait();
+            compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
         }
 
         function test_disabled_component_does_not_focus() {
