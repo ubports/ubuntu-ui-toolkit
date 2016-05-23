@@ -108,7 +108,7 @@ Toolkit.ScrollbarBase {
 
     //Disable the input handling to let the events pass through in case we have an
     //interactive scrollbar right below us (can happen with nested views)
-    enabled: __interactive//&& __alwaysOnScrollbar
+    enabled: __interactive//&& __alwaysOnScrollbars
 
     implicitWidth: internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.width : 0)
     implicitHeight: !internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.height : 0)
@@ -158,10 +158,10 @@ Toolkit.ScrollbarBase {
 
             switch (align) {
             case Qt.AlignLeading:
-                return __alwaysOnScrollbar ? -nonOverlayScrollbarMargin : 0
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignBottom:
             case Qt.AlignTop:
-                if (!__alwaysOnScrollbar && __buddyScrollbar !== null
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
                         && __buddyScrollbar.align === Qt.AlignLeading
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
@@ -183,10 +183,10 @@ Toolkit.ScrollbarBase {
 
             switch (align) {
             case Qt.AlignTrailing:
-                return __alwaysOnScrollbar ? -nonOverlayScrollbarMargin : 0
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignBottom:
             case Qt.AlignTop:
-                if (!__alwaysOnScrollbar && __buddyScrollbar !== null
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
                         && __buddyScrollbar.align === Qt.AlignTrailing
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
@@ -207,10 +207,10 @@ Toolkit.ScrollbarBase {
 
             switch (align) {
             case Qt.AlignTop:
-                return __alwaysOnScrollbar ? -nonOverlayScrollbarMargin : 0
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignLeading:
             case Qt.AlignTrailing:
-                if (!__alwaysOnScrollbar && __buddyScrollbar !== null
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
                         && __buddyScrollbar.align === Qt.AlignTop
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle
@@ -232,10 +232,10 @@ Toolkit.ScrollbarBase {
 
             switch (align) {
             case Qt.AlignBottom:
-                return __alwaysOnScrollbar ? -nonOverlayScrollbarMargin : 0
+                return __alwaysOnScrollbars ? -nonOverlayScrollbarMargin : 0
             case Qt.AlignLeading:
             case Qt.AlignTrailing:
-                if (!__alwaysOnScrollbar && __buddyScrollbar !== null
+                if (!__alwaysOnScrollbars && __buddyScrollbar !== null
                         && __buddyScrollbar.align === Qt.AlignBottom
                         && __buddyScrollbar.__styleInstance.isScrollable)
                     return __buddyScrollbar.__styleInstance.troughThicknessSteppersStyle

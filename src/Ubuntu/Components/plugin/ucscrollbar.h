@@ -14,7 +14,8 @@ class UCScrollbar : public UCStyledItemBase
     Q_PROPERTY(UCScrollbarAlignment align READ align WRITE setAlign NOTIFY alignChanged)
     Q_PROPERTY(UCScrollbar *__buddyScrollbar READ buddyScrollbar WRITE setBuddyScrollbar NOTIFY buddyScrollbarChanged)
     Q_PROPERTY(QQuickItem *__viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
-    Q_PROPERTY(bool __alwaysOnScrollbar READ alwaysOnScrollbar WRITE setAlwaysOnScrollbar NOTIFY alwaysOnScrollbarChanged)
+    //TODO: qml version was using alwaysOnScrollbarS, but it should be singular
+    Q_PROPERTY(bool __alwaysOnScrollbars READ alwaysOnScrollbar WRITE setAlwaysOnScrollbar NOTIFY alwaysOnScrollbarChanged)
     Q_PROPERTY(bool __interactive READ interactive WRITE setInteractive NOTIFY interactiveChanged)
 
     Q_ENUMS(UCScrollbarAlignment)
