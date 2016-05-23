@@ -1,0 +1,31 @@
+{
+    "./qmlbench_benchmarks/delegates_scrollbar.qml": {
+        "average": 2,
+        "results": [
+            2,
+            3,
+            2
+        ],
+        "samples-in-average": 1
+    },
+    "./qmlbench_benchmarks/delegates_scrollbarcpp.qml": {
+        "average": 2,
+        "results": [
+            2,
+            3,
+            2
+        ],
+        "samples-in-average": 1
+    },
+    "id": "20160523094249-5jh1271ow4vuk4u5",
+    "opengl": {
+        "renderer": "Mesa DRI Intel(R) Ironlake Mobile ",
+        "vendor": "Intel Open Source Technology Center",
+        "version": "2.1 Mesa 11.2.0"
+    },
+    "os": {
+        "platformPlugin": "xcb",
+        "prettyProductName": "Ubuntu 16.04 LTS"
+    },
+    "windowSize": "800x600"
+}
