@@ -323,7 +323,7 @@ Item {
             var margin = scrollbar.__styleInstance.thumbsExtremesMargin
 
             //The total length of the path where the thumb can be positioned, from its min to its max value
-            var draggableLength = scrollbar.__trough[propSize] - margin*2
+            var draggableLength = visuals.trough[propSize] - margin*2
             var maxPosRatio = 1.0 - (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0)
 
             //Example with x/width, same applies to y/height

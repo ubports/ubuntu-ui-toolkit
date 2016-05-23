@@ -81,6 +81,7 @@
 #include "privates/frame.h"
 #include "privates/ucpagewrapper.h"
 #include "privates/appheaderbase.h"
+#include "ucscrollbar.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -235,6 +236,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
+    qmlRegisterType<UCScrollbar>(uri, 1, 3, "ScrollbarBase");
 }
 
 void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
