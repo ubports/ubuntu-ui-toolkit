@@ -3,21 +3,29 @@
         "average": 2,
         "results": [
             2,
+            2,
             3,
+            2,
+            2,
+            2,
             2
         ],
-        "samples-in-average": 1
+        "samples-in-average": 5
     },
     "./qmlbench_benchmarks/delegates_scrollbarcpp.qml": {
         "average": 2,
         "results": [
             2,
-            3,
-            2
+            2,
+            2,
+            1,
+            2,
+            2,
+            3
         ],
-        "samples-in-average": 1
+        "samples-in-average": 5
     },
-    "id": "20160523094249-5jh1271ow4vuk4u5",
+    "id": "20160523105459-zytb9alk6cehacce",
     "opengl": {
         "renderer": "Mesa DRI Intel(R) Ironlake Mobile ",
         "vendor": "Intel Open Source Technology Center",

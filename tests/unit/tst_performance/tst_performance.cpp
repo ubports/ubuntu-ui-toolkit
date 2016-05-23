@@ -81,7 +81,7 @@ private Q_SLOTS:
         QTest::newRow("Palette configuration of one color") << "PaletteConfigurationOneColor.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
         QTest::newRow("Palette configuration of all colors") << "PaletteConfigurationAllColors.qml" << QUrl("Ubuntu.Components.Themes.SuruDark");
     }
-    void benchmark_theming()
+    /*void benchmark_theming()
     {
         QFETCH(QString, document);
         QFETCH(QUrl, theme);
@@ -96,13 +96,13 @@ private Q_SLOTS:
         }
         if (root)
             delete root;
-    }
+    }*/
 
     void benchmark_GridOfComponents_data() {
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
 
-        QTest::newRow("AbstractButton 1.2") << "AbstractButtonGrid.qml" << QUrl();
+/*        QTest::newRow("AbstractButton 1.2") << "AbstractButtonGrid.qml" << QUrl();
         QTest::newRow("AbstractButton 1.3") << "AbstractButton13Grid.qml" << QUrl();
         QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
         QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
@@ -128,11 +128,20 @@ private Q_SLOTS:
         QTest::newRow("list with new ListItem (no actions) and ListItemLayout with 2 defined labels and 3 slots") << "ListOfListItemLayout_complex1.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) and ListItemLayout with 3 labels and 3 slots") << "ListOfListItemLayout_complex2.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) and a custom purpose-built layout which simulates ListItemLayout with 3 labels and 3 slots") << "ListOfCustomListItemLayouts.qml" << QUrl();
-        QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
-        QTest::newRow("list of ScrollView 1.3 with both Scrollbars") << "ListOfScrollView_bothScrollbars_1_3.qml" << QUrl();
+*/        QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
+	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
+	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
+	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
+	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
+        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
+        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
+        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
+        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
+        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
+//        QTest::newRow("list of ScrollView 1.3 with both Scrollbars") << "ListOfScrollView_bothScrollbars_1_3.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
         //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
-        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
+//        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()
@@ -159,13 +168,13 @@ private Q_SLOTS:
         QTest::newRow("importing Ubuntu.Components.Popups") << "TextWithImportGrid.qml";
     }
 
-    void benchmark_import()
+    /*void benchmark_import()
     {
         QFETCH(QString, document);
         QBENCHMARK {
             loadDocument(document);
         }
-    }
+    }*/
 };
 
 QTEST_MAIN(tst_Performance)
