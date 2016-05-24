@@ -114,7 +114,7 @@ Item {
      *      HELPER PROPERTIES                            *
      *****************************************************/
     property alias thumb: slider
-    property Item trough: trough
+    property alias trough: trough
 
     //helper properties to ease code readability
     property bool isScrollable: styledItem.__private.scrollable && pageSize > 0.0

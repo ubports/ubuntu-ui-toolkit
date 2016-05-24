@@ -129,14 +129,6 @@ private Q_SLOTS:
         QTest::newRow("list with new ListItem (inline actions!) and ListItemLayout with 3 labels and 3 slots") << "ListOfListItemLayout_complex2.qml" << QUrl();
         QTest::newRow("list with new ListItem (inline actions!) and a custom purpose-built layout which simulates ListItemLayout with 3 labels and 3 slots") << "ListOfCustomListItemLayouts.qml" << QUrl();
 */        QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
-	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
-	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
-	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
-	QTest::newRow("list of Scrollbar 1.3") << "ListOfScrollbars_1_3.qml" << QUrl();
-        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
-        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
-        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
-        QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
         QTest::newRow("list of ScrollbarCpp 1.3") << "ListOfScrollbarsCpp_1_3.qml" << QUrl();
 //        QTest::newRow("list of ScrollView 1.3 with both Scrollbars") << "ListOfScrollView_bothScrollbars_1_3.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
