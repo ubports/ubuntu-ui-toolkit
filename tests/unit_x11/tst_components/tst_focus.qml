@@ -78,6 +78,8 @@ Item {
         Button {
             id: button
             text: "Press me"
+            property bool override: false
+            Keys.onReleased: event.accepted = override
         }
         CheckBox {
             id: checkbox
@@ -429,10 +431,21 @@ Item {
             ];
         }
         function test_button_trigger_via_keyboard(data) {
+            button.override = false;
             main.keysReleased = false;
+            buttonTriggerSpy.clear();
             buttonTriggerSpy.target = button;
             button.forceActiveFocus();
             keyClick(data.key);
+            buttonTriggerSpy.wait();
+            compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
+
+            // Second attempt but the button will consume Keys.onReleased
+            button.override = true;
+            main.keysReleased = false;
+            buttonTriggerSpy.clear();
+            keyClick(data.key);
+            expectFailContinue(data.tag, "Trigger should've been overridden");
             buttonTriggerSpy.wait();
             compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
         }
