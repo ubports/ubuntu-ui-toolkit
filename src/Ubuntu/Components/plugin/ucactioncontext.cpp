@@ -33,7 +33,7 @@ UCActionContextAttached::UCActionContextAttached(QObject *owner)
 /*!
  * \qmltype ActionContext
  * \instantiates UCActionContext
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief ActionContext groups actions together and by providing multiple contexts
  * the developer is able to control the visibility of the actions. The \l ActionManager
@@ -256,7 +256,7 @@ void UCActionContext::removeAction(UCAction *action)
 /*!
  * \qmltype PopupContext
  * \instantiates UCPopupContext
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \inherits ActionContext
  * \ingroup ubuntu

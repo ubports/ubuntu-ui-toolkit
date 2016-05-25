@@ -21,7 +21,7 @@ import Ubuntu.Components 1.3
 //  by the new text button when it becomes available.
 /*!
     \qmltype Toolbar
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Toolbar that can be used as an extension for the edit mode header.
     Example:

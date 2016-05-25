@@ -20,7 +20,7 @@ import Ubuntu.Components 1.2 as Components
 /*!
     \internal
     \qmltype AppHeader
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
 */
 Components.StyledItem {

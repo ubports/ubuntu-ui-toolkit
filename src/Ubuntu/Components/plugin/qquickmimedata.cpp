@@ -28,7 +28,7 @@
 /*!
  * \qmltype MimeData
  * \instantiates QQuickMimeData
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief MimeData type provides interface to access and store data to the
  * Clipboard.

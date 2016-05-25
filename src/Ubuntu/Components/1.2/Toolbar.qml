@@ -20,7 +20,7 @@ import Ubuntu.Components 1.2
 /*!
     \internal
     \qmltype Toolbar
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Application toolbar. This class is not exposed because it will
             be automatically added when a Page defines tools.

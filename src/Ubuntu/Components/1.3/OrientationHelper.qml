@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype OrientationHelper
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The OrientationHelper automatically rotates its children following the
            orientation of the device.

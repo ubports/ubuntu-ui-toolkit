@@ -23,7 +23,7 @@ UCFontUtils *UCFontUtils::m_instance = nullptr;
 /*!
  * \qmltype FontUtils
  * \instantiates UCFontUtils
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief FontUtils is a \l {http://qt-project.org/doc/qt-5.0/qtqml/qqmlcontext.html#details} {context property},
  * which provides utility functions for font manipulations.
