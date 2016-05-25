@@ -887,11 +887,12 @@ Item {
             id: layoutTestQmlContextComponent
             ListItemLayout {
                 id: layoutTestQmlContext
-                title.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+		property string testingText: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                title.text: testingText
                 title.textFormat: Text.RichText
-                subtitle.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                subtitle.text: testingText
                 subtitle.textFormat: Text.RichText
-                summary.text: "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>"
+                summary.text: testingText
                 summary.textFormat: Text.RichText
             }
         }
@@ -908,9 +909,9 @@ Item {
             //Tentative fix for lp:1571426, CI once (in months) managed to fail this test because
             //the warning was received after the test had already finished.
             //The fail could not be reproduced locally.
-            tryCompare(obj.title, "text", "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>")
-            tryCompare(obj.subtitle, "text", "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>")
-            tryCompare(obj.summary, "text", "<html><body><p dir='ltr'>TEST <img align=absmiddle height=\"10\" width=\"10\" src=\"file:///test.png\" /> </p></body></html>")
+            tryCompare(obj.title, "text", obj.testingText)
+            tryCompare(obj.subtitle, "text", obj.testingText)
+            tryCompare(obj.summary, "text", obj.testingText)
 
             obj.destroy()
         }
