@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +20,8 @@ import Ubuntu.Components.Styles 1.3 as Style
 
 Style.ActionBarStyle {
     id: actionBarStyle
-    implicitWidth: actionsContainer.implicitWidth
     implicitHeight: units.gu(5)
+    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
 
     overflowIconName: "contextual-menu"
 
@@ -41,30 +41,16 @@ Style.ActionBarStyle {
 
     defaultNumberOfSlots: 3
 
-    Component {
-        id: fadeInComponent
-        SequentialAnimation {
-            id: fadeIn
-            property alias target: opacityAnimation.target
-            ScriptAction {
-                script: fadeIn.target.opacity = 0.0;
-            }
-            UbuntuNumberAnimation {
-                id: opacityAnimation
-                from: 0.0
-                to: 1.0
-                property: "opacity"
-                alwaysRunToEnd: true
-                duration: UbuntuAnimation.BriskDuration
-            }
-            ScriptAction {
-                script: fadeIn.destroy()
-            }
-        }
-    }
 
-    Row {
-        id: actionsContainer
+    Rectangle {
+        id: listViewContainer
+        anchors {
+//            top: parent.top
+//            bottom: parent.bottom
+            fill: parent
+        }
+        color: "pink"
+        opacity: 0.5
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -85,82 +71,19 @@ Style.ActionBarStyle {
             return newlist;
         }
 
-        property var directActions: getReversedActions(visibleActions.slice(0, numberOfSlots.used))
-        property var barActions: overflowAction.visible
-                                 ? directActions.concat(overflowAction)
-                                 : directActions
-        property var overflowActions: visibleActions.slice(numberOfSlots.used,
-                                                           numberOfSlots.requested)
-
-        QtObject {
-            id: numberOfSlots
-            property int requested: actionsContainer.visibleActions.length
-            property int available: styledItem.numberOfSlots
-            property int overflow: overflowAction.visible ? 1 : 0
-            // when numberOfSlots < 1, show the overflow button, but set used
-            // to 0 so that all actions will appear in the overflow panel.
-            property int used: Math.min(Math.max(0, available - overflow), requested)
-        }
-
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-        }
-
-        Repeater {
-            id: actionsRepeater
-            objectName: "actions_repeater"
-            model: actionsContainer.barActions
+        ListView {
+            anchors.fill: parent
+            clip: true
+            orientation: ListView.Horizontal
+            boundsBehavior: Flickable.StopAtBounds
             delegate: styledItem.delegate
-            property int previousCount: count
-            onCountChanged: {
-                // after all itemAdded signals
-                previousCount = count;
-            }
+            model: listViewContainer.visibleActions
 
-            function fadeIn(item) {
-                var fadeObject = fadeInComponent.createObject(actionBarStyle,
-                                                              {"target": item});
-                fadeObject.target = item;
-                fadeObject.start();
+            Component.onCompleted: {
+                print("ListView completed. count = "+count+", width = "+width+", contentWidth = "+contentWidth)
             }
-            onItemAdded: {
-                if (count <= previousCount) return; // no items added
-                if (index == 0) fadeIn(item);
-            }
+            onWidthChanged: print("width = "+width+", contentWidth = "+contentWidth+", count = "+count)
         }
 
-        Action {
-            id: overflowAction
-            iconSource: actionBarStyle.overflowIconSource
-            iconName: actionBarStyle.overflowIconName
-            text: actionBarStyle.overflowText
-            objectName: "overflow_action"
-            visible: numberOfSlots.requested > numberOfSlots.available
-            onTriggered: {
-                var overflowButton = actionsRepeater.itemAt(actionsRepeater.count - 1);
-                PopupUtils.open(actionsOverflowPopoverComponent, overflowButton);
-            }
-        }
-
-        Component {
-            id: actionsOverflowPopoverComponent
-            OverflowPanel {
-                id: actionsOverflowPopover
-                objectName: "actions_overflow_panel"
-
-                // Ensure the popover closes when actions change and
-                // the list item below may be destroyed before its
-                // onClicked is executed. See bug
-                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
-                Connections {
-                    target: styledItem
-                    onActionsChanged: {
-                        actionsOverflowPopover.hide();
-                    }
-                }
-                actions: actionsContainer.overflowActions
-            }
-        }
     }
 }

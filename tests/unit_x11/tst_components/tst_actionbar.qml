@@ -74,6 +74,7 @@ Item {
         Label { text: "Overflow" }
         Switch {
             id: scrollingSwitch
+            checked: true
         }
         Label { text: "Scrolling" }
     }
