@@ -81,6 +81,7 @@
 #include "privates/frame.h"
 #include "privates/ucpagewrapper.h"
 #include "privates/appheaderbase.h"
+#include "ucactionlist.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -173,6 +174,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSimpleSingletonType<UCHaptics>(uri, major, minor, "Haptics");
     qmlRegisterSimpleSingletonType<UCMathUtils>(uri, major, minor, "MathUtils");
     qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
+    qmlRegisterType<UCActionList>(uri, major, minor, "ActionList");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)

@@ -25,7 +25,6 @@ QML_FILES += 1.1/Button.qml \
 
 #1.2
 QML_FILES += 1.2/AbstractButton.qml \
-             1.2/ActionList.qml \
              1.2/ActivityIndicator.qml \
              1.2/AnimatedItem.qml \
              1.2/AppHeader.qml \
@@ -78,7 +77,6 @@ QML_FILES += 1.2/AbstractButton.qml \
 
 #1.3
 QML_FILES += 1.3/ActionBar.qml \
-             1.3/ActionList.qml \
              1.3/ActivityIndicator.qml \
 	     1.3/AdaptivePageLayout.qml \
              1.3/AnimatedItem.qml \
