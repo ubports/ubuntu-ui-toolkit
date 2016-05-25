@@ -70,6 +70,11 @@ QQmlListProperty<UCAction> UCActionList::actions()
     return QQmlListProperty<UCAction>(this, 0, UCActionList::append, UCActionList::count, 0, UCActionList::clear);
 }
 
+const QList<UCAction*> &UCActionList::list() const
+{
+    return m_actions;
+}
+
 void UCActionList::append(QQmlListProperty<UCAction> *list, UCAction *action)
 {
     UCActionList *actionList = qobject_cast<UCActionList*>(list->object);

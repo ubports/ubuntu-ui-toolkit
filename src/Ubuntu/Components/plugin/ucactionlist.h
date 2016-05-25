@@ -32,6 +32,8 @@ public:
 
     QQmlListProperty<UCAction> actions();
 
+    const QList<UCAction*> &list() const;
+
 public Q_SLOTS:
     void addAction(UCAction *action);
     void removeAction(UCAction *action);
