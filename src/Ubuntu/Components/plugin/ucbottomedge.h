@@ -104,8 +104,8 @@ protected:
     static void regions_clear(QQmlListProperty<UCBottomEdgeRegion> *sections);
 
     void initializeComponent();
-    void classBegin();
-    void itemChange(ItemChange change, const ItemChangeData &data);
+    void classBegin() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
     bool eventFilter(QObject *target, QEvent *event) override;
 
     void unlockOperation(bool running);

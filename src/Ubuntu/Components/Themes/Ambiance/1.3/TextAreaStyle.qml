@@ -35,6 +35,7 @@ Item {
     /*!
       Background fill color
       */
+    property color borderColor: theme.palette.normal.base
     property color backgroundColor: styledItem.enabled
                                         ? ((styledItem.activeFocus || styledItem.highlighted)
                                             ? theme.palette.selected.field
@@ -58,12 +59,24 @@ Item {
     /*!
       Text input background
       */
+    FocusShape {
+    }
+
     property Component background: UbuntuShape {
         property bool error: (styledItem.hasOwnProperty("errorHighlight") && styledItem.errorHighlight && !styledItem.acceptableInput)
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
-        backgroundColor: visuals.backgroundColor
-        anchors.fill: parent
+        backgroundColor: visuals.borderColor
+        aspect: UbuntuShape.Flat
         visible: !styledItem.readOnly
+        anchors.fill: parent
+
+        UbuntuShape {
+            anchors.fill: parent
+            anchors.margins: parent.visible ? units.dp(0.5) : 0
+            radius: units.gu(1.7)
+            backgroundColor: visuals.backgroundColor
+            aspect: UbuntuShape.Flat
+        }
     }
 
     Loader {

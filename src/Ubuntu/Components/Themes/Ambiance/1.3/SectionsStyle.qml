@@ -41,8 +41,8 @@ Item {
       The foreground color of the selected section.
      */
     property color selectedSectionColor: enabled
-                                         ? theme.palette.selected.backgroundTertiaryText
-                                         : theme.palette.selectedDisabled.backgroundTertiaryText
+                                         ? theme.palette.selected.positionText
+                                         : theme.palette.selectedDisabled.positionText
 
     /*!
       The background color for the pressed section button.
@@ -89,7 +89,6 @@ Item {
             objectName: "sections_listview"
 
             property bool animateContentX: false
-            activeFocusOnTab: false // FIXME: Enable proper focus handling
 
             // Position the selected item correctly.
             // For a scrollable ListView, if the item was already fully visible,
@@ -167,6 +166,9 @@ Item {
                 x: sectionsListView.currentItem ? sectionsListView.currentItem.x : -width
                 width: sectionsListView.currentItem ? sectionsListView.currentItem.width : 0
                 height: sectionsListView.currentItem ? sectionsListView.currentItem.height : 0
+                // Hide the highlight underline when the ListItem has the focus frame enabled:
+                visible: sectionsListView.currentItem &&
+                         !sectionsListView.currentItem.keyNavigationFocus
 
                 Rectangle {
                     anchors {
@@ -180,24 +182,24 @@ Item {
                 Behavior on x { UbuntuNumberAnimation {} }
             }
 
-            delegate: AbstractButton {
+            delegate: ListItem {
                 id: sectionButton
                 activeFocusOnTab: false
                 objectName: "section_button_" + index
                 width: label.width + 2 * sectionsStyle.horizontalLabelSpacing
                 height: sectionsStyle.height
+                // No need to clip
+                contentItem.clip: false
+
                 property bool selected: index === styledItem.selectedIndex
                 onClicked: {
                     styledItem.selectedIndex = index;
                     sectionsListView.forceActiveFocus();
                 }
 
-                // Background pressed highlight
-                Rectangle {
-                    visible: parent.pressed
-                    anchors.fill: parent
-                    color: sectionsStyle.pressedBackgroundColor
-                }
+                // FIXME: This line may be removed when bug #1573215 is fixed and
+                //  ListItems in a horizontal ListView don't show the divider by default
+                divider.visible: false
 
                 // Section title
                 Label {
@@ -207,12 +209,7 @@ Item {
                     text: modelData.hasOwnProperty("text") ? modelData.text : modelData
                     textSize: sectionsStyle.textSize
                     font.weight: Font.Light
-                    anchors {
-                        baseline: underline.bottom
-                        baselineOffset: sectionsStyle.height < units.gu(4) ? -units.gu(1) : -units.gu(2)
-                        horizontalCenter: parent.horizontalCenter
-                    }
-
+                    anchors.centerIn: parent
                     color: sectionButton.selected ?
                                sectionsStyle.selectedSectionColor :
                                sectionsStyle.sectionColor
@@ -232,6 +229,8 @@ Item {
                     }
                     height: sectionsStyle.underlineHeight
                     color: sectionsStyle.underlineColor
+                    // Don't cover the focus frame:
+                    visible: !sectionButton.keyNavigationFocus
                 }
             }
 

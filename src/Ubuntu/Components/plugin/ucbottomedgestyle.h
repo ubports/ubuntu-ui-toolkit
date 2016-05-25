@@ -45,7 +45,7 @@ Q_SIGNALS:
     void revealThresholdChanged();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     QQuickItem *m_panel = nullptr;

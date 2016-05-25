@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-04-09 05:43+0000\n"
-"X-Generator: Launchpad (build 17990)\n"
+"X-Launchpad-Export-Date: 2016-05-19 05:41+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -74,7 +74,7 @@ msgstr "Appellar"
 
 #: Buttons.qml:37
 msgid "Stroke"
-msgstr ""
+msgstr "Colpo"
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
@@ -249,7 +249,7 @@ msgstr "Removibile"
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr ""
+msgstr "Slide a remover"
 
 #: ListItems.qml:215
 msgid "Reset"
@@ -334,7 +334,7 @@ msgstr ""
 
 #: OptionSelectors.qml:36
 msgid "Once upon a time there was a story nobody told."
-msgstr ""
+msgstr "Un vice esseva un storia que necuno ha dicite"
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
@@ -342,7 +342,7 @@ msgstr "Altessa del continitor personalisate"
 
 #: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
-msgstr ""
+msgstr "Nulle initial selection, rolabile."
 
 #: Pickers.qml:31
 msgid "Linear"
@@ -366,7 +366,7 @@ msgstr "Superponer"
 
 #: Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Fliccabile"
 
 #: Popover.qml:74
 msgid "Action #1"
@@ -411,6 +411,7 @@ msgstr "Activate"
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"Le stylo visual del folio es un vetere labor e ergo rustic in apparentia."
 
 #: Sheet.qml:53 Sheet.qml:86
 msgid "Title"
@@ -423,7 +424,7 @@ msgstr "Valor actual: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
-msgstr ""
+msgstr "Actualisation extemporanee"
 
 #: Sliders.qml:57
 msgid "Range"
@@ -447,7 +448,7 @@ msgstr "Large"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
-msgstr ""
+msgstr "Insere me in..."
 
 #: TextInputs.qml:56
 msgid "Password"

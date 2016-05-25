@@ -70,11 +70,11 @@ public:
 
 protected:
     // from QQuickItem
-    void classBegin();
+    void classBegin() override;
 
     // from UCItemExtension
-    void preThemeChanged(){}
-    void postThemeChanged();
+    void preThemeChanged() override{}
+    void postThemeChanged() override;
 
 Q_SIGNALS:
     void textSizeChanged();
@@ -91,6 +91,7 @@ private:
     Q_DECLARE_PRIVATE_D(d_ptr.data(), UCLabel)
     Q_DISABLE_COPY(UCLabel)
     Q_PRIVATE_SLOT(d_func(), void updateRenderType())
+    Q_PRIVATE_SLOT(d_func(), void updatePixelSize())
 };
 
 QML_DECLARE_TYPE(UCLabel)

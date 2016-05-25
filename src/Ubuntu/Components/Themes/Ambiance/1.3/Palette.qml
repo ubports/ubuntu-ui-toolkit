@@ -26,15 +26,18 @@ Palette {
             // specific disabled colors
             var diff = {
                 field: UbuntuColors.porcelain,
-                positiveText: normal.positiveText,
-                negativeText: normal.negativeText,
+                selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
+                positiveText: "#FFFFFF",
+                negativeText: "#FFFFFF",
+                activityText: "#FFFFFF",
+                focusText: "#FFFFFF"
             };
             for (var p in normal) {
                 // skip objectName and all change signals
                 if (p === "objectName" || p.indexOf("Changed") > 0) continue;
                 disabled[p] = diff[p] || (
                     // if not specific, colors are 30% opaque normal
-                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3)
+                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, normal[p].a * 0.5)
                 );
             }
         }
@@ -51,13 +54,18 @@ Palette {
                 background: UbuntuColors.porcelain,
                 base: UbuntuColors.porcelain,
                 foreground: UbuntuColors.porcelain,
+                selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
+                positiveText: "#FFFFFF",
+                negativeText: "#FFFFFF",
+                activityText: "#FFFFFF",
+                focusText: "#FFFFFF"
             };
             for (var p in selected) {
                 // skip objectName and all change signals
                 if (p === "objectName" || p.indexOf("Changed") > 0) continue;
                 selectedDisabled[p] = diff[p] || (
                     // if not specific, colors are 30% opaque normal
-                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3)
+                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, normal[p].a * 0.5)
                 );
             }
         }
@@ -65,7 +73,15 @@ Palette {
 
     highlighted: AmbianceNormal {
         background: UbuntuColors.silk
-        base: UbuntuColors.jet
+        base: UbuntuColors.ash
+        baseText: UbuntuColors.inkstone
         foreground: UbuntuColors.silk
+        raised: UbuntuColors.silk
+        raisedText: UbuntuColors.inkstone
+        raisedSecondaryText: UbuntuColors.ash
+    }
+
+    focused: AmbianceNormal {
+        background: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
     }
 }

@@ -32,11 +32,11 @@ class DBusServiceProperties : public QObject, public UCServicePropertiesPrivate
 public:
     DBusServiceProperties(UCServiceProperties *qq);
 
-    bool init();
-    bool fetchPropertyValues();
-    bool readProperty(const QString &property);
+    bool init() override;
+    bool fetchPropertyValues() override;
+    bool readProperty(const QString &property) override;
     // for testing purposes only!!!
-    bool testProperty(const QString &property, const QVariant &value);
+    bool testProperty(const QString &property, const QVariant &value) override;
 
     QStringList scannedProperties;
     QDBusConnection connection;

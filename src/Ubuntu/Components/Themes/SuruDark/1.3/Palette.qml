@@ -22,14 +22,23 @@ import Ubuntu.Components.Themes 1.3
 Palette {
     normal: SuruDarkNormal {}
     disabled: SuruDarkNormal {
-        field: UbuntuColors.inkstone
-        // inactive is 30% transparent normal
         Component.onCompleted: {
+            // specific disabled colors
+            var diff = {
+                foreground: UbuntuColors.inkstone,
+                field: UbuntuColors.inkstone,
+                positiveText: UbuntuColors.porcelain,
+                negativeText: UbuntuColors.porcelain,
+                activityText: UbuntuColors.porcelain,
+                focusText: UbuntuColors.porcelain
+            };
             for (var p in normal) {
                 // skip objectName and all change signals
-                if (p == "objectName"|| p.indexOf("Changed") > 0
-                         || p == "field"  || p == "foreground" ) continue;
-                disabled[p] = Qt.rgba(normal[p].r, normal[p].g, normal[p].b, 0.3);
+                if (p == "objectName"|| p.indexOf("Changed") > 0) continue;
+                disabled[p] = diff[p] || (
+                    // if not specific, colors are 30% opaque normal
+                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, normal[p].a * 0.5)
+                );
             }
         }
     }
@@ -39,24 +48,39 @@ Palette {
 
     // selected differs from normal in background, base, foreground
     selectedDisabled: SuruDarkSelected {
-        background: UbuntuColors.inkstone
-        base: UbuntuColors.inkstone
-        foreground: UbuntuColors.inkstone
-        // inactive is 30% transparent normal
         Component.onCompleted: {
+            var diff = {
+                background: UbuntuColors.inkstone,
+                base: UbuntuColors.inkstone,
+                foreground: UbuntuColors.inkstone,
+                positiveText: UbuntuColors.porcelain,
+                negativeText: UbuntuColors.porcelain,
+                activityText: UbuntuColors.porcelain,
+                focusText: UbuntuColors.porcelain
+            };
             for (var p in selected) {
                 // skip objectName and all change signals
-                if (p == "objectName"|| p.indexOf("Changed") > 0
-                         || p == "field"  || p == "foreground" ) continue;
-                selectedDisabled[p] = Qt.rgba(selected[p].r, selected[p].g, selected[p].b, 0.3);
+                if (p == "objectName"|| p.indexOf("Changed") > 0) continue;
+                selectedDisabled[p] = diff[p] || (
+                    // if not specific, colors are 30% opaque normal
+                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, normal[p].a * 0.5)
+                );
             }
         }
     }
 
     highlighted: SuruDarkNormal {
         background: UbuntuColors.slate
-        base: UbuntuColors.graphite
+        base: UbuntuColors.slate
+        baseText: UbuntuColors.silk
         foreground: UbuntuColors.slate
+        raised: UbuntuColors.silk
+        raisedText: UbuntuColors.inkstone
+        raisedSecondaryText: UbuntuColors.ash
+    }
+
+    focused: SuruDarkNormal {
+        background: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.4)
     }
 }
 //![0]

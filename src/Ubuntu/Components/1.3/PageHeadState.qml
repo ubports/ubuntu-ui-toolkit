@@ -22,6 +22,7 @@ import Ubuntu.Components 1.3 // for Action
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
+    \deprecated
     \brief PageHeadState is a helper component to make it easier to
         configure the page header when changing states.
 

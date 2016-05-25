@@ -110,7 +110,7 @@ Ubuntu.ActionItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: activeFocus
+    property bool highlighted
 
     /*!
       Text that appears when there is no content in the component.
@@ -833,14 +833,8 @@ Ubuntu.ActionItem {
 
     // internals
 
+    // Overload focus mechanics to avoid bubbling up of focus from children
     activeFocusOnPress: true
-    activeFocusOnTab: true
-
-    /*! \internal */
-    onVisibleChanged: {
-        if (!visible)
-            control.focus = false;
-    }
 
     // Escape should close the context menu even if the menu takes no input focus
     Keys.onEscapePressed: {
@@ -1001,11 +995,11 @@ Ubuntu.ActionItem {
         anchors {
             left: leftPane.right
             right: clearButton.left
-            top: parent.top
-            bottom: parent.bottom
             margins: internal.spacing
+            verticalCenter: parent.verticalCenter
         }
         topMargin: internal.spacing
+        bottomMargin: internal.spacing
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
         // need to forward events as events occurred on topMargin area are not grabbed by the MouseArea.
@@ -1014,14 +1008,12 @@ Ubuntu.ActionItem {
         clip: true
         contentWidth: editor.contentWidth
         contentHeight: editor.contentHeight
+        height: editor.contentHeight
 
         TextInput {
             id: editor
             objectName: "text_input"
             // FocusScope will forward focus to this component
-            focus: true
-            anchors.verticalCenter: parent.verticalCenter
-            verticalAlignment: TextInput.AlignVCenter
             width: flicker.width
             height: flicker.height
             cursorDelegate: TextCursor {
@@ -1038,8 +1030,6 @@ Ubuntu.ActionItem {
 
             // overrides
             selectByMouse: true
-            activeFocusOnPress: true
-            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]

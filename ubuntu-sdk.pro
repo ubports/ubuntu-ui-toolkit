@@ -27,7 +27,8 @@ license.commands = cd $$PWD; $$PWD/tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
 
 check.target = check
-check.commands = $$PWD/tests/checkresults.sh $$OUT_PWD/tests/test_tst_*.xml
+check.commands = $$PWD/tests/checkresults.sh $$OUT_PWD/tests/test_*.xml || exit 1;
+check.commands += pep8 $$PWD || exit 1;
 
 #helper files
 OTHER_FILES += \

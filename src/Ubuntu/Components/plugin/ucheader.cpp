@@ -40,7 +40,7 @@
     import QtQuick 2.4
     import Ubuntu.Components 1.3
 
-    Item {
+    Page {
         width: units.gu(50)
         height: units.gu(70)
 
@@ -165,11 +165,11 @@ void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
  *  }
  * \endqml
  *
- * The topMargin of the flickable will automatically be updated to always match
- * the height of the header. When changing the flickable, the topMargin of the previous
- * flickable is set to 0. When the header is invisible because its visible property is
- * false, or the header has no parent, the flickable topMargin does not reflect the
- * header height.
+ * The topMargin of the flickable will automatically be updated by adding the height
+ * of the header to the current topMargin. When changing the flickable, the topMargin
+ * of the previous flickable is restored by subtracting the header height from it.
+ * Making the header invisible has the same effect on the topMargin as unsetting
+ * the flickable.
  *
  * It is permitted to use a ListView as the value of flickable, but this works
  * well only if the ListView.header property is not set. Alternatively,
@@ -203,7 +203,7 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         m_previous_header_height = 0;
         delta -= m_flickable->topMargin() + m_flickable->contentY();
 
-        // revert the flickable content Y.
+        // restore the flickable content Y.
         m_flickable->setContentY(m_flickable->contentY() + delta);
     }
 

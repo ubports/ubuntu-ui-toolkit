@@ -24,7 +24,7 @@ PaletteValues {
     backgroundSecondaryText: UbuntuColors.silk
     backgroundTertiaryText: UbuntuColors.ash
     base: UbuntuColors.graphite
-    baseText: UbuntuColors.ash
+    baseText: UbuntuColors.silk
     foreground: UbuntuColors.inkstone
     foregroundText: "#FFFFFF"
     raised: "#FFFFFF"
@@ -45,4 +45,6 @@ PaletteValues {
     negativeText: "#FFFFFF"
     activity: UbuntuColors.blue
     activityText: "#FFFFFF"
+    position: "#00000000"
+    positionText: UbuntuColors.blue
 }

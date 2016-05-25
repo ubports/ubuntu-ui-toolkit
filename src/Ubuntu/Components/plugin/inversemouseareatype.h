@@ -29,16 +29,16 @@ public:
     explicit InverseMouseAreaType(QQuickItem *parent = 0);
     ~InverseMouseAreaType();
 
-    Q_INVOKABLE virtual bool contains(const QPointF &point) const;
+    Q_INVOKABLE bool contains(const QPointF &point) const override;
 
 protected:
-    void itemChange(ItemChange, const ItemChangeData &);
-    void componentComplete();
-    bool eventFilter(QObject *, QEvent *);
+    void itemChange(ItemChange, const ItemChangeData &) override;
+    void componentComplete() override;
+    bool eventFilter(QObject *, QEvent *) override;
 
     // override mouse events
-    void mousePressEvent(QMouseEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 
 private: // getter/setter

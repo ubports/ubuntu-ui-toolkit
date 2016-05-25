@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 /*
   This component is a unified text selection and scrolling handler for both
@@ -290,12 +291,24 @@ MultiPointTouchArea {
     Connections {
         target: main
         ignoreUnknownSignals: true
+        onActiveFocusChanged: {
+            input.focus = main.activeFocus;
+        }
+        onKeyNavigationFocusChanged: {
+            if (main.keyNavigationFocus) {
+                input.forceActiveFocus();
+            }
+        }
         onFocusChanged: {
             UbuntuApplication.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
             if (main.focus) {
                 input.forceActiveFocus()
             }
+        }
+        onVisibleChanged: {
+            if (!main.visible)
+                main.focus = false;
         }
     }
 
@@ -311,7 +324,11 @@ MultiPointTouchArea {
             }
         }
         // make sure we show the OSK
-        onActiveFocusChanged: showInputPanel()
+        onActiveFocusChanged: {
+            if (!input.activeFocus && popover)
+                PopupUtils.close(popover);
+            showInputPanel();
+        }
     }
 
     // inner or outer Flickable controlling

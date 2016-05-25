@@ -1140,7 +1140,6 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
         updateNode = true;
     }
     QRectF rect(boundingRect());
-    rect -= QMarginsF(0, 0, UCUnits::instance()->dp(1), 0);
     d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
     rectNode->setRect(rect);
 
