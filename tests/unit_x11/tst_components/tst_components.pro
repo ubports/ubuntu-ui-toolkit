@@ -4,6 +4,8 @@ include(../qmltest-include.pri)
 
 TARGET = tst_components
 
+CONFIG += c++11
+
 SOURCES += tst_components.cpp tabsmodel.cpp
 HEADERS += tabsmodel.h
 

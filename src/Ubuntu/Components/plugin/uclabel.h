@@ -70,11 +70,11 @@ public:
 
 protected:
     // from QQuickItem
-    void classBegin();
+    void classBegin() override;
 
     // from UCItemExtension
-    void preThemeChanged(){}
-    void postThemeChanged();
+    void preThemeChanged() override{}
+    void postThemeChanged() override;
 
 Q_SIGNALS:
     void textSizeChanged();

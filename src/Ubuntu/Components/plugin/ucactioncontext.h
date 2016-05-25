@@ -38,8 +38,8 @@ public:
 
     static UCActionContextAttached *qmlAttachedProperties(QObject *owner);
 
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
     void markActionsPublished(bool mark);
     bool isPopup() const
     {

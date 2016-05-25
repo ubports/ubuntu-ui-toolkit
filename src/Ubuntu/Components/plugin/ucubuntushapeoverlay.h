@@ -27,7 +27,7 @@ class ShapeOverlayShader : public ShapeShader
 {
 public:
     ShapeOverlayShader();
-    virtual char const* const* attributeNames() const;
+    char const* const* attributeNames() const override;
 };
 
 // --- Scene graph material ---
@@ -35,8 +35,8 @@ public:
 class ShapeOverlayMaterial : public ShapeMaterial
 {
 public:
-    virtual QSGMaterialType* type() const;
-    virtual QSGMaterialShader* createShader() const;
+    QSGMaterialType* type() const override;
+    QSGMaterialShader* createShader() const override;
 };
 
 // --- Scene graph node ---
@@ -58,7 +58,7 @@ public:
 
     ShapeOverlayNode();
     QSGGeometry* geometry() { return &m_geometry; }
-    void preprocess() { m_material.updateTextures(); }
+    void preprocess() override { m_material.updateTextures(); }
 
 private:
     ShapeOverlayMaterial m_material;
@@ -92,11 +92,11 @@ Q_SIGNALS:
     void overlayColorChanged();
 
 protected:
-    virtual QSGNode* createSceneGraphNode() const;
-    virtual void updateGeometry(
+    QSGNode* createSceneGraphNode() const override;
+    void updateGeometry(
         QSGNode* node, const QSizeF& itemSize, float radius, float shapeOffset,
         const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
-        const quint32 backgroundColor[3]);
+        const quint32 backgroundColor[3]) override;
 
 private:
     quint16 m_overlayX;

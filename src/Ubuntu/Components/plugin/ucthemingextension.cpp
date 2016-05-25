@@ -75,7 +75,7 @@ public:
     QQuickItem *m_item;
     QQuickItem *m_prevParent;
 
-    void itemParentChanged(QQuickItem *item, QQuickItem *newParent);
+    void itemParentChanged(QQuickItem *item, QQuickItem *newParent) override;
 
 private:
 

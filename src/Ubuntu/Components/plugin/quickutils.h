@@ -77,7 +77,7 @@ Q_SIGNALS:
     void keyboardAttachedChanged();
 
 protected:
-    bool eventFilter(QObject *, QEvent *);
+    bool eventFilter(QObject *, QEvent *) override;
 
 private:
     explicit QuickUtils(QObject *parent = 0);

@@ -29,7 +29,7 @@ class UPMTextureFromImageTextureProvider : public QSGTextureProvider
 public:
     explicit UPMTextureFromImageTextureProvider();
     virtual ~UPMTextureFromImageTextureProvider();
-    QSGTexture* texture() const;
+    QSGTexture* texture() const override;
     void setTexture(QSGTexture* texture);
 
 private:
@@ -46,9 +46,9 @@ class UPMTextureFromImage : public QQuickItem
 public:
     explicit UPMTextureFromImage(QQuickItem* parent = 0);
     virtual ~UPMTextureFromImage();
-    bool isTextureProvider() const;
-    QSGTextureProvider* textureProvider() const;
-    QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData);
+    bool isTextureProvider() const override;
+    QSGTextureProvider* textureProvider() const override;
+    QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override;
 
     // getter
     QImage image() const;

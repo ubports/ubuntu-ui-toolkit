@@ -55,8 +55,8 @@ Item {
         Rectangle {
             objectName: "text_cursor_style_" + styledItem.positionProperty
             width: cursorWidth
-            // FIXME: check with design whether should it be activity or something else
-            color: theme.palette.normal.activity
+
+            color: theme.palette.normal.positionText
             visible: blinkTimer.timerShowCursor || !blinkTimer.running
             Timer {
                 id: blinkTimer

@@ -788,7 +788,7 @@ PageTreeNode {
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
-                    rightMargin: dividerThickness
+                    rightMargin: dividerThickness + verticalDivider.width
                 }
                 Item {
                     id: hiddenItem
@@ -806,6 +806,7 @@ PageTreeNode {
                     left: parent.left
                     top: parent.top
                     right: parent.right
+                    rightMargin: dividerThickness + verticalDivider.width
                 }
                 height: body.headerHeight
 
@@ -856,7 +857,7 @@ PageTreeNode {
                     right: parent.right
                     rightMargin: dividerThickness
                 }
-                width: (column == (d.columns - 1)) || !pageWrapper ? 0 : units.dp(1)
+                width: (column == (d.columns - 1)) ? 0 : units.dp(1)
                 color: theme.palette.normal.base
                 MouseArea {
                     id: resizerSensing
@@ -923,7 +924,7 @@ PageTreeNode {
                 wrapper.active = false;
                 subHeader.config = null;
                 pageWrapper = null;
-                wrapper.parent = hiddenPool;
+                wrapper.parent = hiddenItem;
                 wrapper.pageHolder = null;
                 return wrapper;
             }

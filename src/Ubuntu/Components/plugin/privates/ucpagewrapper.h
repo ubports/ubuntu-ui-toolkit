@@ -77,7 +77,7 @@ public:
     Q_INVOKABLE void destroyObject ();
 
     // QQuickItem interface
-    virtual void itemChange(ItemChange change, const ItemChangeData &data) override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
 
     //override QQuickItem properties
     void setVisible2(bool visible);

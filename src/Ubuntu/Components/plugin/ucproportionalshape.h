@@ -33,7 +33,7 @@ private Q_SLOTS:
     void _q_updateHeight();
 
 private:
-    void componentComplete();
+    void componentComplete() override;
 
     Q_DISABLE_COPY(UCProportionalShape)
 };
