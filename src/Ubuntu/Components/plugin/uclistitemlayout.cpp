@@ -26,7 +26,7 @@
 /*!
     \qmltype ListItemLayout
     \instantiates UCListItemLayout
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \since Ubuntu.Components 1.3
     \inherits SlotsLayout
     \ingroup ubuntu

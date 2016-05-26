@@ -17,7 +17,6 @@
 import logging
 
 from autopilot import logging as autopilot_logging
-from autopilot.introspection import dbus
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 

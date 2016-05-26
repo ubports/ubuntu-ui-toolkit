@@ -19,7 +19,7 @@
 
 /*! \qmltype LiveTimer
     \instantiates LiveTimer
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
     \brief A live timing source providing peridioc updates.

@@ -22,7 +22,7 @@
 /*!
  * \qmltype ActionManager
  * \instantiates UCActionManager
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief ActionManager manages actions and action contexts withion an application.
  *

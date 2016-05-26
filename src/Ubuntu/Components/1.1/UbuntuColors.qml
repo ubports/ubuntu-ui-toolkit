@@ -19,7 +19,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype UbuntuColors
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Singleton defining the Ubuntu color palette.
 

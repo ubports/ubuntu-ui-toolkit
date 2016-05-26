@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype PullToRefresh
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
     \brief Pull-to-refresh component for Flickables to reload a model upon pull.

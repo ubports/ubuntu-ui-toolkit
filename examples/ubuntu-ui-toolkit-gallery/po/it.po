@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-04-30 05:33+0000\n"
-"X-Generator: Launchpad (build 17995)\n"
+"X-Launchpad-Export-Date: 2016-05-19 05:41+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 
 #: About.qml:34
 msgid "About..."
-msgstr ""
+msgstr "Informazioni..."
 
 #: ActionBars.qml:68
 msgid "Short list"
@@ -36,7 +36,7 @@ msgstr ""
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
 msgid "Disabled"
-msgstr ""
+msgstr "Disabilitato"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
@@ -46,7 +46,7 @@ msgstr ""
 #: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
 #: Sliders.qml:28 TextInputs.qml:46
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
 #: Animations.qml:58
 msgid "Standard Durations"

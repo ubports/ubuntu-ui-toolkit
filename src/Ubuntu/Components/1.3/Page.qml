@@ -20,7 +20,7 @@ import "pageUtils.js" as Utils
 
 /*!
     \qmltype Page
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \inherits StyledItem
     \ingroup ubuntu
     \brief A page is the basic Item that represents a single view in

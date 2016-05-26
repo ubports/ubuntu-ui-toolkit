@@ -130,7 +130,7 @@ bool UCStyledItemBasePrivate::isParentFocusable()
 /*!
  * \qmltype StyledItem
  * \instantiates UCStyledItemBase
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.1
  * \brief The StyledItem class allows items to be styled by the theme.

@@ -26,7 +26,7 @@
     \qmltype Header
     \instantiates UCHeader
     \inherits StyledItem
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
     \brief Header bar that can contain the title and controls for the current view.

@@ -49,7 +49,7 @@ quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
  * \instantiates UCTheme
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \ingroup theming
  * \brief The ThemeSettings class provides facilities to define the theme of a
