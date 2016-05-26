@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit-gles (1.3.1979+16.04.20160517.4) yakkety; urgency=medium
+ubuntu-ui-toolkit (1.3.1979+16.04.20160517.4) yakkety; urgency=medium
 
   * Rebuild for arm64 gles switch.
 
