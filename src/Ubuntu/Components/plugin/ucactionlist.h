@@ -38,6 +38,10 @@ public Q_SLOTS:
     void addAction(UCAction *action);
     void removeAction(UCAction *action);
 
+Q_SIGNALS:
+    void added(UCAction *action);
+    void removed(UCAction *action);
+
 protected:
     QList<UCAction*> m_actions;
 

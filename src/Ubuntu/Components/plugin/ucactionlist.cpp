@@ -39,6 +39,7 @@ void UCActionList::addAction(UCAction *action)
         return;
     }
     m_actions.append(action);
+    Q_EMIT added(action);
 }
 
 /*!
@@ -51,7 +52,9 @@ void UCActionList::removeAction(UCAction *action)
     if (!action) {
         return;
     }
-    m_actions.removeOne(action);
+    if (m_actions.removeOne(action)) {
+        Q_EMIT removed(action);
+    }
 }
 
 /*!
@@ -79,7 +82,7 @@ void UCActionList::append(QQmlListProperty<UCAction> *list, UCAction *action)
 {
     UCActionList *actionList = qobject_cast<UCActionList*>(list->object);
     if (actionList) {
-        actionList->m_actions.append(action);
+        actionList->addAction(action);
     }
 }
 

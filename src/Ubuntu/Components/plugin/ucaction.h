@@ -49,7 +49,7 @@ inline void invokeTrigger(T *object, const QVariant &value)
 
 class QQmlComponent;
 class QQuickItem;
-class UCActionAttached;
+class UCExclusiveGroup;
 class UCAction : public QObject
 {
     Q_OBJECT
@@ -62,7 +62,9 @@ class UCAction : public QObject
     Q_PROPERTY(QString description MEMBER m_description NOTIFY descriptionChanged)
     Q_PROPERTY(QString keywords MEMBER m_keywords NOTIFY keywordsChanged)
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged)
-    Q_PROPERTY(Type parameterType MEMBER m_parameterType NOTIFY parameterTypeChanged)
+    Q_PROPERTY(Type parameterType READ parameterType WRITE setParameterType NOTIFY parameterTypeChanged)
+    Q_PROPERTY(QVariant state READ state WRITE setState NOTIFY stateChanged REVISION 1)
+    Q_PROPERTY(UCExclusiveGroup* exclusiveGroup READ exclusiveGroup WRITE setExclusiveGroup NOTIFY exclusiveGroupChanged REVISION 1)
 
     // Toolkit Actions API
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource WRITE setIconSource NOTIFY iconSourceChanged)
@@ -109,6 +111,12 @@ public:
     void setItemHint(QQmlComponent *);
     void setShortcut(const QVariant&);
     void resetShortcut();
+    void setParameterType(Type type);
+    Type parameterType() const { return m_parameterType; }
+    QVariant state() const { return m_state; }
+
+    UCExclusiveGroup *exclusiveGroup() const;
+    void setExclusiveGroup(UCExclusiveGroup *exclusiveGroup);
 
 Q_SIGNALS:
     void nameChanged();
@@ -121,10 +129,13 @@ Q_SIGNALS:
     void iconSourceChanged();
     void visibleChanged();
     void shortcutChanged();
+    void stateChanged();
+    void exclusiveGroupChanged();
     void triggered(const QVariant &value);
 
 public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
+    void setState(const QVariant&);
 
 private:
     QPODVector<QQuickItem*, 4> m_owningItems;
@@ -142,6 +153,8 @@ private:
     bool m_enabled:1;
     bool m_visible:1;
     bool m_published:1;
+    UCExclusiveGroup *m_exclusiveGroup;
+    QVariant m_state;
 
     friend class UCActionContext;
     friend class UCActionItem;
