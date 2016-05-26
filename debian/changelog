@@ -18,6 +18,12 @@ ubuntu-ui-toolkit (1.3.1984+16.04) UNRELEASED; urgency=medium
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 20 May 2016 20:38:03 +0300
 
+ubuntu-ui-toolkit-gles (1.3.1979+16.04.20160517.4) yakkety; urgency=medium
+
+  * Rebuild for arm64 gles switch.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 25 May 2016 06:59:29 +0000
+
 ubuntu-ui-toolkit (1.3.1979+16.04.20160517.1) xenial; urgency=medium
 
   [ Tim Peeters ]
