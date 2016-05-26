@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import QtQuick.Layouts 1.2
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
@@ -91,13 +92,12 @@ Item {
         }
         height: childrenRect.height
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: shortBar.verticalCenter
                 }
                 text: "" + shortBar.numberOfSlots + " slot(s):"
@@ -106,19 +106,18 @@ Item {
             ActionBar {
                 // no numberOfSlots specified. Using default value.
                 id: shortBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.shortActionList
                 styleName: root.actionBarStyleName
             }
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: bar.verticalCenter
                 }
                 text: "" + bar.numberOfSlots + " slot(s):"
@@ -126,7 +125,7 @@ Item {
 
             ActionBar {
                 id: bar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
                 styleName: root.actionBarStyleName
@@ -145,20 +144,19 @@ Item {
             live: true
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: customDelegateBar.verticalCenter
                 }
                 text: "Custom delegate"
             }
             ActionBar {
                 id: customDelegateBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.shortActionList
                 delegate: Button {
                     action: modelData
@@ -170,19 +168,18 @@ Item {
             }
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: greenButtonsBar.verticalCenter
                 }
                 text: "Custom delegate 2"
             }
             ActionBar {
                 id: greenButtonsBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.actionList
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"

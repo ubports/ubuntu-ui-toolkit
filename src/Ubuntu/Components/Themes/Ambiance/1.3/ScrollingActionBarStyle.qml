@@ -21,7 +21,7 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.ActionBarStyle {
     id: actionBarStyle
     implicitHeight: units.gu(5)
-    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
+//    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
 
     overflowIconName: "contextual-menu"
 
@@ -45,8 +45,6 @@ Style.ActionBarStyle {
     Rectangle {
         id: listViewContainer
         anchors {
-//            top: parent.top
-//            bottom: parent.bottom
             fill: parent
         }
         color: "pink"
@@ -72,7 +70,13 @@ Style.ActionBarStyle {
         }
 
         ListView {
-            anchors.fill: parent
+            anchors {
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+            width: Math.min(listViewContainer.width, contentWidth)
+
             clip: true
             orientation: ListView.Horizontal
             boundsBehavior: Flickable.StopAtBounds
