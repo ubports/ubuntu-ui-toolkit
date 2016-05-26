@@ -16,7 +16,7 @@
 
 /*!
     \qmltype OptionSelectorDelegate
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu-components
     \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
 

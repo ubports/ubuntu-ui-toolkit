@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype TabBar
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \deprecated
     \brief Tab bar that will be shown in the header when \l Tabs is active.

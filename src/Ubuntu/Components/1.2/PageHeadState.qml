@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2 // for Action
 
 /*!
     \qmltype PageHeadState
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
     \brief PageHeadState is a helper component to make it easier to

@@ -65,9 +65,10 @@ void UCLabelPrivate::updateRenderType()
 }
 
 /*!
- * \qmltype LabelBase
+ * \qmltype Label
  * \qmlabstract
  * \instantiates UCLabel
+ * \inherits Text
  * \inqmlmodule Ubuntu.Components 1.3
  * \ingroup ubuntu
  * \brief Extended Text item with Ubuntu styling.
@@ -158,7 +159,7 @@ void UCLabel::postThemeChanged()
 }
 
 /*!
- * \qmlproperty enumeration LabelBase::textSize
+ * \qmlproperty enumeration Label::textSize
  * \since Ubuntu.Components 1.3
  *
  * This property holds an abstract size that allows adaptive resizing based on the measurement unit
@@ -221,7 +222,7 @@ void UCLabel::setRenderType(RenderType renderType)
 }
 
 /*!
- * \qmlproperty string LabelBase::fontSize
+ * \qmlproperty string Label::fontSize
  * \deprecated
  *
  * This property holds an abstract size represented as a string that allows adaptive resizing based

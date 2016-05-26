@@ -130,7 +130,7 @@ public:
  * \qmltype SwipeArea
  * \instantiates UCSwipeArea
  * \inherits Item
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \ingroup ubuntu-gestures
  * \brief An area which detects axis-aligned single-finger drag gestures.

@@ -18,7 +18,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 /*!
     \qmltype CheckBox
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief CheckBox is a component with two states, checked or unchecked. It can
     be used to set boolean options. The behavior is the same as \l Switch, the
