@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.1984+16.04) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.1984+16.10.20160527.2) yakkety; urgency=medium
 
   [ Christian Dywan ]
   * Slimmer frame for TextFields: 0.5dp. Fixes LP: #1578190.
@@ -16,7 +16,10 @@ ubuntu-ui-toolkit (1.3.1984+16.04) UNRELEASED; urgency=medium
     PageHeadState, ToolbarButton, ToolbarItems as deprecated in the 
     documentation. Fixes LP: #1566735, LP: #1566741.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 20 May 2016 20:38:03 +0300
+  [ CI Train Bot ]
+  * Resync trunk.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Fri, 27 May 2016 07:08:44 +0000
 
 ubuntu-ui-toolkit (1.3.1979+16.04.20160517.4) yakkety; urgency=medium
 
