@@ -109,8 +109,8 @@ public:
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
     void setContentMoving(bool moved);
-    virtual void preStyleChanged();
-    virtual bool loadStyleItem(bool animated = true);
+    void preStyleChanged() override;
+    bool loadStyleItem(bool animated = true) override;
     bool dragging();
     bool dragMode();
     void setDragMode(bool draggable);

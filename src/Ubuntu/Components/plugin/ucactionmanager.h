@@ -34,8 +34,8 @@ class UCActionManager : public QObject, public QQmlParserStatus
 public:
     explicit UCActionManager(QObject *parent = 0);
 
-    void classBegin() {}
-    void componentComplete();
+    void classBegin() override {}
+    void componentComplete() override;
 
     QQmlListProperty<UCAction> actions();
     QQmlListProperty<UCActionContext> localContexts();

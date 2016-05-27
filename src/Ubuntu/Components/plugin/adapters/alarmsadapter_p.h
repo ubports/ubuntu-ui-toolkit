@@ -37,28 +37,28 @@ public:
     AlarmDataAdapter(UCAlarm *qq);
     ~AlarmDataAdapter();
 
-    bool enabled() const;
-    bool setEnabled(bool enabled);
-    QDateTime date() const;
-    bool setDate(const QDateTime &date);
-    QString message() const;
-    bool setMessage(const QString &message);
-    UCAlarm::AlarmType type() const;
-    bool setType(UCAlarm::AlarmType type);
-    UCAlarm::DaysOfWeek daysOfWeek() const;
-    bool setDaysOfWeek(UCAlarm::DaysOfWeek days);
-    QUrl sound() const;
-    bool setSound(const QUrl &sound);
-    QVariant cookie() const;
-    UCAlarm::Error checkAlarm();
+    bool enabled() const override;
+    bool setEnabled(bool enabled) override;
+    QDateTime date() const override;
+    bool setDate(const QDateTime &date) override;
+    QString message() const override;
+    bool setMessage(const QString &message) override;
+    UCAlarm::AlarmType type() const override;
+    bool setType(UCAlarm::AlarmType type) override;
+    UCAlarm::DaysOfWeek daysOfWeek() const override;
+    bool setDaysOfWeek(UCAlarm::DaysOfWeek days) override;
+    QUrl sound() const override;
+    bool setSound(const QUrl &sound) override;
+    QVariant cookie() const override;
+    UCAlarm::Error checkAlarm() override;
 
-    void save();
-    void cancel();
-    void reset();
+    void save() override;
+    void cancel() override;
+    void reset() override;
     bool wait(int msec);
-    void completeSave();
-    void completeCancel();
-    void copyAlarmData(const UCAlarm &other);
+    void completeSave() override;
+    void completeCancel() override;
+    void copyAlarmData(const UCAlarm &other) override;
 
 // adaptation specific data
     void adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days);
@@ -179,17 +179,17 @@ public:
     QOrganizerManager *manager;
     QOrganizerCollection collection;
 
-    void init();
-    int alarmCount();
-    UCAlarm *getAlarmAt(int index) const;
-    bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const;
+    void init() override;
+    int alarmCount() override;
+    UCAlarm *getAlarmAt(int index) const override;
+    bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const override;
     void adjustAlarmOccurrence(AlarmDataAdapter &alarm);
 
     void loadAlarms();
     void saveAlarms();
 
-    bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value);
-    UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
+    bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value) override;
+    UCAlarmPrivate *createAlarmData(UCAlarm *alarm) override;
 
     void insertAlarm(const QOrganizerItemId &id);
     void updateAlarm(const QOrganizerItemId &id);
@@ -197,7 +197,7 @@ public:
 
 private Q_SLOTS:
     void completeFetchAlarms();
-    bool fetchAlarms();
+    bool fetchAlarms() override;
     void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
 
 protected:

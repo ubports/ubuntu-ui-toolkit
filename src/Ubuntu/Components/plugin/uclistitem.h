@@ -76,16 +76,16 @@ public:
 
 protected:
     virtual QObject *attachedViewItems(QObject *object, bool create);
-    void classBegin();
-    void componentComplete();
-    QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
-    void itemChange(ItemChange change, const ItemChangeData &data);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    bool childMouseEventFilter(QQuickItem *child, QEvent *event);
-    bool eventFilter(QObject *, QEvent *);
-    void timerEvent(QTimerEvent *event);
+    void classBegin() override;
+    void componentComplete() override;
+    QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    bool childMouseEventFilter(QQuickItem *child, QEvent *event) override;
+    bool eventFilter(QObject *, QEvent *) override;
+    void timerEvent(QTimerEvent *event) override;
     void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
@@ -146,7 +146,7 @@ Q_SIGNALS:
     void colorToChanged();
 
 protected:
-    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data);
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data) override;
 
 private:
     void updateGradient();
@@ -241,7 +241,7 @@ Q_SIGNALS:
     void heightChanged();
 
 protected:
-    bool eventFilter(QObject *, QEvent *);
+    bool eventFilter(QObject *, QEvent *) override;
 
 private:
     UCListItem *m_listItem;

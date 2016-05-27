@@ -22,6 +22,7 @@ import Ubuntu.Components 1.3
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
+    \deprecated
     \brief PageHeadSections is used to configure the sections for a \l Page.
 
     These sections will be shown in the bottom part of the header. This component does not

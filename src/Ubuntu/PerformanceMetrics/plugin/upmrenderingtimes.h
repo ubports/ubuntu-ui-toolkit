@@ -58,7 +58,7 @@ Q_SIGNALS:
     void frameRendered(qint64 renderTime);
 
 protected:
-    void itemChange(ItemChange change, const ItemChangeData & value);
+    void itemChange(ItemChange change, const ItemChangeData & value) override;
 
 private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);

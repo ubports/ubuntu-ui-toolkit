@@ -73,8 +73,8 @@ Q_SIGNALS:
     void currentLayoutChanged();
 
 protected:
-    void componentComplete();
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+    void componentComplete() override;
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
 private:
     QQmlListProperty<ULConditionalLayout> layouts();
