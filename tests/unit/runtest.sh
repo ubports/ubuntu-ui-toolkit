@@ -49,11 +49,11 @@ if [ -z $_TARGETPATH ]; then
   echo "  ../$(basename $0) tst_mainview minimal"
   echo "  cd ../../.."
   echo ''
-  echo "  cd $(relpath ${BUILD_DIR}/tests/unit_x11/tst_components)"
-  echo "  ../../xvfb.sh ../../unit/$(basename $0) tst_components tst_listitem13.qml"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/tst_visual)"
+  echo "  ../../xvfb.sh ../../unit/$(basename $0) tst_visual tst_listitem13.qml"
   echo "  cd ../../.."
   echo ''
-  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit_x11/tst_bottomedge/tst_bottomedge)"
+  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit/tst_bottomedge/tst_bottomedge)"
   exit 1
 fi
 
