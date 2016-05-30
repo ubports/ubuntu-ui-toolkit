@@ -48,6 +48,30 @@ Item {
         Action {
             iconName: "lock"
             text: "Lock"
+        },
+        Action {
+            iconName: "camcorder"
+            text: "Camera"
+        },
+        Action {
+            iconName: "location"
+            text: "Location"
+        },
+        Action {
+            iconName: "like"
+            text: "Heart"
+        },
+        Action {
+            iconName: "message"
+            text: "Message"
+        },
+        Action {
+            iconName: "livetv"
+            text: "Television"
+        },
+        Action {
+            iconName: "lock-broken"
+            text: "Unlock"
         }
     ]
 

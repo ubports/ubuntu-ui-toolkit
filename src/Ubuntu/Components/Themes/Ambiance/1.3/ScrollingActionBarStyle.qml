@@ -21,6 +21,7 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.ActionBarStyle {
     id: actionBarStyle
     implicitHeight: units.gu(5)
+//    implicitWidth: units.gu(4) * styledItem.numberOfItems
 //    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
 
     overflowIconName: "contextual-menu"
