@@ -21,8 +21,8 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.ActionBarStyle {
     id: actionBarStyle
     implicitHeight: units.gu(5)
-//    implicitWidth: units.gu(4) * styledItem.numberOfItems
-//    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
+    //    implicitWidth: units.gu(4) * styledItem.numberOfItems
+    //    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
 
     overflowIconName: "contextual-menu"
 
@@ -48,8 +48,13 @@ Style.ActionBarStyle {
         anchors {
             fill: parent
         }
-        color: "pink"
-        opacity: 0.5
+//        color: "pink"
+        color: "transparent"
+//        opacity: 0.5
+        clip: true
+
+        property real listViewMargins: units.gu(2)
+
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -71,12 +76,16 @@ Style.ActionBarStyle {
         }
 
         ListView {
+            id: actionsListView
             anchors {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
+                leftMargin: listViewContainer.listViewMargins
+                rightMargin: listViewContainer.listViewMargins
             }
-            width: Math.min(listViewContainer.width, contentWidth)
+            width: Math.min(listViewContainer.width - 2*listViewContainer.listViewMargins,
+                            contentWidth)
 
             clip: true
             orientation: ListView.Horizontal
@@ -90,5 +99,112 @@ Style.ActionBarStyle {
             onWidthChanged: print("width = "+width+", contentWidth = "+contentWidth+", count = "+count)
         }
 
+        MouseArea {
+            // Detect hovering over the left and right areas to show the scrolling chevrons.
+            id: hoveringArea
+
+            property real iconsDisabledOpacity: 0.3
+
+            anchors.fill: parent
+            hoverEnabled: true
+
+            property bool pressedLeft: false
+            property bool pressedRight: false
+            onPressed: {
+                pressedLeft = leftIcon.contains(mouse);
+                pressedRight = rightIcon.contains(mouse);
+                mouse.accepted = pressedLeft || pressedRight;
+            }
+//            onClicked: {
+//                // positionViewAtIndex() does not provide animation
+//                var scrollDirection = 0;
+//                if (pressedLeft && leftIcon.contains(mouse)) {
+//                    scrollDirection = -1;
+//                } else if (pressedRight && rightIcon.contains(mouse)) {
+//                    scrollDirection = 1;
+//                } else {
+//                    // User pressed on the left or right icon, and then released inside of the
+//                    // MouseArea but outside of the icon that was pressed.
+//                    return;
+//                }
+//                if (contentXAnim.running) contentXAnim.stop();
+//                var newContentX = sectionsListView.contentX + (sectionsListView.width * scrollDirection);
+//                contentXAnim.from = sectionsListView.contentX;
+//                // make sure we don't overshoot bounds
+//                contentXAnim.to = MathUtils.clamp(
+//                            newContentX,
+//                            0.0, // estimation of originX is some times wrong when scrolling towards the beginning
+//                            sectionsListView.originX + sectionsListView.contentWidth - sectionsListView.width);
+//                contentXAnim.start();
+//            }
+            onHoveredChanged: print("hovered = "+hoveringArea.containsMouse)
+
+            Icon {
+                id: leftIcon
+                objectName: "left_scroll_icon"
+                // return whether the pressed event was done inside the area of the icon
+                function contains(mouse) {
+                    return (mouse.x < listViewContainer.listViewMargins &&
+                            !actionsListView.atXBeginning);
+                }
+                anchors {
+                    left: parent.left
+                    leftMargin: (listViewContainer.listViewMargins - width) / 2
+//                    bottom: parent.bottom
+//                    bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
+                    verticalCenter: parent.verticalCenter
+                }
+                width: units.gu(1)
+                height: units.gu(1)
+                visible: false
+                rotation: 180
+                opacity: visible
+                         ? actionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0 : 0.0
+                name: "chevron"
+                Behavior on opacity {
+                    UbuntuNumberAnimation {
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                }
+            }
+
+            Icon {
+                id: rightIcon
+                objectName: "right_scroll_icon"
+                // return whether the pressed event was done inside the area of the icon
+                function contains(mouse) {
+                    return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
+                            !actionsListView.atXEnd);
+                }
+                anchors {
+                    right: parent.right
+                    rightMargin: (listViewContainer.listViewMargins - width) / 2
+//                    bottom: parent.bottom
+//                    bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
+                    verticalCenter: parent.verticalCenter
+                }
+                width: units.gu(1)
+                height: units.gu(1)
+                visible: false
+                opacity: visible
+                         ? actionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0 : 0.0
+                name: "chevron"
+                Behavior on opacity {
+                    UbuntuNumberAnimation {
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                }
+            }
+        }
+        states: [
+            State {
+                name: "hovering"
+                when: hoveringArea.containsMouse
+//                PropertyChanges { target: mask; visible: true }
+//                PropertyChanges { target: listViewContainer; opacity: 0.0 }
+                PropertyChanges { target: leftIcon; visible: true }
+                PropertyChanges { target: rightIcon; visible: true }
+            }
+        ]
     }
 }
