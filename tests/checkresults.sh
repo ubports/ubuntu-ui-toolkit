@@ -31,27 +31,27 @@ for _XML in $*; do
       exit 1
     fi
 
-    EXCEPTIONS='tst_components_benchmark \
+    EXCEPTIONS='components_benchmark \
                 tst_tabbar.qml \
                 tst_datepicker12.bug1567840.SEGFAULT.qml \
                 tst_datepicker13.bug1567840.SEGFAULT.qml \
-                tst_swipearea \
-                tst_qquick_image_extension \
+                swipearea \
+                qquick_image_extension \
                 tst_page.qml \
                 tst_toolbar.qml \
                 tst_label13.qml \
-                tst_performance \
+                performance \
                 tst_tabs.qml \
                 tst_focus.qml \
                 tst_pickerpanel.qml \
                 tst_picker.qml \
                 tst_picker13.qml \
-                tst_recreateview \
-                tst_touchregistry \
-                tst_mainview \
+                recreateview \
+                touchregistry \
+                mainview \
                 tst_listitems_itemselector.qml \
                 tst_tabs_with_repeater.deprecated_toolbar.qml \
-                tst_inversemousearea \
+                inversemousearea \
                 '
 
     WARNINGS=$(grep -c -P "$WARNINGS_PATTERN" $_XML)
