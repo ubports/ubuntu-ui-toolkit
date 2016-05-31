@@ -24,7 +24,7 @@ FAILURES=0
 FATAL_WARNINGS=0
 EXCEPTED=0
 for _XML in $*; do
-    _TESTNAME=$(basename $_XML | sed -r 's@test_(.+)\.xml@\1@' -)
+    _TESTNAME=$(basename $_XML | sed -r 's@(.+)\.xml@\1@' -)
 
     if [ ! -f $_XML ]; then
       echo "$_XML doesn't exist"

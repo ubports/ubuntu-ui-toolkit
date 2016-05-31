@@ -59,7 +59,7 @@ fi
 
 _TARGET=$(basename $_TARGETPATH)
 _TESTFILE=$(basename $_TESTFILEPATH)
-_XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
+_XML="${BUILD_DIR}/tests/$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 
