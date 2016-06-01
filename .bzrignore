@@ -13,7 +13,7 @@ documentation/html/*
 moc_*.cpp
 qrc_tst_*.cpp
 
-tests/test_*.xml
+tests/*.xml
 plugins.qmltypes
 *.mo
 apicheck/apicheck
