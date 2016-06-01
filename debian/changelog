@@ -1,3 +1,17 @@
+ubuntu-ui-toolkit (1.3.1989+16.10) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * UCAbstractButton needs to accept key release events. Fixes LP: #1581026
+
+  [ Andrea Bernabei ]
+  * Documentation: fix missing or outdated imports in QML modules (Popups,
+    Pickers, Themes, ListItems), misuse of qdoc API and similar. 
+    Fixes LP: #1570156, LP: #1585557, LP: #1585585, LP: #1585591.
+  * tst_slotslayout: tentative fix for a very rare CI failure. 
+    Fixes LP: #1571426
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 01 Jun 2016 14:31:28 +0300
+
 ubuntu-ui-toolkit (1.3.1984+16.10.20160527.2) yakkety; urgency=medium
 
   [ Christian Dywan ]
