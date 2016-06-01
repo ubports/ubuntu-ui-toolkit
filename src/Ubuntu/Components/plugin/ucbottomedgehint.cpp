@@ -71,7 +71,7 @@ void UCBottomEdgeHintPrivate::init()
 
 /*!
     \qmltype BottomEdgeHint
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \inherits ActionItem
     \brief The BottomEdgeHint shows the availability of extra features

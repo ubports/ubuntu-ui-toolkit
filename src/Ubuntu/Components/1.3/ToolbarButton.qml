@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype ToolbarButton
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \deprecated
     \brief An \l ActionItem that represents a button in the toolbar.

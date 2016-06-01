@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 
 /*!
     \qmltype ScrollBar
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The ScrollBar component provides scrolling functionality for
     scrollable views (i.e. Flickable, ListView).

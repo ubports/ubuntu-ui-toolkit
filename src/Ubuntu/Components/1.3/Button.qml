@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype Button
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Standard Ubuntu button.
 

@@ -46,7 +46,7 @@ void UCAbstractButtonPrivate::init()
     \qmltype AbstractButton
     \instantiates UCAbstractButton
     \inherits ActionItem
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
 
@@ -217,7 +217,7 @@ void UCAbstractButtonPrivate::_q_mouseAreaPressAndHold()
     Q_EMIT q->pressAndHold();
 }
 
-// emit clicked when Enter/Return is pressed
+// emit clicked when Enter/Return/Space is pressed
 void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
 {
     UCActionItem::keyReleaseEvent(event);
@@ -226,6 +226,7 @@ void UCAbstractButton::keyReleaseEvent(QKeyEvent *event)
         case Qt::Key_Enter:
         case Qt::Key_Return:
         case Qt::Key_Space:
+            event->accept();
             d_func()->onClicked();
             break;
         default:

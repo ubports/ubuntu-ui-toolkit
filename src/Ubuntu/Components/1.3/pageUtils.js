@@ -16,7 +16,7 @@
 
 /*!
   \qmltype pageUtils
-  \inqmlmodule Ubuntu.Components 1.3
+  \inqmlmodule Ubuntu.Components
   \ingroup ubuntu
   \internal
   \brief Page-related utility functions.

@@ -20,7 +20,7 @@ import Ubuntu.Components 1.2
 
 /*!
     \qmltype UbuntuNumberAnimation
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief UbuntuNumberAnimation is a NumberAnimation that has predefined
            settings to ensure that Ubuntu applications are consistent in their animations.

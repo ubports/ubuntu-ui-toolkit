@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype PageHeader
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The PageHeader shows a title with a leading and a trailing
         \l ActionBar that add action buttons to the header.

@@ -360,7 +360,7 @@ void UCPageTreeNodePrivate::dumpNodeTree()
 /*!
     \internal
     \qmltype PageTreeNode
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The common parent of \l Page, \l MainView, \l PageStack and \l Tabs.
 

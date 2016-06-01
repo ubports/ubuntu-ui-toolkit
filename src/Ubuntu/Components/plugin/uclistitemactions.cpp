@@ -38,7 +38,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * \qmltype ListItemActions
  * \instantiates UCListItemActions
  * \inherits QtQObject
- * \inqmlmodule Ubuntu.Components 1.2
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.2
  * \ingroup ubuntu-listitem
  * \brief Provides configuration for actions to be added to a ListItem.
