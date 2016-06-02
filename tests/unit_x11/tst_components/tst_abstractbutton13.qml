@@ -227,14 +227,6 @@ Item {
             signalSpy.wait();
         }
 
-        function test_keyReleased_accepted_bug1581026() {
-            // TODO: Check event.accepted
-            signalSpy.target = absButton;
-            absButton.forceActiveFocus();
-            keyClick(Qt.Key_Space);
-            signalSpy.wait();
-        }
-
         // fixing bugs 1365471 and 1458028
         function test_pressAndHold_connected_suppresses_clicks_bug1365471_bug1458028() {
             function testFunc() {}

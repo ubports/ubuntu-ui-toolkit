@@ -20,7 +20,7 @@
 /*!
  * \qmltype Ubuntu
  * \instantiates UCNamespace
- * \inqmlmodule Ubuntu.Components 1.2
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.2
  * \brief Provides global object with different enums.

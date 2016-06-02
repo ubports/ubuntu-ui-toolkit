@@ -21,7 +21,7 @@ import Ubuntu.Components.Private 1.3
 
 /*!
     \qmltype PageStack
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.

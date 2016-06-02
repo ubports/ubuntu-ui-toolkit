@@ -80,7 +80,7 @@ void printLocked(UCServiceProperties *owner)
 /*!
  * \qmltype ServiceProperties
  * \instantiates UCServiceProperties
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.1
  * \ingroup ubuntu-services
  * \brief The component enables accessing service properties from QML.

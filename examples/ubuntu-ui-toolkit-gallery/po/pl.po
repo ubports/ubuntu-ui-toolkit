@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-04-30 05:33+0000\n"
-"X-Generator: Launchpad (build 17995)\n"
+"X-Launchpad-Export-Date: 2016-05-21 05:40+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -253,7 +253,7 @@ msgstr "Przesuń, aby usunąć"
 
 #: ListItems.qml:215
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: ListItems.qml:226
 msgid "Grouped list"
@@ -293,11 +293,11 @@ msgstr ""
 
 #: NewListItems.qml:111
 msgid "Edit"
-msgstr ""
+msgstr "Modyfikuj"
 
 #: NewListItems.qml:114
 msgid "Move"
-msgstr ""
+msgstr "Przenieś"
 
 #: NewListItems.qml:163
 msgid "Basic"
@@ -318,11 +318,11 @@ msgstr ""
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
-msgstr ""
+msgstr "Selektor opcji"
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr ""
+msgstr "To jest druga wartość"
 
 #: OptionSelectors.qml:35
 msgid ""
@@ -333,10 +333,11 @@ msgstr ""
 #: OptionSelectors.qml:36
 msgid "Once upon a time there was a story nobody told."
 msgstr ""
+"Pewnego razu, była sobie historia, której nikt jeszcze nie opowiadał."
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
-msgstr ""
+msgstr "NIestandardowa wysokość kontenera"
 
 #: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
@@ -344,23 +345,23 @@ msgstr ""
 
 #: Pickers.qml:31
 msgid "Linear"
-msgstr ""
+msgstr "Liniowy"
 
 #: Pickers.qml:63
 msgid "Circular"
-msgstr ""
+msgstr "Kołowy"
 
 #: Pickers.qml:100 ProgressBars.qml:49
 msgid "Infinite"
-msgstr ""
+msgstr "Nieskończony"
 
 #: Pickers.qml:137
 msgid "Clock"
-msgstr ""
+msgstr "Zegar"
 
 #: Pickers.qml:174
 msgid "Overlay"
-msgstr ""
+msgstr "Nakładka"
 
 #: Popover.qml:38
 msgid "Flickable"
@@ -396,7 +397,7 @@ msgstr "Bez etykiety"
 
 #: ProgressBars.qml:81
 msgid "Activity Indicator"
-msgstr ""
+msgstr "Wskaźnik aktywności"
 
 #: ProportionalShape.qml:28
 msgid "Sizes"
@@ -404,7 +405,7 @@ msgstr "Rozmiary"
 
 #: Sections.qml:34
 msgid "Enabled"
-msgstr ""
+msgstr "Włączony"
 
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -417,31 +418,31 @@ msgstr "Tytuł"
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
-msgstr ""
+msgstr "Aktualna wartość: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
-msgstr ""
+msgstr "Aktualizacja na bieżąco"
 
 #: Sliders.qml:57
 msgid "Range"
-msgstr ""
+msgstr "Zakres"
 
 #: Sliders.qml:74
 msgid "Labels"
-msgstr ""
+msgstr "Etykiety"
 
 #: Sliders.qml:85
 msgid "Small"
-msgstr ""
+msgstr "Małe"
 
 #: Sliders.qml:87
 msgid "Medium"
-msgstr ""
+msgstr "Średnie"
 
 #: Sliders.qml:89
 msgid "Large"
-msgstr ""
+msgstr "Duże"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
@@ -453,7 +454,7 @@ msgstr "Hasło"
 
 #: TextInputs.qml:67
 msgid "Numbers"
-msgstr ""
+msgstr "Numery"
 
 #: TextInputs.qml:78
 msgid "Read-only"
@@ -461,15 +462,15 @@ msgstr "Tylko do odczytu"
 
 #: TextInputs.qml:82
 msgid "Nobody type here"
-msgstr ""
+msgstr "Nikt nie ma prawa tu pisać"
 
 #: TextInputs.qml:94
 msgid "No interaction allowed"
-msgstr ""
+msgstr "Interakcje niedozwolone"
 
 #: TextInputs.qml:107
 msgid "Default"
-msgstr ""
+msgstr "Domyślnie"
 
 #: TextInputs.qml:129
 msgid "Rich Text"
@@ -497,4 +498,4 @@ msgstr "Obraz"
 
 #: UbuntuShape.qml:134
 msgid "Gradient"
-msgstr ""
+msgstr "Nachylenie"

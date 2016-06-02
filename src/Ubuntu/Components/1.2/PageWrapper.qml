@@ -20,7 +20,7 @@ import "PageWrapperUtils.js" as Utils
 /*!
     \internal
     \qmltype PageWrapper
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Internal class used by \l PageStack
 */

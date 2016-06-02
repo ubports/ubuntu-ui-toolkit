@@ -31,7 +31,7 @@
 /*!
   \internal
   \qmlabstract MainViewBase
-  \inqmlmodule Ubuntu.Components 1.3
+  \inqmlmodule Ubuntu.Components
   \ingroup ubuntu
   \brief The base class for MainView and MultiColumnView.
 */

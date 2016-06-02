@@ -79,9 +79,13 @@ Item {
         Button {
             id: button
             text: "Press me"
+            property bool override: false
+            Keys.onReleased: event.accepted = override
         }
         ListItem {
             id: listItem
+            property bool override: false
+            Keys.onReleased: event.accepted = override
             Label {
                 text: "Cuddle me"
             }
@@ -447,11 +451,21 @@ Item {
             ];
         }
         function test_trigger_via_keyboard(data) {
+            data.item.override = false;
             main.keysReleased = false;
             buttonTriggerSpy.signalName = data.signalName;
             buttonTriggerSpy.target = data.item;
             data.item.forceActiveFocus();
             keyClick(data.key);
+            buttonTriggerSpy.wait();
+            compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
+
+            // Second attempt but the button will consume Keys.onReleased
+            data.item.override = true;
+            main.keysReleased = false;
+            buttonTriggerSpy.clear();
+            keyClick(data.key);
+            expectFailContinue(data.tag, "Trigger should've been overridden");
             buttonTriggerSpy.wait();
             compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
         }

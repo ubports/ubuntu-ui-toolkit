@@ -1,3 +1,79 @@
+ubuntu-ui-toolkit (1.3.1984+16.10.20160527.2) yakkety; urgency=medium
+
+  [ Christian Dywan ]
+  * Slimmer frame for TextFields: 0.5dp. Fixes LP: #1578190.
+
+  [ Albert Astals Cid ]
+  * Add override
+    The override specifier (since C++11) specifies that a virtual function 
+    overrides another virtual function. In a member function declaration or 
+    definition, override ensures that the function is virtual and is overriding
+    a virtual function from the base class.
+
+  [ Tim Peeters ]
+  * Fix reference error in PullToRefreshStyle. Fixes LP: #1582843
+  * Mark Tab, Tabs, TabBar, PageHeadConfiguration, PageHeadSections, 
+    PageHeadState, ToolbarButton, ToolbarItems as deprecated in the 
+    documentation. Fixes LP: #1566735, LP: #1566741.
+
+  [ CI Train Bot ]
+  * Resync trunk.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Fri, 27 May 2016 07:08:44 +0000
+
+ubuntu-ui-toolkit (1.3.1979+16.04.20160517.4) yakkety; urgency=medium
+
+  * Rebuild for arm64 gles switch.
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Wed, 25 May 2016 06:59:29 +0000
+
+ubuntu-ui-toolkit (1.3.1979+16.04.20160517.1) xenial; urgency=medium
+
+  [ Tim Peeters ]
+  * Fix flickable topMargin adjustments by PullToRefreshStyle. 
+    Fixes LP: #1578619
+  * Postpone setting MainPage.active to true until the components are loaded to
+    avoid initialization problems. Fixes LP: #1570886
+  * Remove old code from Tabs example. Fixes LP: #1566736
+
+  [ Zsombor Egri ]
+  * AdaptivePageLayout vertical divider occludes with ListItem's visuals. 
+    Fixes LP: #1575060
+  * Fix palette colors, add focused palette value set. 
+    Fixes LP: #1554473, LP: #1555245
+  * Fix section colors. Fixes LP: #1582339
+
+  [ Christian Dywan ]
+  * TextField flickable mustn't have the height of the parent. 
+    Fixes LP: #1370557, LP: #1571576
+  * ToolbarButton example is specific to 1.3. Fixes LP: #1576463.
+  * Size swipe area rectangles relative to the parent.
+  * Verify control.gles which isn't picked up automatically. Fixes LP: #1576112
+  * Interactive Scrollbar in TextArea with spacing. Fixes LP: #1526726
+
+  [ Lukáš Tinkl ]
+  * Fix some image scaling issues by reusing Qt code (QImage instead of QPixmap). 
+    Fixes LP: #1421293, LP: #1573532.
+
+  [ CI Train Bot ]
+  * No-change rebuild.
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Tue, 17 May 2016 15:50:54 +0000
+
+ubuntu-ui-toolkit (1.3.1960+16.04.20160511.4) xenial; urgency=medium
+
+  [ Christian Dywan ]
+  * Text input focus must always follow main component
+
+  [ Tim Peeters ]
+  * Remove unused dbus import in autopilot helper.
+
+  [ Zsombor Egri ]
+  * Fix regression introduced in ComboButton due to the binding loop bug
+    on AbstractButton implicit sizes. (LP: #1580627)
+
+ -- Zoltan Balogh <zoltan.balogh@canonical.com>  Wed, 11 May 2016 19:46:58 +0000
+
 ubuntu-ui-toolkit (1.3.1960+16.04.20160502) xenial; urgency=medium
 
   [ Albert Astals Cid, Gerry Boland, Michał Sawicz ]

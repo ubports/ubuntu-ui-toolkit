@@ -20,7 +20,7 @@ import Ubuntu.Components.Private 1.3 as Privates
 /*!
     \internal
     \qmltype AppHeader
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
 */
 Privates.AppHeaderBase {
