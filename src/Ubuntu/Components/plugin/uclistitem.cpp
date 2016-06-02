@@ -23,7 +23,7 @@
 #include "uclistitemactions_p.h"
 #include "privates/listitemselection.h"
 #include "ucubuntuanimation.h"
-#include "propertychange_p.h"
+#include <PropertyChange>
 #include "i18n.h"
 #include "quickutils.h"
 #include "ucaction.h"
