@@ -24,9 +24,13 @@
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
 #include <QtCore/QExplicitlySharedDataPointer>
 #endif
+#include <ubuntutoolkitglobal.h>
 
 class QQmlAbstractBinding;
-class PropertyChange
+
+namespace UbuntuToolkit {
+
+class UBUNTUTOOLKIT_EXPORT PropertyChange
 {
 public:
     PropertyChange(QObject *item, const char *property, bool autoBackup = false);
@@ -54,5 +58,7 @@ private:
 
     void backup();
 };
+
+} // namespace UbuntuToolkit
 
 #endif // PROPERTYCHANGE_P_H

@@ -14,20 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "propertychange_p.h"
+#include "propertychange.h"
 
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH //workaround to fix private includes
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
 
+namespace UbuntuToolkit {
 /*
  * The class is used to save properties and their bindings while the property is
  * altered temporarily.
  */
 PropertyChange::PropertyChange(QObject *item, const char *property, bool autoBackup)
     : backedUp(false)
-    , qmlProperty(item, property, qmlContext(item))
+    , qmlProperty(item, QString::fromLatin1(property), qmlContext(item))
     , backupBinding(Q_NULLPTR)
 {
     if (autoBackup) {
@@ -122,3 +123,5 @@ void PropertyChange::restore(PropertyChange *change)
         change->backedUp = false;
     }
 }
+
+} // namespace UbuntuToolkit
