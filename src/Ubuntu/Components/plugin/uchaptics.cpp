@@ -23,7 +23,7 @@
 /*!
   \qmltype Haptics
   \instantiates UCHaptics
-  \inqmlmodule Ubuntu.Components 1.1
+  \inqmlmodule Ubuntu.Components
   \ingroup ubuntu-services
   \brief Singleton defining the haptics feedback used in components, where execution
   of the feedback is controlled by the system settings.

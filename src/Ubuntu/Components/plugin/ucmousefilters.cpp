@@ -58,7 +58,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 /*!
    \qmltype Mouse
    \instantiates UCMouse
-   \inqmlmodule Ubuntu.Components 1.1
+   \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached property filtering mouse events occured inside the owner.
 
@@ -1015,7 +1015,7 @@ void UCMouse::setPriority(Priority priority)
 /*!
    \qmltype InverseMouse
    \instantiates UCInverseMouse
-   \inqmlmodule Ubuntu.Components 1.1
+   \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached object filtering mouse events occured outside the owner.
 

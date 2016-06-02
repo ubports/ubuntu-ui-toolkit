@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 
 /*!
     \qmltype PageHeadConfiguration
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
     \brief Page.head is used to configure the header for a \l Page.

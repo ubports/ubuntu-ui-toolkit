@@ -18,7 +18,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype Label
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Text with Ubuntu styling.
 

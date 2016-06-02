@@ -23,7 +23,7 @@
 /*!
  * \qmltype SortFilterModel
  * \instantiates QSortFilterProxyModelQML
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief SortFilterModel sorts and filters rows from an existing model.
  *

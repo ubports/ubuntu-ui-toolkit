@@ -21,7 +21,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype Icon
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \inherits Item
     \ingroup ubuntu
     \brief The Icon component displays an icon from the icon theme.

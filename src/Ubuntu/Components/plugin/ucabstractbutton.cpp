@@ -46,7 +46,7 @@ void UCAbstractButtonPrivate::init()
     \qmltype AbstractButton
     \instantiates UCAbstractButton
     \inherits ActionItem
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
 
