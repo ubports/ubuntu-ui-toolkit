@@ -204,6 +204,7 @@ Item {
             ActionBar {
                 id: greenButtonsBar
                 Layout.fillWidth: true
+//                width: units.gu(20)
                 actions: root.actionList
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"

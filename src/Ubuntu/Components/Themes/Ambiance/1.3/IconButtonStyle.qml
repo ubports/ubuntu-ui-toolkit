@@ -49,6 +49,10 @@ Item {
         id: background
         color: iconButtonStyle.backgroundColor
         anchors.fill: parent
+
+        // FIXME TIM: only for testing.
+        border.color: "blue"
+        border.width: 2
     }
 
     Icon {
