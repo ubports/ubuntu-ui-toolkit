@@ -279,6 +279,8 @@ Item {
                 {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
                 {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
                 */
+                {tag: "ComboButton", from: pickerPanel, to: comboButton, key: Qt.Key_Tab, keyFocusItem: "combobutton_dropdown"},
+                {tag: "ComboButton(back)", from: comboButton, to: pickerPanel, key: Qt.Key_Backtab},
                 // Left click/ tap
                 {tag: "TextField(click)", from: dummy, to: textField, key: Qt.LeftButton},
                 {tag: "TextArea(click)", from: dummy, to: textArea, key: Qt.LeftButton},
