@@ -232,5 +232,17 @@ Item {
 
             compare(list.height, comboList.height, "list and comboList height differs");
         }
+
+        function test_expand_via_keyboard() {
+            rectCombo.forceActiveFocus();
+            waitForRendering(rectCombo);
+            verify(rectCombo.expanded, false, "ComboBox not expanded after focus");
+            keyClick(Qt.Key_Space);
+            waitForRendering(rectCombo);
+            verify(rectCombo.expanded, true, "ComboBox was expanded via the Space key");
+            keyClick(Qt.Key_Space);
+            waitForRendering(rectCombo);
+            verify(rectCombo.expanded, false, "ComboBox was collapsed via the Space key");
+        }
     }
 }

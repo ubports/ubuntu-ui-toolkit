@@ -450,6 +450,9 @@ Item {
                 {tag: "ListItem/Enter", key: Qt.Key_Enter, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Return", key: Qt.Key_Return, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Space", key: Qt.Key_Space, item: listItem, signalName: 'onClicked'},
+                {tag: "ComboButton/Enter", key: Qt.Key_Enter, item: button , signalName: 'onTriggered'},
+                {tag: "ComboButton/Return", key: Qt.Key_Return, item: button, signalName: 'onTriggered'},
+                {tag: "ComboButton/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
             ];
         }
         function test_trigger_via_keyboard(data) {
