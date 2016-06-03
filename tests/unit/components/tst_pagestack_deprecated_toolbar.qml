@@ -19,7 +19,7 @@ import QtTest 1.0
 import Ubuntu.Components 1.1
 
 // pagestack tests for the new header are in
-// unit/tst_visual/tst_pagestack_new_header.qml
+// unit/visual/tst_pagestack_new_header.qml
 
 TestCase {
     name: "PageStackAPI"
