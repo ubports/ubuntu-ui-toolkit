@@ -308,6 +308,8 @@ AbstractButton {
         __mouseArea.anchors.bottomMargin = Qt.binding(function () {
             return combo.expanded ? (combo.height - combo.collapsedHeight) : 0;
         });
+        // Only the dropdown button handles (Shift)Tab
+        activeFocusOnTab = false
     }
 
     sensingMargins {
@@ -317,8 +319,6 @@ AbstractButton {
     __mouseArea.objectName: "combobutton_mainbutton"
     height: collapsedHeight + __styleInstance.comboListPanel.height
 
-    // Only the dropdown button handles (Shift)Tab
-    Component.onCompleted: activeFocusOnTab = false
     property alias keyNavigationFocus: dropDown.keyNavigationFocus
 
     // dropdown button
