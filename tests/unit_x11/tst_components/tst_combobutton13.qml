@@ -139,7 +139,7 @@ Item {
             rectCombo.expanded = true;
             waitForRendering(rectCombo);
             var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
         }
 
         function test_expandRectComboThroughClick() {
@@ -148,7 +148,7 @@ Item {
             waitForRendering(rectCombo);
             compare(rectCombo.expanded, true, "combo is not expanded");
             var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
         }
 
         function test_autoCollapse() {
@@ -157,12 +157,12 @@ Item {
             mouseClick(dropDown, dropDown.width / 2, dropDown.height / 2);
             waitForRendering(rectCombo);
             compare(rectCombo.expanded, true, "combo is not expanded");
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
 
             mouseClick(rectCombo, rectCombo.width / 2, rectCombo.collapsedHeight / 2);
             waitForRendering(rectCombo);
             compare(rectCombo.expanded, false, "combo is not collapsed");
-            tryCompareFunction(function() { return comboListPanel.opacity}, 0.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, false);
         }
 
         function test_flickRectCombo() {
@@ -174,7 +174,7 @@ Item {
             var comboList = findChild(rectCombo, "combobutton_combolist");
             mouseClick(dropDown, dropDown.width / 2, dropDown.height / 2);
             waitForRendering(rectCombo);
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
             verify(comboList.height > rectCombo.expandedHeight);
             // comboList flicker is the combolist parent's parent
             var comboListFlicker = findChild(rectCombo, "combobutton_contentflicker");
@@ -196,8 +196,9 @@ Item {
             var comboList = findChild(columnCombo, "combobutton_combolist");
             columnCombo.expanded = true;
             waitForRendering(columnCombo);
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
             var comboListFlicker = findChild(columnCombo, "combobutton_contentflicker");
+            waitForRendering(comboListFlicker);
             compare(comboListFlicker.interactive, false, "combo list holder must not be interactive");
             compare(comboListFlicker.height, columnCombo.comboListHeight, "combo list height differs from the holder height");
         }
@@ -208,7 +209,7 @@ Item {
             combo.expanded = true;
             waitForRendering(combo);
             waitForRendering(comboListPanel);
-            tryCompareFunction(function() { return comboListPanel.opacity}, 0.0, 1000);
+            tryCompareFunction(function() { return comboListPanel.visible}, false, 1000);
         }
 
         function test_longCombo() {
@@ -217,7 +218,7 @@ Item {
             longCombo.expanded = true;
             waitForRendering(longCombo);
             waitForRendering(comboListPanel);
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
             verify(comboListPanel.height < longCombo.expandedHeight);
         }
 
@@ -227,7 +228,7 @@ Item {
             listCombo.expanded = true;
             waitForRendering(listCombo);
             waitForRendering(comboListPanel);
-            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.visible}, true);
 
             compare(list.height, comboList.height, "list and comboList height differs");
         }
