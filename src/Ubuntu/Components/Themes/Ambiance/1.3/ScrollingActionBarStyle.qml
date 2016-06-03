@@ -39,6 +39,7 @@ Style.ActionBarStyle {
         objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
+//        activeFocusOnTab: false
     }
 
     defaultNumberOfSlots: 3
@@ -57,10 +58,11 @@ Style.ActionBarStyle {
         property real listViewMargins: units.gu(2)
 
 
-        property var visibleActions: getVisibleActions(styledItem.actions)
-        function getVisibleActions(actions) {
+        property var visibleActions: getReversedVisibleActions(styledItem.actions)
+        function getReversedVisibleActions(actions) {
             var visibleActionList = [];
-            for (var i in actions) {
+//            for (var i in actions) {
+            for (var i=actions.length-1; i >=0; i--) {
                 var action = actions[i];
                 if (action && action.hasOwnProperty("visible") && action.visible) {
                     visibleActionList.push(action);
@@ -68,13 +70,13 @@ Style.ActionBarStyle {
             }
             return visibleActionList;
         }
-        function getReversedActions(actions) {
-            var newlist = [];
-            for (var i=actions.length-1; i >= 0; i--) {
-                newlist.push(actions[i]);
-            }
-            return newlist;
-        }
+//        function getReversedActions(actions) {
+//            var newlist = [];
+//            for (var i=actions.length-1; i >= 0; i--) {
+//                newlist.push(actions[i]);
+//            }
+//            return newlist;
+//        }
 
         ListView {
             id: actionsListView
@@ -94,6 +96,8 @@ Style.ActionBarStyle {
             boundsBehavior: Flickable.StopAtBounds
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
+
+            onCurrentIndexChanged: print("current index = "+currentIndex)
 
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
