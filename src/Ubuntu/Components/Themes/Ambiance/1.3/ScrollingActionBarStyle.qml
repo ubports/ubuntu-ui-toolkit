@@ -35,6 +35,8 @@ Style.ActionBarStyle {
       not provide a delegate.
      */
 //    defaultDelegate: AbstractButton {
+    // FIXME: This ListItem { AbstractButton { } } construction can be avoided
+    //  when StyledItem supports cursor keys navigation, see bug #1573616
     defaultDelegate: ListItem {
         width: units.gu(4)
         height: units.gu(4)
