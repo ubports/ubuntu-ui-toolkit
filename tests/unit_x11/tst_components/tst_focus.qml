@@ -19,7 +19,6 @@ import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Pickers 1.3
-import Ubuntu.Components.ListItems 1.3 as ListItem
 import Ubuntu.Components.Popups 1.3
 
 Item {
@@ -27,6 +26,9 @@ Item {
     width: units.gu(50); height: units.gu(100)
 
     property bool hasOSK: false
+
+    property bool keysReleased
+    Keys.onReleased: keysReleased = true
 
     Flow {
         anchors {
@@ -41,8 +43,10 @@ Item {
             height: units.gu(20)
             clip: true
             model: 10
-            delegate: ListItem.Standard {
-                text: "Whatever"
+            delegate: ListItem {
+                Label {
+                    text: "Whatever"
+                }
             }
         }
         Button {
@@ -75,6 +79,16 @@ Item {
         Button {
             id: button
             text: "Press me"
+            property bool override: false
+            Keys.onReleased: event.accepted = override
+        }
+        ListItem {
+            id: listItem
+            property bool override: false
+            Keys.onReleased: event.accepted = override
+            Label {
+                text: "Cuddle me"
+            }
         }
         CheckBox {
             id: checkbox
@@ -170,9 +184,11 @@ Item {
             id: popover
             contentWidth: units.gu(20)
             contentHeight: item.height
-            ListItem.Standard {
-                id: item
-                text: "close"
+            ListItem {
+                Label {
+                    id: item
+                    text: "close"
+                }
                 onClicked: PopupUtils.close(popover)
             }
         }
@@ -191,9 +207,11 @@ Item {
         id: popoverItem
         contentWidth: units.gu(20)
         contentHeight: item.height
-        ListItem.Standard {
-            id: item
-            text: "close"
+        ListItem {
+            Label {
+                id: item
+                text: "close"
+            }
             onClicked: popoverItem.hide();
         }
     }
@@ -230,6 +248,8 @@ Item {
             popupCloseSpy.clear();
             popupCloseSpy.target = null;
             popupCloseSpy.signalName = "onDestruction";
+            buttonTriggerSpy.target = null;
+            buttonTriggerSpy.clear();
         }
 
         function test_tab_focus_data() {
@@ -243,6 +263,8 @@ Item {
                 {tag: "BottomEdgeHint(back)", from: bottomEdgeHint, to: textArea, key: Qt.Key_Backtab},
                 {tag: "Button", from: bottomEdgeHint, to: button, key: Qt.Key_Tab},
                 {tag: "Button(back)", from: button, to: bottomEdgeHint, key: Qt.Key_Backtab},
+                {tag: "ListItem", from: button, to: listItem, key: Qt.Key_Tab},
+                {tag: "ListItem(back)", from: listItem, to: button, key: Qt.Key_Backtab},
                 {tag: "CheckBox", from: checkbox, to: switchbox, key: Qt.Key_Tab},
                 {tag: "CheckBox", from: switchbox, to: checkbox, key: Qt.Key_Backtab},
                 {tag: "Switch", from: switchbox, to: slider, key: Qt.Key_Tab},
@@ -418,18 +440,34 @@ Item {
             verify(popoverTest.focus, "Button focus not restored.");
         }
 
-        function test_button_trigger_via_keyboard_data() {
+        function test_trigger_via_keyboard_data() {
             return [
-                {tag: "Enter", key: Qt.Key_Enter},
-                {tag: "Return", key: Qt.Key_Return},
-                {tag: "Space", key: Qt.Key_Space},
+                {tag: "Button/Enter", key: Qt.Key_Enter, item: button, signalName: 'onTriggered'},
+                {tag: "Button/Return", key: Qt.Key_Return, item: button, signalName: 'onTriggered'},
+                {tag: "Button/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
+                {tag: "ListItem/Enter", key: Qt.Key_Enter, item: listItem, signalName: 'onClicked'},
+                {tag: "ListItem/Return", key: Qt.Key_Return, item: listItem, signalName: 'onClicked'},
+                {tag: "ListItem/Space", key: Qt.Key_Space, item: listItem, signalName: 'onClicked'},
             ];
         }
-        function test_button_trigger_via_keyboard(data) {
-            buttonTriggerSpy.target = button;
-            button.forceActiveFocus();
+        function test_trigger_via_keyboard(data) {
+            data.item.override = false;
+            main.keysReleased = false;
+            buttonTriggerSpy.signalName = data.signalName;
+            buttonTriggerSpy.target = data.item;
+            data.item.forceActiveFocus();
             keyClick(data.key);
             buttonTriggerSpy.wait();
+            compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
+
+            // Second attempt but the button will consume Keys.onReleased
+            data.item.override = true;
+            main.keysReleased = false;
+            buttonTriggerSpy.clear();
+            keyClick(data.key);
+            expectFailContinue(data.tag, "Trigger should've been overridden");
+            buttonTriggerSpy.wait();
+            compare(main.keysReleased, false, "Parent didn't get Keys.onReleased");
         }
 
         function test_disabled_component_does_not_focus() {
