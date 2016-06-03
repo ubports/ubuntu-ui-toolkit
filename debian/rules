@@ -22,7 +22,10 @@ override_dh_auto_configure:
 	dh $@ --parallel
 
 override_dh_auto_test:
-ifeq ($(DEB_HOST_SERIES),$(findstring $(DEB_HOST_SERIES), $(testskip_series)))
+	echo TRACE_TEST
+	echo $(DEB_HOST_SERIES)
+	echo $(testskip_series)
+ifneq ($(DEB_HOST_SERIES),$(findstring $(DEB_HOST_SERIES), $(testskip_series)))
 ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
