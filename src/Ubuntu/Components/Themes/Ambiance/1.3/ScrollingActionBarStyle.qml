@@ -34,12 +34,20 @@ Style.ActionBarStyle {
       The default action delegate if the styled item does
       not provide a delegate.
      */
-    defaultDelegate: AbstractButton {
+//    defaultDelegate: AbstractButton {
+    defaultDelegate: ListItem {
+        width: units.gu(4)
+        height: units.gu(4)
+        AbstractButton {
+            anchors.fill: parent
+
+
         style: IconButtonStyle { }
         objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
 //        activeFocusOnTab: false
+        }
     }
 
     defaultNumberOfSlots: 3
