@@ -34,7 +34,6 @@ Style.ActionBarStyle {
       The default action delegate if the styled item does
       not provide a delegate.
      */
-//    defaultDelegate: AbstractButton {
     // FIXME: This ListItem { AbstractButton { } } construction can be avoided
     //  when StyledItem supports cursor keys navigation, see bug #1573616
     defaultDelegate: ListItem {
@@ -42,14 +41,13 @@ Style.ActionBarStyle {
         height: units.gu(4)
         AbstractButton {
             anchors.fill: parent
-
-
-        style: IconButtonStyle { }
-        objectName: action.objectName + "_button"
-        height: parent ? parent.height : undefined
-        action: modelData
-//        activeFocusOnTab: false
+            style: IconButtonStyle { }
+            objectName: action.objectName + "_button"
+            height: parent ? parent.height : undefined
+            action: modelData
+            //        activeFocusOnTab: false
         }
+        divider.visible: false
     }
 
     defaultNumberOfSlots: 3
