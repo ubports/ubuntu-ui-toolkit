@@ -187,6 +187,12 @@ Toolkit.StyledItem {
       */
     onAlignChanged: if (!internals.checkAlign()) console.log("Wrong alignment set to Scrollbar: "+align)
 
+    Connections {
+        target: flickableItem
+        Component.onCompleted: __initializedFlickable = flickableItem
+    }
+    property var __initializedFlickable: null
+
     /*!
       \internal
       Internals: contains the common logic of the scrollbar like anchoring,

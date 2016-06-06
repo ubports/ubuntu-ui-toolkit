@@ -126,7 +126,7 @@ Item {
     property bool bottomAligned: (styledItem.align === Qt.AlignBottom)
 
     //flickable helper properties
-    property Flickable flickableItem: styledItem.flickableItem
+    property Flickable flickableItem: styledItem.__initializedFlickable
     property real pageSize: flickableItem
                             ? (isVertical ? flickableItem.height : flickableItem.width)
                             : 0

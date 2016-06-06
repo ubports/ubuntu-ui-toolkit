@@ -132,6 +132,13 @@ Toolkit.ScrollbarBase {
         bottomMargin: (flickableItem ? flickableItem.bottomMargin : 0) + internals.bottomAnchorMargin()
     }
 
+    //TODO: this can be moved to C++
+    Connections {
+        target: flickableItem
+        Component.onCompleted: __initializedFlickable = flickableItem
+    }
+    property var __initializedFlickable: null
+
     /*!
       \internal
       Internals: contains the common logic of the scrollbar like anchoring,
