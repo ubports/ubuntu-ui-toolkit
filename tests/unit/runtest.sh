@@ -108,7 +108,6 @@ function create_test_cmd {
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
-  echo "Working directory: $PWD"
   if [ ! -x $_TARGETPATH ]; then
     echo "Error: $_TARGET wasn't built!"
     RESULT=2
@@ -117,11 +116,10 @@ function execute_test_cmd {
 
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-	
     # QV4_MM_AGGRESSIVE_GC=1 \
     ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     QT_LOGGING_RULES="[PERFORMANCE].warning=false" \
-    $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
+    $_CMD $_ARGS 2>&1 | sed "s@$_TESTFILE: @@" | grep -v 'QFontDatabase: Cannot find font directory'
     if [ ! -s $_XML ]; then
         # Write fallback in case it crashed and the file is empty
         if [[ $_XML == *".SEGFAULT"* ]]; then
