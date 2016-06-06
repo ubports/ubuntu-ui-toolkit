@@ -939,7 +939,7 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
-                        source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
+                        source: "../artwork/toolkit_scrollbar-stepper.svg"
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtBeginning])
                                                         ? __stepperImgOpacityDisabled
@@ -982,7 +982,7 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
-                        source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
+                        source: "../artwork/toolkit_scrollbar-stepper.svg"
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtEnd])
                                                         ? __stepperImgOpacityDisabled
@@ -997,6 +997,9 @@ Item {
         //just a hack: a rectangle which covers the corner where scrollbars meet, when they're in steppers style
         Rectangle {
             id: cornerRect
+            //NOTE: I tried grouping styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+            //    && styledItem.__buddyScrollbar.__styleInstance.isScrollable in 1 property and use that for
+            //all the anchors, but it turned out it makes the instantiation 2-3% slower!!!
             anchors.left: {
                 if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
                         && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {
