@@ -67,7 +67,7 @@ Style.ActionBarStyle {
     Item {
         id: listViewContainer
         anchors.fill: parent
-        clip: true
+//        clip: true
 
         property real listViewMargins: units.gu(2)
 
@@ -83,19 +83,24 @@ Style.ActionBarStyle {
             return visibleActionList;
         }
 
+//        Rectangle {
+//            color: "orange"
+//            anchors.fill: actionsListView
+//        }
+
         ListView {
             id: actionsListView
             anchors {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
-                leftMargin: units.dp(1)
+//                leftMargin: units.dp(1)
                 //                leftMargin: listViewContainer.listViewMargins
                 //                rightMargin: listViewContainer.listViewMargins
             }
             //            width: Math.min(listViewContainer.width - 2*listViewContainer.listViewMargins,
             //                            contentWidth)
-            width: listViewContainer.width
+            width: listViewContainer.width - units.dp(1)
 
             clip: true
             orientation: ListView.Horizontal

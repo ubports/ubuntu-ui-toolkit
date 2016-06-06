@@ -209,6 +209,7 @@ Item {
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
                     action: modelData
+                    height: parent.height
                     StyleHints {
                         foregroundColor: UbuntuColors.green
                     }
