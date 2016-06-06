@@ -18,7 +18,7 @@
 #include "uctheme.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
-#include "propertychange_p.h"
+#include <PropertyChange>
 #include "quickutils.h"
 #include "i18n.h"
 #include "uclistitemstyle.h"

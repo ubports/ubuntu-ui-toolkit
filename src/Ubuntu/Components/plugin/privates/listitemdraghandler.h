@@ -20,9 +20,11 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtCore/QPointF>
+#include <PropertyChange>
+
+using namespace UbuntuToolkit;
 
 class UCListItem;
-class PropertyChange;
 class ListItemDragHandler : public QObject
 {
     Q_OBJECT

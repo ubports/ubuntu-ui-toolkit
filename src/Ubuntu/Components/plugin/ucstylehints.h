@@ -27,10 +27,13 @@
 #undef foreach
 #include <QtQml/private/qqmlcompiler_p.h>
 
+#include <PropertyChange>
+
+using namespace UbuntuToolkit;
+
 class UCStyleHintsParser;
 class UCStyledItemBase;
 class QQuickItem;
-class PropertyChange;
 class UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
