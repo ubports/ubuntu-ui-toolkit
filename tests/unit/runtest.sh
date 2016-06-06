@@ -43,14 +43,14 @@ if [ -z $_TARGETPATH ]; then
   echo "  $0 TEST_EXECUTABLE [QML_FILE] [QT_QPA_PLATFORM]"
   echo ''
   echo 'Examples:'
-  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/components/components) tst_label13.qml minimal"
+  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/components/components) $(relpath ${SRC_DIR}/tests/unit/components/tst_label13.qml) minimal"
   echo ''
   echo "  cd $(relpath ${BUILD_DIR}/tests/unit/mainview)"
   echo "  ../$(basename $0) mainview minimal"
   echo "  cd ../../.."
   echo ''
   echo "  cd $(relpath ${BUILD_DIR}/tests/unit/visual)"
-  echo "  ../../xvfb.sh ../../unit/$(basename $0) visual tst_listitem13.qml"
+  echo "  ../../xvfb.sh ../../unit/$(basename $0) visual ../../unit/visual/tst_listitem13.qml"
   echo "  cd ../../.."
   echo ''
   echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit/bottomedge/bottomedge)"
@@ -74,20 +74,26 @@ function create_fallback_xml {
 EOF
 }
 
-function create_test_cmd {
-  if [[ "$_TARGETPATH" = /* ]]; then
-      EXE=$_TARGETPATH
+function abspath {
+  if [[ "$1" = /* ]]; then
+      ABSPATH=$1
   else
-      EXE=./$_TARGETPATH
+      ABSPATH=./$1
   fi
+  # Note: '|| echo' so we get a sane error message if it doesn't exist
+  echo -n $(readlink -f $ABSPATH || echo $ABSPATH)
+}
+
+function create_test_cmd {
+  EXE=$(abspath $_TARGETPATH)
   _CMD="-n $_TESTFILE -m 500"
 
   DEB_HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
   if [[ ${DEB_HOST_ARCH} =~ 'arm' ]]; then
-    _CMD="dbus-test-runner --task $(readlink -f $EXE) $_CMD"
+    _CMD="dbus-test-runner --task $EXE $_CMD"
   else
     _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
-    _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $(readlink -f $EXE)"
+    _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $EXE"
   fi
 
   if [[ 'minimal custom' == *$_MINIMAL* ]]; then
@@ -95,7 +101,7 @@ function create_test_cmd {
   fi
 
   if [[ $_TESTFILEPATH == *\.qml* ]]; then
-      _CMD="$_CMD -p -input -p $_TESTFILEPATH"
+      _CMD="$_CMD -p -input -p $(abspath $_TESTFILEPATH)"
   fi
   _CMD="$_CMD -p -maxwarnings -p 100"
 }
@@ -125,7 +131,7 @@ function execute_test_cmd {
         fi
     fi
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
-        ${BUILD_DIR}/tests/checkresults.sh $_XML
+        ${SRC_DIR}/tests/checkresults.sh $_XML
         RESULT=$?
     fi
   else
