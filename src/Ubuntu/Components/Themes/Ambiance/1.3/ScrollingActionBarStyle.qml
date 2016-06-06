@@ -38,7 +38,7 @@ Style.ActionBarStyle {
     //  when StyledItem supports cursor keys navigation, see bug #1573616
     defaultDelegate: ListItem {
         width: units.gu(4)
-        height: units.gu(4)
+        height: actionBarStyle.height
         AbstractButton {
             anchors.fill: parent
             style: IconButtonStyle { }
@@ -54,23 +54,27 @@ Style.ActionBarStyle {
 
 
     Rectangle {
-        id: listViewContainer
+        id: verticalDivider
+        color: "black"
         anchors {
-            fill: parent
+            left: listViewContainer.left
+            verticalCenter: listViewContainer.verticalCenter
         }
-        //        color: "pink"
-        color: "transparent"
-        //        opacity: 0.5
+        width: units.dp(1)
+        height: units.gu(2)
+        visible: actionsListView.contentWidth > actionsListView.width
+    }
+    Item {
+        id: listViewContainer
+        anchors.fill: parent
         clip: true
 
         property real listViewMargins: units.gu(2)
 
-
         property var visibleActions: getReversedVisibleActions(styledItem.actions)
         function getReversedVisibleActions(actions) {
             var visibleActionList = [];
-//            for (var i in actions) {
-            for (var i=actions.length-1; i >=0; i--) {
+            for (var i = actions.length - 1; i >= 0 ; i--) {
                 var action = actions[i];
                 if (action && action.hasOwnProperty("visible") && action.visible) {
                     visibleActionList.push(action);
@@ -78,13 +82,6 @@ Style.ActionBarStyle {
             }
             return visibleActionList;
         }
-//        function getReversedActions(actions) {
-//            var newlist = [];
-//            for (var i=actions.length-1; i >= 0; i--) {
-//                newlist.push(actions[i]);
-//            }
-//            return newlist;
-//        }
 
         ListView {
             id: actionsListView
@@ -92,6 +89,7 @@ Style.ActionBarStyle {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
+                leftMargin: units.dp(1)
                 //                leftMargin: listViewContainer.listViewMargins
                 //                rightMargin: listViewContainer.listViewMargins
             }
@@ -105,7 +103,7 @@ Style.ActionBarStyle {
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
 
-            onCurrentIndexChanged: print("current index = "+currentIndex)
+//            onCurrentIndexChanged: print("current index = "+currentIndex)
 
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
@@ -215,11 +213,9 @@ Style.ActionBarStyle {
     }
 
     LinearGradient {
-//    Rectangle {
         id: gradient
-//        color: "pink"
-        visible: false
         anchors.fill: parent
+        visible: false // this will be the maskSource for the mask below.
         start: Qt.point(0,0)
         end: Qt.point(width,0)
 
