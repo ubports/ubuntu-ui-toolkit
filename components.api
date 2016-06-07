@@ -661,6 +661,22 @@ Ubuntu.Components.MathUtils 1.0 0.1: QtObject singleton
     function double lerp(double delta, double from, double to)
     function double projectValue(double x, double xmin, double xmax, double ymin, double ymax)
     function double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax)
+Ubuntu.Components.Menu 1.3 UCMenu: Action
+    default property list<QtObject> data
+    function show(Qt.point pt)
+    function dismiss()
+    function appendObject(QtObject obj)
+    function insertObject(int index, QtObject obj)
+    function removeObject(QtObject obj)
+Ubuntu.Components.MenuBar 1.3 UCMenuBar: QtObject
+    default property list<Menu> menus
+    function appendMenu(Menu menu)
+    function insertMenu(int index, Menu menu)
+    function removeMenu(Menu menu)
+Ubuntu.Components.MenuGroup 1.3 UCMenuGroup: ActionList
+Ubuntu.Components.Menus 1.3: QtObject
+    readonly property MenuBar menuBar
+    readonly property Menu parentMenu
 Ubuntu.Components.MimeData 1.0 0.1 QQuickMimeData: QtObject
     property color color
     property var data
