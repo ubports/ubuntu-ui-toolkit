@@ -17,6 +17,7 @@
 #include "ucaction.h"
 #include "quickutils.h"
 #include "ucactioncontext.h"
+#include "ucexclusivegroup.h"
 
 #include <QtDebug>
 #include <QtQml/QQmlInfo>
@@ -293,12 +294,15 @@ UCAction::UCAction(QObject *parent)
     , m_enabled(true)
     , m_visible(true)
     , m_published(false)
+    , m_exclusiveGroup(Q_NULLPTR)
 {
     generateName();
     // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
     // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
     connect(QuickUtils::instance(), &QuickUtils::keyboardAttachedChanged,
             this, &UCAction::onKeyboardAttached);
+
+    connect(this, &UCAction::triggered, this, &UCAction::setState);
 }
 
 UCAction::~UCAction()
@@ -434,6 +438,47 @@ void UCAction::resetShortcut()
     Q_EMIT shortcutChanged();
 }
 
+void UCAction::setParameterType(UCAction::Type type)
+{
+    if (m_parameterType == type) {
+        return;
+    }
+    m_parameterType = type;
+    Q_EMIT parameterTypeChanged();
+}
+
+void UCAction::setState(const QVariant &state)
+{
+    if (m_state == state) {
+        return;
+    }
+    m_state = state;
+    Q_EMIT stateChanged();
+}
+
+UCExclusiveGroup *UCAction::exclusiveGroup() const
+{
+    return m_exclusiveGroup;
+}
+
+void UCAction::setExclusiveGroup(UCExclusiveGroup *exclusiveGroup)
+{
+    if (m_exclusiveGroup == exclusiveGroup) {
+        return;
+    }
+
+    if (m_exclusiveGroup) {
+        m_exclusiveGroup->removeAction(this);
+    }
+
+    m_exclusiveGroup = exclusiveGroup;
+
+    if (m_exclusiveGroup) {
+        m_exclusiveGroup->addAction(this);
+    }
+    Q_EMIT exclusiveGroupChanged();
+}
+
 bool UCAction::event(QEvent *event)
 {
     if (event->type() != QEvent::Shortcut)
@@ -473,6 +518,11 @@ void UCAction::trigger(const QVariant &value)
     if (!m_enabled) {
         return;
     }
+
+    if (m_exclusiveGroup && !m_exclusiveGroup->checkValidTrigger(this, value)) {
+        return;
+    }
+
     if (!isValidType(value.type())) {
         Q_EMIT triggered(QVariant());
     } else {

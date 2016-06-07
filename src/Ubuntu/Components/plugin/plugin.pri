@@ -117,7 +117,9 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/privates/ucpagewrapperincubator_p.h \
     $$PWD/privates/appheaderbase.h \
     $$PWD/label_p.h \
-    $$PWD/ucbottomedgeregion_p.h
+    $$PWD/ucbottomedgeregion_p.h \
+    $$PWD/ucactionlist.h \
+    $$PWD/ucexclusivegroup.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -194,7 +196,9 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/frame.cpp \
     $$PWD/privates/ucpagewrapper.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \
-    $$PWD/privates/appheaderbase.cpp
+    $$PWD/privates/appheaderbase.cpp \
+    $$PWD/ucactionlist.cpp \
+    $$PWD/ucexclusivegroup.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
