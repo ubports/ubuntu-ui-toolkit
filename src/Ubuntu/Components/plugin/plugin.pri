@@ -69,7 +69,6 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclistitem_p.h \
     $$PWD/uclistitemactions.h \
     $$PWD/uclistitemactions_p.h \
-    $$PWD/propertychange_p.h \
     $$PWD/uclistitemstyle.h \
     $$PWD/ucserviceproperties.h \
     $$PWD/ucserviceproperties_p.h \
@@ -158,7 +157,6 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/adapters/dbuspropertywatcher_p.cpp \
     $$PWD/uclistitem.cpp \
     $$PWD/uclistitemactions.cpp \
-    $$PWD/propertychange_p.cpp \
     $$PWD/uclistitemstyle.cpp \
     $$PWD/ucviewitemsattached.cpp \
     $$PWD/ucserviceproperties.cpp \

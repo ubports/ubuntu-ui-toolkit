@@ -26,10 +26,12 @@ HEADERS += \
     asyncloader.h \
     asyncloader_p.h \
     mousetouchadaptor.h \
-    mousetouchadaptor_p.h
+    mousetouchadaptor_p.h \
+    propertychange.h
 
 SOURCES += \ 
     colorutils.cpp \
     tree.cpp \
     asyncloader.cpp \
-    mousetouchadaptor.cpp
+    mousetouchadaptor.cpp \
+    propertychange.cpp

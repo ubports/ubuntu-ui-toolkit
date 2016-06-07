@@ -21,6 +21,7 @@
 
 #include "ucbottomedgehint.h"
 #include "ucactionitem_p.h"
+#include <PropertyChange>
 
 class UCBottomEdgeHintPrivate : public UCActionItemPrivate
 {
@@ -36,7 +37,7 @@ public:
     QBasicTimer deactivationTimer;
     UCSwipeArea *swipeArea;
     QQuickFlickable *flickable;
-    PropertyChange *flickableBottomMargin;
+    UbuntuToolkit::PropertyChange *flickableBottomMargin;
     int deactivateTimeout;
     UCBottomEdgeHint::Status status;
     bool pressed:1;

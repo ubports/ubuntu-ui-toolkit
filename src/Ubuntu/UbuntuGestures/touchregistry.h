@@ -158,7 +158,7 @@ private:
 
     class TouchInfo {
     public:
-        TouchInfo() : id(-1) {}
+        TouchInfo() : id(-1), physicallyEnded(false) {}
         TouchInfo(int id);
         bool isValid() const { return id >= 0; }
         void reset();
