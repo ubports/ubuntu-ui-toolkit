@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2 as Toolkit
 
 /*!
     \qmltype UbuntuListView
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief A ListView with special features tailored for a look and feel fitting the
     Ubuntu Touch platform.

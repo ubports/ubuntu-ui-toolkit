@@ -23,7 +23,7 @@ import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype PickerPanel
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu-pickers
     \brief Provides a panel for opening a DatePicker in place of the input panel or
     as Popover, depending on the form factor.

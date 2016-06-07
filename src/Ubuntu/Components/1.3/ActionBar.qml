@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype ActionBar
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Show a row of buttons that trigger actions. When the
         number of visible actions specified is larger than

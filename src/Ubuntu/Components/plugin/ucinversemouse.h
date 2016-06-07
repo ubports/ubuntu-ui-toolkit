@@ -28,18 +28,18 @@ public:
 
     static UCInverseMouse *qmlAttachedProperties(QObject *owner);
 
-    virtual void setEnabled(bool enabled);
-    virtual void setPriority(Priority priority);
+    void setEnabled(bool enabled) override;
+    void setPriority(Priority priority) override;
     bool excludeInputArea() const;
     void setExcludeInputArea(bool value);
 
 protected:
     QMouseEvent mapMouseToOwner(QObject *target, QMouseEvent* event);
     QHoverEvent mapHoverToOwner(QObject *target, QHoverEvent *event);
-    virtual bool eventFilter(QObject *, QEvent *);
-    virtual bool mouseEvents(QObject *target, QMouseEvent *event);
-    virtual bool hoverEvents(QObject *target, QHoverEvent *event);
-    virtual bool hasAttachedFilter(QQuickItem *item);
+    bool eventFilter(QObject *, QEvent *) override;
+    bool mouseEvents(QObject *target, QMouseEvent *event) override;
+    bool hoverEvents(QObject *target, QHoverEvent *event) override;
+    bool hasAttachedFilter(QQuickItem *item) override;
     bool pointInOSK(const QPointF &point);
     bool contains(QMouseEvent *mouse);
 };

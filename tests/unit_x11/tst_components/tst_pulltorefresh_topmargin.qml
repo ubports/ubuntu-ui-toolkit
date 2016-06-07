@@ -24,16 +24,16 @@ Item {
     height: units.gu(71)
     id: root
     Flickable {
-        id: view
+        id: flickable
         anchors.fill: parent
-        contentHeight: 1.6*view.height
+        contentHeight: 1.6*flickable.height
         Label {
             anchors.centerIn: parent
             text: "void"
         }
         PullToRefresh {
             id: pullToRefresh
-            parent: view
+            parent: flickable
             onRefresh: {
                 refreshing = true;
                 refreshing = false;
@@ -46,13 +46,13 @@ Item {
         when: windowShown
 
         function test_reposition_after_refresh_bug1578619() {
-            var initialTopMargin = view.topMargin;
-            var initialContentY = view.contentY;
-            flick(view, view.width/2, units.gu(10), 0, units.gu(40));
-            tryCompare(view, "moving", false);
-            tryCompare(view, "topMargin", initialTopMargin, 500,
+            var initialTopMargin = flickable.topMargin;
+            var initialContentY = flickable.contentY;
+            flick(flickable, flickable.width/2, units.gu(10), 0, units.gu(40));
+            tryCompare(flickable, "moving", false);
+            tryCompare(flickable, "topMargin", initialTopMargin, 500,
                     "Initial topMargin of flickable is not restored after refreshing.");
-            tryCompare(view, "contentY", initialContentY, 500,
+            tryCompare(flickable, "contentY", initialContentY, 500,
                     "Initial contentY of flickable is not restored after refreshing.")
         }
     }

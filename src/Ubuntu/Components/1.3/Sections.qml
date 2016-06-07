@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype Sections
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
     \brief Display a list of sections that the user can select. By tapping

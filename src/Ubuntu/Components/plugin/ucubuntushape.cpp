@@ -255,7 +255,7 @@ static int getShapeTexturesIndex(const QOpenGLContext* openglContext);
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
-    \inqmlmodule Ubuntu.Components 1.2
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Rounded rectangle containing a source image blended over a background color.
 
