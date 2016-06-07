@@ -39,13 +39,16 @@ Style.ActionBarStyle {
     defaultDelegate: ListItem {
         width: units.gu(4)
         height: actionBarStyle.height
+        onClicked: button.trigger()
         AbstractButton {
+            id: button
             anchors.fill: parent
             style: IconButtonStyle { }
             objectName: action.objectName + "_button"
             height: parent ? parent.height : undefined
             action: modelData
-            //        activeFocusOnTab: false
+                    activeFocusOnTab: false
+            onClicked: print("whee")
         }
         divider.visible: false
     }
@@ -108,7 +111,7 @@ Style.ActionBarStyle {
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
 
-//            onCurrentIndexChanged: print("current index = "+currentIndex)
+            onCurrentIndexChanged: print("current index = "+currentIndex)
 
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
@@ -123,7 +126,8 @@ Style.ActionBarStyle {
     MouseArea {
         // Detect hovering over the left and right areas to show the scrolling chevrons.
         id: hoveringArea
-
+//visible: false
+//enabled: false
         property real iconsDisabledOpacity: 0.3
 
         anchors.fill: parent

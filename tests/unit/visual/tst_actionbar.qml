@@ -28,50 +28,57 @@ Item {
         Action {
             iconName: "alarm-clock"
             text: "Tick tock"
+            onTriggered: print("tock")
         },
         Action {
             iconName: "appointment"
             text: "Date"
+            onTriggered: print("date")
         },
         Action {
             iconName: "attachment"
             text: "Attach"
+            onTriggered: print("attach")
         },
         Action {
             iconName: "contact"
             text: "Contact"
+            onTriggered: print("contact")
         },
         Action {
             iconName: "like"
             text: "Like"
+            onTriggered: print("+1")
         },
         Action {
             iconName: "lock"
             text: "Lock"
+            onTriggered: print("lock")
         },
         Action {
             iconName: "camcorder"
             text: "Camera"
+            onTriggered: print("cam")
         },
         Action {
             iconName: "location"
             text: "Location"
-        },
-        Action {
-            iconName: "like"
-            text: "Heart"
+            onTriggered: print("loc")
         },
         Action {
             iconName: "message"
             text: "Message"
+            onTriggered: print("msg")
         },
         Action {
             iconName: "livetv"
             text: "Television"
+            onTriggered: print("tv")
         },
         Action {
             iconName: "lock-broken"
             text: "Unlock"
+            onTriggered: print("unlock")
         }
     ]
 
@@ -79,10 +86,12 @@ Item {
         Action {
             iconName: "share"
             text: "Share"
+            onTriggered: print("share")
         },
         Action {
             iconName: "starred"
             text: "Favorite"
+            onTriggered: print("fav")
         }
     ]
 
@@ -209,7 +218,7 @@ Item {
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
                     action: modelData
-                    height: parent.height
+                    height: greenButtonsBar.height
                     StyleHints {
                         foregroundColor: UbuntuColors.green
                     }
