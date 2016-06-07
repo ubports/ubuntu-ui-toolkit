@@ -78,6 +78,8 @@
 #include "ucpagetreenode.h"
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
+#include "ucmenu.h"
+#include "ucmenubar.h"
 #include "privates/frame.h"
 #include "privates/ucpagewrapper.h"
 #include "privates/appheaderbase.h"
@@ -238,6 +240,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
+    qmlRegisterType<UCMenu>(uri, 1, 3, "Menu");
+    qmlRegisterType<UCMenuBar>(uri, 1, 3, "MenuBar");
+    qmlRegisterUncreatableType<UCMenuAttached>(uri, 1, 3, "Menus", "Not instantiable");
+    qmlRegisterType<UCMenuGroup>(uri, 1, 3, "MenuGroup");
     qmlRegisterType<UCExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
 }
 

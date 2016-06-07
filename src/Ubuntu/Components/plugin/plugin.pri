@@ -3,7 +3,7 @@ unix {
     PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
-QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private UbuntuToolkit
+QT *= core-private qml qml-private quick quick-private gui-private dbus svg platformsupport-private UbuntuGestures UbuntuGestures_private UbuntuToolkit
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -119,6 +119,10 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/label_p.h \
     $$PWD/ucbottomedgeregion_p.h \
     $$PWD/ucactionlist.h \
+    $$PWD/ucmenu.h \
+    $$PWD/ucmenu_p.h \
+    $$PWD/ucmenubar.h \
+    $$PWD/ucmenubar_p.h \
     $$PWD/ucexclusivegroup.h
 
 SOURCES += $$PWD/plugin.cpp \
@@ -198,6 +202,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \
     $$PWD/privates/appheaderbase.cpp \
     $$PWD/ucactionlist.cpp \
+    $$PWD/ucmenu.cpp \
+    $$PWD/ucmenubar.cpp \
     $$PWD/ucexclusivegroup.cpp
 
 # adapters
