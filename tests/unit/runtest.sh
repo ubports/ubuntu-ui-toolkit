@@ -112,7 +112,8 @@ function execute_test_cmd {
     echo "Error: $_TARGET wasn't built!"
     RESULT=2
   elif [ $DISPLAY ]; then
-    cd $(dirname $_TARGETPATH)
+    SRC_TARGETPATH=$(echo $EXE | sed "s@$BUILD_DIR@$SRC_DIR@")
+    cd $(dirname $SRC_TARGETPATH)
 
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
