@@ -202,9 +202,9 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
             m_dataPlatformObjectMap.remove(o, platformObject);
 
             if (m_platformItems.contains(platformObject)) {
-                PlatformItemWrapper* platformItem = m_platformItems.take(platformObject);
-                platformItem->remove();
-                delete platformItem;
+                PlatformItemWrapper* wrapper = m_platformItems.take(platformObject);
+                wrapper->remove();
+                delete wrapper;
             }
         });
     }
@@ -232,9 +232,9 @@ void UCMenuPrivate::removeObject(QObject *o)
         Q_FOREACH(QObject* platformObject, platformObjects) {
             // remove from platform.
             if (m_platformItems.contains(platformObject)) {
-                PlatformItemWrapper* platformItem = m_platformItems.take(platformObject);
-                platformItem->remove();
-                delete platformItem;
+                PlatformItemWrapper* wrapper = m_platformItems.take(platformObject);
+                wrapper->remove();
+                delete wrapper;
             }
         }
     }

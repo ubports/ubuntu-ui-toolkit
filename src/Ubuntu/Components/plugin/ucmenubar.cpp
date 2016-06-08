@@ -55,8 +55,9 @@ void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
 
         QObject::connect(menu, &QObject::destroyed, q, [this](QObject* object) {
             if (m_platformMenus.contains(object)) {
-                m_platformMenus[object]->remove();
-                delete m_platformMenus.take(object);
+                PlatformMenuWrapper* wrapper = m_platformMenus.take(object);
+                wrapper->remove();
+                delete wrapper;
             }
         });
     }
@@ -68,8 +69,9 @@ void UCMenuBarPrivate::removeMenu(UCMenu *menu)
 
     if (m_platformBar) {
         if (m_platformMenus.contains(menu)) {
-            m_platformMenus[menu]->remove();
-            delete m_platformMenus.take(menu);
+            PlatformMenuWrapper* wrapper = m_platformMenus.take(menu);
+            wrapper->remove();
+            delete wrapper;
         }
     }
 }
