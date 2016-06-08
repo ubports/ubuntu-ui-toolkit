@@ -48,9 +48,6 @@ public:
     void classBegin() Q_DECL_OVERRIDE;
     void componentComplete() Q_DECL_OVERRIDE;
 
-    // Testing
-    Q_INVOKABLE void reparent();
-
 Q_SIGNALS:
     void menusChanged();
 

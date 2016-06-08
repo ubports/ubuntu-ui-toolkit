@@ -247,15 +247,6 @@ void UCMenuBar::componentComplete()
     }
 }
 
-void UCMenuBar::reparent()
-{
-    Q_D(UCMenuBar);
-
-    auto parentItem = qobject_cast<QQuickItem*>(parent());
-    if (parentItem && d->m_platformBar) {
-        d->m_platformBar->handleReparent(parentItem->window());
-    }
-}
 
 PlatformMenuWrapper::PlatformMenuWrapper(UCMenu *target, UCMenuBar* bar)
     : QObject(bar)
