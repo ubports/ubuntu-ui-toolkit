@@ -23,6 +23,14 @@
  * \ingroup ubuntu
  * \brief List of \l Action items
  */
+/*!
+ * \qmlsignal ActionList::added(Action action)
+ * Signal called when an action is added to the list
+ */
+/*!
+ * \qmlsignal ActionList::removed(Action action)
+ * Signal called when an action is removed from the list
+ */
 UCActionList::UCActionList(QObject *parent)
     : QObject(parent)
 {
@@ -31,7 +39,7 @@ UCActionList::UCActionList(QObject *parent)
 /*!
  * \qmlmethod ActionList::addAction(Action action)
  * \deprecated
- * Adds an Action to the context programatically.
+ * Adds an Action to the list programatically.
  */
 void UCActionList::addAction(UCAction *action)
 {
@@ -45,7 +53,7 @@ void UCActionList::addAction(UCAction *action)
 /*!
  * \qmlmethod ActionList::removeAction(Action action)
  * \deprecated
- * Removes an action from the context programatically.
+ * Removes an action from the list programatically.
  */
 void UCActionList::removeAction(UCAction *action)
 {
@@ -59,9 +67,9 @@ void UCActionList::removeAction(UCAction *action)
 
 /*!
 
- * \qmlproperty list<Action> ActionContext::actions
+ * \qmlproperty list<Action> ActionList::actions
  * \default
- * List of Actions in this ActionContext
+ * List of Actions in this ActionList
  * Note that when you set this property, the children of the ActionList will be ignored,
  * so do not set the list and define children.
  *
