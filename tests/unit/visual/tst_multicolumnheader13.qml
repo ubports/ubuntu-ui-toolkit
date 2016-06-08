@@ -44,36 +44,36 @@ MainView {
                 }
                 height: childrenRect.height
 
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add page left"
                     onClicked: layout.addPageToCurrentColumn(rootPage, leftPage)
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add page right"
                     onClicked: layout.addPageToNextColumn(rootPage, rightPage)
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add sections page right"
                     onClicked: layout.addPageToNextColumn(rootPage, sectionsPage)
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add external page right"
                     onClicked: layout.addPageToNextColumn(
                                    rootPage, Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"))
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add page with head contents left"
                     onClicked: layout.addPageToCurrentColumn(rootPage, headContentsPage)
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add page with head contents right"
                     onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add page with header left"
                     onClicked: layout.addPageToCurrentColumn(rootPage, pageWithHeader)
                 }
-                ListItemWithLabel {
+                ListItemWithLabel13 {
                     text: "Add page with header right"
                     onClicked: layout.addPageToNextColumn(rootPage, pageWithHeader)
                 }
