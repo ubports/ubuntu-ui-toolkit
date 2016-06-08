@@ -63,8 +63,9 @@ Item {
         source: styledItem.iconSource
         color: iconButtonStyle.foregroundColor
 
-        FocusShape {
-        }
+        // FIXME: Disable FocusShape for scrolling toolbar only.
+//        FocusShape {
+//        }
     }
 
     Component {
