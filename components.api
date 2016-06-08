@@ -673,7 +673,14 @@ Ubuntu.Components.MenuBar 1.3 UCMenuBar: QtObject
     function appendMenu(Menu menu)
     function insertMenu(int index, Menu menu)
     function removeMenu(Menu menu)
-Ubuntu.Components.MenuGroup 1.3 UCMenuGroup: ActionList
+    function reparent()
+Ubuntu.Components.MenuGroup 1.3 UCMenuGroup: QtObject
+    default property list<QtObject> data
+    signal added(QtObject object)
+    signal removed(QtObject object)
+    signal changed()
+    function addObject(QtObject object)
+    function removeObject(QtObject object)
 Ubuntu.Components.Menus 1.3: QtObject
     readonly property MenuBar menuBar
     readonly property Menu parentMenu
