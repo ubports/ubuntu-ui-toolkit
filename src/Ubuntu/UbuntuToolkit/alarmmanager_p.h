@@ -25,6 +25,8 @@
 
 #include "ucalarm.h"
 
+namespace UbuntuToolkit {
+
 class AlarmUtils {
 public:
     static QHash<int, QByteArray> roles() {
@@ -121,5 +123,7 @@ private:
     friend class AlarmManagerPrivate;
     QScopedPointer<AlarmManagerPrivate> d_ptr;
 };
+
+}
 
 #endif // ALARMMANAGER_H

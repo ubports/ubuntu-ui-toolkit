@@ -65,6 +65,6 @@ private:
 }
 
 #define UCThemingExtension_iid "org.qt-project.Qt.UCThemingExtension"
-Q_DECLARE_INTERFACE(UCThemingExtension, UCThemingExtension_iid)
+Q_DECLARE_INTERFACE(UbuntuToolkit::UCThemingExtension, UCThemingExtension_iid)
 
 #endif // UCITEMEXTENSION_H
