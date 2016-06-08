@@ -55,7 +55,11 @@ UCMenuPrivate::UCMenuPrivate(UCMenu *qq)
 
 UCMenuPrivate::~UCMenuPrivate()
 {
+    qDeleteAll(m_platformItems);
+    m_platformItems.clear();
+
     delete m_platformMenu;
+    m_platformMenu = nullptr;
 }
 
 void UCMenuPrivate::insertObject(int index, QObject *o)
@@ -107,8 +111,11 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
             platformWrapper->insert(actualIndex++);
             m_platformItems[object] = platformWrapper;
 
-            QObject::connect(object, &QObject::destroyed, q, [platformWrapper]() {
-                platformWrapper->remove();
+            QObject::connect(object, &QObject::destroyed, q, [this](QObject* object) {
+                if (m_platformItems.contains(object)) {
+                    m_platformItems[object]->remove();
+                    delete m_platformItems.take(object);
+                }
             });
         }
     }
@@ -120,23 +127,25 @@ void UCMenuPrivate::removeObject(QObject *o)
     m_data.removeOne(o);
     qCInfo(ucMenu).nospace() << "UCMenu::insertObject(" << o << ")";
 
-    QObjectList objects;
-    if (UCActionList* actionList = qobject_cast<UCActionList*>(o)) {
-        Q_FOREACH(UCAction* action, actionList->list()) {
-            objects << action;
-        }
-        if (qobject_cast<UCMenuGroup*>(actionList)) {
+    if (m_platformMenu) {
+        QObjectList objects;
+        if (UCActionList* actionList = qobject_cast<UCActionList*>(o)) {
+            Q_FOREACH(UCAction* action, actionList->list()) {
+                objects << action;
+            }
+            if (qobject_cast<UCMenuGroup*>(actionList)) {
+                objects << o;
+            }
+        } else {
             objects << o;
         }
-    } else {
-        objects << o;
-    }
 
-    Q_FOREACH(QObject* object, objects) {
-        // remove from platform.
-        if (m_platformMenu && m_platformItems.contains(object)) {
-            m_platformItems[object]->remove();
-            m_platformItems.remove(object);
+        Q_FOREACH(QObject* object, objects) {
+            // remove from platform.
+            if (m_platformItems.contains(object)) {
+                m_platformItems[object]->remove();
+                delete m_platformItems.take(object);
+            }
         }
     }
 }
@@ -411,8 +420,6 @@ PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
     , m_menu(menu)
     , m_platformItem(menu->platformMenu() ? menu->platformMenu()->createMenuItem() : Q_NULLPTR)
 {
-    connect(m_target, &QObject::destroyed, this, &QObject::deleteLater);
-
     if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
         if (m_platformItem) {
             m_platformItem->setMenu(menu->platformMenu());
@@ -446,6 +453,11 @@ PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
     }
 
     syncPlatformItem();
+}
+
+PlatformItemWrapper::~PlatformItemWrapper()
+{
+    delete m_platformItem;
 }
 
 void PlatformItemWrapper::insert(int index)

@@ -60,6 +60,7 @@ class PlatformItemWrapper : public QObject
     Q_OBJECT
 public:
     PlatformItemWrapper(QObject *target, UCMenu* menu);
+    ~PlatformItemWrapper();
 
     void insert(int index);
     void remove();

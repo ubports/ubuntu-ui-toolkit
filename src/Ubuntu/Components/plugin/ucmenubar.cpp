@@ -31,6 +31,15 @@ UCMenuBarPrivate::UCMenuBarPrivate(UCMenuBar *qq)
     m_platformBar = QGuiApplicationPrivate::platformTheme()->createPlatformMenuBar();
 }
 
+UCMenuBarPrivate::~UCMenuBarPrivate()
+{
+    qDeleteAll(m_platformMenus);
+    m_platformMenus.clear();
+
+    delete m_platformBar;
+    m_platformBar = nullptr;
+}
+
 void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
 {
     Q_Q(UCMenuBar);
@@ -43,8 +52,31 @@ void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
         attached->setParentObject(q);
     }
 
+
+    // add to platform
     if (m_platformBar && menu->platformMenu()) {
-        m_platformBar->insertMenu(menu->platformMenu(), prevMenu ? prevMenu->platformMenu() : nullptr);
+        auto platformWrapper = new PlatformMenuWrapper(menu, q);
+        platformWrapper->insert(prevMenu ? prevMenu->platformMenu() : nullptr);
+        m_platformMenus[menu] = platformWrapper;
+
+        QObject::connect(menu, &QObject::destroyed, q, [this](QObject* object) {
+            if (m_platformMenus.contains(object)) {
+                m_platformMenus[object]->remove();
+                delete m_platformMenus.take(object);
+            }
+        });
+    }
+}
+
+void UCMenuBarPrivate::removeMenu(UCMenu *menu)
+{
+    m_menus.removeOne(menu);
+
+    if (m_platformBar) {
+        if (m_platformMenus.contains(menu)) {
+            m_platformMenus[menu]->remove();
+            delete m_platformMenus.take(menu);
+        }
     }
 }
 
@@ -177,9 +209,8 @@ void UCMenuBar::removeMenu(UCMenu *menu)
     Q_D(UCMenuBar);
     if (!menu) return;
 
-    if (d->m_menus.removeOne(menu)) {
-        Q_EMIT menusChanged();
-    }
+    d->removeMenu(menu);
+    Q_EMIT menusChanged();
 }
 /*!
  * \qmlproperty list<Menu> MenuBar::menus
@@ -220,32 +251,24 @@ PlatformMenuWrapper::PlatformMenuWrapper(UCMenu *target, UCMenuBar* bar)
     : QObject(bar)
     , m_bar(bar)
     , m_target(target)
-    , m_platformItem(target->platformMenu() ? target->platformMenu()->createMenuItem() : Q_NULLPTR)
 {
-    connect(m_target, &QObject::destroyed, this, &QObject::deleteLater);
-
     connect(m_target, &UCMenu::visibleChanged, this, &PlatformMenuWrapper::updateVisible);
     connect(m_target, &UCMenu::textChanged, this, &PlatformMenuWrapper::updateText);
     connect(m_target, &UCMenu::enabledChanged, this, &PlatformMenuWrapper::updateEnabled);
     connect(m_target, &UCMenu::iconSourceChanged, this, &PlatformMenuWrapper::updateIcon);
     connect(m_target, &UCMenu::iconNameChanged, this, &PlatformMenuWrapper::updateIcon);
 
-    if (m_platformItem) {
-        m_platformItem->setMenu(target->platformMenu());
-    }
-    syncPlatformItem();
+    syncPlatformMenu();
 }
 
-void PlatformMenuWrapper::insert(int index)
+void PlatformMenuWrapper::insert(QPlatformMenu *before)
 {
-    Q_UNUSED(index);
-
     auto platformBar = m_bar->platformMenuBar();
     if (!platformBar) return;
     auto platformMenu = m_target->platformMenu();
     if (!platformMenu) return;
 
-    platformBar->insertMenu(platformMenu, Q_NULLPTR);
+    platformBar->insertMenu(platformMenu, before);
 }
 
 void PlatformMenuWrapper::remove()
@@ -260,19 +283,16 @@ void PlatformMenuWrapper::remove()
 
 void PlatformMenuWrapper::updateVisible()
 {
-    if (m_platformItem) m_platformItem->setVisible(m_target->visible());
     if (m_target->platformMenu()) m_target->platformMenu()->setVisible(m_target->visible());
 }
 
 void PlatformMenuWrapper::updateEnabled()
 {
-    if (!m_platformItem) m_platformItem->setEnabled(m_target->isEnabled());
     if (m_target->platformMenu()) m_target->platformMenu()->setEnabled(m_target->isEnabled());
 }
 
 void PlatformMenuWrapper::updateText()
 {
-    if (!m_platformItem) m_platformItem->setText(m_target->text());
     if (m_target->platformMenu()) m_target->platformMenu()->setText(m_target->text());
 }
 
@@ -285,10 +305,9 @@ void PlatformMenuWrapper::updateIcon()
         icon = QIcon::fromTheme(m_target->iconName());
     }
     if (m_target->platformMenu()) m_target->platformMenu()->setIcon(icon);
-    if (!m_platformItem) m_platformItem->setIcon(icon);
 }
 
-void PlatformMenuWrapper::syncPlatformItem()
+void PlatformMenuWrapper::syncPlatformMenu()
 {
     updateVisible();
     updateEnabled();

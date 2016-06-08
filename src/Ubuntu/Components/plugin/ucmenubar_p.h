@@ -21,14 +21,17 @@
 #include "ucmenubar.h"
 
 class QPlatformMenuBar;
+class PlatformMenuWrapper;
 
 class UCMenuBarPrivate : public QQuickItemChangeListener
 {
     Q_DECLARE_PUBLIC(UCMenuBar)
 public:
     UCMenuBarPrivate(UCMenuBar *qq);
+    ~UCMenuBarPrivate();
 
     void insertMenu(int index, UCMenu *menu);
+    void removeMenu(UCMenu *menu);
 
     static void menu_append(QQmlListProperty<UCMenu> *prop, UCMenu *o);
     static int menu_count(QQmlListProperty<UCMenu> *prop);
@@ -38,6 +41,7 @@ public:
     UCMenuBar* q_ptr;
     QPlatformMenuBar* m_platformBar;
     QVector<UCMenu*> m_menus;
+    QHash<QObject*, PlatformMenuWrapper*> m_platformMenus;
 };
 
 class PlatformMenuWrapper : public QObject
@@ -46,7 +50,7 @@ class PlatformMenuWrapper : public QObject
 public:
     PlatformMenuWrapper(UCMenu *target, UCMenuBar *bar);
 
-    void insert(int index);
+    void insert(QPlatformMenu *before);
     void remove();
 
 public Q_SLOTS:
@@ -57,11 +61,10 @@ public Q_SLOTS:
     void updateShortcut();
 
 private:
-    void syncPlatformItem();
+    void syncPlatformMenu();
 
     UCMenuBar* m_bar;
     UCMenu* m_target;
-    QPlatformMenuItem* m_platformItem;
 };
 
 #endif // UCMENUBAR_P
