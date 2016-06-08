@@ -50,6 +50,8 @@ for _XML in $*; do
                 recreateview \
                 touchregistry \
                 mainview \
+                tst_listitems_valueselector.qml \
+                tst_pagestack_deprecated_toolbar.qml \
                 tst_listitems_itemselector.qml \
                 tst_tabs_with_repeater.deprecated_toolbar.qml \
                 inversemousearea \
