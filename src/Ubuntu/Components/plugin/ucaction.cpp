@@ -519,7 +519,7 @@ void UCAction::trigger(const QVariant &value)
         return;
     }
 
-    if (m_exclusiveGroup && !m_exclusiveGroup->checkValidTrigger(this, value)) {
+    if (m_exclusiveGroup && !m_exclusiveGroup->isTriggerValid(this, value)) {
         return;
     }
 

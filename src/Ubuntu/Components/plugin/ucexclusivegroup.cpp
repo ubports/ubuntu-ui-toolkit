@@ -84,7 +84,7 @@ UCAction *UCExclusiveGroup::selected() const
     return m_selected;
 }
 
-bool UCExclusiveGroup::checkValidTrigger(UCAction *action, const QVariant &value)
+bool UCExclusiveGroup::isTriggerValid(UCAction *action, const QVariant &value)
 {
     // deselect others.
     if (value.type() == QVariant::Bool && value.toBool() == false) {

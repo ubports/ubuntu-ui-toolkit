@@ -32,7 +32,7 @@ public:
 
     UCAction* selected() const;
 
-    bool checkValidTrigger(UCAction* action, const QVariant& value);
+    bool isTriggerValid(UCAction* action, const QVariant& value);
 
 Q_SIGNALS:
     void selectedChanged();
