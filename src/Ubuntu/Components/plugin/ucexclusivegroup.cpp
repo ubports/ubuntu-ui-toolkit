@@ -18,6 +18,27 @@
 #include "ucexclusivegroup.h"
 #include "ucaction.h"
 
+/*!
+ * \qmltype ExclusiveGroup
+ * \inqmlmodule Ubuntu.Components
+ * \ingroup ubuntu
+ * \brief An \l ActionList which controls a set of Actions with mutually exclusive states.
+ *
+ * The ExclusiveGroup will only allow a single \l Action to have it's state set to "true" at any one time.
+ * If the currently selected Action attempts to trigger with a false value, the trigger will be rejected.
+ * \qml
+ * ExclusiveGroup {
+ *     Action {
+ *         parameterType: Action.Bool
+ *         state: true
+ *     }
+ *     Action {
+ *         parameterType: Action.Bool
+ *         state: false
+ *     }
+ * }
+ * \endqml
+ */
 UCExclusiveGroup::UCExclusiveGroup(QObject *parent)
     : UCActionList(parent)
     , m_entranceGuard(false)
@@ -67,6 +88,11 @@ void UCExclusiveGroup::stateChanged(UCAction* action)
     m_entranceGuard = false;
 }
 
+/*!
+ * \qmlproperty Action ExclusiveGroup::selected
+ * \default
+ * Returns the currently selected action
+ */
 void UCExclusiveGroup::setSelected(UCAction *action)
 {
     if (m_selected != action) {
@@ -78,7 +104,6 @@ void UCExclusiveGroup::setSelected(UCAction *action)
         Q_EMIT selectedChanged();
     }
 }
-
 UCAction *UCExclusiveGroup::selected() const
 {
     return m_selected;

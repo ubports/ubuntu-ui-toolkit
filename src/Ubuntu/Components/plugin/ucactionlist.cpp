@@ -66,7 +66,6 @@ void UCActionList::removeAction(UCAction *action)
 }
 
 /*!
-
  * \qmlproperty list<Action> ActionList::actions
  * \default
  * List of Actions in this ActionList
