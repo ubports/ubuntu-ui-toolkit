@@ -187,6 +187,8 @@ Toolkit.StyledItem {
       */
     onAlignChanged: if (!internals.checkAlign()) console.log("Wrong alignment set to Scrollbar: "+align)
 
+    //Don't do anything with flickableItem until its creation is complete, it would be a waste of cpu cycles
+    //and it would block the rendering thread for much longer
     Connections {
         target: flickableItem
         Component.onCompleted: __initializedFlickable = flickableItem

@@ -43,9 +43,10 @@ function compareResults {
         SECOND_QML_AVG=$TMP_QML_AVG
         SECOND_CPP_AVG=$TMP_CPP_AVG
 
+#triple slash for \n is needed because we want awk to print "\n" on the string, not the newline
 	RESULTS_STRING+=`awk -v qml=$FIRST_QML_AVG -v cpp=$FIRST_CPP_AVG -v old_qml=$SECOND_QML_AVG -v old_cpp=$SECOND_CPP_AVG \
 		-v rev1=\`basename $1\` -v rev2=\`basename $2\` \
-		'BEGIN { print rev1, rev2, ((qml/old_qml)-1)*100"%", ((cpp/old_cpp)-1)*100"%", ((qml/cpp)-1)*100"%" }'`
+		'BEGIN { print rev1, rev2, ((qml/old_qml)-1)*100"%", ((cpp/old_cpp)-1)*100"%", ((qml/cpp)-1)*100"%", "\\\n" }'`
 }
 
 RESULTS_STRING='CURRENT_REVISION OLD_REVISION QML_CHANGE CPP_CHANGE QML_VS_CPP\n'
@@ -54,7 +55,7 @@ PREVIOUS_RESULTS_FILENAME=`ls -r $BENCH_PATH/results/*.tst_performance | awk -v 
 while [ ! -z $PREVIOUS_RESULTS_FILENAME ]
 do
 	compareResults $TST_PERFORMANCE_RESULT $PREVIOUS_RESULTS_FILENAME
-	REV_TO_COMPARE_TO+=1
+	((REV_TO_COMPARE_TO++))
 	PREVIOUS_RESULTS_FILENAME=`ls -r $BENCH_PATH/results/*.tst_performance | awk -v rev=$REV_TO_COMPARE_TO 'NR==rev'`
 done
 

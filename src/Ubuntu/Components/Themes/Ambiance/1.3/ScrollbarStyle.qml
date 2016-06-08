@@ -126,6 +126,7 @@ Item {
     property bool bottomAligned: (styledItem.align === Qt.AlignBottom)
 
     //flickable helper properties
+    //Don't do anything with the flickable until its Component.onCompleted is called, it's a waste of cycles
     property Flickable flickableItem: styledItem.__initializedFlickable
     property real pageSize: flickableItem
                             ? (isVertical ? flickableItem.height : flickableItem.width)
