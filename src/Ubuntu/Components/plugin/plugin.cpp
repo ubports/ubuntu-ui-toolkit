@@ -243,7 +243,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
     qmlRegisterType<UCMenu>(uri, 1, 3, "Menu");
     qmlRegisterType<UCMenuBar>(uri, 1, 3, "MenuBar");
-    qmlRegisterUncreatableType<UCMenuAttached>(uri, 1, 3, "Menus", "Not instantiable");
     qmlRegisterType<UCMenuGroup>(uri, 1, 3, "MenuGroup");
     qmlRegisterType<UCExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
 }

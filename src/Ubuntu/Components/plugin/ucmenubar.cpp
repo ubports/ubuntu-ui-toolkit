@@ -47,12 +47,6 @@ void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
 
     m_menus.insert(index, menu);
 
-    UCMenuAttached *attached = qobject_cast<UCMenuAttached*>(qmlAttachedPropertiesObject<UCMenuAttached>(menu));
-    if (attached) {
-        attached->setParentObject(q);
-    }
-
-
     // add to platform
     if (m_platformBar && menu->platformMenu()) {
         auto platformWrapper = new PlatformMenuWrapper(menu, q);

@@ -21,8 +21,6 @@
 #include <QQmlListProperty>
 #include <QLoggingCategory>
 #include <QPointer>
-#include <qqml.h>
-#include <QtQml/qqml.h>
 
 #include "ucaction.h"
 
@@ -32,7 +30,6 @@ class QPlatformMenu;
 class QPlatformMenuItem;
 class QQuickItem;
 class UCMenuPrivate;
-class UCMenuAttached;
 class UCMenuBar;
 class UCAction;
 
@@ -69,29 +66,5 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateIcon())
     Q_PRIVATE_SLOT(d_func(), void _q_updateVisible())
 };
-
-class UCMenuAttached : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(UCMenu* parentMenu READ parentMenu NOTIFY parentMenuChanged)
-    Q_PROPERTY(UCMenuBar* menuBar READ menuBar NOTIFY parentMenuChanged)
-public:
-    explicit UCMenuAttached(QObject *parent);
-
-    static UCMenuAttached *qmlAttachedProperties(QObject *);
-
-    void setParentObject(QObject* o);
-
-    UCMenu *parentMenu() const;
-    UCMenuBar *menuBar() const;
-
-Q_SIGNALS:
-    void parentMenuChanged();
-    void menuBarChanged();
-
-private:
-    QPointer<QObject> m_parentObject;
-};
-QML_DECLARE_TYPEINFO(UCMenuAttached, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCMENU_H

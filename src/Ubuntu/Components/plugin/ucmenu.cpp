@@ -107,11 +107,6 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
     if (!o) return;
     qCInfo(ucMenu).nospace() << "UCMenu::insertObject(index="<< index << ", object=" << o << ")";
 
-    UCMenuAttached *attached = qobject_cast<UCMenuAttached*>(qmlAttachedPropertiesObject<UCMenuAttached>(o));
-    if (attached) {
-        attached->setParentObject(q);
-    }
-
     if (!m_platformMenu) {
         QVector<QObject*>::iterator position = m_data.count() > index ? m_data.begin() + index : m_data.end();
         m_data.insert(position, o);
@@ -455,57 +450,6 @@ void UCMenu::dismiss()
     if (d->m_platformMenu) {
         d->m_platformMenu->dismiss();
     }
-}
-
-/*!
- * \qmltype Menus
- * \instantiates UCMenuAttached
- * \inqmlmodule Ubuntu.Components 1.3
- * \ingroup ubuntu
- * \since Ubuntu.Components 1.3
- * \brief A set of properties attached to the Menu.
- *
- */
-UCMenuAttached::UCMenuAttached(QObject *parent)
-    : QObject(parent)
-    , m_parentObject(Q_NULLPTR)
-{
-}
-
-UCMenuAttached *UCMenuAttached::qmlAttachedProperties(QObject *o)
-{
-    return new UCMenuAttached(o);
-}
-
-void UCMenuAttached::setParentObject(QObject *o)
-{
-    if (m_parentObject != o) {
-        UCMenu* oldMenu = parentMenu();
-        UCMenuBar* oldBar = menuBar();
-
-        m_parentObject = o;
-
-        if (oldMenu != parentMenu()) Q_EMIT parentMenuChanged();
-        if (oldBar != menuBar()) Q_EMIT menuBarChanged();
-    }
-}
-
-/*!
- * \qmlattachedproperty bool Menus::parentMenu
- * The property returns the parent Menu of the object, or null if there is none.
- */
-UCMenu *UCMenuAttached::parentMenu() const
-{
-    return qobject_cast<UCMenu*>(m_parentObject);
-}
-
-/*!
- * \qmlattachedproperty bool Menus::menuBar
- * The property returns the parent MenuBar of the object, or null if there is none.
- */
-UCMenuBar *UCMenuAttached::menuBar() const
-{
-    return qobject_cast<UCMenuBar*>(m_parentObject);
 }
 
 
