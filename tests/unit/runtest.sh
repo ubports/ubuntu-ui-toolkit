@@ -43,23 +43,23 @@ if [ -z $_TARGETPATH ]; then
   echo "  $0 TEST_EXECUTABLE [QML_FILE] [QT_QPA_PLATFORM]"
   echo ''
   echo 'Examples:'
-  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/tst_components/tst_components) tst_label13.qml minimal"
+  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/components/components) tst_label13.qml minimal"
   echo ''
-  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/tst_mainview)"
-  echo "  ../$(basename $0) tst_mainview minimal"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/mainview)"
+  echo "  ../$(basename $0) mainview minimal"
   echo "  cd ../../.."
   echo ''
-  echo "  cd $(relpath ${BUILD_DIR}/tests/unit_x11/tst_components)"
-  echo "  ../../xvfb.sh ../../unit/$(basename $0) tst_components tst_listitem13.qml"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/visual)"
+  echo "  ../../xvfb.sh ../../unit/$(basename $0) visual tst_listitem13.qml"
   echo "  cd ../../.."
   echo ''
-  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit_x11/tst_bottomedge/tst_bottomedge)"
+  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit/bottomedge/bottomedge)"
   exit 1
 fi
 
 _TARGET=$(basename $_TARGETPATH)
 _TESTFILE=$(basename $_TESTFILEPATH)
-_XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
+_XML="${BUILD_DIR}/tests/$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 

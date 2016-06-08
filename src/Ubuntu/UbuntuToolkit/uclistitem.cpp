@@ -1486,6 +1486,29 @@ void UCListItem::focusOutEvent(QFocusEvent *event)
     update();
 }
 
+// emit clicked when Enter/Return/Space is pressed
+void UCListItem::keyReleaseEvent(QKeyEvent *event)
+{
+    Q_D(UCListItem);
+
+    UCStyledItemBase::keyReleaseEvent(event);
+
+    switch (event->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Space:
+            event->accept();
+            clicked();
+            if (d->mainAction) {
+                invokeTrigger<UCAction>(d->mainAction, d->index());
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+
 // handle horizontal keys to navigate between focusable slots
 void UCListItem::keyPressEvent(QKeyEvent *event)
 {
