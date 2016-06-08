@@ -19,15 +19,12 @@
 #define UCMENU_H
 
 #include <QQmlListProperty>
-#include <QUrl>
 #include <QLoggingCategory>
 #include <QPointer>
 #include <qqml.h>
 #include <QtQml/qqml.h>
-#include <private/qquickitemchangelistener_p.h>
 
 #include "ucaction.h"
-#include "ucactionlist.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ucMenu);
 
@@ -96,13 +93,5 @@ private:
     QPointer<QObject> m_parentObject;
 };
 QML_DECLARE_TYPEINFO(UCMenuAttached, QML_HAS_ATTACHED_PROPERTIES)
-
-
-class UCMenuGroup : public UCActionList
-{
-    Q_OBJECT
-public:
-    explicit UCMenuGroup(QObject *parent = 0);
-};
 
 #endif // UCMENU_H

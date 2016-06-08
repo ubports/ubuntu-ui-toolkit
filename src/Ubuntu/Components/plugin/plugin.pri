@@ -123,7 +123,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucmenu_p.h \
     $$PWD/ucmenubar.h \
     $$PWD/ucmenubar_p.h \
-    $$PWD/ucexclusivegroup.h
+    $$PWD/ucexclusivegroup.h \
+    $$PWD/ucmenugroup.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -204,7 +205,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucactionlist.cpp \
     $$PWD/ucmenu.cpp \
     $$PWD/ucmenubar.cpp \
-    $$PWD/ucexclusivegroup.cpp
+    $$PWD/ucexclusivegroup.cpp \
+    $$PWD/ucmenugroup.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

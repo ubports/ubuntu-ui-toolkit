@@ -19,6 +19,7 @@
 #include "ucmenubar.h"
 #include "ucaction.h"
 #include "ucactionlist.h"
+#include "ucmenugroup.h"
 
 // Qt
 #include <QtGui/qpa/qplatformtheme.h>
@@ -27,6 +28,7 @@
 #include <private/qguiapplication_p.h>
 #include <private/qquickitem_p.h>
 #include <QPointer>
+#include <functional>
 
 
 Q_LOGGING_CATEGORY(ucMenu, "ubuntu.components.Menu", QtMsgType::QtWarningMsg)
@@ -45,6 +47,43 @@ QWindow* findWindowForObject(QObject* object)
     return qobject_cast<QWindow*>(window);
 }
 
+// recursively get the all the object from the menu group which are not lists or groups.
+QObjectList getActionsFromMenuGroup(UCMenuGroup* menuGroup) {
+
+    QObjectList objectList;
+
+    Q_FOREACH(QObject* data, menuGroup->list()) {
+
+        if (auto actionList = qobject_cast<UCActionList*>(data)) {
+            Q_FOREACH(UCAction* action, actionList->list()) {
+                objectList << action;
+            }
+        } else if (auto subMenuGroup = qobject_cast<UCMenuGroup*>(data)) {
+            objectList << getActionsFromMenuGroup(subMenuGroup);
+        } else {
+            objectList << data;
+        }
+    }
+    return objectList;
+}
+
+// recursively get the first object from the menu group which is not a list or a group.
+QObject* getFirstObject(UCMenuGroup* menuGroup) {
+
+    Q_FOREACH(QObject* data, menuGroup->list()) {
+
+        if (auto subMenuGroup = qobject_cast<UCMenuGroup*>(data)) {
+            QObject* object = getFirstObject(subMenuGroup);
+            if (object) { return object; }
+        } else if (auto actionList = qobject_cast<UCActionList*>(data)) {
+            return actionList->list().count() > 0 ? actionList->list()[0] : 0;
+        } else {
+            return data;
+        }
+    }
+    return Q_NULLPTR;
+}
+
 }
 
 UCMenuPrivate::UCMenuPrivate(UCMenu *qq)
@@ -59,7 +98,7 @@ UCMenuPrivate::~UCMenuPrivate()
     m_platformItems.clear();
 
     delete m_platformMenu;
-    m_platformMenu = nullptr;
+    m_platformMenu = Q_NULLPTR;
 }
 
 void UCMenuPrivate::insertObject(int index, QObject *o)
@@ -68,56 +107,111 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
     if (!o) return;
     qCInfo(ucMenu).nospace() << "UCMenu::insertObject(index="<< index << ", object=" << o << ")";
 
-    // If the menus contains lists, we need to alter the insertion index to account for them.
+    UCMenuAttached *attached = qobject_cast<UCMenuAttached*>(qmlAttachedPropertiesObject<UCMenuAttached>(o));
+    if (attached) {
+        attached->setParentObject(q);
+    }
+
+    if (!m_platformMenu) {
+        QVector<QObject*>::iterator position = m_data.count() > index ? m_data.begin() + index : m_data.end();
+        m_data.insert(position, o);
+        return;
+    }
+
+    // If the menus contains lists or groups, we need to alter the insertion index to account for them.
     int actualIndex = 0;
+    bool insertSeparator = false;
     for (int i = 0; i < index && i < m_data.count(); i++) {
         QObject* data = m_data[i];
-        auto list = qobject_cast<UCActionList*>(data);
-        actualIndex += list ? list->list().count() : 1;
 
-        // menu group adds a separator item.
-        if (qobject_cast<UCMenuGroup*>(data)) {
-            actualIndex++;
+        int dataObjectCount = 0;
+        if (auto menuGroup = qobject_cast<UCMenuGroup*>(data)) {
+            dataObjectCount = getActionsFromMenuGroup(menuGroup).count();
+        } else if (auto list = qobject_cast<UCActionList*>(data)) {
+            dataObjectCount = list->list().count();
+        } else {
+            dataObjectCount = 1;
+        }
+        actualIndex += dataObjectCount;
+        // insert a separator before the new item if there are previous items.
+        insertSeparator |= dataObjectCount > 0;
+
+        // account for item separators if it's not the last data item.
+        actualIndex += dataObjectCount > 0 && (i+1 < index && i+1 < m_data.count()) ? 1: 0;
+    }
+
+    // need to make sure the item after the insertion index has a separator
+    if (index < m_data.count()) {
+        QObject* data = m_data.at(index);
+        QObject* objectToSeparate(Q_NULLPTR);
+
+        if (auto menuGroup = qobject_cast<UCMenuGroup*>(data)) {
+            objectToSeparate = getFirstObject(menuGroup);
+        } else if (auto actionList = qobject_cast<UCActionList*>(data)) {
+            objectToSeparate = actionList->list().count() > 0 ? actionList->list()[0] : 0;
+        } else {
+            objectToSeparate = data;
+        }
+
+        if (objectToSeparate && m_platformItems.contains(objectToSeparate)) {
+            m_platformItems.value(objectToSeparate)->setSeparator();
         }
     }
 
     QVector<QObject*>::iterator position = m_data.count() > index ? m_data.begin() + index : m_data.end();
     m_data.insert(position, o);
 
+    // if an object changes, we need to remove and re-add it.
+    std::function<void()> refreshObject = [o, this]() {
+        int index = m_data.indexOf(o);
+        if (index >= 0)  {
+            removeObject(o);
+            insertObject(index, o);
+        }
+    };
+
+    // Get All the menu item objects
     QObjectList objects;
-    if (UCActionList* actionList = qobject_cast<UCActionList*>(o)) {
+    if (auto menuGroup = qobject_cast<UCMenuGroup*>(o)) {
+        Q_FOREACH(QObject* menuGroupObject, getActionsFromMenuGroup(menuGroup)) {
+            objects << menuGroupObject;
+        }
+        // connect to content changes
+        QObject::connect(menuGroup, &UCMenuGroup::changed, q, refreshObject);
+    } else if (auto actionList = qobject_cast<UCActionList*>(o)) {
         Q_FOREACH(UCAction* action, actionList->list()) {
-            qCInfo(ucMenu).nospace() << " UCMenu::insertObject(actionList=" << actionList << ", action=" << action << ")";
             objects << action;
         }
-        // menu group adds a separator item; so add self as well.
-        if (qobject_cast<UCMenuGroup*>(actionList)) {
-            objects << o;
-        }
+        // connect to content changes
+        QObject::connect(actionList, &UCActionList::added, q, refreshObject);
+        QObject::connect(actionList, &UCActionList::removed, q, refreshObject);
     } else {
         objects << o;
     }
 
-    Q_FOREACH(QObject* object, objects) {
-
-        UCMenuAttached *attached = qobject_cast<UCMenuAttached*>(qmlAttachedPropertiesObject<UCMenuAttached>(object));
-        if (attached) {
-            attached->setParentObject(q);
-        }
-
+    Q_FOREACH(QObject* platformObject, objects) {
         // add to platform
-        if (m_platformMenu) {
-            auto platformWrapper = new PlatformItemWrapper(object, q);
-            platformWrapper->insert(actualIndex++);
-            m_platformItems[object] = platformWrapper;
-
-            QObject::connect(object, &QObject::destroyed, q, [this](QObject* object) {
-                if (m_platformItems.contains(object)) {
-                    m_platformItems[object]->remove();
-                    delete m_platformItems.take(object);
-                }
-            });
+        auto platformWrapper = new PlatformItemWrapper(platformObject, q);
+        platformWrapper->insert(actualIndex++, insertSeparator);
+        if (platformWrapper->hasSeparator()) { // we also inserted an separator, need to increment for next position.
+            actualIndex++;
         }
+        insertSeparator = false;
+        m_platformItems[platformObject] = platformWrapper;
+        // map the inserted item with the object which sources the platformItem info.
+        if (!m_dataPlatformObjectMap.contains(o, platformObject)) {
+            m_dataPlatformObjectMap.insertMulti(o, platformObject);
+        }
+
+        QObject::connect(platformObject, &QObject::destroyed, q, [o, this](QObject* platformObject) {
+            m_dataPlatformObjectMap.remove(o, platformObject);
+
+            if (m_platformItems.contains(platformObject)) {
+                PlatformItemWrapper* platformItem = m_platformItems.take(platformObject);
+                platformItem->remove();
+                delete platformItem;
+            }
+        });
     }
 }
 
@@ -125,26 +219,27 @@ void UCMenuPrivate::removeObject(QObject *o)
 {
     Q_Q(UCMenu);
     m_data.removeOne(o);
-    qCInfo(ucMenu).nospace() << "UCMenu::insertObject(" << o << ")";
+    qCInfo(ucMenu).nospace() << "UCMenu::removeObject(" << o << ")";
 
     if (m_platformMenu) {
-        QObjectList objects;
-        if (UCActionList* actionList = qobject_cast<UCActionList*>(o)) {
-            Q_FOREACH(UCAction* action, actionList->list()) {
-                objects << action;
-            }
-            if (qobject_cast<UCMenuGroup*>(actionList)) {
-                objects << o;
-            }
-        } else {
-            objects << o;
+        if (auto menuGroup = qobject_cast<UCMenuGroup*>(o)) {
+            // disconnect from content changes
+            QObject::disconnect(menuGroup, &UCMenuGroup::changed, q, 0);
+        }  else if (UCActionList* actionList = qobject_cast<UCActionList*>(o)) {
+            // disconnect from content changes
+            QObject::disconnect(actionList, &UCActionList::added, q, 0);
+            QObject::disconnect(actionList, &UCActionList::removed, q, 0);
         }
 
-        Q_FOREACH(QObject* object, objects) {
+        QList<QObject*> platformObjects = m_dataPlatformObjectMap.values(o);
+        m_dataPlatformObjectMap.remove(o);
+
+        Q_FOREACH(QObject* platformObject, platformObjects) {
             // remove from platform.
-            if (m_platformItems.contains(object)) {
-                m_platformItems[object]->remove();
-                delete m_platformItems.take(object);
+            if (m_platformItems.contains(platformObject)) {
+                PlatformItemWrapper* platformItem = m_platformItems.take(platformObject);
+                platformItem->remove();
+                delete platformItem;
             }
         }
     }
@@ -279,7 +374,7 @@ UCMenu::~UCMenu()
  * \default
  * List of objects representing menu items within the menu.
  *
- * Currently supports Menu, MenuItem, MenuSeparator & Item objects.
+ * Currently supports Menu, Action, AcionList & MenuGroup objects.
  * \note Item object which do not support platformItem will not be exported for native menus.
  */
 QQmlListProperty<QObject> UCMenu::data()
@@ -307,7 +402,7 @@ void UCMenu::appendObject(QObject *o)
  * \qmlmethod Menu::insertObject(int index, object o)
  * Inserts an item at the index in the menu.
  *
- * Currently supports Menu, MenuItem, MenuSeparator & Item objects.
+ * Currently supports Menu, Action, AcionList & MenuGroup objects.
  * \note Item object which do not support platformItem will not be exported for native menus.
  */
 void UCMenu::insertObject(int index, QObject *o)
@@ -344,7 +439,7 @@ void UCMenu::show(const QPoint &point)
     qCInfo(ucMenu, "UCMenu::popup(%s, point(%d,%d))", qPrintable(text()), point.x(), point.y());
 
     if (d->m_platformMenu) {
-        d->m_platformMenu->showPopup(findWindowForObject(this), QRect(point, QSize()), nullptr);
+        d->m_platformMenu->showPopup(findWindowForObject(this), QRect(point, QSize()), Q_NULLPTR);
     }
 }
 
@@ -373,7 +468,7 @@ void UCMenu::dismiss()
  */
 UCMenuAttached::UCMenuAttached(QObject *parent)
     : QObject(parent)
-    , m_parentObject(nullptr)
+    , m_parentObject(Q_NULLPTR)
 {
 }
 
@@ -419,6 +514,8 @@ PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
     , m_target(target)
     , m_menu(menu)
     , m_platformItem(menu->platformMenu() ? menu->platformMenu()->createMenuItem() : Q_NULLPTR)
+    , m_platformItemSeparator(Q_NULLPTR)
+    , m_inserted(false)
 {
     if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
         if (m_platformItem) {
@@ -446,37 +543,81 @@ PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
             connect(m_platformItem, SIGNAL(activated()), action, SLOT(trigger()));
         }
 
-    } else if (qobject_cast<UCActionList*>(m_target)) {
-        if (m_platformItem) {
-            m_platformItem->setIsSeparator(true);
-        }
     }
-
     syncPlatformItem();
 }
 
 PlatformItemWrapper::~PlatformItemWrapper()
 {
+    if (m_inserted && m_menu && m_menu->platformMenu()) {
+        m_menu->platformMenu()->removeMenuItem(m_platformItem);
+        if (m_platformItemSeparator) {
+            m_menu->platformMenu()->removeMenuItem(m_platformItemSeparator);
+            delete m_platformItemSeparator;
+        }
+    }
     delete m_platformItem;
 }
 
-void PlatformItemWrapper::insert(int index)
+void PlatformItemWrapper::insert(int index, bool withSeparator)
 {
+    if (m_inserted) return;
+    qCInfo(ucMenu).nospace() << " PlatformItemWrapper::insert(menu=" << m_menu
+                                                        << ", index=" << index
+                                                        << ", object=" << m_target << ")";
+
     auto platformMenu = m_menu->platformMenu();
     if (!platformMenu) return;
     if (!m_platformItem) return;
 
     QPlatformMenuItem* before = platformMenu->menuItemAt(index);
     platformMenu->insertMenuItem(m_platformItem, before);
+    m_inserted = true;
+
+    if (withSeparator) setSeparator();
 }
 
 void PlatformItemWrapper::remove()
 {
+    if (!m_inserted) return;
+    qCInfo(ucMenu).nospace() << " PlatformItemWrapper::remove(menu=" << m_menu
+                                                        << ", object=" << m_target << ")";
+
     auto platformMenu = m_menu->platformMenu();
     if (!platformMenu) return;
     if (!m_platformItem) return;
 
     platformMenu->removeMenuItem(m_platformItem);
+    m_inserted = false;
+
+    if (m_platformItemSeparator) {
+        qCInfo(ucMenu).nospace() << " PlatformItemWrapper::removeSeparator(menu=" << m_menu
+                                                            << ", object=" << m_target << ")";
+        platformMenu->removeMenuItem(m_platformItemSeparator);
+        delete m_platformItemSeparator;
+        m_platformItemSeparator = Q_NULLPTR;
+    }
+}
+
+void PlatformItemWrapper::setSeparator()
+{
+    // already created
+    if (m_platformItemSeparator) return;
+    // not inserted yet.
+    if (!m_inserted) return;
+
+    auto platformMenu = m_menu->platformMenu();
+    if (!platformMenu) return;
+
+    // insert separator before?
+    m_platformItemSeparator = platformMenu->createMenuItem();
+    if (m_platformItemSeparator) {
+        qCInfo(ucMenu).nospace() << " PlatformItemWrapper::setSeparator(menu=" << m_menu
+                                                            << ", object=" << m_target << ")";
+
+        m_platformItemSeparator->setIsSeparator(true);
+        platformMenu->insertMenuItem(m_platformItemSeparator, m_platformItem);
+    }
 }
 
 void PlatformItemWrapper::updateVisible()
@@ -584,42 +725,6 @@ void PlatformItemWrapper::syncPlatformItem()
     if (m_menu->platformMenu() && m_platformItem) {
         m_menu->platformMenu()->syncMenuItem(m_platformItem);
     }
-}
-
-
-/*!
- * \qmltype MenuGroup
- * \inqmlmodule Ubuntu.Components
- * \ingroup ubuntu
- * \brief List of \l Action items for a menu which adds a separator between logical groups of menus.
- *
- * Example usage:
- * \qml
- * import QtQuick 2.4
- * import Ubuntu.Components 1.3
- * Menu {
- *     text: "Edit"
- *
- *     MenuGroup {
- *         Action { text: "Undo" }
- *         Action { text: "Redo" }
- *     }
- *
- *     MenuGroup {
- *         Action { text: "Cut" }
- *         Action { text: "Copy" }
- *         Action { text: "Paste" }
- *     }
- *
- *     MenuGroup {
- *         Action { text: "Select All" }
- *     }
- * }
- * \endqml
- */
-UCMenuGroup::UCMenuGroup(QObject *parent)
-    : UCActionList(parent)
-{
 }
 
 #include "moc_ucmenu.cpp"

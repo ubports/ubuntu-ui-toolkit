@@ -37,13 +37,13 @@ UCMenuBarPrivate::~UCMenuBarPrivate()
     m_platformMenus.clear();
 
     delete m_platformBar;
-    m_platformBar = nullptr;
+    m_platformBar = Q_NULLPTR;
 }
 
 void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
 {
     Q_Q(UCMenuBar);
-    UCMenu* prevMenu = m_menus.count() > index ? m_menus[index] : nullptr;
+    UCMenu* prevMenu = m_menus.count() > index ? m_menus[index] : Q_NULLPTR;
 
     m_menus.insert(index, menu);
 
@@ -56,7 +56,7 @@ void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
     // add to platform
     if (m_platformBar && menu->platformMenu()) {
         auto platformWrapper = new PlatformMenuWrapper(menu, q);
-        platformWrapper->insert(prevMenu ? prevMenu->platformMenu() : nullptr);
+        platformWrapper->insert(prevMenu ? prevMenu->platformMenu() : Q_NULLPTR);
         m_platformMenus[menu] = platformWrapper;
 
         QObject::connect(menu, &QObject::destroyed, q, [this](QObject* object) {
@@ -247,10 +247,21 @@ void UCMenuBar::componentComplete()
     }
 }
 
+void UCMenuBar::reparent()
+{
+    Q_D(UCMenuBar);
+
+    auto parentItem = qobject_cast<QQuickItem*>(parent());
+    if (parentItem && d->m_platformBar) {
+        d->m_platformBar->handleReparent(parentItem->window());
+    }
+}
+
 PlatformMenuWrapper::PlatformMenuWrapper(UCMenu *target, UCMenuBar* bar)
     : QObject(bar)
     , m_bar(bar)
     , m_target(target)
+    , m_inserted(false)
 {
     connect(m_target, &UCMenu::visibleChanged, this, &PlatformMenuWrapper::updateVisible);
     connect(m_target, &UCMenu::textChanged, this, &PlatformMenuWrapper::updateText);
@@ -261,24 +272,44 @@ PlatformMenuWrapper::PlatformMenuWrapper(UCMenu *target, UCMenuBar* bar)
     syncPlatformMenu();
 }
 
+PlatformMenuWrapper::~PlatformMenuWrapper()
+{
+    if (m_inserted && m_bar && m_bar->platformMenuBar()) {
+        if (m_target && m_target->platformMenu()) {
+            m_bar->platformMenuBar()->removeMenu(m_target->platformMenu());
+        }
+    }
+}
+
 void PlatformMenuWrapper::insert(QPlatformMenu *before)
 {
+    if (m_inserted) return;
+    qCInfo(ucMenu).nospace() << " PlatformMenuWrapper::insert(bar=" << m_bar
+                                                        << ", before=" << before
+                                                        << ", menu=" << m_target << ")";
+
     auto platformBar = m_bar->platformMenuBar();
     if (!platformBar) return;
     auto platformMenu = m_target->platformMenu();
     if (!platformMenu) return;
 
     platformBar->insertMenu(platformMenu, before);
+    m_inserted = true;
 }
 
 void PlatformMenuWrapper::remove()
 {
+    if (!m_inserted) return;
+    qCInfo(ucMenu).nospace() << " PlatformMenuWrapper::remove(bar=" << m_bar
+                                                        << ", menu=" << m_target << ")";
+
     auto platformBar = m_bar->platformMenuBar();
     if (!platformBar) return;
     auto platformMenu = m_target->platformMenu();
     if (!platformMenu) return;
 
     platformBar->removeMenu(platformMenu);
+    m_inserted = false;
 }
 
 void PlatformMenuWrapper::updateVisible()

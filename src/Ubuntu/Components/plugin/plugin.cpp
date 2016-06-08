@@ -85,6 +85,7 @@
 #include "privates/appheaderbase.h"
 #include "ucactionlist.h"
 #include "ucexclusivegroup.h"
+#include "ucmenugroup.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"

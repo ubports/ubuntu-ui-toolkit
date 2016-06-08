@@ -52,6 +52,7 @@ public:
     UCAction* m_action;
 
     QHash<QObject*, PlatformItemWrapper*> m_platformItems;
+    QMultiHash<QObject*, QObject*> m_dataPlatformObjectMap;
     QVector<QObject*> m_data;
 };
 
@@ -62,8 +63,11 @@ public:
     PlatformItemWrapper(QObject *target, UCMenu* menu);
     ~PlatformItemWrapper();
 
-    void insert(int index);
+    void insert(int index, bool withSeparator);
     void remove();
+    void setSeparator();
+
+    bool hasSeparator() const { return m_platformItemSeparator != Q_NULLPTR; }
 
 public Q_SLOTS:
     void updateVisible();
@@ -77,8 +81,10 @@ private:
     void syncPlatformItem();
 
     QObject* m_target;
-    UCMenu* m_menu;
+    QPointer<UCMenu> m_menu;
     QPlatformMenuItem* m_platformItem;
+    QPlatformMenuItem* m_platformItemSeparator;
+    bool m_inserted;
 };
 
 #endif // UCMENU_P

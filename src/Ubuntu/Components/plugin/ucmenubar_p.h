@@ -23,7 +23,7 @@
 class QPlatformMenuBar;
 class PlatformMenuWrapper;
 
-class UCMenuBarPrivate : public QQuickItemChangeListener
+class UCMenuBarPrivate
 {
     Q_DECLARE_PUBLIC(UCMenuBar)
 public:
@@ -49,6 +49,7 @@ class PlatformMenuWrapper : public QObject
     Q_OBJECT
 public:
     PlatformMenuWrapper(UCMenu *target, UCMenuBar *bar);
+    ~PlatformMenuWrapper();
 
     void insert(QPlatformMenu *before);
     void remove();
@@ -63,8 +64,9 @@ public Q_SLOTS:
 private:
     void syncPlatformMenu();
 
-    UCMenuBar* m_bar;
-    UCMenu* m_target;
+    QPointer<UCMenuBar> m_bar;
+    QPointer<UCMenu> m_target;
+    bool m_inserted;
 };
 
 #endif // UCMENUBAR_P
