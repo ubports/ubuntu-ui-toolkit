@@ -1,13 +1,17 @@
 usr/include/*/qt5/UbuntuToolkit/AsyncLoader
 usr/include/*/qt5/UbuntuToolkit/ColorUtils
+usr/include/*/qt5/UbuntuToolkit/UbuntuI18n
 usr/include/*/qt5/UbuntuToolkit/MouseTouchAdaptor
 usr/include/*/qt5/UbuntuToolkit/PropertyChange
 usr/include/*/qt5/UbuntuToolkit/Tree
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
+
 usr/include/*/qt5/UbuntuToolkit/asyncloader.h
 usr/include/*/qt5/UbuntuToolkit/colorutils.h
+usr/include/*/qt5/UbuntuToolkit/i18n.h
+usr/include/*/qt5/UbuntuToolkit/listener.h
 usr/include/*/qt5/UbuntuToolkit/mousetouchadaptor.h
 usr/include/*/qt5/UbuntuToolkit/propertychange.h
 usr/include/*/qt5/UbuntuToolkit/tree.h

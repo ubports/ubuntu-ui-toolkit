@@ -24,6 +24,20 @@
 #  define UBUNTUTOOLKIT_EXPORT Q_DECL_IMPORT
 #endif
 
+#define BUILD_VERSION(major, minor)     ((((major) & 0x00FF) << 8) | ((minor) & 0x00FF))
+#define LATEST_UITK_VERSION             BUILD_VERSION(1, 3)
+#define MAJOR_VERSION(version)          ((version) >> 8)
+#define MINOR_VERSION(version)          ((version) & 0x00FF)
+
+#define UC_QML_DEPRECATION_WARNING(msg) \
+    { \
+        static bool loggedOnce = false; \
+        if (!loggedOnce) { \
+            if (QuickUtils::showDeprecationWarnings()) { \
+                qmlInfo(this) << msg; \
+            } \
+        } \
+    }
 
 #endif // UBUNTUTOOLKITGLOBAL_H
 
