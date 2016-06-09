@@ -484,7 +484,11 @@ PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
         connect(action, &UCAction::stateChanged, this, &PlatformItemWrapper::updateCheck);
 
         if (m_platformItem) {
-            connect(m_platformItem, SIGNAL(activated()), action, SLOT(trigger()));
+            // Connect to activate (with inversion for checkables)
+            connect(m_platformItem, &QPlatformMenuItem::activated, action, [action]() {
+                bool checkable = action->parameterType() == UCAction::Bool;
+                action->trigger(checkable ? !action->state().toBool() : QVariant());
+            });
         }
 
     }
