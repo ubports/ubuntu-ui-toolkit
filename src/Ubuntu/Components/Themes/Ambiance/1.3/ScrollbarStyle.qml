@@ -234,14 +234,18 @@ Item {
             scrollAnimation.restart()
         } else {
             if (scrollAnimation.running) scrollAnimation.stop()
-            styledItem.flickableItem[scrollbarUtils.propContent] = value
-            styledItem.flickableItem.returnToBounds()
+            if (flickableItem) {
+                flickableItem[scrollbarUtils.propContent] = value
+                flickableItem.returnToBounds()
+            }
         }
     }
     function scrollToBeginning(animate) {
+        if (!flickableItem) return
         scrollTo(flickableItem[scrollbarUtils.propOrigin] - visuals.leadingContentMargin, animate)
     }
     function scrollToEnd(animate) {
+        if (!flickableItem) return
         scrollTo((flickableItem[scrollbarUtils.propOrigin]
                   + totalContentSize - visuals.leadingContentMargin - pageSize), animate)
     }
@@ -320,12 +324,14 @@ Item {
           Calculates the slider position based on the visible area's ratios.
           */
         function sliderPos(scrollbar, min, max) {
+            if (!scrollbar.__initializedFlickable) return min
+
             //the margin between the trough and the thumb min and max values
             var margin = scrollbar.__styleInstance.thumbsExtremesMargin
 
             //The total length of the path where the thumb can be positioned, from its min to its max value
             var draggableLength = visuals.trough[propSize] - margin*2
-            var maxPosRatio = 1.0 - (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0)
+            var maxPosRatio = 1.0 - (scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propSizeRatio] : 1.0)
 
             //Example with x/width, same applies to y/height
             //xPosition is in the range [0...1 - widthRatio]
@@ -336,7 +342,7 @@ Item {
             //the maxPosition is reached when xPosition becomes 1, and that never happens. To compensate that, we
             //scale xPosition by ( 1 / ( 1 - widthRatio) ). This way, when xPosition reaches its max ( 1 - widthRatio )
             //we get a multiplication factor of 1
-            return MathUtils.clamp(1.0 / maxPosRatio * (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propPosRatio] : 1.0)
+            return MathUtils.clamp(1.0 / maxPosRatio * (scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propPosRatio] : 1.0)
                                    * (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin, min, max);
         }
 
@@ -350,8 +356,10 @@ Item {
           THUMB CAN MOVE INTO! (which is what you want in 99.9% of the cases, for a scrollbar)
           */
         function sliderSize(scrollbar, min, max) {
-            var sizeRatio = scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0;
-            var posRatio = scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propPosRatio] : 0.0;
+            if (!scrollbar.__initializedFlickable) return min
+
+            var sizeRatio = scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propSizeRatio] : 1.0;
+            var posRatio = scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propPosRatio] : 0.0;
 
             //(sizeRatio * max) is the current ideal size, as recommended by Flickable visibleArea props
             var sizeUnderflow = (sizeRatio * max) < min ? min - (sizeRatio * max) : 0
@@ -386,9 +394,11 @@ Item {
           using an invisible cursor to drag the slider and the ListView position.
           */
         function scrollAndClamp(scrollbar, amount, min, max) {
-            return scrollbar.flickableItem[propOrigin] +
-                    MathUtils.clamp(scrollbar.flickableItem[propContent]
-                                    - scrollbar.flickableItem[propOrigin] + amount,
+            if (!scrollbar.__initializedFlickable) return
+
+            return scrollbar.__initializedFlickable[propOrigin] +
+                    MathUtils.clamp(scrollbar.__initializedFlickable[propContent]
+                                    - scrollbar.__initializedFlickable[propOrigin] + amount,
                                     min, max);
         }
 
@@ -403,8 +413,10 @@ Item {
           NOTE: when flickable.topMargin is 5GU, contentY has to be -5GU (not 0!) to be at the top of the scrollable!!
           */
         function dragAndClamp(scrollbar, relThumbPosition, contentSize, pageSize) {
-            scrollbar.flickableItem[propContent] =
-                    scrollbar.flickableItem[propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[propSize]) - leadingContentMargin; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+            if (!scrollbar.__initializedFlickable) return
+
+            scrollbar.__initializedFlickable[propContent] =
+                    scrollbar.__initializedFlickable[propOrigin] + relThumbPosition * (contentSize - scrollbar.__initializedFlickable[propSize]) - leadingContentMargin; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
         }
     }
 
@@ -425,7 +437,7 @@ Item {
         //duration and easing coming from UX spec
         duration: UbuntuAnimation.SlowDuration
         easing.type: Easing.InOutCubic
-        target: styledItem.flickableItem
+        target: flickableItem
         property: scrollbarUtils.propContent
         //when the listview has variable size delegates the contentHeight estimation done by ListView
         //could make us overshoot, especially when going from top to bottom of the list or viceversa.

@@ -110,32 +110,42 @@ Toolkit.ScrollbarBase {
     //interactive scrollbar right below us (can happen with nested views)
     enabled: __interactive//&& __alwaysOnScrollbars
 
-    implicitWidth: internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.width : 0)
-    implicitHeight: !internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.height : 0)
+    implicitWidth: internals.vertical ? units.gu(3) : (__initializedFlickable ? __initializedFlickable.width : 0)
+    implicitHeight: !internals.vertical ? units.gu(3) : (__initializedFlickable ? __initializedFlickable.height : 0)
 
     anchors {
-        left: (__viewport || flickableItem)
-              ? internals.leftAnchor(__viewport ? __viewport : flickableItem)
+        left: (__viewport || __initializedFlickable)
+              ? internals.leftAnchor(__viewport ? __viewport : __initializedFlickable)
               : undefined
         leftMargin: internals.leftAnchorMargin()
-        right: (__viewport || flickableItem)
-               ? internals.rightAnchor(__viewport ? __viewport : flickableItem)
+        right: (__viewport || __initializedFlickable)
+               ? internals.rightAnchor(__viewport ? __viewport : __initializedFlickable)
                : undefined
         rightMargin: internals.rightAnchorMargin()
-        top: (__viewport || flickableItem)
-             ? internals.topAnchor(__viewport ? __viewport : flickableItem)
+        top: (__viewport || __initializedFlickable)
+             ? internals.topAnchor(__viewport ? __viewport : __initializedFlickable)
              : undefined
-        topMargin: (flickableItem ? flickableItem.topMargin : 0) + internals.topAnchorMargin()
-        bottom: (__viewport || flickableItem)
-                ? internals.bottomAnchor(__viewport ? __viewport : flickableItem)
+        topMargin: (__initializedFlickable ? __initializedFlickable.topMargin : 0) + internals.topAnchorMargin()
+        bottom: (__viewport || __initializedFlickable)
+                ? internals.bottomAnchor(__viewport ? __viewport : __initializedFlickable)
                 : undefined
-        bottomMargin: (flickableItem ? flickableItem.bottomMargin : 0) + internals.bottomAnchorMargin()
+        bottomMargin: (__initializedFlickable ? __initializedFlickable.bottomMargin : 0) + internals.bottomAnchorMargin()
     }
 
-    //TODO: this can be moved to C++
+    //Don't do anything with flickableItem until its creation is complete, it would be a waste of cpu cycles
+    //and it would block the rendering thread for much longer
     Connections {
         target: flickableItem
         Component.onCompleted: __initializedFlickable = flickableItem
+    }
+    onFlickableItemChanged: {
+        if (!flickableItem) __initializedFlickable = null
+        else {
+            //TODO: when flickableItem changes, we need to know if the flickableItem is "complete"
+            //if it's not, the onCompleted signal will tell us when it is, but if it *is* already
+            //complete, the signal will never come so we have to initialize it here!
+            //QQuickItem::isComponentComplete() is a protected method though, and not exposed to QML
+        }
     }
     property var __initializedFlickable: null
 
@@ -148,7 +158,7 @@ Toolkit.ScrollbarBase {
     QtObject {
         id: internals
         property bool vertical: (align === Qt.AlignLeading) || (align === Qt.AlignTrailing)
-        property bool scrollable: flickableItem && flickableItem.interactive
+        property bool scrollable: __initializedFlickable && __initializedFlickable.interactive && checkAlign()
         property real nonOverlayScrollbarMargin: __styleInstance ? __styleInstance.nonOverlayScrollbarMargin : 0
 
         // LTR and RTL are provided by LayoutMirroring, so no need to check that
