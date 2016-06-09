@@ -71,7 +71,7 @@ QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
 
 void UCPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state)
 {
-    if (m_warningCount >= warningCountThreshold) {
+    if (m_warningCount >= warningCountThreshold && warningCountThreshold != -1) {
         // do not monitor performance if the warning count threshold was reached
         return;
     }
@@ -142,7 +142,7 @@ void UCPerformanceMonitor::stopTimer()
         m_framesAboveThreshold = 0;
     }
 
-    if (m_warningCount >= warningCountThreshold) {
+    if (m_warningCount >= warningCountThreshold && warningCountThreshold != -1) {
         qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
         connectToWindow(NULL);
     }
