@@ -5,6 +5,11 @@ IMPORT_VERSION = 0.1
 
 include(plugin/plugin.pri)
 
+#artwork files
+ARTWORK_FILES = $$system(find artwork -type f)
+
+QML_FILES += $$ARTWORK_FILES
+
 #1.0
 QML_FILES += 1.0/Button.qml \
              1.0/Icon.qml \
