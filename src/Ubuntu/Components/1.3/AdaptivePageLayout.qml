@@ -827,6 +827,9 @@ PageTreeNode {
                 property color panelColor: layout.__propagated.header.panelColor
                 property color backgroundColor: layout.__propagated.header.backgroundColor
 
+                // enable red outline in the PageHeadStyle. See bug #1583636.
+                property bool showDeprecatedWarning: true
+
                 visible: !customHeader && holder.pageWrapper && holder.pageWrapper.active
 
                 // The multiColumn, page and showBackButton properties are used in
