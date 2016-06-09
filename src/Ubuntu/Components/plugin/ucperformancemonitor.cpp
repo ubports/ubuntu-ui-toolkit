@@ -21,10 +21,23 @@
 
 Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
-const int singleFrameThreshold = 32;
-const int multipleFrameThreshold = 17;
-const int framesCountThreshold = 10;
-const int warningCountThreshold = 30;
+static int singleFrameThreshold = 32;
+static int multipleFrameThreshold = 17;
+static int framesCountThreshold = 10;
+static int warningCountThreshold = 30;
+
+// TODO Qt 5.5. switch to qEnvironmentVariableIntValue
+static int getenvInt(const char* name, int defaultValue)
+{
+    if (qEnvironmentVariableIsSet(name)) {
+        QByteArray stringValue = qgetenv(name);
+        bool ok;
+        int value = stringValue.toFloat(&ok);
+        return ok ? value : defaultValue;
+    } else {
+        return defaultValue;
+    }
+}
 
 UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
@@ -34,6 +47,11 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
 {
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
                      this, &UCPerformanceMonitor::onApplicationStateChanged);
+
+    singleFrameThreshold = getenvInt("PERFORMANCE_MONITOR_SINGLE_FRAME_THRESHOLD", singleFrameThreshold);
+    multipleFrameThreshold = getenvInt("PERFORMANCE_MONITOR_MULTIPLE_FRAME_THRESHOLD", multipleFrameThreshold);
+    framesCountThreshold = getenvInt("PERFORMANCE_MONITOR_FRAMES_COUNT_THRESHOLD", framesCountThreshold);
+    warningCountThreshold = getenvInt("PERFORMANCE_MONITOR_WARNING_COUNT_THRESHOLD", warningCountThreshold);
 }
 
 UCPerformanceMonitor::~UCPerformanceMonitor()
