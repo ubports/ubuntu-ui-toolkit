@@ -1162,7 +1162,6 @@ Item {
             verify(secondScrollbar !== null, "Error: dynamic item creation failed.")
 
             //check that the variables are correct when the Scrollbar is assigned a new Flickable
-            //This relies on the C++ hack in UCScrollbarUtils to access QQuickItem::isComponentComplete()
             secondScrollbar.flickableItem = flickable
             compare(secondScrollbar.flickableItem, flickable, "Wrong value of flickableItem")
             compare(secondScrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")

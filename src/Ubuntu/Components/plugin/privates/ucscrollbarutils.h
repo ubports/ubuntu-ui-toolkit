@@ -10,7 +10,7 @@ class UCScrollbarUtils : public QObject
 public:
     explicit UCScrollbarUtils(QObject *parent = 0);
 
-    Q_INVOKABLE bool isFlickableComplete(QQuickFlickable *flickable);
+    Q_INVOKABLE static bool isFlickableComplete(QQuickFlickable *flickable);
 
 };
 
