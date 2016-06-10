@@ -189,6 +189,7 @@ Toolkit.StyledItem {
 
     //Don't do anything with flickableItem until its creation is complete, it would be a waste of cpu cycles
     //and it would block the rendering thread for much longer
+    property var __initializedFlickable: null
     Connections {
         target: flickableItem
         Component.onCompleted: __initializedFlickable = flickableItem
@@ -196,13 +197,15 @@ Toolkit.StyledItem {
     onFlickableItemChanged: {
         if (!flickableItem) __initializedFlickable = null
         else {
-            //TODO: when flickableItem changes, we need to know if the flickableItem is "complete"
-            //if it's not, the onCompleted signal will tell us when it is, but if it *is* already
-            //complete, the signal will never come so we have to initialize it here!
-            //QQuickItem::isComponentComplete() is a protected method though, and not exposed to QML
+            //can't use a binding for this, because the "completeness" of a component is
+            //not esposed to QML, QML just gets Component.onCompleted when a component is
+            //completed, but you won't get that if we're assigned a Flickable which is
+            //already "complete"
+            if (Toolkit.ScrollbarUtils.isFlickableComplete(flickableItem)) {
+                __initializedFlickable = flickableItem
+            }
         }
     }
-    property var __initializedFlickable: null
 
     /*!
       \internal

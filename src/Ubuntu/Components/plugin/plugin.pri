@@ -119,7 +119,8 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/label_p.h \
     $$PWD/ucbottomedgeregion_p.h \
     $$PWD/ucscrollbar.h \
-    $$PWD/ucscrollbar_p.h
+    $$PWD/ucscrollbar_p.h \
+    $$PWD/privates/ucscrollbarutils.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -197,7 +198,8 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/privates/ucpagewrapper.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \
     $$PWD/privates/appheaderbase.cpp \
-    $$PWD/ucscrollbar.cpp
+    $$PWD/ucscrollbar.cpp \
+    $$PWD/privates/ucscrollbarutils.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
