@@ -28,6 +28,8 @@ UBUNTU_QML_DIRS=$UBUNTU_QML_ROOT/Components:$UBUNTU_QML_ROOT/Test:$UBUNTU_QML_RO
 export LD_LIBRARY_PATH=$BUILD_DIR/lib:$UBUNTU_QML_DIRS$LD_LIBRARY_PATH
 # Build machines may not have initctl and don't need it
 test -f /sbin/initctl || return 0
+# initctl may be available but not working (for example in a lxd container without upstart)
+/sbin/initctl list > /dev/null || return 0
 /sbin/initctl set-env --global QML_IMPORT_PATH=$BUILD_DIR/qml
 /sbin/initctl set-env --global QML2_IMPORT_PATH=$BUILD_DIR/qml
 /sbin/initctl set-env --global UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/qml
