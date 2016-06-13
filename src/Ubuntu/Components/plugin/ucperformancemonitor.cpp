@@ -48,10 +48,10 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
                      this, &UCPerformanceMonitor::onApplicationStateChanged);
 
-    singleFrameThreshold = getenvInt("PERFORMANCE_MONITOR_SINGLE_FRAME_THRESHOLD", singleFrameThreshold);
-    multipleFrameThreshold = getenvInt("PERFORMANCE_MONITOR_MULTIPLE_FRAME_THRESHOLD", multipleFrameThreshold);
-    framesCountThreshold = getenvInt("PERFORMANCE_MONITOR_FRAMES_COUNT_THRESHOLD", framesCountThreshold);
-    warningCountThreshold = getenvInt("PERFORMANCE_MONITOR_WARNING_COUNT_THRESHOLD", warningCountThreshold);
+    singleFrameThreshold = getenvInt("UC_PERFORMANCE_MONITOR_SINGLE_FRAME_THRESHOLD", singleFrameThreshold);
+    multipleFrameThreshold = getenvInt("UC_PERFORMANCE_MONITOR_MULTIPLE_FRAME_THRESHOLD", multipleFrameThreshold);
+    framesCountThreshold = getenvInt("UC_PERFORMANCE_MONITOR_FRAMES_COUNT_THRESHOLD", framesCountThreshold);
+    warningCountThreshold = getenvInt("UC_PERFORMANCE_MONITOR_WARNING_COUNT_THRESHOLD", warningCountThreshold);
 }
 
 UCPerformanceMonitor::~UCPerformanceMonitor()
