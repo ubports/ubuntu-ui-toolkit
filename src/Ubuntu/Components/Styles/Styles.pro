@@ -7,6 +7,7 @@ QML_FILES += 1.2/ComboButtonStyle.qml \
 	     1.3/ActionBarStyle.qml \
 	     1.3/PageHeaderStyle.qml \
 	     1.3/ToolbarStyle.qml \
+	     1.3/SectionsStyle.qml \
 
 load(ubuntu_qml_module)
 
