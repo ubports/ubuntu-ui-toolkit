@@ -49,7 +49,10 @@ MainView {
                         title.text: fileBaseName
                         ProgressionSlot {}
                     }
-                    onClicked: pageLayout.addPageToNextColumn(pageLayout.primaryPage, testPage, { source: fileURL, title: fileBaseName })
+                    onClicked: {
+                        testsListView.currentIndex = index
+                        pageLayout.addPageToNextColumn(pageLayout.primaryPage, testPage, { source: fileURL, title: fileBaseName })
+                    }
                 }
             }
         }
