@@ -22,11 +22,12 @@
 #include <QtCore/QObject>
 #include <QtCore/QDateTime>
 #include <QtCore/QUrl>
+#include "ubuntutoolkitglobal.h"
 
 namespace UbuntuToolkit {
 
 class UCAlarmPrivate;
-class UCAlarm : public QObject
+class UBUNTUTOOLKIT_EXPORT UCAlarm : public QObject
 {
     Q_OBJECT
 

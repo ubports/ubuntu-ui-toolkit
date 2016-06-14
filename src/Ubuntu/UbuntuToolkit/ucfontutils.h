@@ -19,11 +19,12 @@
 #define UCFONTUTILS_H
 
 #include <QtCore/QObject>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCUnits;
-class UCFontUtils : public QObject
+class UBUNTUTOOLKIT_EXPORT UCFontUtils : public QObject
 {
     Q_OBJECT
 

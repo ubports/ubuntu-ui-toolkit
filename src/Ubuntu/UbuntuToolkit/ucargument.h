@@ -22,10 +22,11 @@
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
+#include "ubuntutoolkitglobal.h"
 
 namespace UbuntuToolkit {
 
-class UCArgument : public QObject
+class UBUNTUTOOLKIT_EXPORT UCArgument : public QObject
 {
     Q_OBJECT
 

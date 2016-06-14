@@ -19,8 +19,11 @@
 
 #include <QtCore/QObject>
 #include <QtQuick/QQuickItem>
+#include <ubuntutoolkitglobal.h>
 
-class UCMargins : public QObject
+namespace UbuntuToolkit {
+
+class UBUNTUTOOLKIT_EXPORT UCMargins : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal left MEMBER m_left NOTIFY leftChanged FINAL)
@@ -71,6 +74,8 @@ inline qreal UCMargins::right() const
 inline qreal UCMargins::bottom() const
 {
     return qFuzzyIsNull(m_bottom) ? m_all : m_bottom;
+}
+
 }
 
 #endif // UCMARGINS_H

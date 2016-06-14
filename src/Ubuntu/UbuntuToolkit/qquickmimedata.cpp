@@ -25,6 +25,8 @@
 
 #include <QDebug>
 
+namespace UbuntuToolkit {
+
 /*!
  * \qmltype MimeData
  * \instantiates QQuickMimeData
@@ -266,4 +268,6 @@ void QQuickMimeData::setMimeData(const QVariant &mimeData)
 
     if (emitSignal)
         Q_EMIT dataChanged();
+}
+
 }

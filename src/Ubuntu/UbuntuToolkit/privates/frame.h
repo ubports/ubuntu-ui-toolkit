@@ -98,8 +98,6 @@ private:
     Q_DISABLE_COPY(UCFrame)
 };
 
-QML_DECLARE_TYPE(UCFrame)
-
 }
 
 #endif  // FRAME_H

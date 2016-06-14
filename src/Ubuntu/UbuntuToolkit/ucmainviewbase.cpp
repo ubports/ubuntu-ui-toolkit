@@ -16,13 +16,13 @@
 
 #include "ucmainviewbase.h"
 #include "ucmainviewbase_p.h"
-#include "ucnamespace.h"
 
 #include "ucactionmanager.h"
 #include "ucactioncontext.h"
 #include "ucapplication.h"
 #include "uctheme.h"
 #include "i18n.h"
+#include "quickutils.h"
 
 #include <ColorUtils>
 

@@ -24,10 +24,11 @@
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QLoggingCategory>
 #include <QtQuick/QQuickWindow>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UCPerformanceMonitor : public QObject
+class UBUNTUTOOLKIT_EXPORT UCPerformanceMonitor : public QObject
 {
     Q_OBJECT
 
@@ -52,8 +53,8 @@ private:
     QQuickWindow* m_window;
 };
 
-Q_DECLARE_LOGGING_CATEGORY(ucPerformance)
-
 }
+
+Q_DECLARE_LOGGING_CATEGORY(ucPerformance)
 
 #endif // UCPERFORMANCE_MONITOR_H

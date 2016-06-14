@@ -20,10 +20,11 @@
 #define UCIMPORTVERSIONCHECKER_P_H
 
 #include <QtCore>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UCImportVersionChecker
+class UBUNTUTOOLKIT_EXPORT UCImportVersionChecker
 {
 public:
     UCImportVersionChecker() {}

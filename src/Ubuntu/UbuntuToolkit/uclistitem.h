@@ -28,7 +28,7 @@ class UCListItemActions;
 class UCAction;
 class UCListItemPrivate;
 class UCListItemExpansion;
-class UCListItem : public UCStyledItemBase
+class UBUNTUTOOLKIT_EXPORT UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *contentItem READ contentItem CONSTANT)
@@ -133,7 +133,7 @@ private:
 };
 
 class UCListItemDividerPrivate;
-class UCListItemDivider : public QQuickItem
+class UBUNTUTOOLKIT_EXPORT UCListItemDivider : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QColor colorFrom READ colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
@@ -162,7 +162,7 @@ private:
 
 class UCDragEvent;
 class UCViewItemsAttachedPrivate;
-class UCViewItemsAttached : public QObject
+class UBUNTUTOOLKIT_EXPORT UCViewItemsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
@@ -221,10 +221,15 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };
-Q_DECLARE_OPERATORS_FOR_FLAGS(UCViewItemsAttached::ExpansionFlags)
-QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
 
-class UCListItemExpansion : public QObject
+} // namespace UbuntuToolkit
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(UbuntuToolkit::UCViewItemsAttached::ExpansionFlags)
+QML_DECLARE_TYPEINFO(UbuntuToolkit::UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
+
+namespace UbuntuToolkit {
+
+class UBUNTUTOOLKIT_EXPORT UCListItemExpansion : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
@@ -255,7 +260,7 @@ private:
     friend class UCListItemPrivate;
 };
 
-class UCDragEvent : public QObject
+class UBUNTUTOOLKIT_EXPORT UCDragEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Status status READ status)

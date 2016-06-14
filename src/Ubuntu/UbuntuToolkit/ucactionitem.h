@@ -22,7 +22,7 @@ namespace UbuntuToolkit {
 
 class UCAction;
 class UCActionItemPrivate;
-class UCActionItem : public UCStyledItemBase
+class UBUNTUTOOLKIT_EXPORT UCActionItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(UCAction *action READ action WRITE setAction NOTIFY actionChanged FINAL)

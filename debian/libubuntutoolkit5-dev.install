@@ -1,5 +1,6 @@
 usr/include/*/qt5/UbuntuToolkit/AsyncLoader
 usr/include/*/qt5/UbuntuToolkit/ColorUtils
+usr/include/*/qt5/UbuntuToolkit/ContextPropertyChangeListener
 usr/include/*/qt5/UbuntuToolkit/UbuntuI18n
 usr/include/*/qt5/UbuntuToolkit/MouseTouchAdaptor
 usr/include/*/qt5/UbuntuToolkit/PropertyChange
@@ -7,6 +8,7 @@ usr/include/*/qt5/UbuntuToolkit/Tree
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
+usr/include/*/qt5/UbuntuToolkit/UCSwipeArea
 
 usr/include/*/qt5/UbuntuToolkit/asyncloader.h
 usr/include/*/qt5/UbuntuToolkit/colorutils.h
@@ -17,6 +19,7 @@ usr/include/*/qt5/UbuntuToolkit/propertychange.h
 usr/include/*/qt5/UbuntuToolkit/tree.h
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitglobal.h
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitversion.h
+usr/include/*/qt5/UbuntuToolkit/ucswipearea.h
 usr/lib/*/libUbuntuToolkit.la
 usr/lib/*/libUbuntuToolkit.prl
 usr/lib/*/libUbuntuToolkit.so

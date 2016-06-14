@@ -21,7 +21,7 @@
 namespace UbuntuToolkit {
 
 class UCPageTreeNodePrivate;
-class UCPageTreeNode : public UCStyledItemBase
+class UBUNTUTOOLKIT_EXPORT UCPageTreeNode : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(bool isLeaf READ isLeaf WRITE setIsLeaf NOTIFY isLeafChanged)

@@ -21,7 +21,6 @@
 #include "uctheme.h"
 #include "ucstylehints.h"
 #include "ucthemingextension.h"
-#include "ucnamespace.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
@@ -99,7 +98,7 @@ UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
-    QObject::connect(q, &QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
+    QObject::connect(q, &::QQuickItem::activeFocusOnTabChanged, q, &UCStyledItemBase::activeFocusOnTabChanged2);
 }
 
 
@@ -395,7 +394,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     }
     // link context to the style item to delete them together
     QQml_setParent_noEvent(styleItemContext, object);
-    styleItem = qobject_cast<QQuickItem*>(object);
+    styleItem = qobject_cast<::QQuickItem*>(object);
     if (styleItem) {
         QQml_setParent_noEvent(styleItem, q);
         styleItem->setParentItem(q);
@@ -429,7 +428,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
  * \internal
  * Instance of the \l style.
  */
-QQuickItem *UCStyledItemBasePrivate::styleInstance()
+::QQuickItem *UCStyledItemBasePrivate::styleInstance()
 {
     return styleItem;
 }

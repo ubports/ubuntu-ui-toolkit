@@ -23,10 +23,11 @@
 #include <QtCore/QFileSystemWatcher>
 #include <QtCore/QSettings>
 #include <QtCore/QObject>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UCDefaultTheme : public QObject
+class UBUNTUTOOLKIT_EXPORT UCDefaultTheme : public QObject
 {
     Q_OBJECT
 

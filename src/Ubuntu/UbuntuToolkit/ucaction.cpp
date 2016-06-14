@@ -44,7 +44,7 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
         QObject* window = object;
         while (window && !window->isWindowType()) {
             window = window->parent();
-            if (QQuickItem* item = qobject_cast<QQuickItem*>(window)) {
+            if (::QQuickItem* item = qobject_cast<::QQuickItem*>(window)) {
                 window = item->window();
             }
         }

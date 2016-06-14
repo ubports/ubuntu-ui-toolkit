@@ -19,7 +19,6 @@
 #include "uclistitem_p.h"
 #include "quickutils.h"
 #include "i18n.h"
-#include "plugin.h"
 #include <QtQml/QQmlInfo>
 #include "ucaction.h"
 #include "ucunits.h"

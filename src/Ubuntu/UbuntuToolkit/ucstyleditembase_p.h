@@ -31,7 +31,7 @@ namespace UbuntuToolkit {
 class UCStyledItemBase;
 class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker
 {
-    Q_INTERFACES(UCThemingExtension)
+    Q_INTERFACES(UbuntuToolkit::UCThemingExtension)
     Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 

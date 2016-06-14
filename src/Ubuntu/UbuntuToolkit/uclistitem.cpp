@@ -16,7 +16,6 @@
 
 #include "ucunits.h"
 #include "uctheme.h"
-#include "ucnamespace.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
@@ -27,7 +26,6 @@
 #include "i18n.h"
 #include "quickutils.h"
 #include "ucaction.h"
-#include "ucnamespace.h"
 #include "privates/listviewextensions.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
@@ -42,7 +40,6 @@
 #include <QtQml/QQmlEngine>
 #include <QFileInfo>
 #include <QLibraryInfo>
-#include "plugin.h"
 
 namespace UbuntuToolkit {
 
@@ -1233,8 +1230,10 @@ void UCListItemPrivate::showContextMenu()
     pressAndHoldTimer.stop();
 
     QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
-    const QString relativeUrl = versionString + "/ListItemPopover.qml";
-    QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(relativeUrl));
+    const QString relativeUrl = versionString + "/ListItemPopover.qml";    
+    // TODO: fix this somehow!!!
+//    QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(relativeUrl));
+    QUrl url(qmlEngine(q)->rootContext()->resolvedUrl(relativeUrl));
 
     // Open Popover
     QQmlEngine* engine = qmlEngine(q);

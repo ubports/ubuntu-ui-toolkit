@@ -20,7 +20,6 @@
 #include "ucbottomedgehint_p.h"
 #include "ucstyleditembase_p.h"
 #include "quickutils.h"
-#include "ucnamespace.h"
 #include "ucunits.h"
 #include "ucaction.h"
 #include "private/ucswipearea_p.h"

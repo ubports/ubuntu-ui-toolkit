@@ -23,6 +23,8 @@
 
 #include <QStringList>
 
+namespace UbuntuToolkit {
+
 class UCStateSaverAttachedPrivate
 {
     Q_DECLARE_PUBLIC(UCStateSaverAttached)
@@ -44,5 +46,7 @@ public:
     void _q_save();
     void _q_globalEnableChanged(bool);
 };
+
+}
 
 #endif // UCSTATESAVER_P_H

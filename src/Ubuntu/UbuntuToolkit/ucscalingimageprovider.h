@@ -21,10 +21,11 @@
 
 #include <QtQuick/QQuickImageProvider>
 #include <QtGui/QImage>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UCScalingImageProvider : public QQuickImageProvider
+class UBUNTUTOOLKIT_EXPORT UCScalingImageProvider : public QQuickImageProvider
 {
 public:
     explicit UCScalingImageProvider();

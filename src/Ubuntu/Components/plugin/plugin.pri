@@ -1,8 +1,3 @@
-unix {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
-}
-
 QT *= core-private qml qml-private quick quick-private gui-private dbus svg UbuntuGestures UbuntuGestures_private UbuntuToolkit
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
@@ -10,9 +5,6 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
 }
 
 CONFIG += no_keywords c++11
-
-# QOrganizer
-QT *= organizer
 
 #comment in the following line to disable traces
 #DEFINES += QT_NO_DEBUG_OUTPUT

@@ -19,12 +19,13 @@
 #define UCURIHANDLER_H
 
 #include <QtCore/QObject>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCUriHandler;
 
-class UriHandlerObject : public QObject
+class UBUNTUTOOLKIT_EXPORT UriHandlerObject : public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.freedesktop.Application")
@@ -39,7 +40,7 @@ class UriHandlerObject : public QObject
     UCUriHandler* m_uriHandler;
 };
 
-class UCUriHandler : public QObject
+class UBUNTUTOOLKIT_EXPORT UCUriHandler : public QObject
 {
     Q_OBJECT
 

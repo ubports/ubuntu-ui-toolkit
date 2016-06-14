@@ -9,7 +9,8 @@ QT *= dbus svg UbuntuGestures UbuntuGestures_private
 
 QT *= core-private gui-private qml qml-private quick quick-private testlib
 
-QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
+# QOrganizer for Alarm API
+QT *= organizer
 
 !contains(QT_ARCH, arm) {
     DEFINES += UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
@@ -27,7 +28,11 @@ DEFINES += UBUNTUTOOLKIT_LIBRARY
 load(qt_build_config)
 load(ubuntu_qt_module)
 
-HEADERS += \ 
+QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
+DEFINES -= QT_DEPRECATED_WARNINGS
+DEFINES -= QT_ASCII_CAST_WARNINGS
+
+HEADERS += \
     colorutils.h \
     ubuntutoolkitglobal.h \
     tree.h \

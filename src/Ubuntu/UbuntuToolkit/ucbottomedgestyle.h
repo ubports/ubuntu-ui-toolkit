@@ -20,6 +20,7 @@
 #define UCBOTTOMEDGESTYLE_H
 
 #include <QtQuick/QQuickItem>
+#include "ubuntutoolkitglobal.h"
 
 class QQuickItem;
 class QQuickAbstractAnimation;
@@ -27,7 +28,7 @@ class QQuickAbstractAnimation;
 namespace UbuntuToolkit {
 
 class UCBottomEdge;
-class UCBottomEdgeStyle : public QQuickItem
+class UBUNTUTOOLKIT_EXPORT UCBottomEdgeStyle : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem* panel MEMBER m_panel NOTIFY panelChanged FINAL)

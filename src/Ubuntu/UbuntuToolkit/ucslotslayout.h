@@ -20,13 +20,14 @@
 #define UCSLOTSLAYOUT_H
 
 #include <QtQuick/QQuickItem>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCSlotsAttached;
 class UCSlotsLayoutPadding;
 class UCSlotsLayoutPrivate;
-class UCSlotsLayout : public QQuickItem
+class UBUNTUTOOLKIT_EXPORT UCSlotsLayout : public QQuickItem
 {
     Q_OBJECT
 
@@ -73,10 +74,14 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onSlotPositionChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
 };
-QML_DECLARE_TYPEINFO(UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
+} // namespace UbuntuToolkit
+
+QML_DECLARE_TYPEINFO(UbuntuToolkit::UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
+
+namespace UbuntuToolkit {
 
 class UCSlotsAttachedPrivate;
-class UCSlotsAttached : public QObject
+class UBUNTUTOOLKIT_EXPORT UCSlotsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
@@ -105,7 +110,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
 };
 
-class UCSlotsLayoutPadding : public QObject
+class UBUNTUTOOLKIT_EXPORT UCSlotsLayoutPadding : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(qreal leading READ leading WRITE setLeadingQml NOTIFY leadingChanged FINAL)

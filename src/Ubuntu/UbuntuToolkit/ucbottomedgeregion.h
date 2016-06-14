@@ -26,13 +26,14 @@
 #include <QtQml/QQmlIncubator>
 #include <AsyncLoader>
 
+class QQmlComponent;
+
 namespace UbuntuToolkit {
 
 class UCBottomEdge;
-class QQmlComponent;
 class PropertyChange;
 class UCBottomEdgeRegionPrivate;
-class UCBottomEdgeRegion : public QObject
+class UBUNTUTOOLKIT_EXPORT UCBottomEdgeRegion : public QObject
 {
     Q_OBJECT
 

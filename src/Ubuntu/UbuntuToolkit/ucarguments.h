@@ -30,7 +30,7 @@
 
 namespace UbuntuToolkit {
 
-class UCArguments : public QObject, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCArguments : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)

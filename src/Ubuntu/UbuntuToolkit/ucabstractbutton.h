@@ -27,7 +27,7 @@ class QQuickMouseEvent;
 namespace UbuntuToolkit {
 
 class UCAbstractButtonPrivate;
-class UCAbstractButton : public UCActionItem
+class UBUNTUTOOLKIT_EXPORT UCAbstractButton : public UCActionItem
 {
     Q_OBJECT
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
@@ -76,8 +76,8 @@ protected:
     Q_PRIVATE_SLOT(d_func(), void _q_adjustSensingArea())
 };
 
-QML_DECLARE_TYPE(UCMargins)
-
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCMargins)
 
 #endif // UCABSTRACTBUTTON_H

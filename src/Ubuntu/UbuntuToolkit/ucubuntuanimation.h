@@ -20,10 +20,11 @@
 
 #include <QObject>
 #include <QtCore/QEasingCurve>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UCUbuntuAnimation : public QObject
+class UBUNTUTOOLKIT_EXPORT UCUbuntuAnimation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int SnapDuration READ SnapDuration CONSTANT)

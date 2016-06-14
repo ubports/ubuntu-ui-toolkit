@@ -26,8 +26,8 @@
 #include "ucthemingextension.h"
 
 #include <QtQml/QQmlContext>
-#include <I18n>
-#include <listener.h>
+#include <UbuntuI18n>
+#include <ContextPropertyChangeListener>
 #include "livetimer.h"
 #include "ucunits.h"
 #include "ucscalingimageprovider.h"

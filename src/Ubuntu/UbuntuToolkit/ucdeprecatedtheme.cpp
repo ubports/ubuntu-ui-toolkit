@@ -16,7 +16,6 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucnamespace.h"
 #include "ucdeprecatedtheme.h"
 #include "uctheme.h"
 #include "quickutils.h"

@@ -20,13 +20,14 @@
 #define UBUNTU_COMPONENTS_APPLICATION_H
 
 #include <QtCore/QObject>
+#include "ubuntutoolkitglobal.h"
 
 class QQmlContext;
 class QQmlEngine;
 
 namespace UbuntuToolkit {
 
-class UCApplication : public QObject
+class UBUNTUTOOLKIT_EXPORT UCApplication : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)

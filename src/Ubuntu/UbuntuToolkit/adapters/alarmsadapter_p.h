@@ -27,6 +27,8 @@
 
 QTORGANIZER_USE_NAMESPACE
 
+namespace UbuntuToolkit {
+
 /*-----------------------------------------------------------------------------
  * Adaptation layer for Alarms.
  */
@@ -205,5 +207,7 @@ protected:
     AlarmList alarmList;
     QOrganizerTodo todoItem(const QOrganizerItemId &id);
 };
+
+}
 
 #endif // ALARMSADAPTER_P_H

@@ -20,10 +20,11 @@
 #define UNITY_THEME_ICON_PROVIDER_H
 
 #include <QQuickImageProvider>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UnityThemeIconProvider: public QQuickImageProvider
+class UBUNTUTOOLKIT_EXPORT UnityThemeIconProvider: public QQuickImageProvider
 {
 public:
     UnityThemeIconProvider(const QString &themeName = QStringLiteral("suru"));

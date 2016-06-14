@@ -27,17 +27,19 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlParserStatus>
 #include <QtQml/QQmlProperty>
+#include <ubuntutoolkitglobal.h>
 
 #include <QtQml/private/qpodvector_p.h>
 
 #include "ucdefaulttheme.h"
 
+class QQmlAbstractBinding;
+class QQuickItem;
+
 namespace UbuntuToolkit {
 
 class UCStyledItemBase;
-class QQmlAbstractBinding;
-class QQuickItem;
-class UCTheme : public QObject, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)

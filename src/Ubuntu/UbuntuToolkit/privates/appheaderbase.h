@@ -18,6 +18,7 @@
 #define APPHEADERBASE_H
 
 #include "ucheader.h"
+
 namespace UbuntuToolkit {
 
 class UCTheme;

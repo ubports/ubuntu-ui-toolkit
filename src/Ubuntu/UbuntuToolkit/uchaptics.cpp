@@ -15,7 +15,6 @@
  */
 
 #include "uchaptics.h"
-#include "plugin.h"
 #include <QtQml/QQmlComponent>
 #include <QtCore/QUrl>
 #include <QDebug>
@@ -158,7 +157,10 @@ void HapticsProxy::initialize()
         return;
     }
     // load haptics proxy from file system/qrc
-    QUrl path = UbuntuComponentsPlugin::pluginUrl().resolved(QUrl("1.1/Haptics.qml"));
+    // TODO: check this!
+//    QUrl path = UbuntuComponentsPlugin::pluginUrl().resolved(QUrl("1.1/Haptics.qml"));
+    QUrl path(m_engine->rootContext()->resolvedUrl(QUrl("1.1/Haptics.qml")));
+
     QQmlComponent component(m_engine, path, QQmlComponent::PreferSynchronous);
     if (!component.isError()) {
         m_proxyObject = component.create();

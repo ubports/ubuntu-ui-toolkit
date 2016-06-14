@@ -21,16 +21,17 @@
 
 #include <QtQuick/QQuickItem>
 #include "ucthemingextension.h"
+#include "ubuntutoolkitglobal.h"
 
 namespace UbuntuToolkit {
 
 class UCStyledItemBasePrivate;
 class UCTheme;
 class UCStyleHints;
-class UCStyledItemBase : public QQuickItem, public UCThemingExtension
+class UBUNTUTOOLKIT_EXPORT UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
     Q_OBJECT
-    Q_INTERFACES(UCThemingExtension)
+    Q_INTERFACES(UbuntuToolkit::UCThemingExtension)
     Q_PROPERTY(bool keyNavigationFocus
               READ keyNavigationFocus
               NOTIFY keyNavigationFocusChanged REVISION 2)

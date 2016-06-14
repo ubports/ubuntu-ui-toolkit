@@ -21,11 +21,12 @@
 
 #include <QtCore/QObject>
 #include <QtQml/qqml.h>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCStateSaverAttachedPrivate;
-class UCStateSaverAttached : public QObject
+class UBUNTUTOOLKIT_EXPORT UCStateSaverAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
@@ -62,8 +63,8 @@ public:
     }
 };
 
-QML_DECLARE_TYPEINFO(UCStateSaver, QML_HAS_ATTACHED_PROPERTIES)
-
 }
+
+QML_DECLARE_TYPEINFO(UbuntuToolkit::UCStateSaver, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCSTATESAVER_H

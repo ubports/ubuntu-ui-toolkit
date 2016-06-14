@@ -19,11 +19,12 @@
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlParserStatus>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCServicePropertiesPrivate;
-class UCServiceProperties : public QObject, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCServiceProperties : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)

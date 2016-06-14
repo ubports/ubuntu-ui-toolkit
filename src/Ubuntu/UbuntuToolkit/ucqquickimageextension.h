@@ -25,12 +25,13 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QSharedPointer>
+#include "ubuntutoolkitglobal.h"
 
 class QQuickImageBase;
 
 namespace UbuntuToolkit {
 
-class UCQQuickImageExtension : public QObject
+class UBUNTUTOOLKIT_EXPORT UCQQuickImageExtension : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY extendedSourceChanged)

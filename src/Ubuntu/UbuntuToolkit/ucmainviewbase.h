@@ -26,7 +26,7 @@ class UCActionManager;
 class UCPopupContext;
 class UCAction;
 
-class UCMainViewBase : public UCPageTreeNode
+class UBUNTUTOOLKIT_EXPORT UCMainViewBase : public UCPageTreeNode
 {
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)

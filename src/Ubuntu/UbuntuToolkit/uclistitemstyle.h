@@ -17,10 +17,17 @@
 #define UCLISTITEMSTYLE_H
 
 #include <QtQuick/QQuickItem>
+#include <ubuntutoolkitglobal.h>
+
+class QQmlComponent;
+class QQuickAbstractAnimation;
+class QQuickPropertyAnimation;
+class QQuickBehavior;
+class QQuickFlickable;
 
 namespace UbuntuToolkit {
 
-class UCSwipeEvent : public QObject
+class UBUNTUTOOLKIT_EXPORT UCSwipeEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QPointF to READ to)
@@ -59,13 +66,8 @@ public:
     Status m_status;
 };
 
-class QQmlComponent;
-class QQuickAbstractAnimation;
-class QQuickPropertyAnimation;
-class QQuickBehavior;
 class UCListItem;
-class QQuickFlickable;
-class UCListItemStyle : public QQuickItem
+class UBUNTUTOOLKIT_EXPORT UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)

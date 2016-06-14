@@ -25,6 +25,9 @@ class QQuickFlickable;
 class QQuickItem;
 class QFocusEvent;
 class QKeyEvent;
+
+namespace UbuntuToolkit {
+
 class ListViewProxy : public QObject
 {
     Q_OBJECT
@@ -56,5 +59,7 @@ private:
     QQuickFlickable *listView;
     bool isEventFilter:1;
 };
+
+} // namespace UbuntuToolkit
 
 #endif // LISTVIEWEXTENSIONS_H

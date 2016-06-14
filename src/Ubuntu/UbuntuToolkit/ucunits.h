@@ -23,12 +23,13 @@
 #include <QtCore/QHash>
 #include <QtCore/QString>
 #include <QtCore/QUrl>
+#include <ubuntutoolkitglobal.h>
 
 class QPlatformWindow;
 
 namespace UbuntuToolkit {
 
-class UCUnits : public QObject
+class UBUNTUTOOLKIT_EXPORT UCUnits : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(float gridUnit READ gridUnit WRITE setGridUnit NOTIFY gridUnitChanged)

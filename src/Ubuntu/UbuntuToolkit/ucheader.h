@@ -26,8 +26,7 @@ class QQuickNumberAnimation;
 namespace UbuntuToolkit {
 
 class UCUbuntuAnimation;
-
-class UCHeader : public UCStyledItemBase
+class UBUNTUTOOLKIT_EXPORT UCHeader : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickFlickable* flickable READ flickable WRITE setFlickable NOTIFY flickableChanged FINAL)

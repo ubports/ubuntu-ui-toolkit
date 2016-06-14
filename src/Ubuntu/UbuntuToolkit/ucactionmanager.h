@@ -20,12 +20,13 @@
 #include <QtCore/QObject>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
+#include "ubuntutoolkitglobal.h"
 
 namespace UbuntuToolkit {
 
 class UCAction;
 class UCActionContext;
-class UCActionManager : public QObject, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCActionManager : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)

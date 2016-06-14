@@ -23,7 +23,7 @@
 
 namespace UbuntuToolkit {
 
-class UCProportionalShape : public UCUbuntuShape
+class UBUNTUTOOLKIT_EXPORT UCProportionalShape : public UCUbuntuShape
 {
     Q_OBJECT
 
@@ -40,8 +40,8 @@ private:
     Q_DISABLE_COPY(UCProportionalShape)
 };
 
-QML_DECLARE_TYPE(UCProportionalShape)
-
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCProportionalShape)
 
 #endif  // UCPROPORTIONALSHAPE_H

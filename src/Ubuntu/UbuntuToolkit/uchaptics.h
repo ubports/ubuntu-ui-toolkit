@@ -20,10 +20,12 @@
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtQml/QQmlEngine>
+#include <ubuntutoolkitglobal.h>
 
+class QQmlEngine;
 namespace UbuntuToolkit {
 
-class UCHaptics : public QObject
+class UBUNTUTOOLKIT_EXPORT UCHaptics : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ enabled NOTIFY enabledChanged)
@@ -41,8 +43,7 @@ public Q_SLOTS:
     void play(const QVariant &customEffect = QVariant());
 };
 
-class QQmlEngine;
-class HapticsProxy : public QObject
+class UBUNTUTOOLKIT_EXPORT HapticsProxy : public QObject
 {
     Q_OBJECT
 public:

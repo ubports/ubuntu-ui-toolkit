@@ -23,11 +23,12 @@
 #include <QtQml/QJSEngine>
 #include <QtQml/QQmlEngine>
 
+class QQmlEngine;
+class QJSEngine;
+
 namespace UbuntuToolkit {
 
 class QQuickMimeData;
-class QQmlEngine;
-class QJSEngine;
 class QQuickClipboardPrivate;
 class QQuickClipboard : public QObject
 {

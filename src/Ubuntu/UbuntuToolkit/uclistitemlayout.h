@@ -18,11 +18,12 @@
 #define UCLISTITEMLAYOUT_H
 
 #include "ucslotslayout.h"
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCLabel;
-class UCListItemLayout : public UCSlotsLayout
+class UBUNTUTOOLKIT_EXPORT UCListItemLayout : public UCSlotsLayout
 {
     Q_OBJECT
     Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)

@@ -16,9 +16,9 @@
 
 #include "label_p.h"
 #include "ucfontutils.h"
-#include "ucnamespace.h"
 #include "ucunits.h"
 #include "uctheme.h"
+#include <quickutils.h>
 
 namespace UbuntuToolkit {
 

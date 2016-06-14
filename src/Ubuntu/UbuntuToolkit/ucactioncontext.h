@@ -22,12 +22,15 @@
 #include <QtQml/QQmlParserStatus>
 #include <QtCore/QSet>
 #include <QtQml>
+#include "ubuntutoolkitglobal.h"
+
+class QQuickItem;
 
 namespace UbuntuToolkit {
 
 class UCAction;
 class UCActionContextAttached;
-class UCActionContext : public QObject, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCActionContext : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -82,7 +85,6 @@ public:
     explicit UCPopupContext(QObject *parent = 0);
 };
 
-class QQuickItem;
 class UCActionContextAttached : public QObject
 {
     Q_OBJECT
@@ -104,9 +106,9 @@ private:
     friend class UCActionContext;
 };
 
-QML_DECLARE_TYPE(UCActionContext)
-QML_DECLARE_TYPEINFO(UCActionContext, QML_HAS_ATTACHED_PROPERTIES)
-
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCActionContext)
+QML_DECLARE_TYPEINFO(UbuntuToolkit::UCActionContext, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCACTIONCONTEXT_H

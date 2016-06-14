@@ -28,7 +28,8 @@
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
-#include "ucnamespace.h"
+#include "ubuntutoolkitglobal.h"
+#include "quickutils.h"
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlInfo>

@@ -23,6 +23,8 @@
 #include "ucactionitem_p.h"
 #include <PropertyChange>
 
+class UCSwipeArea;
+
 namespace UbuntuToolkit {
 
 class UCBottomEdgeHintPrivate : public UCActionItemPrivate

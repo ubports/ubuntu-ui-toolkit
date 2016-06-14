@@ -20,12 +20,13 @@
 #include <QtCore/QObject>
 #include "uclistitem_p.h"
 
+class QQmlComponent;
+
 namespace UbuntuToolkit {
 
-class QQmlComponent;
 class UCAction;
 class UCListItemActionsPrivate;
-class UCListItemActions : public QObject
+class UBUNTUTOOLKIT_EXPORT UCListItemActions : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)

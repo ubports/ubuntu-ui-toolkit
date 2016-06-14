@@ -22,13 +22,13 @@
 #include "ucactionitem.h"
 
 class QQuickFlickable;
+class UCSwipeArea;
 
 namespace UbuntuToolkit {
 
-class UCSwipeArea;
 class PropertyChange;
 class UCBottomEdgeHintPrivate;
-class UCBottomEdgeHint : public UCActionItem
+class UBUNTUTOOLKIT_EXPORT UCBottomEdgeHint : public UCActionItem
 {
     Q_OBJECT
     Q_ENUMS(Status)

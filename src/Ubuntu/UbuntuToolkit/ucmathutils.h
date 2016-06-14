@@ -19,13 +19,14 @@
 #define UCMATHUTILS_H
 
 #include <QObject>
+#include <ubuntutoolkitglobal.h>
 
 QT_FORWARD_DECLARE_CLASS(QQmlEngine)
 QT_FORWARD_DECLARE_CLASS(QJSEngine)
 
 namespace UbuntuToolkit {
 
-class UCMathUtils : public QObject
+class UBUNTUTOOLKIT_EXPORT UCMathUtils : public QObject
 {
     Q_OBJECT
 public:

@@ -21,6 +21,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QHash>
+#include <ubuntutoolkitglobal.h>
 
 class QQmlComponent;
 class QQmlContext;
@@ -29,7 +30,7 @@ class QQmlEngine;
 namespace UbuntuToolkit {
 
 class UCTheme;
-class UCDeprecatedTheme : public QObject
+class UBUNTUTOOLKIT_EXPORT UCDeprecatedTheme : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged)

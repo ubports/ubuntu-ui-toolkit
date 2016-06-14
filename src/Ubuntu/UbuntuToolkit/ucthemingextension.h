@@ -25,13 +25,14 @@
 #include <QtQml>
 
 #include <QtQuick/private/qquickitem_p.h>
+#include <ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
 namespace UbuntuToolkit {
 
 class UCTheme;
-class UCThemingExtension
+class UBUNTUTOOLKIT_EXPORT UCThemingExtension
 {
 public:
     enum ThemeType {

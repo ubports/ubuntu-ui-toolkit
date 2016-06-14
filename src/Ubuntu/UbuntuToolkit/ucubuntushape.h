@@ -29,7 +29,7 @@
 
 namespace UbuntuToolkit {
 
-class ShapeShader : public QSGMaterialShader
+class UBUNTUTOOLKIT_EXPORT ShapeShader : public QSGMaterialShader
 {
 public:
     ShapeShader();
@@ -52,7 +52,7 @@ private:
 
 // --- Scene graph material ---
 
-class ShapeMaterial : public QSGMaterial
+class UBUNTUTOOLKIT_EXPORT ShapeMaterial : public QSGMaterial
 {
 public:
     struct Data {
@@ -88,7 +88,7 @@ private:
 
 // --- Scene graph node ---
 
-class ShapeNode : public QSGGeometryNode
+class UBUNTUTOOLKIT_EXPORT ShapeNode : public QSGGeometryNode
 {
 public:
     struct Vertex {
@@ -121,7 +121,7 @@ private:
 
 // --- QtQuick item ---
 
-class UCUbuntuShape : public QQuickItem, public UCImportVersionChecker
+class UBUNTUTOOLKIT_EXPORT UCUbuntuShape : public QQuickItem, public UCImportVersionChecker
 {
     Q_OBJECT
 
@@ -356,8 +356,8 @@ private:
     Q_DISABLE_COPY(UCUbuntuShape)
 };
 
-QML_DECLARE_TYPE(UCUbuntuShape)
-
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCUbuntuShape)
 
 #endif  // UCUBUNTUSHAPE_H

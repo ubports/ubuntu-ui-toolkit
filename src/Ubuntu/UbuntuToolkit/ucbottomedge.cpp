@@ -30,17 +30,15 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
-#include "plugin.h"
-#include "ucnamespace.h"
 #include "ucheader.h"
 #include "ucaction.h"
 #include "quickutils.h"
 #include "private/ucswipearea_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
-namespace UbuntuToolkit {
-
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
+
+namespace UbuntuToolkit {
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()

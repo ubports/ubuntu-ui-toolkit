@@ -24,13 +24,14 @@
 #include <QtQuick/private/qquickitemchangelistener_p.h>
 #include <QtCore/QLoggingCategory>
 
+class QQuickAbstractAnimation;
+
 namespace UbuntuToolkit {
 
 class UCBottomEdgeHint;
 class UCBottomEdgeRegion;
-class QQuickAbstractAnimation;
 class UCBottomEdgePrivate;
-class UCBottomEdge : public UCStyledItemBase
+class UBUNTUTOOLKIT_EXPORT UCBottomEdge : public UCStyledItemBase
 {
     Q_OBJECT
     Q_ENUMS(Status DragDirection)
@@ -118,10 +119,11 @@ protected:
 private:
     friend class tst_BottomEdge;
 };
-Q_DECLARE_METATYPE(UCBottomEdge::Status)
-Q_DECLARE_METATYPE(UCBottomEdge::DragDirection)
 
 }
+
+Q_DECLARE_METATYPE(UbuntuToolkit::UCBottomEdge::Status)
+Q_DECLARE_METATYPE(UbuntuToolkit::UCBottomEdge::DragDirection)
 
 Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)
 

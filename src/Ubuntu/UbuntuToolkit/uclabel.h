@@ -21,14 +21,15 @@
 #include "ucthemingextension.h"
 // C++ std lib for std::function declaration
 #include <functional>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
 class UCLabelPrivate;
-class UCLabel : public QQuickText, public UCThemingExtension
+class UBUNTUTOOLKIT_EXPORT UCLabel : public QQuickText, public UCThemingExtension
 {
     Q_OBJECT
-    Q_INTERFACES(UCThemingExtension)
+    Q_INTERFACES(UbuntuToolkit::UCThemingExtension)
     Q_ENUMS(TextSize)
     Q_PROPERTY(TextSize textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
 
@@ -95,8 +96,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void updateRenderType())
     Q_PRIVATE_SLOT(d_func(), void updatePixelSize())
 };
-
-QML_DECLARE_TYPE(UCLabel)
 
 }
 

@@ -17,13 +17,14 @@
 #ifndef UBUNTU_COMPONENTS_LISTENER_H
 #define UBUNTU_COMPONENTS_LISTENER_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <ubuntutoolkitglobal.h>
 
 class QQmlContext;
 
 namespace UbuntuToolkit {
 
-class ContextPropertyChangeListener : public QObject
+class UBUNTUTOOLKIT_EXPORT ContextPropertyChangeListener : public QObject
 {
     Q_OBJECT
 public:

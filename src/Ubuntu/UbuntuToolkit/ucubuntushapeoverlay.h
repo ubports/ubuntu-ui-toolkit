@@ -25,7 +25,7 @@
 
 namespace UbuntuToolkit {
 
-class ShapeOverlayShader : public ShapeShader
+class UBUNTUTOOLKIT_EXPORT ShapeOverlayShader : public ShapeShader
 {
 public:
     ShapeOverlayShader();
@@ -34,7 +34,7 @@ public:
 
 // --- Scene graph material ---
 
-class ShapeOverlayMaterial : public ShapeMaterial
+class UBUNTUTOOLKIT_EXPORT ShapeOverlayMaterial : public ShapeMaterial
 {
 public:
     QSGMaterialType* type() const override;
@@ -43,7 +43,7 @@ public:
 
 // --- Scene graph node ---
 
-class ShapeOverlayNode : public QSGGeometryNode
+class UBUNTUTOOLKIT_EXPORT ShapeOverlayNode : public QSGGeometryNode
 {
 public:
     struct Vertex {
@@ -69,7 +69,7 @@ private:
 
 // --- QtQuick item ---
 
-class UCUbuntuShapeOverlay : public UCUbuntuShape
+class UBUNTUTOOLKIT_EXPORT UCUbuntuShapeOverlay : public UCUbuntuShape
 {
     Q_OBJECT
 
@@ -110,8 +110,8 @@ private:
     Q_DISABLE_COPY(UCUbuntuShapeOverlay)
 };
 
-QML_DECLARE_TYPE(UCUbuntuShapeOverlay)
-
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCUbuntuShapeOverlay)
 
 #endif  // UCUBUNTUSHAPEOVERLAY_H

@@ -22,10 +22,9 @@
 #include "qquickclipboard.h"
 #include <QtGui/QClipboard>
 
-class QQuickMimeData;
-
 namespace UbuntuToolkit {
 
+class QQuickMimeData;
 class QQuickClipboardPrivate {
     Q_DECLARE_PUBLIC(QQuickClipboard)
 public:

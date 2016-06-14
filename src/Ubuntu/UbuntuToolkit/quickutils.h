@@ -94,6 +94,16 @@ private:
     void lookupQuickView();
 };
 
+#define UC_QML_DEPRECATION_WARNING(msg) \
+    { \
+        static bool loggedOnce = false; \
+        if (!loggedOnce) { \
+            if (QuickUtils::showDeprecationWarnings()) { \
+                qmlInfo(this) << msg; \
+            } \
+        } \
+    }
+
 }
 
 #endif // QUICKUTILS_P_H

@@ -24,6 +24,10 @@
 #include <QtQml>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/private/qpodvector_p.h>
+#include "ubuntutoolkitglobal.h"
+
+class QQmlComponent;
+class QQuickItem;
 
 namespace UbuntuToolkit {
 
@@ -49,10 +53,8 @@ inline void invokeTrigger(T *object, const QVariant &value)
     }
 }
 
-class QQmlComponent;
-class QQuickItem;
 class UCActionAttached;
-class UCAction : public QObject
+class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
 {
     Q_OBJECT
 
@@ -158,8 +160,9 @@ private:
     bool event(QEvent *event) override;
     void onKeyboardAttached();
 };
-QML_DECLARE_TYPE(UCAction)
 
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCAction)
 
 #endif // UCACTION_H

@@ -20,10 +20,11 @@
 
 #include "ucmouse.h"
 #include <QtQml>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class UCInverseMouse : public UCMouse {
+class UBUNTUTOOLKIT_EXPORT UCInverseMouse : public UCMouse {
     Q_OBJECT
 public:
     explicit UCInverseMouse(QObject *parent = 0);
@@ -45,9 +46,10 @@ protected:
     bool pointInOSK(const QPointF &point);
     bool contains(QMouseEvent *mouse);
 };
-QML_DECLARE_TYPE(UCInverseMouse)
-QML_DECLARE_TYPEINFO(UCInverseMouse, QML_HAS_ATTACHED_PROPERTIES)
 
 }
+
+QML_DECLARE_TYPE(UbuntuToolkit::UCInverseMouse)
+QML_DECLARE_TYPEINFO(UbuntuToolkit::UCInverseMouse, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCINVERSEMOUSE_H

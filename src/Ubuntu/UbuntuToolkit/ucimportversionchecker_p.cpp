@@ -17,7 +17,6 @@
  */
 
 #include "ucimportversionchecker_p.h"
-#include "ucnamespace.h"
 
 #include <QtQuick>
 #include <QtQml/private/qqmldata_p.h>

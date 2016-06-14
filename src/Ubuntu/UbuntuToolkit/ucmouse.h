@@ -23,10 +23,11 @@
 #include <QtQuick/QQuickItem>
 #include <private/qquickevents_p_p.h>
 #include <QtCore/qbasictimer.h>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class ForwardedEvent : public QEvent {
+class UBUNTUTOOLKIT_EXPORT ForwardedEvent : public QEvent {
 public:
     enum EventType {
         MousePress,
@@ -63,7 +64,7 @@ private:
     static QEvent::Type m_eventBase;
 };
 
-class UCMouse : public QObject
+class UBUNTUTOOLKIT_EXPORT UCMouse : public QObject
 {
     Q_OBJECT
 
@@ -160,10 +161,10 @@ protected:
     bool m_doubleClicked:1;
     bool m_ignoreSynthesizedEvents:1;
 };
-QML_DECLARE_TYPEINFO(UCMouse, QML_HAS_ATTACHED_PROPERTIES)
-
 extern const int DefaultPressAndHoldDelay;
 
 }
+
+QML_DECLARE_TYPEINFO(UbuntuToolkit::UCMouse, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCMOUSE_H

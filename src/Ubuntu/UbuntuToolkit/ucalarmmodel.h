@@ -26,7 +26,7 @@
 namespace UbuntuToolkit {
 
 class UCAlarm;
-class UCAlarmModel : public QAbstractListModel, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCAlarmModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)

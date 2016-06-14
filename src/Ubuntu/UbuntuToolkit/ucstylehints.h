@@ -29,12 +29,13 @@
 
 #include <PropertyChange>
 
+class QQuickItem;
+
 namespace UbuntuToolkit {
 
 class UCStyleHintsParser;
 class UCStyledItemBase;
-class QQuickItem;
-class UCStyleHints : public QObject, public QQmlParserStatus
+class UBUNTUTOOLKIT_EXPORT UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -80,7 +81,7 @@ private:
     void decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
 };
 
-class UCStyleHintsParser : public QQmlCustomParser
+class UBUNTUTOOLKIT_EXPORT UCStyleHintsParser : public QQmlCustomParser
 {
 public:
     UCStyleHintsParser() : QQmlCustomParser(QQmlCustomParser::AcceptsSignalHandlers) {}
