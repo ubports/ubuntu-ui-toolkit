@@ -109,6 +109,7 @@ Header {
         property Item previousContentsParent: null
 
         function updateContents() {
+            if (!__styleInstance) return; // the style needs to be loaded first
             if (previousContents) {
                 previousContents.parent = previousContentsParent;
             }
