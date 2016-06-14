@@ -23,8 +23,6 @@ import QtQuick 2.4
     The component defines the style API for the \l Sections component.
   */
 Item {
-    id: sectionsStyle
-
     /*!
       The foreground color of unselected sections.
      */
