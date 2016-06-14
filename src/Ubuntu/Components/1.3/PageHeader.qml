@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -109,6 +109,7 @@ Header {
         property Item previousContentsParent: null
 
         function updateContents() {
+            if (!__styleInstance) return; // the style needs to be loaded first
             if (previousContents) {
                 previousContents.parent = previousContentsParent;
             }
