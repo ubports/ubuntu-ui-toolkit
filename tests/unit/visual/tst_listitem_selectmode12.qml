@@ -109,7 +109,7 @@ MainView {
         }
     }
 
-    ListItemTestCase {
+    ListItemTestCase12 {
         name: "ListItem.selectMode"
         when: windowShown
 
