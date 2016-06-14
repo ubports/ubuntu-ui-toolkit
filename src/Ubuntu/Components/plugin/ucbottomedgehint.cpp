@@ -24,7 +24,7 @@
 #include "ucunits.h"
 #include "ucaction.h"
 #include "private/ucswipearea_p.h"
-#include "propertychange_p.h"
+#include <PropertyChange>
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -160,9 +160,9 @@ void UCBottomEdgeHint::adjustFlickableBottomMargin()
 {
     Q_D(UCBottomEdgeHint);
     if (!d->flickableBottomMargin) {
-        d->flickableBottomMargin = new PropertyChange(d->flickable, "bottomMargin");
+        d->flickableBottomMargin = new UbuntuToolkit::PropertyChange(d->flickable, "bottomMargin");
     }
-    PropertyChange::setValue(d->flickableBottomMargin, height());
+    UbuntuToolkit::PropertyChange::setValue(d->flickableBottomMargin, height());
     d->flickable->setContentY(d->flickable->contentY() + height());
 }
 
