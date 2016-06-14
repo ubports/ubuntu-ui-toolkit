@@ -1076,6 +1076,12 @@ Ubuntu.Components.Sections 1.3: StyledItem
     property list<Action> actions
     property var model
     property int selectedIndex
+Ubuntu.Components.Styles.SectionsStyle 1.3: Item
+    property color pressedBackgroundColor
+    property color sectionColor
+    property color selectedSectionColor
+    property int textSize
+    property color underlineColor
 Ubuntu.Components.ServiceProperties 1.1 UCServiceProperties: QtObject
     property string adaptorInterface 1.1
     readonly property string error 1.1
