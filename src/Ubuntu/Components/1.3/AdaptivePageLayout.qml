@@ -728,7 +728,6 @@ PageTreeNode {
         }
     }
 
-
     // Page holder component, can have only one Page as child at a time, all stacked pages
     // will be parented into hiddenPool
     Component {
