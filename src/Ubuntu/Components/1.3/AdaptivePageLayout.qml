@@ -797,8 +797,8 @@ PageTreeNode {
                 }
             }
 
-            // subHeader is to be deprecated in UITK 1.4 and will be replaced
-            //  by the Page.header property (introduced in 1.3).
+            // FIXME: subHeader is deprecated and will be replaced by the Page.header
+            //  property (introduced in 1.3). See bug #1583587.
             property alias head: subHeader
             StyledItem {
                 id: subHeader
@@ -823,9 +823,12 @@ PageTreeNode {
                 property PageHeadConfiguration config: null
                 property Item contents: null
 
-                property color dividerColor: layout.__propagated.header.dividerColor
-                property color panelColor: layout.__propagated.header.panelColor
-                property color backgroundColor: layout.__propagated.header.backgroundColor
+
+                property AppHeader appHeader: layout.__propagated && layout.__propagated.header ?
+                                                layout.__propagated.header : null
+                property color dividerColor: appHeader ? appHeader.dividerColor : "black"
+                property color panelColor: appHeader ? appHeader.panelColor : "grey"
+                property color backgroundColor: appHeader ? appHeader.backgroundColor : "white"
 
                 // Enable red outline in the PageHeadStyle. See bug #1583636.
                 property bool showDeprecatedWarning: true
