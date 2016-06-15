@@ -570,44 +570,36 @@ void PlatformItemWrapper::setSeparator()
 
 void PlatformItemWrapper::updateVisible()
 {
-    if (!m_platformItem) return;
-
     if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
-        m_platformItem->setVisible(menu->visible());
+        if (m_platformItem) m_platformItem->setVisible(menu->visible());
         if (menu->platformMenu()) menu->platformMenu()->setVisible(menu->visible());
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
-        m_platformItem->setVisible(action->visible());
+        if (m_platformItem) m_platformItem->setVisible(action->visible());
     }
 }
 
 void PlatformItemWrapper::updateEnabled()
 {
-    if (!m_platformItem) return;
-
     if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
-        m_platformItem->setEnabled(menu->isEnabled());
+        if (m_platformItem) m_platformItem->setEnabled(menu->isEnabled());
         if (menu->platformMenu()) menu->platformMenu()->setEnabled(menu->isEnabled());
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
-        m_platformItem->setText(action->text());
+        if (m_platformItem) m_platformItem->setEnabled(action->isEnabled());
     }
 }
 
 void PlatformItemWrapper::updateText()
 {
-    if (!m_platformItem) return;
-
     if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
-        m_platformItem->setText(menu->text());
+        if (m_platformItem) m_platformItem->setText(menu->text());
         if (menu->platformMenu()) menu->platformMenu()->setText(menu->text());
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
-        m_platformItem->setText(action->text());
+        if (m_platformItem) m_platformItem->setText(action->text());
     }
 }
 
 void PlatformItemWrapper::updateIcon()
 {
-    if (!m_platformItem) return;
-
     QIcon icon;
     if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
 
@@ -626,7 +618,8 @@ void PlatformItemWrapper::updateIcon()
             icon = QIcon::fromTheme(action->iconName());
         }
     }
-    m_platformItem->setIcon(icon);
+
+    if (m_platformItem) { m_platformItem->setIcon(icon); }
 }
 
 
