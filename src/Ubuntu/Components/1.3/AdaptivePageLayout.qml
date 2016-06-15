@@ -796,8 +796,7 @@ PageTreeNode {
                 }
             }
 
-            // FIXME: subHeader is deprecated and will be replaced by the Page.header
-            //  property (introduced in 1.3). See bug #1583587.
+            // FIXME: subHeader is deprecated and will be replaced by Page.header. See bug #1583587.
             property alias head: subHeader
             StyledItem {
                 id: subHeader
