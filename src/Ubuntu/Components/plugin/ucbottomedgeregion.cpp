@@ -20,7 +20,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgeregion_p.h"
-#include "propertychange_p.h"
+#include <PropertyChange>
 #include <QtQml/private/qqmlproperty_p.h>
 
 
