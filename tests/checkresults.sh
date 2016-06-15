@@ -39,7 +39,7 @@ for _XML in $*; do
                 swipearea \
                 qquick_image_extension \
                 tst_page.11.qml \
-                tst_label.13.qml \
+                tst_label.qml \
                 performance \
                 tst_tabs.11.qml \
                 tst_focus.13.qml \
@@ -50,7 +50,7 @@ for _XML in $*; do
                 touchregistry \
                 mainview \
                 tst_listitems_itemselector.11.qml \
-                tests/unit/visual/tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
+                tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
                 inversemousearea \
                 '
 
