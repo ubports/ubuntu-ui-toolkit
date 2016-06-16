@@ -200,7 +200,7 @@ Item {
             var comboListFlicker = findChild(columnCombo, "combobutton_contentflicker");
             waitForRendering(comboListFlicker);
             compare(comboListFlicker.interactive, false, "combo list holder must not be interactive");
-            compare(comboListFlicker.height, columnCombo.comboListHeight, "combo list height differs from the holder height");
+            tryCompare(comboListFlicker, 'height', columnCombo.comboListHeight, 500, "combo list height differs from the holder height");
         }
 
         function test_emptyComboExpanded() {
@@ -236,13 +236,13 @@ Item {
         function test_expand_via_keyboard() {
             rectCombo.forceActiveFocus();
             waitForRendering(rectCombo);
-            verify(rectCombo.expanded, false, "ComboBox not expanded after focus");
+            tryCompare(rectCombo, 'expanded', false, 500, "ComboBox not expanded after focus");
             keyClick(Qt.Key_Space);
             waitForRendering(rectCombo);
             verify(rectCombo.expanded, true, "ComboBox was expanded via the Space key");
             keyClick(Qt.Key_Space);
             waitForRendering(rectCombo);
-            verify(rectCombo.expanded, false, "ComboBox was collapsed via the Space key");
+            tryCompare(rectCombo, 'expanded', false, 500, "ComboBox was collapsed via the Space key");
         }
     }
 }
