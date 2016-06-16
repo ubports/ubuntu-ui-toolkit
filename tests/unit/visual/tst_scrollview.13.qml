@@ -194,7 +194,7 @@ Item {
         }
     }
 
-    ScrollbarTestCase {
+    ScrollbarTestCase13 {
         name: "ScrollView"
 
         //another ref to an object we want to destroy in cleanup()

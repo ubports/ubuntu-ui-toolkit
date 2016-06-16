@@ -39,7 +39,7 @@ MainView {
                     showDirs: false
                     showOnlyReadable: true
                     sortField: FolderListModel.Name
-                    nameFilters: [ "tst_*13.qml" ]
+                    nameFilters: [ "tst_*.13.qml" ]
                 }
 
                 delegate: ListItem {
