@@ -24,8 +24,8 @@
 class UnityThemeIconProvider: public QQuickImageProvider
 {
 public:
-    UnityThemeIconProvider(const QString &themeName = "suru");
-    QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
+    UnityThemeIconProvider(const QString &themeName = QStringLiteral("suru"));
+    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
     QSharedPointer<class IconTheme> theme;

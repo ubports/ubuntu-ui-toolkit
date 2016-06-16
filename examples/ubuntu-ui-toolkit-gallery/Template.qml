@@ -34,19 +34,16 @@ Page {
     }
 
     ScrollView {
-        //anchors.fill: parent
-        //anchors.topMargin: template.header.flickable ? 0 : template.header.height
         objectName: "TemplateScrollView"
         anchors {
             fill: parent
             topMargin: template.header.flickable ? 0 : template.header.height
         }
+
         Flickable {
             id: templateFlickable
             objectName: "TemplateFlickable"
             anchors.fill: parent
-            topMargin: units.gu(2)
-            bottomMargin: units.gu(2)
             contentHeight: column.height
             interactive: contentHeight > height
             Column {

@@ -146,7 +146,7 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
 /*!
  * \qmltype StateSaver
  * \instantiates UCStateSaverAttached
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-services
  * \brief Attached properties to save component property states.
  *

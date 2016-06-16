@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
-"X-Generator: Launchpad (build 17865)\n"
+"X-Launchpad-Export-Date: 2016-06-08 05:50+0000\n"
+"X-Generator: Launchpad (build 18097)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -23,7 +23,7 @@ msgstr "О программе..."
 
 #: ActionBars.qml:68
 msgid "Short list"
-msgstr ""
+msgstr "Краткий список"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: ActionBars.qml:92
 msgid "Long list"
-msgstr ""
+msgstr "Полный список"
 
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
@@ -50,7 +50,7 @@ msgstr ""
 
 #: Animations.qml:58
 msgid "Standard Durations"
-msgstr ""
+msgstr "Стандартная длительность"
 
 #: Animations.qml:62
 msgid "Snap"
@@ -58,19 +58,19 @@ msgstr ""
 
 #: Animations.qml:98
 msgid "Fast"
-msgstr ""
+msgstr "Быстро"
 
 #: Animations.qml:134
 msgid "Slow"
-msgstr ""
+msgstr "Медленно"
 
 #: Animations.qml:159
 msgid "Sleepy"
-msgstr ""
+msgstr "Замедление"
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
-msgstr ""
+msgstr "Вызов"
 
 #: Buttons.qml:37
 msgid "Stroke"
@@ -139,7 +139,7 @@ msgstr "Масштабирование"
 
 #: Icons.qml:79
 msgid "Theme"
-msgstr ""
+msgstr "Тема"
 
 #: ListItemLayouts.qml:208 NewListItems.qml:79
 msgid "Leading and trailing actions"
@@ -153,7 +153,7 @@ msgstr ""
 
 #: ListItems.qml:33
 msgid "Subtitled"
-msgstr ""
+msgstr "Подзаголовок"
 
 #: ListItems.qml:37
 msgid "Secondary label"
@@ -161,7 +161,7 @@ msgstr ""
 
 #: ListItems.qml:52
 msgid "ThinDivider"
-msgstr ""
+msgstr "Тонкий разделитель"
 
 #: ListItems.qml:73
 msgid "Progression"
@@ -205,7 +205,7 @@ msgstr "Значение 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
-msgstr ""
+msgstr "Выбор пункта"
 
 #: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
@@ -213,11 +213,11 @@ msgstr ""
 
 #: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
-msgstr ""
+msgstr "Множественный выбор"
 
 #: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
-msgstr ""
+msgstr "Собственная модель"
 
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
@@ -241,7 +241,7 @@ msgstr "Значение 8"
 
 #: ListItems.qml:190
 msgid "Control"
-msgstr ""
+msgstr "Управление"
 
 #: ListItems.qml:202
 msgid "Removable"
@@ -249,7 +249,7 @@ msgstr ""
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr ""
+msgstr "Смахните для удаления"
 
 #: ListItems.qml:215
 msgid "Reset"
@@ -257,7 +257,7 @@ msgstr "Сброс"
 
 #: ListItems.qml:226
 msgid "Grouped list"
-msgstr ""
+msgstr "Сгруппированный список"
 
 #: ListItems.qml:261
 msgid "UbuntuListView"
@@ -273,7 +273,7 @@ msgstr ""
 
 #: NewListItems.qml:39
 msgid "Colored"
-msgstr ""
+msgstr "Цветной"
 
 #: NewListItems.qml:42
 msgid "Highlight color"
@@ -318,7 +318,7 @@ msgstr "Без разделителя"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
-msgstr ""
+msgstr "Выбор параметра"
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
@@ -336,11 +336,11 @@ msgstr ""
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
-msgstr ""
+msgstr "Собственное значение высоты содержимого"
 
 #: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
-msgstr ""
+msgstr "Нет первоначального выбора, выполните прокрутку."
 
 #: Pickers.qml:31
 msgid "Linear"
@@ -368,23 +368,23 @@ msgstr ""
 
 #: Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Действие #1"
 
 #: Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Действие #2"
 
 #: Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Действие #3"
 
 #: Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Действие #4"
 
 #: Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Действие #5"
 
 #: ProgressBars.qml:24
 msgid "Progress Bar"
@@ -396,7 +396,7 @@ msgstr ""
 
 #: ProgressBars.qml:81
 msgid "Activity Indicator"
-msgstr ""
+msgstr "Индикатор активности"
 
 #: ProportionalShape.qml:28
 msgid "Sizes"
@@ -409,6 +409,8 @@ msgstr ""
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"Стиль отображения для листа может помочь в вашей работе, чтобы все выглядело "
+"наглядно и удобно."
 
 #: Sheet.qml:53 Sheet.qml:86
 msgid "Title"
@@ -417,11 +419,11 @@ msgstr ""
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
-msgstr ""
+msgstr "Текущее значение: %1"
 
 #: Sliders.qml:42
 msgid "Live Update"
-msgstr ""
+msgstr "Постоянное обновление"
 
 #: Sliders.qml:57
 msgid "Range"
@@ -445,7 +447,7 @@ msgstr ""
 
 #: TextInputs.qml:50
 msgid "Type me in..."
-msgstr ""
+msgstr "Вводите сюда..."
 
 #: TextInputs.qml:56
 msgid "Password"

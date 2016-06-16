@@ -21,7 +21,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype Icon
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \inherits Item
     \ingroup ubuntu
     \brief The Icon component displays an icon from the icon theme.
@@ -101,6 +101,12 @@ Item {
 
     property alias source: image.source
 
+    /*!
+      \qmlproperty bool Icon::asynchronous
+      The property drives the image loading of the icon. Defaults to false.
+    */
+    property alias asynchronous: image.asynchronous
+
     implicitWidth: image.implicitWidth
     implicitHeight: image.implicitHeight
 
@@ -119,6 +125,7 @@ Item {
 
         cache: true
         visible: !colorizedImage.visible
+        asynchronous: false
     }
 
     ShaderEffect {

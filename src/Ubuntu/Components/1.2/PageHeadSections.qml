@@ -18,7 +18,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype PageHeadSections
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
     \brief PageHeadSections is used to configure the sections for a \l Page.

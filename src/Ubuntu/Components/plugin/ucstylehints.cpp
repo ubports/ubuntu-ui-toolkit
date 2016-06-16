@@ -18,8 +18,10 @@
 
 #include "ucstylehints.h"
 #include "ucstyleditembase_p.h"
-#include "propertychange_p.h"
+#include <PropertyChange>
 #include <QtQml/QQmlInfo>
+
+using namespace UbuntuToolkit;
 
 // verifies property declaration correctness
 void UCStyleHintsParser::verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
@@ -231,8 +233,8 @@ void UCStyleHints::_q_applyStyleHints()
             propertyNotFound(styleName, m_values[i].first);
             continue;
         }
-        PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
-        PropertyChange::setValue(change, m_values[i].second);
+        UbuntuToolkit::PropertyChange *change = new UbuntuToolkit::PropertyChange(item, m_values[i].first.toUtf8());
+        UbuntuToolkit::PropertyChange::setValue(change, m_values[i].second);
         m_propertyBackup << change;
     }
 
@@ -252,7 +254,11 @@ void UCStyleHints::_q_applyStyleHints()
         QQmlBinding *newBinding = 0;
         if (e.id != QQmlBinding::Invalid) {
             QV4::Scope scope(QQmlEnginePrivate::getV4Engine(qmlEngine(this)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QV4::ScopedValue function(scope, QV4::FunctionObject::createQmlFunction(cdata, item, m_cdata->compilationUnit->runtimeFunctions[e.id]));
+#else
             QV4::ScopedValue function(scope, QV4::QmlBindingWrapper::createQmlCallableForFunction(cdata, item, m_cdata->compilationUnit->runtimeFunctions[e.id]));
+#endif
             newBinding = new QQmlBinding(function, item, cdata);
         }
         if (!newBinding) {

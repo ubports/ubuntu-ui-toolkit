@@ -24,7 +24,7 @@
 #include "ucunits.h"
 #include "ucaction.h"
 #include "private/ucswipearea_p.h"
-#include "propertychange_p.h"
+#include <PropertyChange>
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -71,7 +71,7 @@ void UCBottomEdgeHintPrivate::init()
 
 /*!
     \qmltype BottomEdgeHint
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \inherits ActionItem
     \brief The BottomEdgeHint shows the availability of extra features
@@ -160,9 +160,9 @@ void UCBottomEdgeHint::adjustFlickableBottomMargin()
 {
     Q_D(UCBottomEdgeHint);
     if (!d->flickableBottomMargin) {
-        d->flickableBottomMargin = new PropertyChange(d->flickable, "bottomMargin");
+        d->flickableBottomMargin = new UbuntuToolkit::PropertyChange(d->flickable, "bottomMargin");
     }
-    PropertyChange::setValue(d->flickableBottomMargin, height());
+    UbuntuToolkit::PropertyChange::setValue(d->flickableBottomMargin, height());
     d->flickable->setContentY(d->flickable->contentY() + height());
 }
 
@@ -198,8 +198,16 @@ void UCBottomEdgeHint::timerEvent(QTimerEvent *event)
 void UCBottomEdgeHint::keyPressEvent(QKeyEvent *event)
 {
     UCActionItem::keyPressEvent(event);
-    if ((status() >= Active) && (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)) {
-        Q_EMIT clicked();
+    if (status() == Hidden)
+        return;
+    switch (event->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Space:
+            Q_EMIT clicked();
+            break;
+        default:
+            break;
     }
 }
 

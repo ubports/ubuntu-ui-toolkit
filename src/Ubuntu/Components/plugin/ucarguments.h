@@ -52,8 +52,8 @@ public:
     Q_INVOKABLE void quitWithError(const QString& errorMessage = QString());
 
     // inherited from QQmlParserStatus
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
     // methods necessary for implementing property QQmlListProperty arguments
     void appendArguments(UCArgument* argument);

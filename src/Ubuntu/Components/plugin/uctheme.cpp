@@ -49,7 +49,7 @@ quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
  * \instantiates UCTheme
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \ingroup theming
  * \brief The ThemeSettings class provides facilities to define the theme of a
@@ -147,6 +147,17 @@ quint16 UCTheme::previousVersion = 0;
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
+
+static inline void updateBinding (QQmlAbstractBinding *binding)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+    if (binding->isValueTypeProxy())
+        return;
+    static_cast<QQmlBinding *>(binding)->update();
+#else
+    binding->update();
+#endif
+}
 
 QStringList themeSearchPath()
 {
@@ -248,7 +259,11 @@ void UCTheme::PaletteConfig::restorePalette()
         }
 
         // restore the config binding to the config target
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        if (config.configBinding && !config.configBinding->isValueTypeProxy()) {
+#else
         if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+#endif
             QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
             qmlBinding->removeFromObject();
             qmlBinding->setTarget(config.configProperty);
@@ -256,11 +271,21 @@ void UCTheme::PaletteConfig::restorePalette()
 
         if (config.paletteBinding) {
             // restore the binding to the palette
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(config.paletteProperty));
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+#else
             QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+#endif
             if (prev && prev != config.paletteBinding && prev != config.configBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                prev->removeFromObject();
+                prev.reset();
+#else
                 prev->destroy();
+#endif
             }
-            config.paletteBinding->update();
+            updateBinding(config.paletteBinding);
         } else {
             config.paletteProperty.write(config.paletteValue);
         }
@@ -324,7 +349,11 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
         // apply configuration
         if (config.configBinding) {
             // transfer binding's target
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            if (!config.configBinding->isValueTypeProxy()) {
+#else
             if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
+#endif
                 QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
                 qmlBinding->setTarget(config.paletteProperty);
             }
@@ -537,9 +566,13 @@ void UCTheme::resetName()
  * The palette doesn't need to be reset as it automatically resets when the
  * palette used for configuration is destroyed.
  */
-QObject* UCTheme::palette()
+QObject* UCTheme::palette(quint16 version)
 {
     if (!m_palette) {
+        if (version) {
+            // force version to be used
+            previousVersion = version;
+        }
         loadPalette(qmlEngine(this), false);
     }
     return m_palette;
@@ -583,25 +616,30 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
     if (isFallback) {
         (*isFallback) = false;
     }
-    Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
-        QUrl styleUrl;
-        /*
-         * There are two cases where we have to deal with non-versioned styles: application
-         * themes made for the previous theming and deprecated themes. For shared themes,
-         * we have to check the fallback case.
-         */
-        quint16 styleVersion = version;
-        if (themePath.deprecated) {
-            styleVersion = 0;
-        }
-        if (themePath.shared && (version < BUILD_VERSION(1, 2))) {
-            styleVersion = LATEST_UITK_VERSION;
-        }
 
-        // loop through the versions to see if we have one matching
-        // we stop at version 1.2 as we do not have support for earlier themes anymore.
-        for (int minor = MINOR_VERSION(styleVersion); minor >= 2; minor--) {
-            QString versionedName = QStringLiteral("%1.%2/%3").arg(MAJOR_VERSION(styleVersion)).arg(minor).arg(styleName);
+    // loop through the versions first, so we will look after the style in all
+    // the parents, then fall back to the older version
+    quint16 major = MAJOR_VERSION(version);
+    // loop through the versions to see if we have one matching
+    // we stop at version 1.2 as we do not have support for earlier themes anymore.
+    for (int minor = MINOR_VERSION(version); minor >= 2; minor--) {
+        // check with each path of the theme
+        Q_FOREACH (const ThemeRecord &themePath, m_themePaths) {
+            QUrl styleUrl;
+            /*
+             * There are two cases where we have to deal with non-versioned styles: application
+             * themes made for the previous theming and deprecated themes. For shared themes,
+             * we have to check the fallback case.
+             */
+            quint16 styleVersion = BUILD_VERSION(major, minor);
+            if (themePath.deprecated) {
+                styleVersion = 0;
+            }
+            if (themePath.shared && (minor < 2)) {
+                styleVersion = LATEST_UITK_VERSION;
+            }
+
+            QString versionedName = QStringLiteral("%1.%2/%3").arg(major).arg(minor).arg(styleName);
             styleUrl = themePath.path.resolved(versionedName);
             if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
                 // set fallback warning if the theme is shared
@@ -610,13 +648,13 @@ QUrl UCTheme::styleUrl(const QString& styleName, quint16 version, bool *isFallba
                 }
                 return styleUrl;
             }
-        }
 
-        // if we don't get any style, get the non-versioned ones for non-shared and deprecated styles
-        if (!themePath.shared || themePath.deprecated) {
-            styleUrl = themePath.path.resolved(styleName);
-            if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
-                return styleUrl;
+            // if we don't get any style, get the non-versioned ones for non-shared and deprecated styles
+            if (!themePath.shared || themePath.deprecated) {
+                styleUrl = themePath.path.resolved(styleName);
+                if (styleUrl.isValid() && QFile::exists(styleUrl.toLocalFile())) {
+                    return styleUrl;
+                }
             }
         }
     }
@@ -692,8 +730,11 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
 
     if (parent != NULL) {
         QQmlEngine* engine = qmlEngine(parent);
-        Q_ASSERT(engine);
-        Q_ASSERT(engine == qmlEngine(this));
+        if (!engine) {
+            // we may be in the phase when the qml context is not yet defined for the parent
+            // so for now we return NULL
+            return Q_NULLPTR;
+        }
         // make sure we have the paths
         bool fallback = false;
         QUrl url = styleUrl(styleName, version, &fallback);

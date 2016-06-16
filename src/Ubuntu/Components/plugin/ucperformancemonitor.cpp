@@ -19,27 +19,43 @@
 #include "ucperformancemonitor.h"
 #include <QtGui/QGuiApplication>
 
-Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]", QtMsgType::QtCriticalMsg)
+Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
-const int singleFrameThreshold = 32;
-const int multipleFrameThreshold = 17;
-const int framesCountThreshold = 10;
-const int warningCountThreshold = 30;
+static int singleFrameThreshold = 32;
+static int multipleFrameThreshold = 17;
+static int framesCountThreshold = 10;
+static int warningCountThreshold = 30;
+
+// TODO Qt 5.5. switch to qEnvironmentVariableIntValue
+static int getenvInt(const char* name, int defaultValue)
+{
+    if (qEnvironmentVariableIsSet(name)) {
+        QByteArray stringValue = qgetenv(name);
+        bool ok;
+        int value = stringValue.toFloat(&ok);
+        return ok ? value : defaultValue;
+    } else {
+        return defaultValue;
+    }
+}
 
 UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
     m_framesAboveThreshold(0),
     m_warningCount(0),
-    m_timer(NULL),
     m_window(NULL)
 {
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
                      this, &UCPerformanceMonitor::onApplicationStateChanged);
+
+    singleFrameThreshold = getenvInt("UC_PERFORMANCE_MONITOR_SINGLE_FRAME_THRESHOLD", singleFrameThreshold);
+    multipleFrameThreshold = getenvInt("UC_PERFORMANCE_MONITOR_MULTIPLE_FRAME_THRESHOLD", multipleFrameThreshold);
+    framesCountThreshold = getenvInt("UC_PERFORMANCE_MONITOR_FRAMES_COUNT_THRESHOLD", framesCountThreshold);
+    warningCountThreshold = getenvInt("UC_PERFORMANCE_MONITOR_WARNING_COUNT_THRESHOLD", warningCountThreshold);
 }
 
 UCPerformanceMonitor::~UCPerformanceMonitor()
 {
-    connectToWindow(NULL);
 }
 
 QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
@@ -55,7 +71,7 @@ QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
 
 void UCPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state)
 {
-    if (m_warningCount >= warningCountThreshold) {
+    if (m_warningCount >= warningCountThreshold && warningCountThreshold != -1) {
         // do not monitor performance if the warning count threshold was reached
         return;
     }
@@ -75,6 +91,8 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
                                 this, &UCPerformanceMonitor::startTimer);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
                                 this, &UCPerformanceMonitor::stopTimer);
+            QObject::disconnect(m_window, &QWindow::destroyed,
+                                this, &UCPerformanceMonitor::windowDestroyed);
         }
 
         m_window = window;
@@ -86,22 +104,25 @@ void UCPerformanceMonitor::connectToWindow(QQuickWindow* window)
             QObject::connect(m_window, &QQuickWindow::afterRendering,
                              this, &UCPerformanceMonitor::stopTimer,
                              Qt::DirectConnection);
+            QObject::connect(m_window, &QWindow::destroyed,
+                             this, &UCPerformanceMonitor::windowDestroyed);
         }
     }
 }
 
 void UCPerformanceMonitor::startTimer()
 {
-    if (!m_timer) {
-        m_timer.reset(new QElapsedTimer);
-    }
-    m_timer->start();
+    m_timer.start();
 }
 
 void UCPerformanceMonitor::stopTimer()
 {
-    int totalTimeInMs = m_timer->elapsed();
-    m_timer->invalidate();
+    if (!m_timer.isValid()) {
+        return;
+    }
+
+    const int totalTimeInMs = m_timer.elapsed();
+    m_timer.invalidate();
 
     if (totalTimeInMs >= singleFrameThreshold) {
         qCWarning(ucPerformance, "Last frame took %d ms to render.", totalTimeInMs);
@@ -121,8 +142,13 @@ void UCPerformanceMonitor::stopTimer()
         m_framesAboveThreshold = 0;
     }
 
-    if (m_warningCount >= warningCountThreshold) {
+    if (m_warningCount >= warningCountThreshold && warningCountThreshold != -1) {
         qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
         connectToWindow(NULL);
     }
+}
+
+void UCPerformanceMonitor::windowDestroyed()
+{
+    connectToWindow(NULL);
 }

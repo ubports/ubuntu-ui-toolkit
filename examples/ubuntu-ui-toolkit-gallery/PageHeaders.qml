@@ -26,7 +26,47 @@ Template {
         className: "PageHeader"
 
         Label {
-            text: "Use the icons in the header."
+            text: "Use the icons in the header for search and edit header."
+        }
+
+        Grid {
+            id: switchGrid
+            columns: 2
+            spacing: units.gu(1)
+            anchors {
+                left: parent.left
+                leftMargin: units.gu(5)
+            }
+
+            Switch {
+                id: lockedSwitch
+                checked: standardHeader.extension
+                onTriggered: {
+                    if (standardHeader.extension) {
+                        standardHeader.extension = null;
+                    } else {
+                        standardHeader.extension = sections;
+                    }
+                }
+            }
+            Label {
+                text: "Sections"
+            }
+
+            Switch {
+                id: subtitleSwitch
+                checked: standardHeader.subtitle
+                onTriggered: {
+                    if (standardHeader.subtitle) {
+                        standardHeader.subtitle = "";
+                    } else {
+                        standardHeader.subtitle = "Hello, this is your subtitle";
+                    }
+                }
+            }
+            Label {
+                text: "Subtitle"
+            }
         }
     }
 
@@ -46,6 +86,20 @@ Template {
                 onTriggered: page.header = editHeader
             }
         ]
+
+        Sections {
+            id: sections
+            visible: standardHeader.extension === sections
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            model: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+                    "ten", "eleven", "twelve", "thirteen"]
+        }
+
+
     }
 
     PageHeader {

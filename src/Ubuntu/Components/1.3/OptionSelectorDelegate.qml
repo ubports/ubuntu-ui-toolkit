@@ -16,7 +16,7 @@
 
 /*!
     \qmltype OptionSelectorDelegate
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu-components
     \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
 
@@ -127,7 +127,7 @@ ListItem.Empty {
     }
 
     Component.onCompleted: {
-        height = listView.itemHeight = childrenRect.height;
+        height = listView.itemHeight = Qt.binding(function() { return childrenRect.height; });
     }
 
     //Since we don't want to add states to our divider, we use the exposed alias provided in Empty to access it and alter it's opacity from here.

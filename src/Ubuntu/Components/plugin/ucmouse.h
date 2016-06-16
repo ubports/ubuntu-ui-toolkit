@@ -114,8 +114,8 @@ Q_SIGNALS:
     void exited(QQuickMouseEvent *event, QQuickItem *host);
 
 protected:
-    virtual bool eventFilter(QObject *, QEvent *);
-    virtual void timerEvent(QTimerEvent *event);
+    bool eventFilter(QObject *, QEvent *) override;
+    void timerEvent(QTimerEvent *event) override;
     virtual bool mouseEvents(QObject *target, QMouseEvent *event);
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     virtual bool forwardedEvents(ForwardedEvent *event);

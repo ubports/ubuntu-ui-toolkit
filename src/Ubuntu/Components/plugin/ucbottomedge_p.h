@@ -23,6 +23,10 @@
 #include "ucstyleditembase_p.h"
 #include "ucaction.h"
 
+#include <AsyncLoader>
+
+using namespace UbuntuToolkit;
+
 class UCBottomEdgeStyle;
 class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
 {
@@ -51,7 +55,6 @@ public:
 
     // page header manipulation
     void patchContentItemHeader();
-    void createDefaultRegions();
     void updateProgressionStates(qreal distance);
     bool setActiveRegion(UCBottomEdgeRegion *range);
     void detectDirection(qreal currentDistance);
@@ -67,15 +70,17 @@ public:
     // from UCStyledItemBase
     bool loadStyleItem(bool animated = true) override;
     // from QQuickItemChangeListener
-    void itemChildAdded(QQuickItem *item, QQuickItem *child);
-    void itemChildRemoved(QQuickItem *item, QQuickItem *child);
+    void itemChildAdded(QQuickItem *item, QQuickItem *child) override;
+    void itemChildRemoved(QQuickItem *item, QQuickItem *child) override;
 
+    void setCurrentContent();
+    void resetCurrentContent(QQuickItem *newItem);
     // members
-    QUrl contentUrl;
     QList<UCBottomEdgeRegion*> regions;
+    QPointer<QQuickItem> currentContentItem;
+    UCBottomEdgeRegion *defaultRegion;
     UCBottomEdgeRegion *activeRegion;
     UCBottomEdgeHint *hint;
-    QQmlComponent *contentComponent;
     UCBottomEdgeStyle *bottomPanel;
 
     qreal previousDistance;
@@ -93,6 +98,7 @@ public:
 
     bool defaultRegionsReset:1;
     bool mousePressed:1;
+    bool preloadContent:1;
 
     // status management
     void setOperationStatus(OperationStatus s);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -56,16 +56,22 @@ Style.PullToRefreshStyle {
       Local properties
       */
     readonly property PullToRefresh control: styledItem
-    // property to store Flickable's toipMargin at the time the pull or auto-refresh is started
-    property real flickableTopMargin: 0.0
+    // property to control adding of control.height to the Flickable's topMargin.
+    property bool extendTopMargin: false
+    onExtendTopMarginChanged: {
+        if (extendTopMargin) {
+            control.target.topMargin += control.height;
+        } else {
+            control.target.topMargin -= control.height;
+        }
+    }
+
     // store when the drag has happened at the beginning of the Flickable's content
     property bool wasAtYBeginning: false
     // initial contentY value when pull started
     property real initialContentY: 0.0
     // drives the refreshing state
     property bool refreshing: false
-    // point of release used in rebind animation between the ready-to-refresh and refreshing states
-    property real pointOfRelease
     // specifies the component completion
     property bool ready: false
     // root item
@@ -130,6 +136,17 @@ Style.PullToRefreshStyle {
         anchors.centerIn: parent
     }
 
+    onVisibleChanged: {
+        // Updates to contentY may be interrupted if the flickable becomes
+        //  invisible (for example when a new Page is pushed on a stack
+        //  while PullToRefresh is in refreshing state. See bug #1578619.
+        if (visible) {
+            // Make sure the flickable is back inside its bounds when
+            //  the Page becomes visible again:
+            control.target.returnToBounds();
+        }
+    }
+
     // state and content controlling
     Connections {
         target: control
@@ -138,8 +155,7 @@ Style.PullToRefreshStyle {
                 return;
             }
             if (!style.releaseToRefresh && target.refreshing) {
-                // not a manual refresh, update flickable's starting topMargin
-                style.flickableTopMargin = control.target.topMargin;
+                // not a manual refresh
                 style.wasAtYBeginning = control.target.atYBeginning;
             }
             /*
@@ -162,13 +178,13 @@ Style.PullToRefreshStyle {
             style.refreshing = false;
             style.releaseToRefresh = false;
         }
-        onMovementEnded: style.wasAtYBeginning = control.target.atYBeginning
+        onMovementEnded: {
+            style.wasAtYBeginning = control.target.atYBeginning;
+        }
 
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && style.releaseToRefresh) {
-                pointOfRelease = -(control.target.contentY - control.target.originY)
-                style.flickableTopMargin = control.target.topMargin;
                 style.refreshing = true;
                 style.releaseToRefresh = false;
             }
@@ -213,8 +229,8 @@ Style.PullToRefreshStyle {
                 running: true
             }
             PropertyChanges {
-                target: control.target
-                topMargin: style.flickableTopMargin + control.height
+                target: style
+                extendTopMargin: true
             }
         }
     ]
@@ -226,9 +242,8 @@ Style.PullToRefreshStyle {
             SequentialAnimation {
                 UbuntuNumberAnimation {
                     target: control.target
-                    property: "topMargin"
-                    from: style.pointOfRelease
-                    to: style.flickableTopMargin + control.height
+                    property: "contentY"
+                    to: style.initialContentY - control.height
                 }
                 ScriptAction {
                     script: control.refresh()
@@ -242,8 +257,7 @@ Style.PullToRefreshStyle {
             UbuntuNumberAnimation {
                 target: control.target
                 property: "contentY"
-                from: -style.flickableTopMargin
-                to: -style.flickableTopMargin - control.height
+                to: style.initialContentY - control.height
             }
         },
         Transition {
@@ -252,6 +266,11 @@ Style.PullToRefreshStyle {
             UbuntuNumberAnimation {
                 target: control.target
                 property: "topMargin"
+            }
+            UbuntuNumberAnimation {
+                target: control.target
+                property: "contentY"
+                to: style.initialContentY
             }
         }
     ]

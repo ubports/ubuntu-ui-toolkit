@@ -27,10 +27,13 @@
 #undef foreach
 #include <QtQml/private/qqmlcompiler_p.h>
 
+#include <PropertyChange>
+
+using namespace UbuntuToolkit;
+
 class UCStyleHintsParser;
 class UCStyledItemBase;
 class QQuickItem;
-class PropertyChange;
 class UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -45,8 +48,8 @@ private Q_SLOTS:
     void _q_applyStyleHints();
 
 protected:
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
 private:
     class Expression {
@@ -82,8 +85,8 @@ class UCStyleHintsParser : public QQmlCustomParser
 public:
     UCStyleHintsParser() : QQmlCustomParser(QQmlCustomParser::AcceptsSignalHandlers) {}
 
-    virtual void verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings);
-    virtual void applyBindings(QObject *obj, QQmlCompiledData *cdata, const QList<const QV4::CompiledData::Binding *> &bindings);
+    void verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+    void applyBindings(QObject *obj, QQmlCompiledData *cdata, const QList<const QV4::CompiledData::Binding *> &bindings) override;
 
 private:
     void verifyProperty(const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);

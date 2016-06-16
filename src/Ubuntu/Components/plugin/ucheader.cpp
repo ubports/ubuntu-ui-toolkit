@@ -21,14 +21,12 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
-#include "propertychange_p.h"
-
 
 /*!
     \qmltype Header
     \instantiates UCHeader
     \inherits StyledItem
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
     \brief Header bar that can contain the title and controls for the current view.
@@ -42,15 +40,13 @@
     import QtQuick 2.4
     import Ubuntu.Components 1.3
 
-    Item {
+    Page {
         width: units.gu(50)
         height: units.gu(70)
 
-        Header {
-            id: header
+        header: Header {
             width: parent.width
             height: units.gu(6)
-            z: 1 // ensure the header goes on top of the flickable contents
             flickable: scrollableContent
 
             Rectangle {
@@ -71,8 +67,6 @@
     }
     \endqml
 
-    The default z-value is 0, so declare the Header after any Items that it should
-    overlay, or set its z-value to be larger than that of the other Items.
     The initial y-value is 0, but scrolling the flickable or setting \l exposed to
     false will change the y-value in the range from -height to 0.
 */
@@ -83,8 +77,8 @@ UCHeader::UCHeader(QQuickItem *parent)
     : UCStyledItemBase(parent)
     , m_flickable(Q_NULLPTR)
     , m_showHideAnimation(new QQuickNumberAnimation)
-    , m_flickableTopMarginBackup(Q_NULLPTR)
     , m_previous_contentY(0)
+    , m_previous_header_height(0)
     , m_exposed(true)
     , m_moving(false)
 {
@@ -101,8 +95,7 @@ UCHeader::UCHeader(QQuickItem *parent)
 
 UCHeader::~UCHeader() {
     if (m_flickable != Q_NULLPTR) {
-        Q_ASSERT(m_flickableTopMarginBackup != Q_NULLPTR);
-        delete m_flickableTopMarginBackup;
+        m_flickable->setTopMargin(m_flickable->topMargin() - m_previous_header_height);
     }
 }
 
@@ -120,6 +113,13 @@ void UCHeader::_q_heightChanged() {
     }
 }
 
+void UCHeader::itemChange(ItemChange change, const ItemChangeData &value) {
+    if (change == ItemVisibleHasChanged || change == ItemParentHasChanged) {
+        updateFlickableMargins();
+    }
+    UCStyledItemBase::itemChange(change, value);
+}
+
 /*!
  * \qmlproperty Flickable Header::flickable
  *
@@ -131,10 +131,45 @@ void UCHeader::_q_heightChanged() {
  *
  * When flickable is null, the header can be exposed or
  * hidden by setting the \l exposed property.
+ * Note that \l exposed is not automatically updated when the value of flickable
+ * changes, so if the header must be exposed when the flickable changes
+ * (or is set to null), this must be done explicitly. Example:
+ * \qml
+ *  import QtQuick 2.4
+ *  import Ubuntu.Components 1.3
  *
- * The topMargin of the flickable will automatically be updated to always match
- * the height of the header. When changing the flickable, the topMargin of the previous
- * flickable is set to 0.
+ *  MainView {
+ *      width: units.gu(60)
+ *      height: units.gu(80)
+ *
+ *      AdaptivePageLayout {
+ *          id: layout
+ *          anchors.fill: parent
+ *          primaryPage: Page {
+ *              id: page
+ *              Flickable {
+ *                  id: contentFlick
+ *                  anchors.fill: parent
+ *                  topMargin: page.header.flickable ? 0 : page.header.height
+ *                  contentHeight: units.gu(200)
+ *                  // Scrolling here can hide the header.
+ *              }
+ *              header: PageHeader {
+ *                  title: i18n.tr("Navigation")
+ *                  flickable: layout.columns === 1 ? contentFlick : null
+ *                  // Show header when it gets locked in a two-column layout:
+ *                  onFlickableChanged: exposed = true
+ *              }
+ *          }
+ *      }
+ *  }
+ * \endqml
+ *
+ * The topMargin of the flickable will automatically be updated by adding the height
+ * of the header to the current topMargin. When changing the flickable, the topMargin
+ * of the previous flickable is restored by subtracting the header height from it.
+ * Making the header invisible has the same effect on the topMargin as unsetting
+ * the flickable.
  *
  * It is permitted to use a ListView as the value of flickable, but this works
  * well only if the ListView.header property is not set. Alternatively,
@@ -150,8 +185,6 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         return;
     }
     if (!m_flickable.isNull()) {
-        Q_ASSERT(m_flickableTopMarginBackup != Q_NULLPTR);
-
         // Finish the current header movement in case the current
         //  flickable is disconnected while scrolling.
         if (m_exposed) {
@@ -161,23 +194,24 @@ void UCHeader::setFlickable(QQuickFlickable *flickable) {
         }
         m_flickable->disconnect(this);
 
-        qreal oldMargin = m_flickable->topMargin();
-        // store contentY to compensate for Flickable updating the position due to margin change.
-        qreal oldContentY = m_flickable->contentY();
-        delete m_flickableTopMarginBackup; // Restores previous value/binding for topMargin.
-        m_flickableTopMarginBackup = Q_NULLPTR;
+        // store the current sum of the topMargin and contentY so that we
+        //  can add the change in topMargin+contentY to the new contentY after
+        //  updating the topMargin so that the user will still see the same
+        //  flickable contents at the top of the view after the header height changed.
+        qreal delta = m_flickable->topMargin() + m_flickable->contentY();
+        m_flickable->setTopMargin(m_flickable->topMargin() - m_previous_header_height);
+        m_previous_header_height = 0;
+        delta -= m_flickable->topMargin() + m_flickable->contentY();
 
-        qreal delta = m_flickable->topMargin() - oldMargin + m_flickable->contentY() - oldContentY;
-        // revert the flickable content Y.
-        m_flickable->setContentY(m_flickable->contentY() - delta);
+        // restore the flickable content Y.
+        m_flickable->setContentY(m_flickable->contentY() + delta);
     }
 
     m_flickable = flickable;
     Q_EMIT flickableChanged();
 
-    Q_ASSERT(m_flickableTopMarginBackup == Q_NULLPTR);
+    Q_ASSERT(m_previous_header_height == 0);
     if (!m_flickable.isNull()) {
-        m_flickableTopMarginBackup = new PropertyChange(m_flickable, "topMargin");
         updateFlickableMargins();
         connect(m_flickable, SIGNAL(contentYChanged()),
                 this, SLOT(_q_scrolledContents()));
@@ -196,14 +230,17 @@ void UCHeader::updateFlickableMargins() {
     if (m_flickable.isNull()) {
         return;
     }
-    qreal headerHeight = height();
-    qreal previousHeaderHeight = m_flickable->topMargin();
-    if (headerHeight != previousHeaderHeight) {
+    qreal headerHeight = 0.0;
+    if (isVisible() && parentItem()) {
+        headerHeight = height();
+    } // else: header is not visible, so do not add to the topMargin.
+    if (headerHeight != m_previous_header_height) {
         qreal previousContentY = m_flickable->contentY();
-        PropertyChange::setValue(m_flickableTopMarginBackup, headerHeight);
+        m_flickable->setTopMargin(m_flickable->topMargin() + headerHeight - m_previous_header_height);
         // Push down contents when header grows,
         //  pull up contents when header shrinks.
-        m_flickable->setContentY(previousContentY - headerHeight + previousHeaderHeight);
+        m_flickable->setContentY(previousContentY - headerHeight + m_previous_header_height);
+        m_previous_header_height = headerHeight;
     }
 }
 

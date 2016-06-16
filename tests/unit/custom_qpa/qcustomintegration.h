@@ -59,16 +59,20 @@ class QCustomIntegration : public QPlatformIntegration
 {
 public:
     explicit QCustomIntegration();
-    ~QCustomIntegration() = default;
+    ~QCustomIntegration();
 
     bool hasCapability(QPlatformIntegration::Capability cap) const override;
     QPlatformFontDatabase *fontDatabase() const override;
+    QPlatformNativeInterface *nativeInterface() const override;
 
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const override;
     QAbstractEventDispatcher *createEventDispatcher() const override;
 
     static QCustomIntegration *instance();
+
+private:
+    QPlatformNativeInterface *m_nativeInterface;
 };
 
 #endif

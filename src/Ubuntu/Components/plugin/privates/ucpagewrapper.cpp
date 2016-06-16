@@ -20,7 +20,6 @@
 
 #include <QQmlEngine>
 #include <QQmlContext>
-#include <QtQuick/private/qquickitem_p.h>
 
 UCPageWrapperPrivate::UCPageWrapperPrivate() :
     m_object(nullptr),
@@ -164,14 +163,14 @@ void UCPageWrapperPrivate::deactivate()
  Converts the QObject into a QQuickItem, if that is not possible
  the pointer is destroyed and nullptr is returned
  */
-QQuickItem *UCPageWrapperPrivate::toItem(QObject *theObject)
+QQuickItem *UCPageWrapperPrivate::toItem(QObject *theObject, bool canDelete)
 {
     Q_Q(UCPageWrapper);
     QQuickItem *theItem = qobject_cast<QQuickItem *>(theObject);
     if (!theItem) {
         //the returned object has to be a Item but if its a Object
         //do not leak the pointer
-        if (theObject) delete theObject;
+        if (canDelete && theObject) delete theObject;
 
         qmlInfo(q) << "PageWrapper only supports components that are derived from Item";;
         return nullptr;
@@ -205,17 +204,18 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     // copy the properties to the page object
     QVariantMap propMap = m_properties.toMap();
     QVariantMap::const_iterator i = propMap.constBegin();
+
+    QQmlContext *context = m_itemContext ? m_itemContext : qmlContext(target);
     for (;i != propMap.constEnd(); i++) {
-        if (!target->setProperty(qPrintable(i.key()), i.value())) {
-            qmlInfo(q) << "Setting unknown property "<<i.key();
+        if (!QQmlProperty::write(target, i.key(), i.value(), context)) {
+            qmlInfo(q) << "Could not assign value: "<<i.value()<<"to property: "<<i.key();
         }
     }
 }
 
 /*!
   \internal
- Creates the Incubator wrapper object and makes sure the object
- ownership is set to JS
+ Creates the Incubator wrapper object
  */
 void UCPageWrapperPrivate::createIncubator()
 {
@@ -224,8 +224,6 @@ void UCPageWrapperPrivate::createIncubator()
         destroyIncubator();
 
     m_incubator = new UCPageWrapperIncubator(QQmlIncubator::Asynchronous, q);
-    QQmlEngine::setObjectOwnership(m_incubator, QQmlEngine::JavaScriptOwnership);
-
     Q_EMIT q->incubatorChanged(m_incubator);
 }
 
@@ -235,11 +233,9 @@ void UCPageWrapperPrivate::createIncubator()
  */
 void UCPageWrapperPrivate::destroyIncubator()
 {
-    //the incubator has JS ownership, this should cause a deletion!!
     if (m_incubator) {
-        m_incubator->setParent(nullptr);
+        m_incubator->deleteLater();
         m_incubator = nullptr;
-
         Q_EMIT q_func()->incubatorChanged(m_incubator);
     }
 }
@@ -261,7 +257,7 @@ void UCPageWrapperPrivate::nextStep()
             break;
         }
         case CreatingObject:{
-            initializeObjectIfReady();
+            finalizeObjectIfReady();
             break;
         }
         case NotifyPageLoaded: {
@@ -371,11 +367,12 @@ void UCPageWrapperPrivate::createObjectState()
     m_itemContext = new QQmlContext(creationContext);
 
     if (m_synchronous) {
-        QQuickItem *theItem = toItem(m_component->create(m_itemContext));
+        QQuickItem *theItem = toItem(m_component->beginCreate(m_itemContext));
         if (theItem) {
+            initItem(theItem);
             m_itemContext->setParent(theItem);
             m_itemContext = nullptr;
-            initItem(theItem);
+            m_component->completeCreate();
             m_state = NotifyPageLoaded;
             nextStep();
         } else {
@@ -388,11 +385,24 @@ void UCPageWrapperPrivate::createObjectState()
         QObject::connect(m_incubator, SIGNAL(enterOnStatusChanged()),
                          q, SLOT(nextStep()));
 
+        //make sure we intialize the item before it is instantiated
+        QSharedPointer<QMetaObject::Connection> connHandle(new QMetaObject::Connection);
+        auto asyncCallback = [this, connHandle](QObject *target){
+            QObject::disconnect(*connHandle);
+            QQuickItem *theItem = toItem(target, false);
+            if (theItem) {
+                initItem(theItem);
+                m_itemContext->setParent(theItem);
+                m_itemContext = nullptr;
+            }
+        };
+        *connHandle = QObject::connect(m_incubator, &UCPageWrapperIncubator::initialStateRequested, asyncCallback);
+
         m_component->create(*m_incubator, m_itemContext);
     }
 }
 
-void UCPageWrapperPrivate::initializeObjectIfReady()
+void UCPageWrapperPrivate::finalizeObjectIfReady()
 {
     Q_Q(UCPageWrapper);
     if(m_incubator->status() == QQmlIncubator::Ready) {
@@ -400,13 +410,8 @@ void UCPageWrapperPrivate::initializeObjectIfReady()
         QObject::disconnect(m_incubator, SIGNAL(enterOnStatusChanged()),
                          q, SLOT(nextStep()));
 
-        //the object was created, now initialize it
         QQuickItem *theItem = toItem(m_incubator->object());
         if (theItem) {
-            initItem(theItem);
-            m_itemContext->setParent(theItem);
-            m_itemContext = nullptr;
-
             //this code needs to be executed after the Incubator has executed the JS callback
             QSharedPointer<QMetaObject::Connection> sharedConn(new QMetaObject::Connection);
             auto asyncCallback = [this, sharedConn](){
@@ -425,6 +430,10 @@ void UCPageWrapperPrivate::initializeObjectIfReady()
     } else if(m_incubator->status() == QQmlIncubator::Error) {
         m_state = Error;
         qmlInfo(q) << m_incubator->errors();
+    } else if (m_incubator->status() == QQmlIncubator::Null) {
+        //page loading was cancled
+        reset();
+        return;
     }
 
     // cleanup
@@ -447,7 +456,7 @@ void UCPageWrapperPrivate::onActiveChanged()
 /*!
     \internal
     \qmltype PageWrapper
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Internal class used by \l PageStack
 */

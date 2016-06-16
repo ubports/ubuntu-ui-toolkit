@@ -87,6 +87,7 @@
 
 //From UbuntuToolkit
 #include <ColorUtils>
+#include <Tree>
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -221,6 +222,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCProportionalShape>(uri, 1, 3, "ProportionalShape");
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
+    qmlRegisterType<UCMargins>();
     qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", "Not instantiable");
     qmlRegisterUncreatableType<UCSlotsLayoutPadding>(uri, 1, 3, "SlotsLayoutPadding", "Not instantiable");
     qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
@@ -300,13 +302,14 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
     qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
+    qmlRegisterType<UbuntuToolkit::Tree>(privateUri, 1, 3, "Tree");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
 
     // allocate all context property objects prior we register them
     initializeContextProperties(engine);
 
-    HapticsProxy::instance().setEngine(engine);
+    HapticsProxy::instance(engine);
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

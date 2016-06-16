@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 /*
   This component is a unified text selection and scrolling handler for both
@@ -147,7 +148,7 @@ MultiPointTouchArea {
         return p;
     }
     // focuses the input if not yet focused, and shows the context menu
-    function openContextMenu(mouse, noAutoselect, fromTouch) {
+    function openContextMenu(mouse, noAutoselect) {
         var pos = mousePosition(mouse);
         if (!main.focus || !mouseInSelection(mouse)) {
             activateInput();
@@ -157,7 +158,7 @@ MultiPointTouchArea {
             }
         }
         // open context menu at the cursor position
-        inputHandler.pressAndHold(input.cursorPosition, fromTouch);
+        inputHandler.pressAndHold(input.cursorPosition, mouse.touch);
         // if opened with left press (touch falls into this criteria as well), we need to set state to inactive
         // so the mouse moves won't result in selected text loss/change
         if (mouse.button === Qt.LeftButton) {
@@ -290,12 +291,24 @@ MultiPointTouchArea {
     Connections {
         target: main
         ignoreUnknownSignals: true
+        onActiveFocusChanged: {
+            input.focus = main.activeFocus;
+        }
+        onKeyNavigationFocusChanged: {
+            if (main.keyNavigationFocus) {
+                input.forceActiveFocus();
+            }
+        }
         onFocusChanged: {
             UbuntuApplication.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
             if (main.focus) {
                 input.forceActiveFocus()
             }
+        }
+        onVisibleChanged: {
+            if (!main.visible)
+                main.focus = false;
         }
     }
 
@@ -311,7 +324,11 @@ MultiPointTouchArea {
             }
         }
         // make sure we show the OSK
-        onActiveFocusChanged: showInputPanel()
+        onActiveFocusChanged: {
+            if (!input.activeFocus && popover)
+                PopupUtils.close(popover);
+            showInputPanel();
+        }
     }
 
     // inner or outer Flickable controlling
@@ -341,8 +358,8 @@ MultiPointTouchArea {
     }
 
     // touch and mous handling
-    function handlePressed(event, touch) {
-        if (touch) {
+    function handlePressed(event) {
+        if (event.touch) {
             // we do not have longTap or double tap, therefore we need to generate those
             event.touch();
         } else {
@@ -352,8 +369,8 @@ MultiPointTouchArea {
         // remember pressed position as we need it when entering into selection state
         pressedPosition = mousePosition(event);
     }
-    function handleReleased(event, touch) {
-        if (touch) {
+    function handleReleased(event) {
+        if (event.touch) {
             event.untouch();
         }
         if ((!main.focus && !main.activeFocusOnPress) || suppressReleaseEvent === true) {
@@ -362,7 +379,7 @@ MultiPointTouchArea {
         }
 
         activateInput();
-        if (state === "" || touch) {
+        if (state === "" || event.touch) {
             input.cursorPosition = mousePosition(event);
         }
         moveStarts = moveEnds = -1;
@@ -370,21 +387,21 @@ MultiPointTouchArea {
         // check if we get right-click from the frame or the area that has no text
         if (event.button === Qt.RightButton) {
             // open the popover
-            inputHandler.pressAndHold(input.cursorPosition, touch);
+            inputHandler.pressAndHold(input.cursorPosition, event.touch);
         } else {
             inputHandler.tap(input.cursorPosition);
         }
     }
-    function handleMove(event, touch ) {
+    function handleMove(event) {
         // leave if not focus, not the left button or not in select state
-        if (!input.activeFocus || (!touch && event.button !== Qt.LeftButton) || !main.selectByMouse) {
+        if (!input.activeFocus || (!event.touch && event.button !== Qt.LeftButton) || !main.selectByMouse) {
             return;
         }
         selectText(event);
     }
-    function handleDblClick(event, touch) {
+    function handleDblClick(event) {
         if (main.selectByMouse) {
-            openContextMenu(event, false, touch);
+            openContextMenu(event, false);
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
             suppressReleaseEvent = true;
@@ -393,17 +410,17 @@ MultiPointTouchArea {
 
     // Mouse handling
     Mouse.forwardTo: [main]
-    Mouse.onPressed: handlePressed(mouse, false)
-    Mouse.onReleased: handleReleased(mouse, false)
-    Mouse.onPositionChanged: handleMove(mouse, false)
-    Mouse.onDoubleClicked: handleDblClick(mouse, false)
+    Mouse.onPressed: handlePressed(mouse)
+    Mouse.onReleased: handleReleased(mouse)
+    Mouse.onPositionChanged: handleMove(mouse)
+    Mouse.onDoubleClicked: handleDblClick(mouse)
 
     // right button handling
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: openContextMenu(mouse, true, false)
+        onReleased: openContextMenu(mouse, true)
         cursorShape: Qt.IBeamCursor
     }
     Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition, false);
@@ -442,7 +459,7 @@ MultiPointTouchArea {
             if (touchPoint.startY - touchPoint.y < -units.gu(2))
                 return;
 
-            openContextMenu(touchPoint, false, true);
+            openContextMenu(touchPoint, false);
             suppressReleaseEvent = true;
         }
     }
@@ -456,8 +473,8 @@ MultiPointTouchArea {
             tapCount = running;
         }
     }
-    onPressed: handlePressed(touchPoints[0], true)
-    onReleased: handleReleased(touchPoints[0], true)
+    onPressed: handlePressed(touchPoints[0])
+    onReleased: handleReleased(touchPoints[0])
 
     property Item cursorPositionCursor: null
     property Item selectionStartCursor: null

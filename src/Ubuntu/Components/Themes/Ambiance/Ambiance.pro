@@ -33,7 +33,7 @@ ARTWORK_FILES += artwork/background_paper@27.png \
              artwork/stroke_button@27.png \
              artwork/tick@30.png \
              artwork/toolbar_dropshadow@20.png \
-             artwork/scrollbar_arrow@27.png
+             artwork/toolkit_scrollbar-stepper.svg
 
 QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.2/BubbleShape.qml \
@@ -119,6 +119,7 @@ QML_FILES += 1.2/ActivityIndicatorStyle.qml \
              1.3/BottomEdgeStyle.qml \
              1.3/FocusShape.qml \
 	     1.3/SectionsForPageHead.qml \
+	     1.3/SectionsForPageHeadStyle.qml \
              $$ARTWORK_FILES
 
 load(ubuntu_qml_module)

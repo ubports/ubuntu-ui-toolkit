@@ -59,7 +59,7 @@ public:
     virtual void completeComponentInitialization();
 
     // from UCImportVersionChecker
-    virtual QString propertyForVersion(quint16 version) const;
+    QString propertyForVersion(quint16 version) const override;
 
 public:
 
@@ -72,6 +72,7 @@ public:
     bool keyNavigationFocus:1;
     bool activeFocusOnPress:1;
     bool wasStyleLoaded:1;
+    bool isFocusScope:1;
 
 protected:
 

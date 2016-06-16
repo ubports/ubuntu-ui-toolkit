@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,6 +27,10 @@
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
 
+#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtGui/qpa/qplatformwindow.h>
+#include <QtGui/qpa/qplatformscreen.h>
+
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
 
@@ -42,7 +46,7 @@ static float getenvFloat(const char* name, float defaultValue)
 /*!
     \qmltype Units
     \instantiates UCUnits
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup resolution-independence
     \brief Units of measurement for sizes, spacing, margin, etc.
 
@@ -100,14 +104,17 @@ UCUnits::UCUnits(QObject *parent) :
     QObject(parent),
     m_devicePixelRatio(qGuiApp->devicePixelRatio())
 {
-    if (!m_units) {
-        m_units = this;
-    }
     // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
     if (qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
         m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
     } else {
         m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
+    }
+
+    auto nativeInterface = qGuiApp->platformNativeInterface();
+    if (nativeInterface) {
+        QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                         this, &UCUnits::windowPropertyChanged);
     }
 }
 
@@ -128,6 +135,9 @@ float UCUnits::gridUnit()
 
 void UCUnits::setGridUnit(float gridUnit)
 {
+    if (qFuzzyCompare(gridUnit, m_gridUnit)) {
+        return;
+    }
     m_gridUnit = gridUnit;
     Q_EMIT gridUnitChanged();
 }
@@ -178,7 +188,7 @@ QString UCUnits::resolveResource(const QUrl& url)
         return QString();
     }
 
-    QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
+    QString prefix = fileInfo.dir().absolutePath() + "/" + fileInfo.baseName();
     QString suffix = "." + fileInfo.completeSuffix();
 
     /* Use file with expected grid unit suffix if it exists.
@@ -248,4 +258,46 @@ float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
     } else {
         return 0;
     }
+}
+
+void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &propertyName)
+{
+    if (propertyName != QStringLiteral("scale")) { //don't care otherwise
+        return;
+    }
+
+    /*
+     * FIXME - hack to work around LP bug #1573118.
+     *
+     * The "units" context property has no idea about which screen it is on, making it impossible
+     * to have different grid unit values per window in a single app. This would be the case, for
+     * example, when one app has multiple windows on different screens.
+     *
+     * The below ensures that the internal screen (LVDS for all our devices today) scale is ignored
+     * when an external screen is connected, for which a different scale is required. Otherwise
+     * the two screens would fight for which scale gets applied.
+     *
+     * This is only currently supported for unity8, which has a window per screen, but we want the
+     * external (non-LVDS) screen's scale applied across the shell.
+     *
+     */
+    if (qGuiApp->allWindows().count() > 1) {
+        if (window && window->screen()
+                && window->screen()->name().contains("LVDS")) {
+            return;
+        }
+    }
+
+    auto nativeInterface = qGuiApp->platformNativeInterface();
+    QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
+    if (!scaleVal.isValid()) {
+        return;
+    }
+    bool ok;
+    float scale = scaleVal.toFloat(&ok);
+    if (!ok || scale <= 0) {
+        return;
+    }
+    // choose integral grid unit value closest to requested scale
+    setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }

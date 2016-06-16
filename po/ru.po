@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2015-12-25 05:33+0000\n"
-"X-Generator: Launchpad (build 17865)\n"
+"X-Launchpad-Export-Date: 2016-06-08 05:49+0000\n"
+"X-Generator: Launchpad (build 18097)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
@@ -51,12 +51,12 @@ msgstr "Удалить"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
 msgid "No service/path specified"
-msgstr ""
+msgstr "Служба или путь не указаны"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
 #, qt-format
 msgid "Invalid bus type: %1."
-msgstr ""
+msgstr "Недопустимый тип шины: %1."
 
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
@@ -144,6 +144,8 @@ msgid ""
 "ListView has no ViewItems.dragUpdated() signal handler implemented. No "
 "dragging will be possible."
 msgstr ""
+"У ListView не реализован обработчик сигнала ViewItems.dragUpdated(). "
+"Перетаскивание будет невозможно."
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -195,11 +197,11 @@ msgstr "%1 ожидает дополнительных параметров: %2"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
-msgstr ""
+msgstr "рассмотреть переопределение слота swipeEvent() slot!"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
 msgid "consider overriding rebound() slot!"
-msgstr ""
+msgstr "рассмотреть переопределение слота rebound()!"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
@@ -216,6 +218,7 @@ msgstr "Изменение параметров подключения запр�
 msgid ""
 "Binding detected on property '%1' will be removed by the service updates."
 msgstr ""
+"Привязка обнаруженная на свойстве '%1' будет удалена служебными обновлениями."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
@@ -242,21 +245,23 @@ msgstr ""
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "Тема не найдена: \"%1\""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "Не является компонентом палитры."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "Для использования режима перетаскивания требуется ListView"
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
 "Dragging is only supported when using a QAbstractItemModel, ListModel or "
 "list."
 msgstr ""
+"Перетаскивание поддерживается только при использовании QAbstractItemModel, "
+"ListModel или списка."
 
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78

@@ -26,7 +26,7 @@ class UCScalingImageProvider : public QQuickImageProvider
 {
 public:
     explicit UCScalingImageProvider();
-    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
+    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 };
 
 #endif // SCALINGIMAGEPROVIDER_H

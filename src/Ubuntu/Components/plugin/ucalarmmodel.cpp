@@ -27,7 +27,7 @@
 /*!
  * \qmltype AlarmModel
  * \instantiates UCAlarmModel
- * \inqmlmodule Ubuntu.Components 1.1
+ * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-services
  * \brief AlarmModel holds the list of alarms defined.
  *

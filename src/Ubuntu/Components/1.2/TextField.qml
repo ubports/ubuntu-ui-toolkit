@@ -20,7 +20,7 @@ import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype TextField
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode

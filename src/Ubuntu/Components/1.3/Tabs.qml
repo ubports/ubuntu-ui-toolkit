@@ -19,11 +19,13 @@ import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Tabs
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
+    \deprecated
     \brief The Tabs class provides an environment where multible \l Tab
     children can be added, and the user is presented with a tab
     bar with tab buttons to select different tab pages.
+    This component is DEPRECATED. See http://design.ubuntu.com/apps/patterns/navigation
 
     Tabs must be placed inside a \l MainView so that it will automatically
     have a header that shows the tabs that can be selected, and the toolbar
@@ -48,12 +50,6 @@ import Ubuntu.Components 1.3 as Toolkit
                             id: label
                             anchors.centerIn: parent
                             text: "A centered label"
-                        }
-                        tools: ToolbarItems {
-                            ToolbarButton {
-                                text: "action"
-                                onTriggered: print("action triggered")
-                            }
                         }
                     }
                 }
@@ -152,6 +148,11 @@ import Ubuntu.Components 1.3 as Toolkit
 Toolkit.PageTreeNode {
     id: tabs
     anchors.fill: parent
+
+    Component.onCompleted: {
+        print("Tabs component is deprecated. " +
+              "See http://design.ubuntu.com/apps/patterns/navigation");
+    }
 
     /*!
       \qmlproperty int selectedTabIndex

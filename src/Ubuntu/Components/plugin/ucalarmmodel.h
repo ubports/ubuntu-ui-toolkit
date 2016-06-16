@@ -33,13 +33,13 @@ public:
     explicit UCAlarmModel(QObject *parent = 0);
     ~UCAlarmModel();
 
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
-    int rowCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
 
-    QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> roleNames() const override;
 
     // invokables
     Q_INVOKABLE UCAlarm *get(int index);

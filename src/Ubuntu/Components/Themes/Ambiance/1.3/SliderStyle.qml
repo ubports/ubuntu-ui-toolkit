@@ -82,6 +82,9 @@ Item {
         width: units.gu(2)
         height: units.gu(2)
         backgroundColor: theme.palette.normal.raised
+
+        FocusShape {
+        }
     }
 
     BubbleShape {

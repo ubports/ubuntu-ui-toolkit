@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 #
 # Copyright 2013 Canonical Ltd.
 #
@@ -16,7 +16,7 @@
 #
 ################################################################################
 
-. `dirname $0`/../build_paths.inc
+source `dirname $0`/../export_qml_dir.sh || exit 1
 
 if [ ! -e $BUILD_DIR/qml/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
     echo You need to build UITK before you can dump QML API!
@@ -26,7 +26,7 @@ fi
 CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubuntu.Components.Pickers Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 echo Dumping QML API of C++ components
 test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
-env ALARM_BACKEND=memory QML2_IMPORT_PATH=$BUILD_DIR/qml LD_LIBRARY_PATH=$BUILD_DIR/lib \
+env ALARM_BACKEND=memory \
     $BUILD_DIR/apicheck/apicheck \
     --qml $CPP 1>> $BUILD_DIR/components.api.new &&
     echo Verifying the diff between existing and generated API

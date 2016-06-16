@@ -40,11 +40,18 @@ UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
     QObject(parent),
     m_image(static_cast<QQuickImageBase*>(parent))
 {
+    // FIXME(loicm) When the grid unit is changed following a QPA plugin scale
+    //     notification, we experienced a crash in reloadSource() while setting
+    //     the QQuickImageBase source. It seems like a resource handling issue
+    //     in Qt but we have not managed to identify it exactly. We work around
+    //     it by using a queued connection for gridUnitChanged() signal for now.
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     this, SLOT(reloadSource()));
-    // connect sourceChanged signal to extendedSourceChanged
-    QObject::connect(m_image, &QQuickImageBase::sourceChanged,
-                     this, &UCQQuickImageExtension::extendedSourceChanged);
+                     this, SLOT(reloadSource()), Qt::QueuedConnection);
+
+    if (m_image) {
+        QObject::connect(m_image, &QQuickImageBase::sourceChanged,
+                         this, &UCQQuickImageExtension::extendedSourceChanged);
+    }
 }
 
 QUrl UCQQuickImageExtension::source() const
@@ -62,6 +69,10 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
 
 void UCQQuickImageExtension::reloadSource()
 {
+    if (!m_image) {
+        // nothing to do, we don't have the image instance
+        return;
+    }
     if (m_source.isEmpty()) {
         m_image->setSource(m_source);
         return;
@@ -111,7 +122,7 @@ void UCQQuickImageExtension::reloadSource()
             rewrittenSciFile = UCQQuickImageExtension::s_rewrittenSciFiles.value(m_source).data();
             if (rewrittenSciFile == NULL) {
                 rewrittenSciFile = new QTemporaryFile;
-                rewrittenSciFile->setFileTemplate(QDir::tempPath() + QDir::separator() + "XXXXXX.sci");
+                rewrittenSciFile->setFileTemplate(QDir::tempPath() + "/XXXXXX.sci");
                 rewrittenSciFile->open();
                 QTextStream output(rewrittenSciFile);
 
@@ -173,7 +184,7 @@ QString UCQQuickImageExtension::scaledBorder(const QString &border, const QStrin
 QString UCQQuickImageExtension::scaledSource(QString source, const QString &sciFilePath, const QString &scaleFactor)
 {
     // Rewrite the source line by prepending "image://scaling" to the source value
-    QString sciDirectory = QFileInfo(sciFilePath).dir().path() + QDir::separator();
+    QString sciDirectory = QFileInfo(sciFilePath).dir().path() + "/";
     QString baseUrl = "image://scaling/" + scaleFactor + "/" + sciDirectory;
 
     // If the source url is between quotes "", remove them

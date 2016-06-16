@@ -29,7 +29,7 @@
 /*!
     \qmltype Theme
     \instantiates UCTheme
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.
 
@@ -131,7 +131,8 @@ void UCDeprecatedTheme::resetName()
 QObject* UCDeprecatedTheme::palette()
 {
     showDeprecatedNote(this, "Theme.palette is deprecated. Use ThemeSettings instead.");
-    return defaultTheme()->palette();
+    // force loading 1.2 palette!
+    return defaultTheme()->palette(BUILD_VERSION(1, 2));
 }
 
 /*!

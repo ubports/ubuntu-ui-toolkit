@@ -58,7 +58,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 /*!
    \qmltype Mouse
    \instantiates UCMouse
-   \inqmlmodule Ubuntu.Components 1.1
+   \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached property filtering mouse events occured inside the owner.
 
@@ -608,7 +608,8 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
             m_pressAndHoldTimer.stop();
         }
 
-        setHovered(true, 0);
+        setHovered(m_owner->contains(m_lastPos), Q_NULLPTR);
+
         m_moved = true;
         m_doubleClicked = false;
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
@@ -1014,7 +1015,7 @@ void UCMouse::setPriority(Priority priority)
 /*!
    \qmltype InverseMouse
    \instantiates UCInverseMouse
-   \inqmlmodule Ubuntu.Components 1.1
+   \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached object filtering mouse events occured outside the owner.
 

@@ -20,7 +20,7 @@ import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype TextArea
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The TextArea item displays a block of editable, scrollable, formatted
     text.

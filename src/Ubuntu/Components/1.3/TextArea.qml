@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,7 @@ import Ubuntu.Components.Popups 1.3
 
 /*!
     \qmltype TextArea
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The TextArea item displays a block of editable, scrollable, formatted
     text.
@@ -103,7 +103,7 @@ Ubuntu.StyledItem {
       text input. This property allows to control the highlight separately from
       the focused behavior.
       */
-    property bool highlighted: activeFocus
+    property bool highlighted
     /*!
       Text that appears when there is no focus and no content in the component
       (hint text).
@@ -538,13 +538,6 @@ Ubuntu.StyledItem {
       */
     property alias wrapMode:editor.wrapMode
 
-    /*!
-      Whether the TextArea should gain active focus on a mouse press. By default
-      this is set to true.
-      \qmlproperty bool activeFocusOnPress
-    */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
-
     // signals
     /*!
       This handler is called when the user clicks on a link embedded in the text.
@@ -756,18 +749,16 @@ Ubuntu.StyledItem {
     }
 
     //internals
-
     activeFocusOnPress: true
-    activeFocusOnTab: true
-
-    /*!\internal */
-    onVisibleChanged: {
-        if (!visible)
-            control.focus = false;
-    }
 
     // Escape should close the context menu even if the menu takes no input focus
-    Keys.onEscapePressed: if (activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
+    Keys.onEscapePressed: {
+        if (activeFocus && inputHandler.popover) {
+            PopupUtils.close(inputHandler.popover)
+        } else {
+            event.accepted = false
+        }
+    }
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -778,6 +769,7 @@ Ubuntu.StyledItem {
         property string displayText: editor.getText(0, editor.length)
         property real frameSpacing: control.__styleInstance.frameSpacing
         property real minimumSize: units.gu(4)
+        property real scrollbarSpacing: rightScrollbar.__interactive ? units.gu(2) : 0
 
         function linesHeight(lines)
         {
@@ -826,22 +818,13 @@ Ubuntu.StyledItem {
         }
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
-        color: theme.palette.normal.base
+        color: theme.palette.normal.baseText
         font: editor.font
         elide: Text.ElideRight
         wrapMode: Text.WordWrap
     }
 
     //scrollbars and flickable
-    Scrollbar {
-        id: rightScrollbar
-        flickableItem: flicker
-    }
-    Scrollbar {
-        id: bottomScrollbar
-        flickableItem: flicker
-        align: Qt.AlignBottom
-    }
     Flickable {
         id: flicker
         objectName: "input_scroller"
@@ -862,14 +845,11 @@ Ubuntu.StyledItem {
             objectName: "text_input"
             readOnly: false
             id: editor
-            focus: true
-            width: control.contentWidth
+            width: control.contentWidth - internal.scrollbarSpacing
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: true
-            activeFocusOnPress: true
-            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
@@ -894,6 +874,19 @@ Ubuntu.StyledItem {
                 flickable: flicker
             }
         }
+    }
+
+    /*! \internal */
+    property Item __rightScrollbar: rightScrollbar
+    Scrollbar {
+        id: rightScrollbar
+        flickableItem: flicker
+        // Attach right inside the frame
+        // Flickable uses anchors.margins relative to the frame
+        // rather than *Margin which would scroll with the content
+        anchors.topMargin: -internal.frameSpacing
+        anchors.rightMargin: -internal.frameSpacing
+        anchors.bottomMargin: -internal.frameSpacing
     }
 
     styleName: "TextAreaStyle"

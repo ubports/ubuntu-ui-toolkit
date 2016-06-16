@@ -23,7 +23,7 @@ const qreal invAspectRatio = 1.0 / aspectRatio;
 
 /*! \qmltype ProportionalShape
     \instantiates UCProportionalShape
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Extended UbuntuShape mostly used for icons and vignettes.
 
@@ -55,4 +55,10 @@ void UCProportionalShape::_q_updateHeight()
     if (qAbs(newHeight - height()) > 0.5) {
         setHeight(newHeight);
     }
+}
+
+void UCProportionalShape::componentComplete()
+{
+    QQuickItem::componentComplete();
+    _q_updateHeight();
 }

@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.4
+import QtQuick.Window 2.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import Ubuntu.Components.Styles 1.3 as Style
@@ -21,7 +22,7 @@ import Ubuntu.Components.Styles 1.3 as Style
 Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
-    contentHeight: units.gu(6)
+    contentHeight: Screen.height > units.gu(50) ? units.gu(6) : units.gu(5)
     fontWeight: Font.Light
     textSize: Label.Large
     textLeftMargin: units.gu(2)
@@ -49,8 +50,18 @@ Style.PageHeadStyle {
      */
     property color backgroundColor: styledItem.backgroundColor
     Rectangle {
+        id: background
         anchors.fill: parent
         color: headerStyle.backgroundColor
+
+        // The border is shown to warn the developer that the AppHeader
+        //  is deprecated. See bug #1583636
+        property bool showBorder: styledItem.hasOwnProperty("showDeprecatedWarning") &&
+                                  styledItem.showDeprecatedWarning
+        border {
+            width: background.showBorder ? units.gu(0.5) : 0
+            color: background.showBorder ? UbuntuColors.red : "transparent"
+        }
     }
 
     // FIXME: When the three panel color properties below are removed,

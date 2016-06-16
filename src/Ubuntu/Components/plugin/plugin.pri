@@ -69,7 +69,6 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uclistitem_p.h \
     $$PWD/uclistitemactions.h \
     $$PWD/uclistitemactions_p.h \
-    $$PWD/propertychange_p.h \
     $$PWD/uclistitemstyle.h \
     $$PWD/ucserviceproperties.h \
     $$PWD/ucserviceproperties_p.h \
@@ -90,6 +89,7 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/uchaptics.h \
     $$PWD/ucabstractbutton.h \
     $$PWD/ucabstractbutton_p.h \
+    $$PWD/ucmargins.h \
     $$PWD/ucthemingextension.h \
     $$PWD/ucheader.h \
     $$PWD/uclabel.h \
@@ -109,11 +109,14 @@ HEADERS += $$PWD/plugin.h \
     $$PWD/ucmainviewbase.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucperformancemonitor.h \
+    $$PWD/privates/listviewextensions.h \
     $$PWD/privates/frame.h \
     $$PWD/privates/ucpagewrapper.h \
     $$PWD/privates/ucpagewrapper_p.h \
     $$PWD/privates/ucpagewrapperincubator_p.h \
-    $$PWD/privates/appheaderbase.h
+    $$PWD/privates/appheaderbase.h \
+    $$PWD/label_p.h \
+    $$PWD/ucbottomedgeregion_p.h
 
 SOURCES += $$PWD/plugin.cpp \
     $$PWD/uctheme.cpp \
@@ -155,7 +158,6 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/adapters/dbuspropertywatcher_p.cpp \
     $$PWD/uclistitem.cpp \
     $$PWD/uclistitemactions.cpp \
-    $$PWD/propertychange_p.cpp \
     $$PWD/uclistitemstyle.cpp \
     $$PWD/ucviewitemsattached.cpp \
     $$PWD/ucserviceproperties.cpp \
@@ -187,6 +189,7 @@ SOURCES += $$PWD/plugin.cpp \
     $$PWD/ucpagetreenode.cpp \
     $$PWD/ucmainviewbase.cpp \
     $$PWD/ucperformancemonitor.cpp \
+    $$PWD/privates/listviewextensions.cpp \
     $$PWD/privates/frame.cpp \
     $$PWD/privates/ucpagewrapper.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \

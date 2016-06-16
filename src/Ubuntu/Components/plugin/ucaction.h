@@ -153,7 +153,7 @@ private:
     bool isValidType(QVariant::Type valueType);
     void generateName();
     void setMnemonicFromText(const QString &text);
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
     void onKeyboardAttached();
 };
 QML_DECLARE_TYPE(UCAction)

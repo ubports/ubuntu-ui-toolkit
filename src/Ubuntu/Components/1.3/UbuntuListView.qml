@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype UbuntuListView
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \inherits ListView
     \brief A ListView with special features tailored for a look and feel fitting the
@@ -196,7 +196,9 @@ ListView {
 
     // highlight current item
     highlight: Rectangle {
-        color: theme.palette.selected.background
+        color: root.activeFocus
+               ? theme.palette.focused.background
+               : theme.palette.selected.background
     }
     highlightMoveDuration: 0
 }

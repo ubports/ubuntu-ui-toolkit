@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype Sections
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.3
     \brief Display a list of sections that the user can select. By tapping
@@ -29,6 +29,7 @@ import Ubuntu.Components 1.3
 StyledItem {
     id: sections
     styleName: "SectionsStyle"
+    activeFocusOnTab: true
 
     /*!
       List of actions that represent the sections.
@@ -80,10 +81,6 @@ StyledItem {
      */
     property var model: actions
     onModelChanged: {
-        if (model && model.length > 3) {
-            // FIXME: Make the Sections scrollable for more than 3 sections.
-            console.warn("It is not YET recommended or supported to use more than three sections.");
-        }
         if (internal.done) {
             if (!model || model.length === 0) {
                 selectedIndex = -1;

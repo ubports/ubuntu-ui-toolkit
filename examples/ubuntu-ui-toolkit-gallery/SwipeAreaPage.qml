@@ -28,8 +28,8 @@ Template {
         TemplateRow {
             title: i18n.tr("Upwards")
             Rectangle {
-                width: units.gu(40)
-                height: units.gu(20)
+                width: parent.width / 1.5
+                height: width / 2
                 color: theme.palette.normal.foreground
 
                 SwipeArea {
@@ -56,8 +56,8 @@ Template {
         TemplateRow {
             title: i18n.tr("Downwards")
             Rectangle {
-                width: units.gu(40)
-                height: units.gu(20)
+                width: parent.width / 1.5
+                height: width / 2
                 color: theme.palette.normal.foreground
 
                 SwipeArea {
@@ -84,8 +84,8 @@ Template {
         TemplateRow {
             title: i18n.tr("Rightwards")
             Rectangle {
-                width: units.gu(40)
-                height: units.gu(20)
+                width: parent.width / 1.5
+                height: width / 2
                 color: theme.palette.normal.foreground
 
                 SwipeArea {
@@ -114,8 +114,8 @@ Template {
         TemplateRow {
             title: i18n.tr("Leftwards")
             Rectangle {
-                width: units.gu(40)
-                height: units.gu(20)
+                width: parent.width / 1.5
+                height: width / 2
                 color: theme.palette.normal.foreground
 
                 SwipeArea {

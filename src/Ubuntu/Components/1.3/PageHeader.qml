@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype PageHeader
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The PageHeader shows a title with a leading and a trailing
         \l ActionBar that add action buttons to the header.
@@ -36,6 +36,9 @@ import Ubuntu.Components 1.3
             }
         }
     \endqml
+
+    See \l Header properties that are inherited by PageHeader to control
+    the visibility of the header.
 */
 Header {
     id: header
@@ -51,9 +54,14 @@ Header {
     property string title
 
     /*!
-      The contents item to display in the header. By default the contents
-      is undefined, and setting it will disable showing of the title in
-      the header.
+      Displayed under the title.
+      Hidden when the \l contents Item is set.
+     */
+    property string subtitle
+
+    /*!
+      The contents item to display in the header. By default the contents is
+      undefined, and setting it will disable showing of the title and subtitle.
 
       Example:
       \qml
@@ -76,6 +84,7 @@ Header {
 
     Component.onCompleted: contentsHolder.updateContents()
     onContentsChanged: contentsHolder.updateContents()
+    onSubtitleChanged: contentsHolder.updateContents()
 
     Item {
         id: contentsHolder
@@ -91,10 +100,16 @@ Header {
             id: titleLoader
             anchors.fill: parent
         }
+        Loader {
+            id: subtitleLoader
+            anchors.fill: parent
+        }
+
         property Item previousContents: null
         property Item previousContentsParent: null
 
         function updateContents() {
+            if (!__styleInstance) return; // the style needs to be loaded first
             if (previousContents) {
                 previousContents.parent = previousContentsParent;
             }
@@ -107,6 +122,11 @@ Header {
                 previousContents = null;
                 previousContentsParent = null;
                 titleLoader.sourceComponent = __styleInstance.titleComponent;
+                if (!subtitle) {
+                    subtitleLoader.sourceComponent = null;
+                } else {
+                    subtitleLoader.sourceComponent = __styleInstance.subtitleComponent;
+                }
             }
         }
 

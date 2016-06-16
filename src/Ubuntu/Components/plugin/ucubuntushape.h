@@ -32,10 +32,10 @@ class ShapeShader : public QSGMaterialShader
 {
 public:
     ShapeShader();
-    virtual char const* const* attributeNames() const;
-    virtual void initialize();
-    virtual void updateState(
-        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
+    char const* const* attributeNames() const override;
+    void initialize() override;
+    void updateState(
+        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect) override;
     bool useDistanceFields() const { return m_useDistanceFields; }
 
 private:
@@ -75,9 +75,9 @@ public:
 
     ShapeMaterial();
     ~ShapeMaterial();
-    virtual QSGMaterialType* type() const;
-    virtual QSGMaterialShader* createShader() const;
-    virtual int compare(const QSGMaterial* other) const;
+    QSGMaterialType* type() const override;
+    QSGMaterialShader* createShader() const override;
+    int compare(const QSGMaterial* other) const override;
     virtual void updateTextures();
     const Data* constData() const { return &m_data; }
     Data* data() { return &m_data; }
@@ -114,7 +114,7 @@ public:
     ShapeNode();
     ShapeMaterial* material() { return &m_material; }
     QSGGeometry* geometry() { return &m_geometry; }
-    void preprocess() { m_material.updateTextures(); }
+    void preprocess() override { m_material.updateTextures(); }
 
 private:
     ShapeMaterial m_material;
@@ -290,10 +290,10 @@ Q_SIGNALS:
     void verticalAlignmentChanged();
 
 protected:
-    virtual QString propertyForVersion(quint16 version) const;
-    virtual void componentComplete();
-    virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data);
-    virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
+    QString propertyForVersion(quint16 version) const override;
+    void componentComplete() override;
+    QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data) override;
+    void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
 
     // Virtual functions for extended shapes.
     virtual QSGNode* createSceneGraphNode() const;
