@@ -39,7 +39,7 @@ for _XML in $*; do
                 swipearea \
                 qquick_image_extension \
                 tst_page.11.qml \
-                tst_label.qml \
+                tst_label13.qml \
                 performance \
                 tst_tabs.11.qml \
                 tst_focus.13.qml \
