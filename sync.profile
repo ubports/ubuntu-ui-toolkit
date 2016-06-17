@@ -10,9 +10,15 @@
  #e.g. "someheader.h" => "SomeType"
  "debughelpers.h" => "DebugHelpers",
  "pool.h" => "Pool",
+ "timer.h" => "Timer",
  "touchregistry.h" => "TouchRegistry",
  "touchownershipevent.h" => "TouchOwnershipEvent",
- "unownedtouchevent.h" => "UnownedTouchEvent"
+ "unownedtouchevent.h" => "UnownedTouchEvent",
+ "asyncloader.h" => "AsyncLoader",
+ "propertychange.h" => "PropertyChange",
+ "tree.h" => "Tree",
+ "i18n.h" => "UbuntuI18n",
+ "inversemouseareatype.h" => "InverseMouseArea"
 );
 
 # Module dependencies.
@@ -22,6 +28,7 @@
 #   - any git symbolic ref resolvable from the module's repository (e.g. "refs/heads/master" to track master branch)
 #
 %dependencies = (
+
     "qtbase" => "",
     "qtdeclarative" => "",
     "qtfeedback" => "",
@@ -29,4 +36,5 @@
 );
 
 #export all classes that are in a Ubuntu* namespace
-$publicclassregexp = "^Ubuntu[A-Za-z0-9]*::[^:]*\$"
+#$publicclassregexp = "^Ubuntu[A-Za-z0-9]*::[^:]*\$"
+$publicclassregexp = "^UC[A-Za-z0-9]*\$"
