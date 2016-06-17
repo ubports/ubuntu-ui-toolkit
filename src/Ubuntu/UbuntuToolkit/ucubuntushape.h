@@ -27,7 +27,7 @@
 
 // --- Scene graph shader ---
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT ShapeShader : public QSGMaterialShader
 {
@@ -356,8 +356,8 @@ private:
     Q_DISABLE_COPY(UCUbuntuShape)
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPE(UbuntuToolkit::UCUbuntuShape)
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCUbuntuShape))
 
 #endif  // UCUBUNTUSHAPE_H

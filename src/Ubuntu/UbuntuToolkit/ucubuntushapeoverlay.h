@@ -23,7 +23,7 @@
 
 // --- Scene graph shader ---
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT ShapeOverlayShader : public ShapeShader
 {
@@ -110,8 +110,8 @@ private:
     Q_DISABLE_COPY(UCUbuntuShapeOverlay)
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPE(UbuntuToolkit::UCUbuntuShapeOverlay)
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCUbuntuShapeOverlay))
 
 #endif  // UCUBUNTUSHAPEOVERLAY_H

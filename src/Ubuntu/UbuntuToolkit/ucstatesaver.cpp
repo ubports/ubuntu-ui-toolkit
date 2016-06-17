@@ -30,7 +30,7 @@
 #include "private/qqmlcontext_p.h"
 #include <private/qqmlcomponentattached_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *qq, QObject *attachee)
     : q_ptr(qq)
@@ -329,6 +329,6 @@ void UCStateSaverAttached::setProperties(const QString &list)
     }
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucstatesaver.cpp"

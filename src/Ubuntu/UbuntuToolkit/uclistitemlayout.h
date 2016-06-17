@@ -20,7 +20,7 @@
 #include "ucslotslayout.h"
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCLabel;
 class UBUNTUTOOLKIT_EXPORT UCListItemLayout : public UCSlotsLayout
@@ -43,6 +43,6 @@ public:
     UCLabel *summary();
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCLISTITEMLAYOUT_H

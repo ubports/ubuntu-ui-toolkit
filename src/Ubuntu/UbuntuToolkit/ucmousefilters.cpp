@@ -27,7 +27,7 @@
 #include "quickutils.h"
 #include "ucunits.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 QEvent::Type ForwardedEvent::m_eventBase = QEvent::None;
 void ForwardedEvent::registerForwardedEvent()
@@ -1125,4 +1125,4 @@ void UCInverseMouse::setPriority(Priority priority)
     }
 }
 
-}
+UT_NAMESPACE_END

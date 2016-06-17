@@ -144,7 +144,7 @@ int main(int argc, const char *argv[])
 
     if (args.isSet(_enableTouch)) {
         // has no effect if we have touch screen
-        new UbuntuToolkit::MouseTouchAdaptor(&application);
+        new MouseTouchAdaptor(&application);
     }
 
     QUrl source(QUrl::fromLocalFile(filename));

@@ -29,7 +29,7 @@
 
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCTheme;
 class UBUNTUTOOLKIT_EXPORT UCThemingExtension
@@ -63,9 +63,9 @@ private:
     void setParentTheme();
 };
 
-}
+UT_NAMESPACE_END
 
 #define UCThemingExtension_iid "org.qt-project.Qt.UCThemingExtension"
-Q_DECLARE_INTERFACE(UbuntuToolkit::UCThemingExtension, UCThemingExtension_iid)
+Q_DECLARE_INTERFACE(UT_PREPEND_NAMESPACE(UCThemingExtension), UCThemingExtension_iid)
 
 #endif // UCITEMEXTENSION_H

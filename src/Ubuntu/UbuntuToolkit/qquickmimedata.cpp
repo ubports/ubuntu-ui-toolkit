@@ -25,7 +25,7 @@
 
 #include <QDebug>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype MimeData
@@ -270,4 +270,4 @@ void QQuickMimeData::setMimeData(const QVariant &mimeData)
         Q_EMIT dataChanged();
 }
 
-}
+UT_NAMESPACE_END

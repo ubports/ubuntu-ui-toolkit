@@ -24,7 +24,7 @@
 class QQuickFlickable;
 class UCSwipeArea;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class PropertyChange;
 class UCBottomEdgeHintPrivate;
@@ -95,6 +95,6 @@ private:
     void adjustFlickableBottomMargin();
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCBOTTOMEDGEHINT_H

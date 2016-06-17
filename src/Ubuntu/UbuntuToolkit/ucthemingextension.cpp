@@ -22,7 +22,7 @@
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtGui/QGuiApplication>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*
  * The UCThemingExtension interface provides theme handling on Items extending an existing
@@ -287,4 +287,4 @@ QQuickItem *UCThemingExtension::ascendantThemed(QQuickItem *item)
     return item;
 }
 
-}
+UT_NAMESPACE_END

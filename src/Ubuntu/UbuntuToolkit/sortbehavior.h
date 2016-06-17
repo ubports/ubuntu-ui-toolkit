@@ -23,7 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT SortBehavior : public QObject {
     Q_OBJECT
@@ -48,6 +48,6 @@ private:
     Qt::SortOrder m_order;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // SORTBEHAVIOR_H

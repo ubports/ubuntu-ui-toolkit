@@ -20,7 +20,7 @@
 #include <QtQuick/QQuickItem>
 #include "ucstyleditembase.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCListItemContent;
 class UCListItemDivider;
@@ -222,12 +222,12 @@ private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(UbuntuToolkit::UCViewItemsAttached::ExpansionFlags)
-QML_DECLARE_TYPEINFO(UbuntuToolkit::UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
+Q_DECLARE_OPERATORS_FOR_FLAGS(UT_PREPEND_NAMESPACE(UCViewItemsAttached)::ExpansionFlags)
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCViewItemsAttached), QML_HAS_ATTACHED_PROPERTIES)
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCListItemExpansion : public QObject
 {
@@ -304,6 +304,6 @@ private:
     friend class ListItemDragArea;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCLISTITEM_H

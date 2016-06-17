@@ -24,7 +24,7 @@
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlEngine>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype AlarmModel
@@ -339,4 +339,4 @@ void UCAlarmModel::moveFinished()
     m_moved = false;
 }
 
-}
+UT_NAMESPACE_END

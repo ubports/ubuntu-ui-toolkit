@@ -21,7 +21,7 @@
 #include <PropertyChange>
 #include <QtQml/QQmlInfo>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 // verifies property declaration correctness
 void UCStyleHintsParser::verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
@@ -233,8 +233,8 @@ void UCStyleHints::_q_applyStyleHints()
             propertyNotFound(styleName, m_values[i].first);
             continue;
         }
-        UbuntuToolkit::PropertyChange *change = new UbuntuToolkit::PropertyChange(item, m_values[i].first.toUtf8());
-        UbuntuToolkit::PropertyChange::setValue(change, m_values[i].second);
+        PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
+        PropertyChange::setValue(change, m_values[i].second);
         m_propertyBackup << change;
     }
 
@@ -270,4 +270,4 @@ void UCStyleHints::_q_applyStyleHints()
     }
 }
 
-}
+UT_NAMESPACE_END

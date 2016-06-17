@@ -31,7 +31,7 @@
 
 class QQuickFlickable;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCListItemDivider;
 class UCListItemActions;
@@ -177,6 +177,6 @@ public:
     bool ready:1;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCVIEWITEM_P_H

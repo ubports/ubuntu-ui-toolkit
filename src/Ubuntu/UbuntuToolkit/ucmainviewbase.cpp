@@ -28,7 +28,7 @@
 
 #include <QCoreApplication>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
   \internal
@@ -97,7 +97,7 @@ void UCMainViewBasePrivate::doAutoTheme()
         return;
 
     if (m_backgroundColor != theme->getPaletteColor("normal", "background")) {
-        QString themeName = UbuntuToolkit::ColorUtils::luminance(m_backgroundColor) >= 0.85 ? QStringLiteral("Ambiance")
+        QString themeName = ColorUtils::luminance(m_backgroundColor) >= 0.85 ? QStringLiteral("Ambiance")
                                                                    : QStringLiteral("SuruDark");
 
         // only change the theme if the current one is a system one.
@@ -340,6 +340,6 @@ void UCMainViewBase::classBegin()
     }
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucmainviewbase.cpp"

@@ -38,7 +38,7 @@
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCBottomEdgePrivate::UCBottomEdgePrivate()
     : UCStyledItemBasePrivate()
@@ -1182,6 +1182,6 @@ void UCBottomEdgePrivate::resetCurrentContent(QQuickItem *newContent)
     patchContentItemHeader();
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucbottomedge.cpp"

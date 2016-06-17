@@ -24,7 +24,7 @@
 #include <QtCore/QUrl>
 #include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAlarmPrivate;
 class UBUNTUTOOLKIT_EXPORT UCAlarm : public QObject
@@ -141,7 +141,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(UCAlarm::DaysOfWeek)
 
-}
+UT_NAMESPACE_END
 
 #endif // UUALARM_H
-

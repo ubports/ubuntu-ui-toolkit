@@ -18,7 +18,7 @@
 #include "ucmathutils.h"
 #include <QDebug>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
   \qmltype mathUtils
@@ -73,4 +73,4 @@ double UCMathUtils::clampAndProject(double x, double xmin, double xmax, double y
     return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax);
 }
 
-}
+UT_NAMESPACE_END

@@ -48,7 +48,7 @@ const char *tagDisabledAlarm = "x-canonical-disabled";
 
 QTORGANIZER_USE_NAMESPACE
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*-----------------------------------------------------------------------------
  * Adaptation layer for Alarm Data.
@@ -824,4 +824,4 @@ void AlarmsAdapter::adjustAlarmOccurrence(AlarmDataAdapter &alarm)
     }
 }
 
-}
+UT_NAMESPACE_END

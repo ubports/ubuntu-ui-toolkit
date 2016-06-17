@@ -25,7 +25,7 @@
 #include <QtQml/QQmlProperty>
 #include <QtQml/qqml.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype Arguments
@@ -563,4 +563,4 @@ void UCArguments::warningArgumentPropertyChanged()
     qWarning() << "Changing properties of arguments dynamically is not supported.";
 }
 
-}
+UT_NAMESPACE_END

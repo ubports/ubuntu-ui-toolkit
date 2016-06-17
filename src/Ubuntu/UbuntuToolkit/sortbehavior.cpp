@@ -19,7 +19,7 @@
 
 #include "sortbehavior.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 SortBehavior::SortBehavior(QObject *parent)
     : QObject(parent)
@@ -55,4 +55,4 @@ SortBehavior::setOrder(Qt::SortOrder order)
     Q_EMIT orderChanged();
 }
 
-}
+UT_NAMESPACE_END

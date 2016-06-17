@@ -18,7 +18,7 @@
 
 #include <QQmlContext>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty) :
     QObject(context),
@@ -33,4 +33,4 @@ void ContextPropertyChangeListener::updateContextProperty()
     m_context->setContextProperty(m_contextProperty, value);
 }
 
-}
+UT_NAMESPACE_END

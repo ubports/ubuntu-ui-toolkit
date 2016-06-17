@@ -19,7 +19,7 @@
 #include "ucbottomedgestyle.h"
 #include "ucbottomedge_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype BottomEdgeStyle
@@ -66,4 +66,4 @@ void UCBottomEdgeStyle::mousePressEvent(QMouseEvent *event)
  * should be exposed.
  */
 
-}
+UT_NAMESPACE_END

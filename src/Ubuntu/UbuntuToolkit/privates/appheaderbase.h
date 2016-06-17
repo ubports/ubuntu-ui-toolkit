@@ -19,7 +19,7 @@
 
 #include "ucheader.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCTheme;
 class UBUNTUTOOLKIT_EXPORT UCAppHeaderBase : public UCHeader
@@ -29,7 +29,7 @@ class UBUNTUTOOLKIT_EXPORT UCAppHeaderBase : public UCHeader
 
     // FIXME Re-expose properties that would be inaccessible due to a QML bug
     // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
-    Q_PROPERTY(UCTheme *theme
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCTheme) *theme
             READ theme2
             WRITE setTheme2
             NOTIFY themeChanged2 FINAL)
@@ -53,6 +53,6 @@ private:
     bool m_animate:1;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // APPHEADERBASE_H

@@ -21,7 +21,7 @@
 
 Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 const int singleFrameThreshold = 32;
 const int multipleFrameThreshold = 17;
@@ -137,4 +137,4 @@ void UCPerformanceMonitor::windowDestroyed()
     connectToWindow(NULL);
 }
 
-}
+UT_NAMESPACE_END

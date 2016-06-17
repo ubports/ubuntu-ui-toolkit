@@ -19,7 +19,7 @@
 
 #include "ucpagetreenode.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCMainViewBasePrivate;
 class UCActionManager;
@@ -34,9 +34,9 @@ class UBUNTUTOOLKIT_EXPORT UCMainViewBase : public UCPageTreeNode
     Q_PROPERTY(QColor headerColor READ headerColor WRITE setHeaderColor NOTIFY headerColorChanged)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
     Q_PROPERTY(QColor footerColor READ footerColor WRITE setFooterColor NOTIFY footerColorChanged)
-    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
-    Q_PROPERTY(UCActionManager* actionManager READ actionManager NOTIFY actionManagerChanged)
-    Q_PROPERTY(UCPopupContext* actionContext READ actionContext NOTIFY actionContextChanged)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCActionManager)* actionManager READ actionManager NOTIFY actionManagerChanged)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext READ actionContext NOTIFY actionContextChanged)
 
 public:
     UCMainViewBase(QQuickItem *parent = nullptr);
@@ -73,8 +73,8 @@ Q_SIGNALS:
     void headerColorChanged(const QColor &headerColor);
     void backgroundColorChanged(const QColor &backgroundColor);
     void footerColorChanged(const QColor &footerColor);
-    void actionManagerChanged(UCActionManager* actionManager);
-    void actionContextChanged(UCPopupContext* actionContext);
+    void actionManagerChanged(UT_PREPEND_NAMESPACE(UCActionManager)* actionManager);
+    void actionContextChanged(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext);
 
 protected:
     UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent);
@@ -84,6 +84,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateWindow())
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCMAINVIEWBASE_H

@@ -18,7 +18,7 @@
 
 #include "ucstyleditembase.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAction;
 class UCActionItemPrivate;
@@ -73,6 +73,6 @@ protected:
     Q_PRIVATE_SLOT(d_func(), void _q_invokeActionTrigger(const QVariant &value))
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCACTIONITEM_H

@@ -22,7 +22,7 @@
 #include <libnih-dbus.h>
 #include "statesaverbackend_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
     : m_uriHandler(uriHandler)
@@ -94,4 +94,4 @@ UCUriHandler::UCUriHandler()
  * The signal is triggered when URIs are opened.
  */
 
-}
+UT_NAMESPACE_END

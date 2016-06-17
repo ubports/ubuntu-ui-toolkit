@@ -21,7 +21,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCPageWrapperPrivate::UCPageWrapperPrivate() :
     m_object(nullptr),
@@ -772,6 +772,6 @@ void UCPageWrapper::resetTheme2()
   Signal emitted when incubator completes page loading.
  */
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucpagewrapper.cpp"

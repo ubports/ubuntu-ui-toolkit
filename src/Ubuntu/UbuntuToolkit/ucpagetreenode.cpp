@@ -23,7 +23,7 @@ Q_LOGGING_CATEGORY(ucPageTreeNode, "ubuntu.components.PageTreeNode", QtMsgType::
 
 #define PT_TRACE(params) qCDebug(ucPageTreeNode).noquote().nospace()<< params
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCPageTreeNodePrivate::UCPageTreeNodePrivate()
     : m_parentNode(nullptr),
@@ -633,6 +633,6 @@ QQuickItem *UCPageTreeNode::pageStack() const
     return d_func()->m_pageStack;
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucpagetreenode.cpp"

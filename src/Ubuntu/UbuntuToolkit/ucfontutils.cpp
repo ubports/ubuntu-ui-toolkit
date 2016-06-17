@@ -18,7 +18,7 @@
 #include "ucfontutils.h"
 #include "ucunits.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCFontUtils *UCFontUtils::m_instance = nullptr;
 
@@ -101,4 +101,4 @@ qreal UCFontUtils::modularScale(const QString &size)
     }
 }
 
-}
+UT_NAMESPACE_END

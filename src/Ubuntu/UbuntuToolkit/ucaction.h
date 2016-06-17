@@ -29,7 +29,7 @@
 class QQmlComponent;
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 // the function detects whether QML has an overridden trigger() slot available
 // and invokes the one with the appropriate signature
@@ -161,8 +161,8 @@ private:
     void onKeyboardAttached();
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPE(UbuntuToolkit::UCAction)
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCAction))
 
 #endif // UCACTION_H

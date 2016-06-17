@@ -23,7 +23,7 @@
 #include "ucslotslayout.h"
 #include "ucslotslayout_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /******************************************************************************
  * UCSlotsLayoutPrivate
@@ -1300,6 +1300,6 @@ void UCSlotsLayoutPadding::setBottomQml(qreal val)
     setBottom(val);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucslotslayout.cpp"

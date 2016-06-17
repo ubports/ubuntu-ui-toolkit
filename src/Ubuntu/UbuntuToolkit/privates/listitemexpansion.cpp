@@ -17,7 +17,7 @@
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCListItemExpansion::UCListItemExpansion(QObject *parent)
     : QObject(parent)
@@ -107,4 +107,4 @@ void UCListItemExpansion::setHeight(qreal height)
     Q_EMIT heightChanged();
 }
 
-}
+UT_NAMESPACE_END

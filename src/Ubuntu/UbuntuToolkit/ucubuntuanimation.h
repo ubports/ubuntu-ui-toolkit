@@ -22,7 +22,7 @@
 #include <QtCore/QEasingCurve>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCUbuntuAnimation : public QObject
 {
@@ -55,6 +55,6 @@ private:
     QEasingCurve m_StandardEasingReverse;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCUBUNTUANIMATION_H

@@ -34,7 +34,7 @@
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 static float getenvFloat(const char* name, float defaultValue)
 {
@@ -304,4 +304,4 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
     setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }
 
-}
+UT_NAMESPACE_END

@@ -44,7 +44,7 @@
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 const char *CONTEXT_THEME = "theme";
 quint16 UCTheme::previousVersion = 0;
@@ -805,4 +805,4 @@ QColor UCTheme::getPaletteColor(const char *profile, const char *color)
     return result;
 }
 
-}
+UT_NAMESPACE_END

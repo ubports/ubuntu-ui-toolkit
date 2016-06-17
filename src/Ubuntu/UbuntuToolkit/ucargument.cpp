@@ -18,7 +18,7 @@
 
 #include "ucargument.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 /*!
  * \qmltype Argument
  * \instantiates UCArgument
@@ -203,4 +203,4 @@ QVariant UCArgument::at(int i) const
     }
 }
 
-}
+UT_NAMESPACE_END

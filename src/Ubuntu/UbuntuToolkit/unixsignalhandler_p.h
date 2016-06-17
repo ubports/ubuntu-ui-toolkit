@@ -20,10 +20,11 @@
 #include <QtCore/QObject>
 #include <QtCore/QHash>
 #include <signal.h>
+#include <ubuntutoolkitglobal.h>
 
 class QSocketNotifier;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UnixSignalHandler : public QObject
 {
@@ -60,6 +61,6 @@ private:
     QHash<int, SignalType> socketRegister;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UNIXSIGNALHANDLER_P_H

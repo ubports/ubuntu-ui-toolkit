@@ -18,7 +18,7 @@
 
 #include "ucstyleditembase_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCPageTreeNode;
 class UCPageTreeNodePrivate : public UCStyledItemBasePrivate
@@ -67,7 +67,6 @@ public:
     bool m_active:1;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCPAGETREENODE_P_H
-

@@ -19,7 +19,7 @@
 
 #include "ucpagetreenode.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCPageWrapperPrivate;
 class UBUNTUTOOLKIT_EXPORT UCPageWrapper : public UCPageTreeNode
@@ -112,6 +112,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onActiveChanged())
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCPAGEWRAPPER_H

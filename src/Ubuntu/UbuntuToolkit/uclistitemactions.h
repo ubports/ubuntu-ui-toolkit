@@ -22,7 +22,7 @@
 
 class QQmlComponent;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAction;
 class UCListItemActionsPrivate;
@@ -49,6 +49,6 @@ private:
     Q_DECLARE_PRIVATE(UCListItemActions)
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCLISTITEMACTIONS_H

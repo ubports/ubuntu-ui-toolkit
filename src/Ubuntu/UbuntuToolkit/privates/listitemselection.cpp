@@ -17,7 +17,7 @@
 #include "listitemselection.h"
 #include "uclistitem_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ListItemSelection::ListItemSelection(UCListItem *parent)
     : QObject(parent)
@@ -142,4 +142,4 @@ void ListItemSelection::onSelectedIndicesChanged(const QList<int> &indices)
     }
 }
 
-}
+UT_NAMESPACE_END

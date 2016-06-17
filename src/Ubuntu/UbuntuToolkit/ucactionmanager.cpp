@@ -19,7 +19,7 @@
 #include "ucactioncontext.h"
 #include "ucaction.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype ActionManager
@@ -173,4 +173,4 @@ void UCActionManager::removeLocalContext(UCActionContext *context)
     ActionProxy::removeContext(context);
 }
 
-}
+UT_NAMESPACE_END

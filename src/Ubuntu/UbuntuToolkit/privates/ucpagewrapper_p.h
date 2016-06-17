@@ -19,7 +19,7 @@
 
 #include "ucpagetreenode_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCPageWrapper;
 class UCPageWrapperIncubator;
@@ -76,5 +76,6 @@ public:
     bool m_ownsComponent:1;
 };
 
-}
+UT_NAMESPACE_END
+
 #endif // UCPAGEWRAPPER_P_H

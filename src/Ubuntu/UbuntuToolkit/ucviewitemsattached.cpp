@@ -31,7 +31,7 @@
 #include <QtQml/private/qqmlobjectmodel_p.h>
 #include <QtQml/private/qqmldelegatemodel_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype ListItemDrag
@@ -696,4 +696,4 @@ void UCViewItemsAttachedPrivate::toggleExpansionFlags(bool enable)
     }
 }
 
-}
+UT_NAMESPACE_END

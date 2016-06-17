@@ -21,8 +21,9 @@
 #include <QQmlIncubator>
 #include <QJSValue>
 #include <QVariant>
+#include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCPageWrapperIncubator : public QObject, public QQmlIncubator
 {
@@ -58,6 +59,6 @@ private:
     QJSValue m_onStatusChanged;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCPAGEWRAPPERINCUBATOR_H

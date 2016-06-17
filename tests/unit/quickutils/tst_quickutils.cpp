@@ -19,7 +19,7 @@
 #include "quickutils.h"
 #include <QtQml/QQmlEngine>
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_QuickUtils : public QObject
 {

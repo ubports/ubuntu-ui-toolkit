@@ -29,7 +29,7 @@
 
 #define SWIPE_AREA_HEIGHT_GU    3
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCBottomEdgeHintPrivate::UCBottomEdgeHintPrivate()
     : UCActionItemPrivate()
@@ -161,9 +161,9 @@ void UCBottomEdgeHint::adjustFlickableBottomMargin()
 {
     Q_D(UCBottomEdgeHint);
     if (!d->flickableBottomMargin) {
-        d->flickableBottomMargin = new UbuntuToolkit::PropertyChange(d->flickable, "bottomMargin");
+        d->flickableBottomMargin = new PropertyChange(d->flickable, "bottomMargin");
     }
-    UbuntuToolkit::PropertyChange::setValue(d->flickableBottomMargin, height());
+    PropertyChange::setValue(d->flickableBottomMargin, height());
     d->flickable->setContentY(d->flickable->contentY() + height());
 }
 
@@ -466,6 +466,6 @@ UCSwipeArea *UCBottomEdgeHint::swipeArea() const
     return d_func()->swipeArea;
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucbottomedgehint.cpp"

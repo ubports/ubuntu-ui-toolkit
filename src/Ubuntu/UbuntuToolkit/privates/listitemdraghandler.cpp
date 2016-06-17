@@ -19,7 +19,7 @@
 #include "uclistitem_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ListItemDragHandler::ListItemDragHandler(UCListItem *baseItem, UCListItem *listItem)
     : QObject(listItem)
@@ -28,7 +28,7 @@ ListItemDragHandler::ListItemDragHandler(UCListItem *baseItem, UCListItem *listI
     , baseVisible(nullptr)
 {
     targetPos = baseItem->position();
-    baseVisible = new UbuntuToolkit::PropertyChange(baseItem, "visible");
+    baseVisible = new PropertyChange(baseItem, "visible");
 }
 
 ListItemDragHandler::~ListItemDragHandler()
@@ -39,7 +39,7 @@ ListItemDragHandler::~ListItemDragHandler()
 
 void ListItemDragHandler::init()
 {
-    UbuntuToolkit::PropertyChange::setValue(baseVisible, false);
+    PropertyChange::setValue(baseVisible, false);
     // position the item and show it
     listItem->setPosition(baseItem->position());
     listItem->setZ(2);
@@ -86,4 +86,4 @@ void ListItemDragHandler::update(UCListItem *hoveredItem)
     }
 }
 
-}
+UT_NAMESPACE_END

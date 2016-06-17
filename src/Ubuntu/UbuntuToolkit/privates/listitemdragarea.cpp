@@ -31,7 +31,7 @@
 #define MAX(x, y)           ((x) > (y) ? (x) : (y))
 #define CLAMP(v, min, max)  ((min) <= (max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min)))
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     : QQuickItem(parent)
@@ -313,4 +313,4 @@ void ListItemDragArea::updateDraggedItem()
     }
 }
 
-}
+UT_NAMESPACE_END

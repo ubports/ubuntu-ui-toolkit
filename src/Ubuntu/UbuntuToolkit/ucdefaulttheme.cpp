@@ -25,7 +25,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QStandardPaths>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*
   User theme settings are stored in $XDG_CONFIG_HOME/ubuntu-ui-toolkit/theme.ini file, which contains
@@ -83,4 +83,4 @@ void UCDefaultTheme::setThemeName(const QString &themeName)
     }
 }
 
-}
+UT_NAMESPACE_END

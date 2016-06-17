@@ -25,7 +25,7 @@
 
 class UCSwipeArea;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdgeHintPrivate : public UCActionItemPrivate
 {
@@ -41,13 +41,12 @@ public:
     QBasicTimer deactivationTimer;
     UCSwipeArea *swipeArea;
     QQuickFlickable *flickable;
-    UbuntuToolkit::PropertyChange *flickableBottomMargin;
+    PropertyChange *flickableBottomMargin;
     int deactivateTimeout;
     UCBottomEdgeHint::Status status;
     bool pressed:1;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCBOTTOMEDGEHINT_P
-

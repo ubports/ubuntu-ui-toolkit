@@ -21,7 +21,7 @@
 #include "QtCore/private/qobject_p.h"
 #include <QtQml/QQmlListProperty>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCListItem;
 class UCListItemActionsPrivate : public QObjectPrivate {
@@ -44,6 +44,6 @@ public:
     static void actions_clear(QQmlListProperty<UCAction>*);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCLISTITEMACTIONS_P_H

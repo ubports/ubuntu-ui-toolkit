@@ -23,7 +23,7 @@
 #include <ubuntutoolkitglobal.h>
 
 class QQmlEngine;
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCHaptics : public QObject
 {
@@ -84,6 +84,6 @@ private:
     QQmlEngine *m_engine;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCHAPTICS_H

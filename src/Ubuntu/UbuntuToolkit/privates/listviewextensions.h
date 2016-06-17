@@ -20,13 +20,14 @@
 #define LISTVIEWEXTENSIONS_H
 
 #include <QtCore/QObject>
+#include <ubuntutoolkitglobal.h>
 
 class QQuickFlickable;
 class QQuickItem;
 class QFocusEvent;
 class QKeyEvent;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class ListViewProxy : public QObject
 {
@@ -60,6 +61,6 @@ private:
     bool isEventFilter:1;
 };
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #endif // LISTVIEWEXTENSIONS_H

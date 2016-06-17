@@ -24,7 +24,7 @@
 #include <QtQuick/QSGNode>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCFrameMaterial : public QSGMaterial
 {
@@ -99,6 +99,6 @@ private:
     Q_DISABLE_COPY(UCFrame)
 };
 
-}
+UT_NAMESPACE_END
 
 #endif  // FRAME_H

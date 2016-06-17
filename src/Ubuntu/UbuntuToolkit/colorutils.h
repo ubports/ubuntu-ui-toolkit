@@ -19,7 +19,7 @@
 #include <QObject>
 #include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT ColorUtils : public QObject
 {
@@ -29,6 +29,6 @@ public:
     Q_INVOKABLE static qreal luminance(const QColor &color);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // COLORUTILS_H

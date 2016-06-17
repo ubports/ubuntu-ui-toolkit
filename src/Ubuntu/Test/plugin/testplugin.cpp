@@ -19,6 +19,8 @@
 #include "uctestextras.h"
 #include <MouseTouchAdaptor>
 
+UT_USE_NAMESPACE
+
 static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -30,5 +32,5 @@ static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
 void TestPlugin::registerTypes(const char *uri)
 {
     qmlRegisterSingletonType<UCTestExtras>(uri, 1, 0, "TestExtras", registerExtras);
-    qmlRegisterSingletonType<UbuntuToolkit::MouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", UbuntuToolkit::MouseTouchAdaptor::registerQmlSingleton);
+    qmlRegisterSingletonType<MouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", MouseTouchAdaptor::registerQmlSingleton);
 }

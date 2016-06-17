@@ -22,7 +22,7 @@
 #include "ucubuntuanimation.h"
 #include "ucunits.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype Header
@@ -391,4 +391,4 @@ void UCHeader::_q_flickableInteractiveChanged() {
     }
 }
 
-}
+UT_NAMESPACE_END

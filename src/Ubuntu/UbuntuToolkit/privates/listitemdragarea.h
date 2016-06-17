@@ -23,7 +23,7 @@
 
 class QQuickFlickable;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class ListItemDragArea : public QQuickItem
 {
@@ -55,6 +55,6 @@ private:
     void updateDraggedItem();
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // LISTITEMDRAGAREA_H

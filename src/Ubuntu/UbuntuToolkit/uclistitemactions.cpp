@@ -24,7 +24,7 @@
 #include "ucunits.h"
 #include "uclistitemstyle.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
@@ -294,6 +294,6 @@ QQmlListProperty<QObject> UCListItemActions::data()
     return QQmlListProperty<QObject>(this, d->data);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_uclistitemactions.cpp"

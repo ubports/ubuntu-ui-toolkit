@@ -24,7 +24,7 @@
 class QQuickMouseArea;
 class QQuickMouseEvent;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAbstractButtonPrivate;
 class UBUNTUTOOLKIT_EXPORT UCAbstractButton : public UCActionItem
@@ -76,8 +76,8 @@ protected:
     Q_PRIVATE_SLOT(d_func(), void _q_adjustSensingArea())
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPE(UbuntuToolkit::UCMargins)
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCMargins))
 
 #endif // UCABSTRACTBUTTON_H

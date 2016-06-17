@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <QtCore/QSocketNotifier>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UnixSignalHandler::UnixSignalHandler(QObject *parent) :
     QObject(parent)
@@ -85,4 +85,4 @@ void UnixSignalHandler::notifierActivated(int socket)
     handler.second->setEnabled(true);
 }
 
-}
+UT_NAMESPACE_END

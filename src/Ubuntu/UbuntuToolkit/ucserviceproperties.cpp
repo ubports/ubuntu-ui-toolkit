@@ -22,7 +22,7 @@
 #include <QtQml/QQmlProperty>
 #include <QtQml/private/qqmlproperty_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCServicePropertiesPrivate::UCServicePropertiesPrivate(UCServiceProperties *qq)
     : q_ptr(qq)
@@ -330,6 +330,6 @@ UCServiceProperties::Status UCServiceProperties::status() const
     return d->status;
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucserviceproperties.cpp"

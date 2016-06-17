@@ -21,7 +21,7 @@
 #include <QtQuick/QQuickItem>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCMargins : public QObject
 {
@@ -76,6 +76,6 @@ inline qreal UCMargins::bottom() const
     return qFuzzyIsNull(m_bottom) ? m_all : m_bottom;
 }
 
-}
+UT_NAMESPACE_END
 
 #endif // UCMARGINS_H

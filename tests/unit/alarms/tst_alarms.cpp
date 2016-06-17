@@ -32,7 +32,7 @@
 #include <QtQml/QQmlEngine>
 #include "plugin.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_UCAlarms : public QObject
 {

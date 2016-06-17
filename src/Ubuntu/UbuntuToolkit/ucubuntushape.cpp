@@ -39,7 +39,7 @@
 #include <QtQuick/private/qquickimage_p.h>
 #undef emit
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 // Anti-aliasing distance of the contour in pixels.
 const float distanceAApx = 1.75f;
@@ -1473,4 +1473,4 @@ void UCUbuntuShape::updateGeometry(
     node->markDirty(QSGNode::DirtyGeometry);
 }
 
-}
+UT_NAMESPACE_END

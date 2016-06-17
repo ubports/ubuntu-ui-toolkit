@@ -23,7 +23,7 @@
 #include <QtQml/qqml.h>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStateSaverAttachedPrivate;
 class UBUNTUTOOLKIT_EXPORT UCStateSaverAttached : public QObject
@@ -63,8 +63,8 @@ public:
     }
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPEINFO(UbuntuToolkit::UCStateSaver, QML_HAS_ATTACHED_PROPERTIES)
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCStateSaver), QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCSTATESAVER_H

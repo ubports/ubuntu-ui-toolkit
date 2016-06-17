@@ -22,7 +22,7 @@
 
 class QQmlContext;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT ContextPropertyChangeListener : public QObject
 {
@@ -34,6 +34,6 @@ public:
     QString m_contextProperty;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H

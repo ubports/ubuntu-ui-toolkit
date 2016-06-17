@@ -19,7 +19,7 @@
 #include <QtTest/QtTest>
 #include "ucscalingimageprovider.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_UCScalingImageProvider: public QObject
 {

@@ -33,7 +33,7 @@
 #include "uclabel.h"
 #include "plugin.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class ThemeTestCase : public UbuntuTestCase
 {

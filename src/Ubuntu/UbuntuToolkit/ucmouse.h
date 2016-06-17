@@ -25,7 +25,7 @@
 #include <QtCore/qbasictimer.h>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT ForwardedEvent : public QEvent {
 public:
@@ -165,8 +165,8 @@ protected:
     bool m_ignoreSynthesizedEvents:1;
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPEINFO(UbuntuToolkit::UCMouse, QML_HAS_ATTACHED_PROPERTIES)
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCMouse), QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCMOUSE_H

@@ -29,7 +29,7 @@ namespace C {
 #include <stdlib.h>
 #include <locale.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 /*!
  * \qmltype i18n
  * \instantiates UbuntuI18n
@@ -341,4 +341,4 @@ QString UbuntuI18n::relativeDateTime(const QDateTime& datetime)
     return datetime.toString(Qt::DefaultLocaleShortDate);
 }
 
-}
+UT_NAMESPACE_END

@@ -26,7 +26,7 @@
 #include <QtQuick/QQuickWindow>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCPerformanceMonitor : public QObject
 {
@@ -53,7 +53,7 @@ private:
     QQuickWindow* m_window;
 };
 
-}
+UT_NAMESPACE_END
 
 Q_DECLARE_LOGGING_CATEGORY(ucPerformance)
 

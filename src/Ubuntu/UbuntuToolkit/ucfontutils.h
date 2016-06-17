@@ -21,7 +21,7 @@
 #include <QtCore/QObject>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCUnits;
 class UBUNTUTOOLKIT_EXPORT UCFontUtils : public QObject
@@ -58,7 +58,7 @@ private:
     static UCFontUtils *m_instance;
 };
 
-}
+UT_NAMESPACE_END
 
 #define SCALE_CODE(size)    reinterpret_cast<int*>(size.toLatin1().data())[0]
 #define SCALE_MEDIUM        0x6964656d // "medi"

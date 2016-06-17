@@ -24,7 +24,7 @@
 
 // -- Scene graph shader ---
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ShapeOverlayShader::ShapeOverlayShader()
 {
@@ -371,4 +371,4 @@ void UCUbuntuShapeOverlay::updateGeometry(
     node->markDirty(QSGNode::DirtyGeometry);
 }
 
-}
+UT_NAMESPACE_END

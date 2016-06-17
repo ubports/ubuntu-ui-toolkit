@@ -22,7 +22,7 @@
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCActionItemPrivate::UCActionItemPrivate()
     : action(Q_NULLPTR)
@@ -380,6 +380,6 @@ void UCActionItem::trigger(const QVariant &value)
     }
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucactionitem.cpp"

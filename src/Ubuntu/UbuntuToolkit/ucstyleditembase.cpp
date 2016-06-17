@@ -24,7 +24,7 @@
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : oldParentItem(Q_NULLPTR)
@@ -428,7 +428,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
  * \internal
  * Instance of the \l style.
  */
-::QQuickItem *UCStyledItemBasePrivate::styleInstance()
+QQuickItem *UCStyledItemBasePrivate::styleInstance()
 {
     return styleItem;
 }
@@ -619,6 +619,6 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
     return QQuickItem::childMouseEventFilter(child, event);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucstyleditembase.cpp"

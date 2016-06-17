@@ -31,7 +31,7 @@
 
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStyleHintsParser;
 class UCStyledItemBase;
@@ -93,6 +93,6 @@ private:
     void verifyProperty(const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCSTYLEHINTS_H

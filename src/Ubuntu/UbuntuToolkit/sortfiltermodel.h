@@ -25,7 +25,7 @@
 #include "sortbehavior.h"
 #include "filterbehavior.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 {
@@ -67,6 +67,6 @@ private:
     int roleByName(const QString& roleName) const;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // QSORTFILTERPROXYMODELQML_H

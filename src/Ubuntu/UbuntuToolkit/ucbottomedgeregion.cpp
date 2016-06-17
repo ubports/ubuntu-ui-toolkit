@@ -24,7 +24,7 @@
 #include <QtQml/private/qqmlproperty_p.h>
 
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCBottomEdgeRegionPrivate::UCBottomEdgeRegionPrivate()
     : QObjectPrivate()
@@ -167,7 +167,7 @@ void UCBottomEdgeRegion::enter()
     LOG << "ENTER REGION" << objectName();
     // if preloaded, or default(?), set the content
     if (d->bottomEdge->preloadContent()) {
-        if (d->loader.status() == UbuntuToolkit::AsyncLoader::Ready) {
+        if (d->loader.status() == AsyncLoader::Ready) {
             LOG << "SET REGION CONTENT" << objectName();
             UCBottomEdgePrivate::get(d->bottomEdge)->setCurrentContent();
         }
@@ -253,7 +253,7 @@ void UCBottomEdgeRegionPrivate::onLoaderStatusChanged(AsyncLoader::LoadingStatus
 {
     bool emitChange = false;
     LOG << "STATUS" << status << object;
-    if (status == UbuntuToolkit::AsyncLoader::Ready) {
+    if (status == AsyncLoader::Ready) {
         // if we are no longer active, no need to continue, and discard content
         // this may occur when the component was still in Compiling state while
         // the region was exited, therefore reset() could not cancel the operation.
@@ -266,7 +266,7 @@ void UCBottomEdgeRegionPrivate::onLoaderStatusChanged(AsyncLoader::LoadingStatus
         emitChange = active;
     }
 
-    if (status == UbuntuToolkit::AsyncLoader::Reset) {
+    if (status == AsyncLoader::Reset) {
         // de-parent first
         if (contentItem) {
             contentItem->setParentItem(nullptr);
@@ -466,6 +466,6 @@ bool DefaultRegion::canCommit(qreal dragRatio)
     return (dragRatio >= 0.33);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucbottomedgeregion.cpp"

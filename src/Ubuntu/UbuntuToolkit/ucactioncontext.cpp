@@ -23,7 +23,7 @@ Q_LOGGING_CATEGORY(ucActionContext, "ubuntu.components.ActionContext", QtMsgType
 
 #define CONTEXT_TRACE(params) qCDebug(ucActionContext) << params
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCActionContextAttached::UCActionContextAttached(QObject *owner)
     : QObject(owner)
@@ -279,4 +279,4 @@ UCPopupContext::UCPopupContext(QObject *parent)
     m_popup = true;
 }
 
-}
+UT_NAMESPACE_END

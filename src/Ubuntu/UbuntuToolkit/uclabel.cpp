@@ -20,7 +20,7 @@
 #include "uctheme.h"
 #include <quickutils.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCLabelPrivate::UCLabelPrivate(UCLabel *qq)
     : q_ptr(qq)
@@ -282,6 +282,6 @@ void UCLabel::setFontSize(const QString& fontSize)
     }
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_uclabel.cpp"

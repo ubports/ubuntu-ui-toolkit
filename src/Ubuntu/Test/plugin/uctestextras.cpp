@@ -25,6 +25,8 @@
 #include <QSysInfo>
 #include <MouseTouchAdaptor>
 
+UT_USE_NAMESPACE
+
 const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using registerTouchDevice() before using %1";
 
 #define CHECK_TOUCH_DEVICE(touchId, item) \
@@ -118,7 +120,7 @@ bool UCTestExtras::touchDevicePresent()
  */
 void UCTestExtras::registerTouchDevice()
 {
-    if (UbuntuToolkit::MouseTouchAdaptor::registerTouchDevice() && m_testExtras) {
+    if (MouseTouchAdaptor::registerTouchDevice() && m_testExtras) {
         Q_EMIT m_testExtras->touchDevicePresentChanged();
     }
 }
@@ -132,7 +134,7 @@ void UCTestExtras::registerTouchDevice()
 void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).press(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), MouseTouchAdaptor::touchDevice()).press(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchRelease(touchId, item, point)
@@ -142,7 +144,7 @@ void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point
 void UCTestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).release(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), MouseTouchAdaptor::touchDevice()).release(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchClick(touchId, item, point)
@@ -191,7 +193,7 @@ void UCTestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint 
 void UCTestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).move(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), MouseTouchAdaptor::touchDevice()).move(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchDrag(touchId, item, from, delta, steps = 5)

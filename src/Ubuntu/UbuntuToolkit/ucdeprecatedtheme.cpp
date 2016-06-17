@@ -25,7 +25,7 @@
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlEngine>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype Theme
@@ -166,4 +166,4 @@ void UCDeprecatedTheme::registerToContext(QQmlContext* context)
                      themeChangeListener, SLOT(updateContextProperty()));
 }
 
-}
+UT_NAMESPACE_END

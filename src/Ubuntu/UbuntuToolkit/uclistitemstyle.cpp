@@ -23,7 +23,7 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype ListItemStyle
@@ -212,4 +212,4 @@ void UCListItemStyle::setAnimatePanels(bool animate)
  * the entire area of the ListItem.
  */
 
-}
+UT_NAMESPACE_END

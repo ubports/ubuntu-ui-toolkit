@@ -27,7 +27,7 @@
 class QQmlEngine;
 class QJSEngine;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class QQuickMimeData;
 class QQuickClipboardPrivate;
@@ -55,6 +55,6 @@ private:
     QScopedPointer<QQuickClipboardPrivate> d_ptr;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // QQUICKCLIPBOARD_H

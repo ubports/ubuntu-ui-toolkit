@@ -22,7 +22,7 @@
 #include <QtCore/QPointer>
 #include "ucaction.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCActionContext;
 class UCPopupContext;
@@ -60,6 +60,6 @@ private:
     void removePopupContext(UCPopupContext *context);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // ACTIONSPROXY_P_H

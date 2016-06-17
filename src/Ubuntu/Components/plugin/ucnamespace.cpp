@@ -17,6 +17,8 @@
 
 #include "ucnamespace.h"
 
+UT_NAMESPACE_BEGIN
+
 /*!
  * \qmltype Ubuntu
  * \instantiates UCNamespace
@@ -76,3 +78,5 @@ quint16 UCNamespaceV13::version(quint8 major, quint8 minor)
 {
     return BUILD_VERSION(major, minor);
 }
+
+UT_NAMESPACE_END

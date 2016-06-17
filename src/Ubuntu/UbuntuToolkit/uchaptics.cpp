@@ -19,7 +19,7 @@
 #include <QtCore/QUrl>
 #include <QDebug>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
   \qmltype Haptics
@@ -184,4 +184,4 @@ void HapticsProxy::play(const QVariant &customEffect)
     }
 }
 
-}
+UT_NAMESPACE_END

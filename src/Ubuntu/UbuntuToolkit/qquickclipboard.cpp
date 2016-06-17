@@ -23,7 +23,7 @@
 #include "qquickclipboard_p.h"
 #include "qquickmimedata.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype Clipboard
@@ -198,6 +198,6 @@ void QQuickClipboard::clear()
     d->clipboard->clear(d->mode);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_qquickclipboard.cpp"

@@ -25,7 +25,7 @@
 
 #include "ucalarm.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class AlarmUtils {
 public:
@@ -124,6 +124,6 @@ private:
     QScopedPointer<AlarmManagerPrivate> d_ptr;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // ALARMMANAGER_H

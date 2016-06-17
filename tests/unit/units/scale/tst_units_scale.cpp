@@ -19,7 +19,7 @@
 
 #include <qpa/qplatformnativeinterface.h>
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_UCUnitsScale : public QObject
 {

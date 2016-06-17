@@ -17,7 +17,7 @@
 #include "appheaderbase.h"
 #include "ucstyleditembase_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype AppHeaderBase
@@ -70,4 +70,4 @@ void UCAppHeaderBase::setAnimate(bool animate) {
     }
 }
 
-}
+UT_NAMESPACE_END

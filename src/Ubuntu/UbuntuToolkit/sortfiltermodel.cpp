@@ -20,7 +20,7 @@
 
 #include "sortfiltermodel.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype SortFilterModel
@@ -258,7 +258,7 @@ QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
     return result;
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_sortfiltermodel.cpp"
 

@@ -22,7 +22,7 @@
 #include <QtCore/QPointF>
 #include <PropertyChange>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCListItem;
 class ListItemDragHandler : public QObject
@@ -46,6 +46,6 @@ private:
     QPointF targetPos;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // LISTITEMDRAGHANDLER_H

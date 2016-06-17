@@ -23,7 +23,7 @@
 
 #define DYNAMIC_PROPERTY    "__q_property"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCServicePropertiesPrivate *createServicePropertiesAdapter(UCServiceProperties *owner)
 {
@@ -227,4 +227,4 @@ void DBusServiceProperties::updateProperties(const QString &onInterface, const Q
     }
 }
 
-}
+UT_NAMESPACE_END

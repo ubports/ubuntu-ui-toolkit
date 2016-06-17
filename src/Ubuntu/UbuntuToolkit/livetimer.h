@@ -21,7 +21,7 @@
 #include <QDateTime>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT LiveTimer : public QObject
 {
@@ -68,6 +68,6 @@ private:
     friend class SharedLiveTimer;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // LIVETIMER_H

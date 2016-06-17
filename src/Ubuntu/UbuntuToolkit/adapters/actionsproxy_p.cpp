@@ -23,7 +23,7 @@ Q_LOGGING_CATEGORY(ucActionProxy, "ubuntu.components.ActionProxy", QtMsgType::Qt
 
 #define AP_TRACE(params) qCDebug(ucActionProxy) << params
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ActionProxy::ActionProxy()
     : globalContext(new UCActionContext)
@@ -158,4 +158,4 @@ void ActionProxy::publishContextActions(UCActionContext *context)
     Q_UNUSED(context);
 }
 
-}
+UT_NAMESPACE_END

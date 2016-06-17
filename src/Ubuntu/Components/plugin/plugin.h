@@ -21,8 +21,11 @@
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
+#include <ubuntutoolkitglobal.h>
 
 class QWindow;
+
+UT_NAMESPACE_BEGIN
 
 class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 {
@@ -47,5 +50,8 @@ private:
     void initializeBaseUrl();
     void registerTypesToVersion(const char *uri, int major, int minor);
 };
+
+UT_NAMESPACE_END
+
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
 

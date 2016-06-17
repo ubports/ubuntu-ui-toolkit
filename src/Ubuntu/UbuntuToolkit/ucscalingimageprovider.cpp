@@ -21,7 +21,7 @@
 #include <QtCore/QFile>
 #include <QtGui/QImageReader>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
     \internal
@@ -83,4 +83,4 @@ QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, cons
     }
 }
 
-}
+UT_NAMESPACE_END

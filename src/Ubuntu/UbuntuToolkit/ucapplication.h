@@ -25,7 +25,7 @@
 class QQmlContext;
 class QQmlEngine;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCApplication : public QObject
 {
@@ -68,6 +68,6 @@ Q_SIGNALS:
     void inputMethodChanged();
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UBUNTU_COMPONENTS_I18N_H

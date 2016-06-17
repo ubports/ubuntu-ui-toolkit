@@ -27,7 +27,7 @@
 #include <QtCore/QStack>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT StateSaverBackend : public QObject
 {
@@ -78,6 +78,6 @@ private:
     static StateSaverBackend *m_instance;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // STATESAVERBACKEND_P_H

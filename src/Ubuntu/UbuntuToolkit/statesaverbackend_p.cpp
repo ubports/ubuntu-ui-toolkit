@@ -31,7 +31,7 @@
 
 #include "unixsignalhandler_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 StateSaverBackend *StateSaverBackend::m_instance = nullptr;
 
@@ -248,4 +248,4 @@ bool StateSaverBackend::reset()
     return true;
 }
 
-}
+UT_NAMESPACE_END

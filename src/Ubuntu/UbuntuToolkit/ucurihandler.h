@@ -21,7 +21,7 @@
 #include <QtCore/QObject>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCUriHandler;
 
@@ -54,6 +54,6 @@ class UBUNTUTOOLKIT_EXPORT UCUriHandler : public QObject
     UriHandlerObject m_uriHandlerObject;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // USURIHANDLER_H

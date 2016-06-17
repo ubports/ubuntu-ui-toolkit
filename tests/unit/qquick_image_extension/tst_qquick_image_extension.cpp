@@ -26,7 +26,7 @@
 
 #include "plugin.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 unsigned int numberOfTemporarySciFiles() {
     QStringList nameFilters;

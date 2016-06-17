@@ -18,7 +18,7 @@
 #include "ucubuntuanimation.h"
 #include <QtCore/QPointF>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype UbuntuAnimation
@@ -118,4 +118,4 @@ UCUbuntuAnimation::UCUbuntuAnimation(QObject *parent) :
  * and even so, will usually be proceeded by StandardEasing.
  */
 
-}
+UT_NAMESPACE_END

@@ -32,7 +32,7 @@
 #include "ucbottomedgestyle.h"
 #undef private
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt::Key)
 

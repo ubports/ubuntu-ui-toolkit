@@ -25,7 +25,7 @@
 
 #include <AsyncLoader>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdgeStyle;
 class UBUNTUTOOLKIT_EXPORT UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
@@ -116,6 +116,6 @@ public:
     void activate();
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCBOTTOMEDGE_P_H

@@ -41,7 +41,7 @@ namespace C {
 #include "i18n.h"
 #include "plugin.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_I18n_RelativeTime : public QObject
 {

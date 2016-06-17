@@ -28,7 +28,7 @@
 
 class QQmlComponent;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdge;
 class PropertyChange;
@@ -83,6 +83,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onLoaderStatusChanged(AsyncLoader::LoadingStatus,QObject*))
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCBOTTOMEDGEREGION_H

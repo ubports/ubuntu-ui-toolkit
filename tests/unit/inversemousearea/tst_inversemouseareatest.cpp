@@ -31,7 +31,7 @@
 #define DOUBLECLICK_TIMEOUT 400
 
 using QTest::QTouchEventSequence;
-using namespace UbuntuToolkit;
+UT_USE_NAMESPACE
 
 class InverseMouseAreaTest : public UbuntuTestCase
 {

@@ -38,7 +38,7 @@
 #include "uctestcase.h"
 #include "plugin.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_MainView : public QObject
 {

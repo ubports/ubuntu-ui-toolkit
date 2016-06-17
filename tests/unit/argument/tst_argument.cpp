@@ -23,7 +23,7 @@
 #include <QtCore/QString>
 #include <QtTest/QTest>
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_UCArgument : public QObject
 {

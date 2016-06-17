@@ -29,7 +29,7 @@
 
 class QQuickImageBase;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCQQuickImageExtension : public QObject
 {
@@ -59,6 +59,6 @@ private:
     static QHash<QUrl, QSharedPointer<QTemporaryFile> > s_rewrittenSciFiles;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // QQUICKIMAGEEXTENSION_H

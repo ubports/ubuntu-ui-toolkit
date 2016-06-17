@@ -26,7 +26,7 @@
 #include <private/qquicktext_p.h>
 #include "plugin.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 

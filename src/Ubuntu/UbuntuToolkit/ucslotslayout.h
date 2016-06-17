@@ -22,7 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCSlotsAttached;
 class UCSlotsLayoutPadding;
@@ -74,18 +74,18 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onSlotPositionChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
 };
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPEINFO(UbuntuToolkit::UCSlotsLayout, QML_HAS_ATTACHED_PROPERTIES)
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCSlotsLayout), QML_HAS_ATTACHED_PROPERTIES)
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCSlotsAttachedPrivate;
 class UBUNTUTOOLKIT_EXPORT UCSlotsAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayout)::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayoutPadding) *padding READ padding CONSTANT FINAL)
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:
@@ -159,6 +159,6 @@ private:
     qreal m_bottom;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCSLOTSLAYOUT_H

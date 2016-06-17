@@ -96,7 +96,7 @@ Qt::KeyboardModifiers translateMofidier(uint32_t mod)
 } // end of anonymous namespace
 
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 X11MouseTouchAdaptorPrivate::X11MouseTouchAdaptorPrivate()
     : m_leftButtonIsPressed(false)
@@ -347,4 +347,4 @@ bool X11MouseTouchAdaptorPrivate::handleMotionNotify(WId windowId, uint32_t modi
     return true;
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END

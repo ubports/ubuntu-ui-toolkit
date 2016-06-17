@@ -23,7 +23,7 @@
 #include "ucthemingextension.h"
 #include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStyledItemBasePrivate;
 class UCTheme;
@@ -31,7 +31,7 @@ class UCStyleHints;
 class UBUNTUTOOLKIT_EXPORT UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
     Q_OBJECT
-    Q_INTERFACES(UbuntuToolkit::UCThemingExtension)
+    Q_INTERFACES(UT_PREPEND_NAMESPACE(UCThemingExtension))
     Q_PROPERTY(bool keyNavigationFocus
               READ keyNavigationFocus
               NOTIFY keyNavigationFocusChanged REVISION 2)
@@ -47,7 +47,7 @@ class UBUNTUTOOLKIT_EXPORT UCStyledItemBase : public QQuickItem, public UCThemin
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY styleInstanceChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged FINAL REVISION 2)
-    Q_PROPERTY(UCTheme *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCTheme) *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
 public:
     explicit UCStyledItemBase(QQuickItem *parent = 0);
 
@@ -89,6 +89,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_styleResized())
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCSTYLEDITEMBASE_H

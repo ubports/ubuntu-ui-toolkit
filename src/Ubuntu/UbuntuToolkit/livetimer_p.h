@@ -21,7 +21,7 @@
 
 #include <QTimer>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class SharedLiveTimer : public QObject
 {
@@ -57,6 +57,6 @@ private:
     QDateTime m_lastUpdate;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // LIVETIMER_P_H

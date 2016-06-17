@@ -22,7 +22,7 @@
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_ServiceProperties : public QObject
 {

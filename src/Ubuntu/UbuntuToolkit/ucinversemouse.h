@@ -22,7 +22,7 @@
 #include <QtQml>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCInverseMouse : public UCMouse {
     Q_OBJECT
@@ -47,9 +47,9 @@ protected:
     bool contains(QMouseEvent *mouse);
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPE(UbuntuToolkit::UCInverseMouse)
-QML_DECLARE_TYPEINFO(UbuntuToolkit::UCInverseMouse, QML_HAS_ATTACHED_PROPERTIES)
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCInverseMouse))
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCInverseMouse), QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCINVERSEMOUSE_H

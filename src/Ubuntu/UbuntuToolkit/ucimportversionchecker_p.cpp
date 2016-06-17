@@ -24,7 +24,7 @@
 #include <QtQml/private/qqmlpropertycache_p.h>
 #include <QtQml/private/qqmlmetatype_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \internal
@@ -58,4 +58,4 @@ quint16 UCImportVersionChecker::importVersion(QObject *object)
     return BUILD_VERSION(1, 2);
 }
 
-}
+UT_NAMESPACE_END

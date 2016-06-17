@@ -19,8 +19,9 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
+#include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCViewItemsAttached;
 class UCListItem;
@@ -55,6 +56,6 @@ private:
     void syncWithViewItems();
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // LISTITEMSELECTION_H

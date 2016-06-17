@@ -25,7 +25,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtGui/QGuiApplication>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype UbuntuApplication
@@ -94,4 +94,4 @@ void UCApplication::setInputMethod(QObject* inputMethod) {
     m_inputMethod = inputMethod;
 }
 
-}
+UT_NAMESPACE_END

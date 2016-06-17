@@ -23,7 +23,7 @@
 #include "uclistitemlayout.h"
 #include "uclabel.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype ListItemLayout
@@ -361,4 +361,4 @@ void UCListItemLayout::setMainSlot(QQuickItem *slot, bool fireSignal) {
     qmlInfo(this) << "Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead.";
 }
 
-}
+UT_NAMESPACE_END

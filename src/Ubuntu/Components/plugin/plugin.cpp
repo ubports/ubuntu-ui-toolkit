@@ -92,7 +92,7 @@
 #include <unistd.h>
 #include <stdexcept>
 
-using namespace UbuntuToolkit;
+UT_NAMESPACE_BEGIN
 
 QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 
@@ -173,7 +173,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
     qmlRegisterSimpleSingletonType<UCHaptics>(uri, major, minor, "Haptics");
     qmlRegisterSimpleSingletonType<UCMathUtils>(uri, major, minor, "MathUtils");
-    qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
+    qmlRegisterSimpleSingletonType<ColorUtils>(uri, major, minor, "ColorUtils");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -303,7 +303,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
     qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
-    qmlRegisterType<UbuntuToolkit::Tree>(privateUri, 1, 3, "Tree");
+    qmlRegisterType<Tree>(privateUri, 1, 3, "Tree");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
 
@@ -318,14 +318,16 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
-    QGuiApplication::primaryScreen()->setOrientationUpdateMask(
+    QGuiApplication::primaryScreen()->setOrientationUpdateMask( Qt::ScreenOrientation(
             Qt::PortraitOrientation |
             Qt::LandscapeOrientation |
             Qt::InvertedPortraitOrientation |
-            Qt::InvertedLandscapeOrientation);
+            Qt::InvertedLandscapeOrientation));
 
     registerWindowContextProperty();
 
     // register performance monitor
     engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }
+
+UT_NAMESPACE_END

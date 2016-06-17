@@ -41,7 +41,7 @@
 #include <QFileInfo>
 #include <QLibraryInfo>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /******************************************************************************
  * Divider
@@ -1998,6 +1998,6 @@ bool UCListItem::isSwiped()
     return d->swiped;
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_uclistitem.cpp"

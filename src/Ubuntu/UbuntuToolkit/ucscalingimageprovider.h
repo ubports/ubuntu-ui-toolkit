@@ -23,7 +23,7 @@
 #include <QtGui/QImage>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCScalingImageProvider : public QQuickImageProvider
 {
@@ -32,6 +32,6 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // SCALINGIMAGEPROVIDER_H

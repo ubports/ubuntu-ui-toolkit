@@ -21,7 +21,7 @@
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 const QRgb defaultColor = qRgba(255, 255, 255, 255);
 const float defaultThickness = 20.0f;
@@ -470,4 +470,4 @@ QSGNode* UCFrame::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
     return node;
 }
 
-}
+UT_NAMESPACE_END

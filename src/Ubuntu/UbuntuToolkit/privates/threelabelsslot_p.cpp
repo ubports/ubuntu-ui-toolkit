@@ -20,7 +20,7 @@
 #include "ucfontutils.h"
 #include "uctheme.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCThreeLabelsSlotPrivate::UCThreeLabelsSlotPrivate()
     : QQuickItemPrivate()
@@ -241,4 +241,4 @@ UCLabel *UCThreeLabelsSlot::summary()
     return d->m_summary;
 }
 
-}
+UT_NAMESPACE_END

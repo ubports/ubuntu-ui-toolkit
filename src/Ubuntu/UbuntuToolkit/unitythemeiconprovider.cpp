@@ -25,7 +25,7 @@
 #include <QStandardPaths>
 #include <QtDebug>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class IconTheme
 {
@@ -292,4 +292,4 @@ QImage UnityThemeIconProvider::requestImage(const QString &id, QSize *size, cons
     return image;
 }
 
-}
+UT_NAMESPACE_END

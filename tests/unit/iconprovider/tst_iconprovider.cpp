@@ -20,6 +20,8 @@
 #include <unitythemeiconprovider.h>
 #undef private
 
+UT_USE_NAMESPACE
+
 class tst_IconProvider : public QObject
 {
     Q_OBJECT
@@ -64,7 +66,7 @@ private Q_SLOTS:
         QFETCH(QSize, requestSize);
         QFETCH(QSize, resultSize);
 
-        UbuntuToolkit::UnityThemeIconProvider provider("mockTheme");
+        UnityThemeIconProvider provider("mockTheme");
         QSize returnedSize;
         QImage i = provider.requestImage(icon, &returnedSize, requestSize);
         QCOMPARE(i.size(), resultSize);
@@ -79,7 +81,7 @@ private Q_SLOTS:
     void test_hicolorLast()
     {
         QSize returnedSize;
-        UbuntuToolkit::UnityThemeIconProvider provider("mockTheme");
+        UnityThemeIconProvider provider("mockTheme");
 
         // myapp is in MockTheme3 (white) and hicolor (black)
         // MockTheme3 one is returned since hicolor is last per spec

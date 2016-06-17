@@ -23,13 +23,13 @@
 #include <functional>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCLabelPrivate;
 class UBUNTUTOOLKIT_EXPORT UCLabel : public QQuickText, public UCThemingExtension
 {
     Q_OBJECT
-    Q_INTERFACES(UbuntuToolkit::UCThemingExtension)
+    Q_INTERFACES(UT_PREPEND_NAMESPACE(UCThemingExtension))
     Q_ENUMS(TextSize)
     Q_PROPERTY(TextSize textSize READ textSize WRITE setTextSize NOTIFY textSizeChanged FINAL)
 
@@ -97,6 +97,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void updatePixelSize())
 };
 
-}
+UT_NAMESPACE_END
+
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCLabel))
 
 #endif  // UCLABEL_H

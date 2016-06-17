@@ -19,7 +19,7 @@
 #include <QtTest/QtTest>
 #include "ucunits.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_UCUnits: public QObject
 {

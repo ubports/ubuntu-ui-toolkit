@@ -22,7 +22,7 @@
 #include <QtCore>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCImportVersionChecker
 {
@@ -34,6 +34,6 @@ public:
     virtual quint16 importVersion(QObject *object);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCIMPORTVERSIONCHECKER_P_H

@@ -18,7 +18,7 @@
 #include <QVariantMap>
 #include <QQmlInfo>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
   \internal
@@ -62,4 +62,4 @@ void UCPageWrapperIncubator::statusChanged(QQmlIncubator::Status status)
     Q_EMIT statusHasChanged(status);
 }
 
-}
+UT_NAMESPACE_END

@@ -26,7 +26,7 @@
 
 class QDBusPendingCallWatcher;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class DBusServiceProperties : public QObject, public UCServicePropertiesPrivate
 {
@@ -55,6 +55,6 @@ public Q_SLOTS:
     void updateProperties(const QString &iface, const QVariantMap &map, const QStringList &invalidated);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // DBUSPROPERTYWATCHER_P_H

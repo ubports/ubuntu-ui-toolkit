@@ -22,7 +22,7 @@
 #include <QtQml/QQmlParserStatus>
 #include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAction;
 class UCActionContext;
@@ -63,6 +63,6 @@ private:
     static int actionCount(QQmlListProperty<UCAction> *list);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCACTIONMANAGER_H

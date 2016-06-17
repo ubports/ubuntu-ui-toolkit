@@ -26,7 +26,7 @@
 
 class QQuickAbstractAnimation;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdgeHint;
 class UCBottomEdgeRegion;
@@ -120,10 +120,10 @@ private:
     friend class tst_BottomEdge;
 };
 
-}
+UT_NAMESPACE_END
 
-Q_DECLARE_METATYPE(UbuntuToolkit::UCBottomEdge::Status)
-Q_DECLARE_METATYPE(UbuntuToolkit::UCBottomEdge::DragDirection)
+Q_DECLARE_METATYPE(UT_PREPEND_NAMESPACE(UCBottomEdge)::Status)
+Q_DECLARE_METATYPE(UT_PREPEND_NAMESPACE(UCBottomEdge)::DragDirection)
 
 Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)
 

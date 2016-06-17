@@ -25,7 +25,7 @@
 class QQmlContext;
 class QQmlEngine;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UbuntuI18n : public QObject
 {
@@ -78,6 +78,6 @@ private:
     QString m_language;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UBUNTU_COMPONENTS_I18N_H

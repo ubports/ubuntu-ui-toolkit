@@ -22,7 +22,7 @@
 #include "i18n.h"
 #include <QtQml/QQmlInfo>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
@@ -702,6 +702,6 @@ QVariant UCAlarm::cookie() const
     return d_ptr->cookie();
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucalarm.cpp"

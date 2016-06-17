@@ -19,7 +19,7 @@
 
 #include "filterbehavior.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 FilterBehavior::FilterBehavior(QObject *parent)
     : QObject(parent)
@@ -55,4 +55,4 @@ FilterBehavior::setPattern(QRegExp pattern)
     Q_EMIT patternChanged();
 }
 
-}
+UT_NAMESPACE_END

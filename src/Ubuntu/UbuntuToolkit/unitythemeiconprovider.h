@@ -22,7 +22,7 @@
 #include <QQuickImageProvider>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UnityThemeIconProvider: public QQuickImageProvider
 {
@@ -34,6 +34,6 @@ private:
     QSharedPointer<class IconTheme> theme;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif

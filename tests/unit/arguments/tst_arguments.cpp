@@ -30,7 +30,7 @@
 #include <QtQml/QQmlEngine>
 #include "i18n.h"
 
-using namespace UbuntuToolkit;
+uT_USE_NAMESPACE
 
 class tst_UCArguments : public QObject
 {

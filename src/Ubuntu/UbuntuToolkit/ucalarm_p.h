@@ -25,7 +25,7 @@
 #include <QtCore/QPointer>
 #include <QtQml/QQmlListProperty>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCAlarmPrivate
 {
@@ -88,6 +88,6 @@ inline bool UCAlarmPrivate::isDaySet(int dayNumber, UCAlarm::DaysOfWeek days)
     return (days & (1 << (dayNumber - 1))) == (1 << (dayNumber - 1));
 }
 
-}
+UT_NAMESPACE_END
 
 #endif // UUALARM_P_H

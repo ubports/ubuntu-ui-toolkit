@@ -17,7 +17,7 @@
 #include "livetimer.h"
 #include "livetimer_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*! \qmltype LiveTimer
     \instantiates LiveTimer
@@ -143,4 +143,4 @@ void LiveTimer::setEffectiveFrequency(LiveTimer::Frequency frequency)
     m_effectiveFrequency = frequency;
 }
 
-}
+UT_NAMESPACE_END

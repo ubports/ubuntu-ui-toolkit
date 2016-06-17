@@ -26,7 +26,7 @@
 #include "ucunits.h"
 
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 QHash<QUrl, QSharedPointer<QTemporaryFile> > UCQQuickImageExtension::s_rewrittenSciFiles;
 
@@ -203,4 +203,4 @@ QString UCQQuickImageExtension::scaledSource(QString source, const QString &sciF
     return source.replace("source: ", "source: " + QString(quote) + baseUrl).append(quote);
 }
 
-}
+UT_NAMESPACE_END

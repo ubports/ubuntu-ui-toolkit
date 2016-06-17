@@ -36,14 +36,14 @@
 class QQmlAbstractBinding;
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStyledItemBase;
 class UBUNTUTOOLKIT_EXPORT UCTheme : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(UCTheme *parentTheme READ parentTheme NOTIFY parentThemeChanged FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCTheme) *parentTheme READ parentTheme NOTIFY parentThemeChanged FINAL)
     Q_PROPERTY(QString name READ name WRITE setName RESET resetName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QObject* palette READ palette WRITE setPalette RESET resetPalette NOTIFY paletteChanged FINAL)
 public:
@@ -172,6 +172,8 @@ private:
 
 UCTheme::ThemeRecord pathFromThemeName(QString themeName);
 
-}
+UT_NAMESPACE_END
+
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCTheme))
 
 #endif // UCTHEME_H

@@ -19,7 +19,7 @@
 
 #include "uclabel.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCLabelPrivate
 {
@@ -57,6 +57,6 @@ protected:
     static QColor getDefaultColor(QQuickItem *item, UCTheme *theme);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // LABEL_P

@@ -27,7 +27,7 @@ class QQmlComponent;
 class QQmlContext;
 class QQmlEngine;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCTheme;
 class UBUNTUTOOLKIT_EXPORT UCDeprecatedTheme : public QObject
@@ -57,6 +57,6 @@ private:
     QHash<QString, bool> m_notes;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCDEPRECATEDTHEME_H

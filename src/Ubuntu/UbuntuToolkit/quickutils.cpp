@@ -30,7 +30,7 @@
 #include <private/qquicktextinput_p.h>
 #include <private/qquicktextedit_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 QuickUtils *QuickUtils::m_instance = nullptr;
 
@@ -270,4 +270,4 @@ QQuickItem *QuickUtils::lastFocusableChild(QQuickItem *item)
     return Q_NULLPTR;
 }
 
-}
+UT_NAMESPACE_END

@@ -21,7 +21,7 @@
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 AlarmManagerPrivate::AlarmManagerPrivate(AlarmManager *qq)
     : q_ptr(qq)
@@ -90,6 +90,6 @@ UCAlarmPrivate *AlarmManager::createAlarmData(UCAlarm *alarm)
     return AlarmManagerPrivate::get()->createAlarmData(alarm);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_alarmmanager_p.cpp"

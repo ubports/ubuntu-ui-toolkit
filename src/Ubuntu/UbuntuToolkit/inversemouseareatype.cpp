@@ -18,7 +18,7 @@
 #include <QtGui/QGuiApplication>
 #include "quickutils.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /*!
   \qmltype InverseMouseArea
@@ -571,4 +571,4 @@ bool InverseMouseAreaType::contains(const QPointF &point) const
     return !pointInArea && !pointInOSK && pointOutArea;
 }
 
-}
+UT_NAMESPACE_END

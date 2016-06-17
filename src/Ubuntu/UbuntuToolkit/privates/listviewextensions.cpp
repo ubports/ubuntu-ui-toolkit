@@ -22,7 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquickflickable_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
@@ -154,4 +154,4 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     return (oldIndex != currentIndex);
 }
 
-}
+UT_NAMESPACE_END

@@ -21,7 +21,7 @@
 #include <QtQml/QQmlParserStatus>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCServicePropertiesPrivate;
 class UBUNTUTOOLKIT_EXPORT UCServiceProperties : public QObject, public QQmlParserStatus
@@ -83,6 +83,6 @@ private:
     Q_DECLARE_PRIVATE_D(d_ptr, UCServiceProperties)
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCSERVICEPROPERTIES_H

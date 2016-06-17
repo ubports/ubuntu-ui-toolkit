@@ -23,7 +23,7 @@
 #include <AsyncLoader>
 #include <QtCore/private/qobject_p.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCBottomEdgeRegionPrivate : public QObjectPrivate
 {
@@ -49,7 +49,7 @@ public:
 
     void onLoaderStatusChanged(AsyncLoader::LoadingStatus,QObject*);
 
-    UbuntuToolkit::AsyncLoader loader;
+    AsyncLoader loader;
     QUrl url;
     QPointer<UCBottomEdge> bottomEdge;
     QQmlComponent *component;
@@ -80,6 +80,6 @@ public:
     void discardRegionContent() Q_DECL_OVERRIDE;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCBOTTOMEDGEREGION_P

@@ -23,7 +23,7 @@
 
 #include <QStringList>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStateSaverAttachedPrivate
 {
@@ -47,6 +47,6 @@ public:
     void _q_globalEnableChanged(bool);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCSTATESAVER_P_H

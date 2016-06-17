@@ -19,12 +19,13 @@
 
 #include <QQuickItem>
 #include <private/qquickitem_p.h>
+#include <ubuntutoolkitglobal.h>
 
 //The padding between title and the string below it (i.e. subtitle, or
 //summary, when subtitle is empty)
 #define TITLE_SPACING_DP                       2
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCTheme;
 class UCLabel;
@@ -32,9 +33,9 @@ class UCThreeLabelsSlotPrivate;
 class UCThreeLabelsSlot : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)
-    Q_PROPERTY(UCLabel *subtitle READ subtitle CONSTANT FINAL)
-    Q_PROPERTY(UCLabel *summary READ summary CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *title READ title CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *subtitle READ subtitle CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *summary READ summary CONSTANT FINAL)
 
 public:
     explicit UCThreeLabelsSlot(QQuickItem *parent = 0);
@@ -80,6 +81,6 @@ public:
     UCLabel *m_summary;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // THREELABELSSLOT_H

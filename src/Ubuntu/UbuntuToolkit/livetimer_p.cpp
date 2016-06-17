@@ -19,7 +19,7 @@
 
 #include <QDBusConnection>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 SharedLiveTimer::SharedLiveTimer(QObject* parent)
     : QObject(parent)
@@ -170,4 +170,4 @@ void SharedLiveTimer::timedate1PropertiesChanged(const QString &interface, const
     reInitTimer();
 }
 
-}
+UT_NAMESPACE_END

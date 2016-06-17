@@ -28,7 +28,7 @@
 
 //#define SENSING_DEBUG
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 UCAbstractButtonPrivate::UCAbstractButtonPrivate()
     : UCActionItemPrivate()
@@ -406,6 +406,6 @@ bool UCAbstractButton::contains(const QPointF &point) const
     return d->sensingArea.contains(point);
 }
 
-}
+UT_NAMESPACE_END
 
 #include "moc_ucabstractbutton.cpp"

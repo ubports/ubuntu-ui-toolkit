@@ -18,7 +18,7 @@
 
 #include "ucproportionalshape.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 const qreal aspectRatio = 16.0 / 15.0;
 const qreal invAspectRatio = 1.0 / aspectRatio;
@@ -65,4 +65,4 @@ void UCProportionalShape::componentComplete()
     _q_updateHeight();
 }
 
-}
+UT_NAMESPACE_END

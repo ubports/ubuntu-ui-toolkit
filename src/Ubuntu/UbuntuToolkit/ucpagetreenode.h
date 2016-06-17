@@ -18,7 +18,7 @@
 
 #include "ucstyleditembase.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCPageTreeNodePrivate;
 class UBUNTUTOOLKIT_EXPORT UCPageTreeNode : public UCStyledItemBase
@@ -89,6 +89,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_propagatedBinding (QObject *propagated))
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UCPAGETREENODE_H

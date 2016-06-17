@@ -28,7 +28,7 @@ Q_LOGGING_CATEGORY(ucAction, "ubuntu.components.Action", QtMsgType::QtWarningMsg
 
 #define ACT_TRACE(params) qCDebug(ucAction) << params
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
 {
@@ -496,4 +496,4 @@ void UCAction::removeOwningItem(QQuickItem *item)
     ACT_TRACE("REMOVE ACTION OWNER" << item->objectName() << "FROM" << this);
 }
 
-}
+UT_NAMESPACE_END

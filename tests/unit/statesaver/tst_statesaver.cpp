@@ -43,7 +43,7 @@
 #undef private
 #undef protected
 
-using namespace UbuntuToolkit;
+UT_USE_NAMESPACE
 
 class tst_StateSaverTest : public QObject
 {

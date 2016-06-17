@@ -27,7 +27,7 @@
 
 class QPlatformWindow;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCUnits : public QObject
 {
@@ -74,6 +74,6 @@ private:
     float m_gridUnit;
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // UBUNTU_COMPONENTS_UNITS_H

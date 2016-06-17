@@ -21,7 +21,7 @@
 
 #include "ucubuntushape.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCProportionalShape : public UCUbuntuShape
 {
@@ -40,8 +40,8 @@ private:
     Q_DISABLE_COPY(UCProportionalShape)
 };
 
-}
+UT_NAMESPACE_END
 
-QML_DECLARE_TYPE(UbuntuToolkit::UCProportionalShape)
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCProportionalShape))
 
 #endif  // UCPROPORTIONALSHAPE_H
