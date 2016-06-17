@@ -30,7 +30,7 @@
 #include "uctestcase.h"
 #include "uctheme.h"
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 class Tst_Animator : public QObject
 {

@@ -40,7 +40,7 @@ namespace C {
 #include "i18n.h"
 #include "plugin.h"
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 class tst_I18n_LocalizedApp : public QObject
 {

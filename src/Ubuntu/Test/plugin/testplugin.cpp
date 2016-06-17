@@ -17,7 +17,7 @@
 #include "testplugin.h"
 #include <QtQml>
 #include "uctestextras.h"
-#include <MouseTouchAdaptor>
+#include <mousetouchadaptor.h>
 
 UT_USE_NAMESPACE
 

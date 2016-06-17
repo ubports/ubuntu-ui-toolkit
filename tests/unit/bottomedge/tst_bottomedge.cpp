@@ -32,7 +32,7 @@
 #include "ucbottomedgestyle.h"
 #undef private
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt::Key)
 

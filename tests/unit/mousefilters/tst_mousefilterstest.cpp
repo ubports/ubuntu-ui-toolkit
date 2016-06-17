@@ -33,7 +33,7 @@
 #include <private/qquickevents_p_p.h>
 #include <private/qquickmousearea_p.h>
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 template<typename T>
 T *attachedFilter(QQuickItem *item, const QString &objectName)

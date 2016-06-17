@@ -26,7 +26,7 @@
 
 #include "plugin.h"
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 unsigned int numberOfTemporarySciFiles() {
     QStringList nameFilters;

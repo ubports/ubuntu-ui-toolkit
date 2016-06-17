@@ -33,8 +33,8 @@
 
 #define UT_NAMESPACE_BEGIN          namespace UbuntuToolkit {
 #define UT_NAMESPACE_END            }
-#define UT_PREPEND_NAMESPACE(name)  ::UbuntuToolkit::name
-#define UT_USE_NAMESPACE            using namespace ::UbuntuToolkit;
+#define UT_PREPEND_NAMESPACE(name)  UbuntuToolkit::name
+#define UT_USE_NAMESPACE            using namespace UbuntuToolkit;
 #define UT_FORWARD_DECLARE_CLASS(name) \
     UT_NAMESPACE_BEGIN class name; UT_NAMESPACE_END \
     using UT_PREPEND_NAMESPACE(name);
@@ -44,7 +44,6 @@
 
 #else // no namespace
 
-#pragma message("no namespace")
 #define UT_NAMESPACE_BEGIN
 #define UT_NAMESPACE_END
 #define UT_PREPEND_NAMESPACE(name)  name

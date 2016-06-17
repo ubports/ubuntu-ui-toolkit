@@ -33,7 +33,7 @@
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 #define QCOMPARE_RET(actual, expected) \
 do {\

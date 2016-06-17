@@ -23,7 +23,7 @@
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qobject_p.h>
 #include <QSysInfo>
-#include <MouseTouchAdaptor>
+#include <mousetouchadaptor.h>
 
 UT_USE_NAMESPACE
 

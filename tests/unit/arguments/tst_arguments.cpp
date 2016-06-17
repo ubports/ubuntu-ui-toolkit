@@ -30,7 +30,7 @@
 #include <QtQml/QQmlEngine>
 #include "i18n.h"
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 class tst_UCArguments : public QObject
 {

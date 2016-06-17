@@ -19,7 +19,7 @@
 #include <QtTest/QtTest>
 #include "ucunits.h"
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 class tst_UCUnits: public QObject
 {

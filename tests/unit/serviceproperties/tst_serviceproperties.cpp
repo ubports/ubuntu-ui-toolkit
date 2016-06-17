@@ -22,7 +22,7 @@
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 
-uT_USE_NAMESPACE
+UT_USE_NAMESPACE
 
 class tst_ServiceProperties : public QObject
 {

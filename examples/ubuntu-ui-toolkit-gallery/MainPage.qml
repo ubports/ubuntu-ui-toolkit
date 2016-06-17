@@ -121,16 +121,10 @@ Page {
             onClicked: widgetList.currentIndex = index
             //follow ListItemLayout size
             height: layout.height + (divider.visible ? divider.height : 0)
-            /*
             ListItemLayout {
                 id: layout
                 title.text: label
                 ProgressionSlot {}
-            }
-            */
-            Label {
-                id: layout
-                text: "label"
             }
         }
     }

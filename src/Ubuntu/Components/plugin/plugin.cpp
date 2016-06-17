@@ -318,7 +318,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
-    QGuiApplication::primaryScreen()->setOrientationUpdateMask( Qt::ScreenOrientation(
+    QGuiApplication::primaryScreen()->setOrientationUpdateMask( Qt::ScreenOrientations(
             Qt::PortraitOrientation |
             Qt::LandscapeOrientation |
             Qt::InvertedPortraitOrientation |
