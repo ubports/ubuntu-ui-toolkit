@@ -40,6 +40,7 @@
 #include <QtQml/QQmlEngine>
 #include <QFileInfo>
 #include <QLibraryInfo>
+#include <enginedata.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -1231,9 +1232,7 @@ void UCListItemPrivate::showContextMenu()
 
     QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
     const QString relativeUrl = versionString + "/ListItemPopover.qml";    
-    // TODO: fix this somehow!!!
-//    QUrl url(UbuntuComponentsPlugin::pluginUrl().resolved(relativeUrl));
-    QUrl url(qmlEngine(q)->rootContext()->resolvedUrl(relativeUrl));
+    QUrl url(EngineData::baseUrl(qmlEngine(q)).resolved(relativeUrl));
 
     // Open Popover
     QQmlEngine* engine = qmlEngine(q);

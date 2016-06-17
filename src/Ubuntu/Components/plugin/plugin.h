@@ -35,10 +35,6 @@ class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri) override;
     void initializeEngine(QQmlEngine *engine, const char *uri) override;
-    static const QUrl &pluginUrl()
-    {
-        return m_baseUrl;
-    }
     static void initializeContextProperties(QQmlEngine*);
 
 private Q_SLOTS:
@@ -46,8 +42,7 @@ private Q_SLOTS:
     void setWindowContextProperty(QWindow* focusWindow);
 
 private:
-    static QUrl m_baseUrl;
-    void initializeBaseUrl();
+    void initializeBaseUrl(QQmlEngine *engine);
     void registerTypesToVersion(const char *uri, int major, int minor);
 };
 

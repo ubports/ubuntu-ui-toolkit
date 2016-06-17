@@ -74,6 +74,7 @@ usr/include/*/qt5/UbuntuToolkit/UriHandlerObject
 usr/include/*/qt5/UbuntuToolkit/appheaderbase.h
 usr/include/*/qt5/UbuntuToolkit/asyncloader.h
 usr/include/*/qt5/UbuntuToolkit/colorutils.h
+usr/include/*/qt5/UbuntuToolkit/enginedata.h
 usr/include/*/qt5/UbuntuToolkit/filterbehavior.h
 usr/include/*/qt5/UbuntuToolkit/frame.h
 usr/include/*/qt5/UbuntuToolkit/i18n.h

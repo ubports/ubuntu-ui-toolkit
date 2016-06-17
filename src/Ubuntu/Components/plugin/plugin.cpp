@@ -80,6 +80,7 @@
 #include "frame.h"
 #include "ucpagewrapper.h"
 #include "appheaderbase.h"
+#include <enginedata.h>
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -93,8 +94,6 @@
 #include <stdexcept>
 
 UT_NAMESPACE_BEGIN
-
-QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 
 /*
  * Type registration functions.
@@ -110,10 +109,10 @@ template<typename T> static int qmlRegisterSimpleSingletonType(const char *uri, 
     return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
 }
 
-void UbuntuComponentsPlugin::initializeBaseUrl()
+void UbuntuComponentsPlugin::initializeBaseUrl(QQmlEngine *engine)
 {
-    if (!m_baseUrl.isValid()) {
-        m_baseUrl = QUrl(baseUrl().toString() + '/');
+    if (!EngineData::isDeclared(engine)) {
+        EngineData::create(engine, baseUrl());
     }
 }
 
@@ -179,7 +178,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
-    initializeBaseUrl();
 
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
@@ -290,7 +288,7 @@ void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
-    initializeBaseUrl();
+    initializeBaseUrl(engine);
 
     // register internal styles
     const char *styleUri = "Ubuntu.Components.Styles";

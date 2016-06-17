@@ -18,6 +18,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtCore/QUrl>
 #include <QDebug>
+#include "enginedata.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -157,9 +158,7 @@ void HapticsProxy::initialize()
         return;
     }
     // load haptics proxy from file system/qrc
-    // TODO: check this!
-//    QUrl path = UbuntuComponentsPlugin::pluginUrl().resolved(QUrl("1.1/Haptics.qml"));
-    QUrl path(m_engine->rootContext()->resolvedUrl(QUrl("1.1/Haptics.qml")));
+    QUrl path(EngineData::baseUrl(m_engine).resolved(QUrl("1.1/Haptics.qml")));
 
     QQmlComponent component(m_engine, path, QQmlComponent::PreferSynchronous);
     if (!component.isError()) {

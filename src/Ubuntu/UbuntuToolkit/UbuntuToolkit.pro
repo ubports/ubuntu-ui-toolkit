@@ -44,13 +44,15 @@ HEADERS += \
     mousetouchadaptor.h \
     mousetouchadaptor_p.h \
     propertychange.h \
+    enginedata.h
 
 SOURCES += \ 
     colorutils.cpp \
     tree.cpp \
     asyncloader.cpp \
     mousetouchadaptor.cpp \
-    propertychange.cpp
+    propertychange.cpp \
+    enginedata.cpp
 
 HEADERS += \
     uctheme.h \
