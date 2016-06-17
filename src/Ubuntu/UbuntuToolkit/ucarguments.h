@@ -35,8 +35,8 @@ class UBUNTUTOOLKIT_EXPORT UCArguments : public QObject, public QQmlParserStatus
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    Q_PROPERTY(UCArgument* defaultArgument READ defaultArgument WRITE setDefaultArgument NOTIFY defaultArgumentChanged)
-    Q_PROPERTY(QQmlListProperty<UCArgument> arguments READ arguments)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCArgument)* defaultArgument READ defaultArgument WRITE setDefaultArgument NOTIFY defaultArgumentChanged)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCArgument)> arguments READ arguments)
     Q_CLASSINFO("DefaultProperty", "arguments")
     Q_PROPERTY(QQmlPropertyMap* values READ values CONSTANT)
     Q_PROPERTY(bool error READ error NOTIFY errorChanged)

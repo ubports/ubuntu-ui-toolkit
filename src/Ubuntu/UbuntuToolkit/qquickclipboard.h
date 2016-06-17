@@ -34,11 +34,11 @@ class QQuickClipboardPrivate;
 class UBUNTUTOOLKIT_EXPORT QQuickClipboard : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQuickMimeData *data READ data NOTIFY dataChanged)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(QQuickMimeData) *data READ data NOTIFY dataChanged)
 public:
     explicit QQuickClipboard(QObject *parent = 0);
 
-    Q_INVOKABLE QQuickMimeData *newData();
+    Q_INVOKABLE UT_PREPEND_NAMESPACE(QQuickMimeData) *newData();
 
 private: //getter/setter
     QQuickMimeData *data();

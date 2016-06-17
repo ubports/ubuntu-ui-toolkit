@@ -25,7 +25,7 @@
 
 UT_NAMESPACE_BEGIN
 
-class UBUNTUTOOLKIT_EXPORT ShapeOverlayShader : public ShapeShader
+class ShapeOverlayShader : public ShapeShader
 {
 public:
     ShapeOverlayShader();
@@ -34,7 +34,7 @@ public:
 
 // --- Scene graph material ---
 
-class UBUNTUTOOLKIT_EXPORT ShapeOverlayMaterial : public ShapeMaterial
+class ShapeOverlayMaterial : public ShapeMaterial
 {
 public:
     QSGMaterialType* type() const override;
@@ -43,7 +43,7 @@ public:
 
 // --- Scene graph node ---
 
-class UBUNTUTOOLKIT_EXPORT ShapeOverlayNode : public QSGGeometryNode
+class ShapeOverlayNode : public QSGGeometryNode
 {
 public:
     struct Vertex {

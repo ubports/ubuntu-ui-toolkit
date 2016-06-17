@@ -25,7 +25,7 @@ class UCActionItemPrivate;
 class UBUNTUTOOLKIT_EXPORT UCActionItem : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_PROPERTY(UCAction *action READ action WRITE setAction NOTIFY actionChanged FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCAction) *action READ action WRITE setAction NOTIFY actionChanged FINAL)
     Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
     Q_PROPERTY(QUrl iconSource READ iconSource WRITE setIconSource RESET resetIconSource NOTIFY iconSourceChanged)
     Q_PROPERTY(QString iconName READ iconName WRITE setIconName RESET resetIconName NOTIFY iconNameChanged)

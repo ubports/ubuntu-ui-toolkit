@@ -36,15 +36,15 @@ class UBUNTUTOOLKIT_EXPORT UCBottomEdge : public UCStyledItemBase
     Q_OBJECT
     Q_ENUMS(Status DragDirection)
 
-    Q_PROPERTY(UCBottomEdgeHint* hint READ hint CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCBottomEdgeHint)* hint READ hint CONSTANT FINAL)
     Q_PROPERTY(qreal dragProgress READ dragProgress NOTIFY dragProgressChanged FINAL)
     Q_PROPERTY(DragDirection dragDirection READ dragDirection NOTIFY dragDirectionChanged FINAL)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged FINAL)
     Q_PROPERTY(QUrl contentUrl READ contentUrl WRITE setContent NOTIFY contentChanged FINAL)
     Q_PROPERTY(QQmlComponent *contentComponent READ contentComponent WRITE setContentComponent NOTIFY contentComponentChanged FINAL)
     Q_PROPERTY(QQuickItem* contentItem READ contentItem NOTIFY contentItemChanged FINAL)
-    Q_PROPERTY(QQmlListProperty<UCBottomEdgeRegion> regions READ regions NOTIFY regionsChanged FINAL)
-    Q_PROPERTY(UCBottomEdgeRegion* activeRegion READ activeRegion NOTIFY activeRegionChanged FINAL)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCBottomEdgeRegion)> regions READ regions NOTIFY regionsChanged FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCBottomEdgeRegion)* activeRegion READ activeRegion NOTIFY activeRegionChanged FINAL)
     Q_PROPERTY(bool preloadContent READ preloadContent WRITE setPreloadContent NOTIFY preloadContentChanged FINAL DESIGNABLE false)
 
     // overloaded data property to catch regions
@@ -88,7 +88,7 @@ Q_SIGNALS:
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
     void regionsChanged();
-    void activeRegionChanged(UCBottomEdgeRegion *activeRegion);
+    void activeRegionChanged(UT_PREPEND_NAMESPACE(UCBottomEdgeRegion) *activeRegion);
     void preloadContentChanged();
 
     void commitStarted();

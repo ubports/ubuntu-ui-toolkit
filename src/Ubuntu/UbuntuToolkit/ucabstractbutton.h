@@ -32,7 +32,7 @@ class UBUNTUTOOLKIT_EXPORT UCAbstractButton : public UCActionItem
     Q_OBJECT
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(bool hovered READ hovered NOTIFY hoveredChanged)
-    Q_PROPERTY(UCMargins *sensingMargins READ sensingMargins CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCMargins) *sensingMargins READ sensingMargins CONSTANT FINAL)
 
     // internal, declared to support the deprecated ListItem module
     Q_PROPERTY(bool __acceptEvents READ acceptEvents WRITE setAcceptEvents)

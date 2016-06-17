@@ -44,7 +44,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     // invokables
-    Q_INVOKABLE UCAlarm *get(int index);
+    Q_INVOKABLE UT_PREPEND_NAMESPACE(UCAlarm) *get(int index);
 
     // property getters
     int count() const;

@@ -30,9 +30,9 @@ class UBUNTUTOOLKIT_EXPORT UCActionManager : public QObject, public QQmlParserSt
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
-    Q_PROPERTY(QQmlListProperty<UCActionContext> localContexts READ localContexts)
-    Q_PROPERTY(UCActionContext *globalContext READ globalContext CONSTANT)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCActionContext)> localContexts READ localContexts)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCActionContext) *globalContext READ globalContext CONSTANT)
     Q_CLASSINFO("DefaultProperty", "actions")
 public:
     explicit UCActionManager(QObject *parent = 0);
@@ -48,10 +48,10 @@ Q_SIGNALS:
     void quit();
 
 public Q_SLOTS:
-    void addAction(UCAction *action);
-    void removeAction(UCAction *action);
-    void addLocalContext(UCActionContext *context);
-    void removeLocalContext(UCActionContext *context);
+    void addAction(UT_PREPEND_NAMESPACE(UCAction) *action);
+    void removeAction(UT_PREPEND_NAMESPACE(UCAction) *action);
+    void addLocalContext(UT_PREPEND_NAMESPACE(UCActionContext) *context);
+    void removeLocalContext(UT_PREPEND_NAMESPACE(UCActionContext) *context);
 
 private:
     static void contextAppend(QQmlListProperty<UCActionContext> *list, UCActionContext *context);

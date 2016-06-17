@@ -31,7 +31,7 @@ class UBUNTUTOOLKIT_EXPORT UriHandlerObject : public QObject
     Q_CLASSINFO("D-Bus Interface", "org.freedesktop.Application")
 
  public:
-    UriHandlerObject(UCUriHandler* uriHandler);
+    UriHandlerObject(UT_PREPEND_NAMESPACE(UCUriHandler)* uriHandler);
 
  public Q_SLOTS:
     void Open(const QStringList& uris, const QHash<QString, QVariant>& platformData);

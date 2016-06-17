@@ -34,7 +34,7 @@ class UBUNTUTOOLKIT_EXPORT UCActionContext : public QObject, public QQmlParserSt
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
-    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_CLASSINFO("DefaultProperty", "actions")
 public:
@@ -61,8 +61,8 @@ Q_SIGNALS:
     void activeChanged();
 
 public Q_SLOTS:
-    void addAction(UCAction *action);
-    void removeAction(UCAction *action);
+    void addAction(UT_PREPEND_NAMESPACE(UCAction) *action);
+    void removeAction(UT_PREPEND_NAMESPACE(UCAction) *action);
 
 protected:
     QSet<UCAction*> m_actions;

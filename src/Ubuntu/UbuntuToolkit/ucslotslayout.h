@@ -32,7 +32,7 @@ class UBUNTUTOOLKIT_EXPORT UCSlotsLayout : public QQuickItem
     Q_OBJECT
 
     Q_PROPERTY(QQuickItem *mainSlot READ mainSlot WRITE setMainSlot NOTIFY mainSlotChanged)
-    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayoutPadding) *padding READ padding CONSTANT FINAL)
 
     Q_ENUMS(UCSlotPosition)
 

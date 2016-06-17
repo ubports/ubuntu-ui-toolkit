@@ -29,7 +29,7 @@
 
 UT_NAMESPACE_BEGIN
 
-class UBUNTUTOOLKIT_EXPORT ShapeShader : public QSGMaterialShader
+class ShapeShader : public QSGMaterialShader
 {
 public:
     ShapeShader();
@@ -52,7 +52,7 @@ private:
 
 // --- Scene graph material ---
 
-class UBUNTUTOOLKIT_EXPORT ShapeMaterial : public QSGMaterial
+class ShapeMaterial : public QSGMaterial
 {
 public:
     struct Data {
@@ -88,7 +88,7 @@ private:
 
 // --- Scene graph node ---
 
-class UBUNTUTOOLKIT_EXPORT ShapeNode : public QSGGeometryNode
+class ShapeNode : public QSGGeometryNode
 {
 public:
     struct Vertex {
