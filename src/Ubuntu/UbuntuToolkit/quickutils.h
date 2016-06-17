@@ -21,6 +21,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtQuick/QQuickView>
+#include <ubuntutoolkitglobal.h>
 
 class QQuickItem;
 class QQmlEngine;
@@ -28,7 +29,7 @@ class QQmlComponent;
 
 namespace UbuntuToolkit {
 
-class QuickUtils : public QObject
+class UBUNTUTOOLKIT_EXPORT QuickUtils : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)

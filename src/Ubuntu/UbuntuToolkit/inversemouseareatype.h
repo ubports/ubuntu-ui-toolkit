@@ -18,12 +18,13 @@
 
 #include <private/qquickmousearea_p.h>
 #include <QtCore/QPointer>
+#include <ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
 namespace UbuntuToolkit {
 
-class InverseMouseAreaType : public QQuickMouseArea
+class UBUNTUTOOLKIT_EXPORT InverseMouseAreaType : public QQuickMouseArea
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)

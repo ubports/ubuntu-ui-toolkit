@@ -22,6 +22,7 @@
 #include <QtCore/QObject>
 #include <QtQml/QJSEngine>
 #include <QtQml/QQmlEngine>
+#include <ubuntutoolkitglobal.h>
 
 class QQmlEngine;
 class QJSEngine;
@@ -30,7 +31,7 @@ namespace UbuntuToolkit {
 
 class QQuickMimeData;
 class QQuickClipboardPrivate;
-class QQuickClipboard : public QObject
+class UBUNTUTOOLKIT_EXPORT QQuickClipboard : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQuickMimeData *data READ data NOTIFY dataChanged)

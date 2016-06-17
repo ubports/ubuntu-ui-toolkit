@@ -58,7 +58,6 @@
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
 #include "uclistitem.h"
-#include "uclistitem_p.h"
 #include "uclistitemactions.h"
 #include "uclistitemstyle.h"
 #include "ucserviceproperties.h"
@@ -78,9 +77,9 @@
 #include "ucpagetreenode.h"
 #include "ucmainviewbase.h"
 #include "ucperformancemonitor.h"
-#include "privates/frame.h"
-#include "privates/ucpagewrapper.h"
-#include "privates/appheaderbase.h"
+#include "frame.h"
+#include "ucpagewrapper.h"
+#include "appheaderbase.h"
 
 // From UbuntuGestures
 #include "private/ucswipearea_p.h"
@@ -92,6 +91,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
+
+using namespace UbuntuToolkit;
 
 QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 

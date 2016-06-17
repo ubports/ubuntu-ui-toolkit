@@ -21,10 +21,11 @@
 #define SORTBEHAVIOR_H
 
 #include <QSortFilterProxyModel>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class SortBehavior : public QObject {
+class UBUNTUTOOLKIT_EXPORT SortBehavior : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)

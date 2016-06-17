@@ -27,7 +27,7 @@
 
 namespace UbuntuToolkit {
 
-class QQuickMimeData : public QObject
+class UBUNTUTOOLKIT_EXPORT QQuickMimeData : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QStringList formats READ formats NOTIFY formatsChanged)

@@ -3,7 +3,7 @@ TARGET=UbuntuToolkit
 
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
+    PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
 }
 QT *= dbus svg UbuntuGestures UbuntuGestures_private
 
@@ -24,6 +24,9 @@ CONFIG += dll no_keywords c++11
 INCLUDEPATH+=$$PWD
 
 DEFINES += UBUNTUTOOLKIT_LIBRARY
+#comment in the following line to disable traces
+#DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_USE_QSTRINGBUILDER
 
 load(qt_build_config)
 load(ubuntu_qt_module)
@@ -223,3 +226,17 @@ SOURCES += \
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
+
+#resources
+RESOURCES += \
+    $$PWD/resources.qrc
+
+OTHER_FILES += \
+    $$PWD/shaders/shape.vert \
+    $$PWD/shaders/shape.frag \
+    $$PWD/shaders/shape_no_dfdy.frag \
+    $$PWD/shaders/shapeoverlay.vert \
+    $$PWD/shaders/shapeoverlay.frag \
+    $$PWD/shaders/shapeoverlay_no_dfdy.frag \
+    $$PWD/privates/shaders/frame.vert \
+    $$PWD/privates/shaders/frame.frag

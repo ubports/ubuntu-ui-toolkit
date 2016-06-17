@@ -21,10 +21,11 @@
 #define FILTERBEHAVIOR_H
 
 #include <QSortFilterProxyModel>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class FilterBehavior : public QObject {
+class UBUNTUTOOLKIT_EXPORT FilterBehavior : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)

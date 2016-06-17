@@ -19,10 +19,11 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class LiveTimer : public QObject
+class UBUNTUTOOLKIT_EXPORT LiveTimer : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Frequency)
