@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2013 Canonical Ltd.
+# Copyright 2016 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -14,20 +14,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Christian Dywan <christian.dywan@canonical.com>
+################################################################################
 
-. `dirname ${BASH_SOURCE[0]}`/../export_qml_dir.sh || exit 1
+SCRIPT_DIRECTORY=`dirname $0`
+cd $SCRIPT_DIRECTORY
 
-LOG=$BUILD_DIR/xvfb.err
-echo Running $@ in virtual frame buffer...
-xvfb-run -a -s "-screen 0 1280x1024x24" -e $LOG "$@" 2>$LOG
-RETVAL=$?
-if [ $RETVAL -eq 0 ]; then
-    echo $@ finished successfully...
-else
-    echo $@ in virtual frame buffer failed...
-    cat $LOG >&2
-    echo Tail of xvfb-run output:
-    tail $LOG >&2
-    exit $RETVAL
-fi
+TEST_FILES=$(ls tst_*.??.qml)
+QML_FILES=$(ls tst_*.qml)
+[ "$TEST_FILES" == "$QML_FILES" ] && exit 0
+echo "Some unit tests don't have a proper version suffix:"
+for FILENAME in $QML_FILES; do
+    if [[ $TEST_FILES != *$FILENAME* ]]; then
+        echo "  $FILENAME"
+    fi
+done
+exit 1

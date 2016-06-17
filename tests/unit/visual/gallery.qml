@@ -39,7 +39,7 @@ MainView {
                     showDirs: false
                     showOnlyReadable: true
                     sortField: FolderListModel.Name
-                    nameFilters: [ "tst_*13.qml" ]
+                    nameFilters: [ "tst_*.13.qml" ]
                 }
 
                 delegate: ListItem {
@@ -49,7 +49,10 @@ MainView {
                         title.text: fileBaseName
                         ProgressionSlot {}
                     }
-                    onClicked: pageLayout.addPageToNextColumn(pageLayout.primaryPage, testPage, { source: fileURL, title: fileBaseName })
+                    onClicked: {
+                        testsListView.currentIndex = index
+                        pageLayout.addPageToNextColumn(pageLayout.primaryPage, testPage, { source: fileURL, title: fileBaseName })
+                    }
                 }
             }
         }

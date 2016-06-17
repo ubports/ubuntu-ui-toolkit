@@ -9,3 +9,5 @@ HEADERS += tabsmodel.h
 
 OTHER_FILES += $$system(ls *.qml)
 OTHER_FILES += $$system(ls AppTheme/*)
+
+check.commands += $$PWD/naming.sh

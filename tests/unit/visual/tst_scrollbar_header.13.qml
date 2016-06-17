@@ -208,7 +208,7 @@ Item {
         }
     }
 
-    ScrollbarTestCase {
+    ScrollbarTestCase13 {
         name: "Scrollbar"
 
         function getMovingHeaderView() {

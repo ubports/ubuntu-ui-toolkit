@@ -141,7 +141,7 @@ usr/include/*/qt5/UbuntuToolkit/ucthemingextension.h
 usr/include/*/qt5/UbuntuToolkit/ucubuntuanimation.h
 usr/include/*/qt5/UbuntuToolkit/ucubuntushape.h
 usr/include/*/qt5/UbuntuToolkit/ucubuntushapeoverlay.h
-usr/include/*/qt5/UbuntuToolkit/ucubuntushapetexture.h
+usr/include/*/qt5/UbuntuToolkit/ucubuntushapetextures.h
 usr/include/*/qt5/UbuntuToolkit/ucunits.h
 usr/include/*/qt5/UbuntuToolkit/ucurihandler.h
 usr/include/*/qt5/UbuntuToolkit/unitythemeiconprovider.h

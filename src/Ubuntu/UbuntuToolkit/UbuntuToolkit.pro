@@ -62,7 +62,7 @@ HEADERS += \
     ucunits.h \
     ucqquickimageextension.h \
     quickutils.h \
-    ucubuntushapetexture.h \
+    ucubuntushapetextures.h \
     ucubuntushape.h \
     ucubuntushapeoverlay.h \
     ucproportionalshape.h \
@@ -159,6 +159,7 @@ SOURCES += \
     ucunits.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
+    ucubuntushapetextures.cpp \
     ucubuntushape.cpp \
     ucubuntushapeoverlay.cpp \
     ucproportionalshape.cpp \

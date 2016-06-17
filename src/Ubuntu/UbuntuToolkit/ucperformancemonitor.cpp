@@ -23,10 +23,23 @@ Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")
 
 UT_NAMESPACE_BEGIN
 
-const int singleFrameThreshold = 32;
-const int multipleFrameThreshold = 17;
-const int framesCountThreshold = 10;
-const int warningCountThreshold = 30;
+static int singleFrameThreshold = 32;
+static int multipleFrameThreshold = 17;
+static int framesCountThreshold = 10;
+static int warningCountThreshold = 30;
+
+// TODO Qt 5.5. switch to qEnvironmentVariableIntValue
+static int getenvInt(const char* name, int defaultValue)
+{
+    if (qEnvironmentVariableIsSet(name)) {
+        QByteArray stringValue = qgetenv(name);
+        bool ok;
+        int value = stringValue.toFloat(&ok);
+        return ok ? value : defaultValue;
+    } else {
+        return defaultValue;
+    }
+}
 
 UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
     QObject(parent),
@@ -36,6 +49,11 @@ UCPerformanceMonitor::UCPerformanceMonitor(QObject* parent) :
 {
     QObject::connect((QGuiApplication*)QGuiApplication::instance(), &QGuiApplication::applicationStateChanged,
                      this, &UCPerformanceMonitor::onApplicationStateChanged);
+
+    singleFrameThreshold = getenvInt("UC_PERFORMANCE_MONITOR_SINGLE_FRAME_THRESHOLD", singleFrameThreshold);
+    multipleFrameThreshold = getenvInt("UC_PERFORMANCE_MONITOR_MULTIPLE_FRAME_THRESHOLD", multipleFrameThreshold);
+    framesCountThreshold = getenvInt("UC_PERFORMANCE_MONITOR_FRAMES_COUNT_THRESHOLD", framesCountThreshold);
+    warningCountThreshold = getenvInt("UC_PERFORMANCE_MONITOR_WARNING_COUNT_THRESHOLD", warningCountThreshold);
 }
 
 UCPerformanceMonitor::~UCPerformanceMonitor()
@@ -55,7 +73,7 @@ QQuickWindow* UCPerformanceMonitor::findQQuickWindow()
 
 void UCPerformanceMonitor::onApplicationStateChanged(Qt::ApplicationState state)
 {
-    if (m_warningCount >= warningCountThreshold) {
+    if (m_warningCount >= warningCountThreshold && warningCountThreshold != -1) {
         // do not monitor performance if the warning count threshold was reached
         return;
     }
@@ -126,7 +144,7 @@ void UCPerformanceMonitor::stopTimer()
         m_framesAboveThreshold = 0;
     }
 
-    if (m_warningCount >= warningCountThreshold) {
+    if (m_warningCount >= warningCountThreshold && warningCountThreshold != -1) {
         qCWarning(ucPerformance, "Too many warnings were given. Performance monitoring stops.");
         connectToWindow(NULL);
     }

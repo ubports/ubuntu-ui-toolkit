@@ -131,9 +131,6 @@ void UCAbstractButton::classBegin()
 {
     UCActionItem::classBegin();
 
-    // make sure we have the haptics set up!
-    HapticsProxy::instance()->initialize();
-
     // set up mouse area
     Q_D(UCAbstractButton);
     QQml_setParent_noEvent(d->mouseArea, this);
