@@ -25,7 +25,7 @@
 
 namespace UbuntuToolkit {
 
-class UCBottomEdgeRegionPrivate : public QObjectPrivate
+class UBUNTUTOOLKIT_EXPORT UCBottomEdgeRegionPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCBottomEdgeRegion)
 public:

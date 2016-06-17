@@ -22,7 +22,7 @@
 namespace UbuntuToolkit {
 
 class UCPageWrapperPrivate;
-class UCPageWrapper : public UCPageTreeNode
+class UBUNTUTOOLKIT_EXPORT UCPageWrapper : public UCPageTreeNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant reference READ reference WRITE setReference NOTIFY referenceChanged)

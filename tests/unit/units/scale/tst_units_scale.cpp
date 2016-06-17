@@ -19,6 +19,8 @@
 
 #include <qpa/qplatformnativeinterface.h>
 
+using namespace UbuntuToolkit;
+
 class tst_UCUnitsScale : public QObject
 {
     Q_OBJECT

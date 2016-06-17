@@ -27,7 +27,7 @@
 
 namespace UbuntuToolkit {
 
-class UCAlarmPrivate
+class UBUNTUTOOLKIT_EXPORT UCAlarmPrivate
 {
     Q_DECLARE_PUBLIC(UCAlarm)
 public:

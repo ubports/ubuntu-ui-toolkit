@@ -25,10 +25,11 @@
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
 #include <QtCore/QStack>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
-class StateSaverBackend : public QObject
+class UBUNTUTOOLKIT_EXPORT StateSaverBackend : public QObject
 {
     Q_OBJECT
 public:

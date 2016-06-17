@@ -26,6 +26,8 @@
 #include <private/qquicktext_p.h>
 #include "plugin.h"
 
+using namespace UbuntuToolkit;
+
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
 class ThemeTestCase : public UbuntuTestCase

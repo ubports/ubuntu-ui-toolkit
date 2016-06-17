@@ -23,6 +23,8 @@
 #include <QtCore/QString>
 #include <QtTest/QTest>
 
+using namespace UbuntuToolkit;
+
 class tst_UCArgument : public QObject
 {
     Q_OBJECT

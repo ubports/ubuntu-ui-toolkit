@@ -22,6 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGMaterial>
 #include <QtQuick/QSGNode>
+#include <ubuntutoolkitglobal.h>
 
 namespace UbuntuToolkit {
 
@@ -56,7 +57,7 @@ private:
 };
 
 // Renders the frame (border) of a shape.
-class UCFrame : public QQuickItem
+class UBUNTUTOOLKIT_EXPORT UCFrame : public QQuickItem
 {
     Q_OBJECT
 

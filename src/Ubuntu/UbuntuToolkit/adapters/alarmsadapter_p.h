@@ -19,11 +19,12 @@
 #ifndef ALARMSADAPTER_P_H
 #define ALARMSADAPTER_P_H
 
-#include "alarmmanager_p_p.h"
+#include "private/alarmmanager_p_p.h"
 
 #include <qorganizer.h>
 #include <qorganizermanager.h>
 #include <qorganizertodo.h>
+#include <ubuntutoolkitglobal.h>
 
 QTORGANIZER_USE_NAMESPACE
 
@@ -33,7 +34,7 @@ namespace UbuntuToolkit {
  * Adaptation layer for Alarms.
  */
 
-class AlarmDataAdapter : public UCAlarmPrivate
+class UBUNTUTOOLKIT_EXPORT AlarmDataAdapter : public UCAlarmPrivate
 {
 public:
     AlarmDataAdapter(UCAlarm *qq);

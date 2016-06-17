@@ -85,6 +85,9 @@ public:
         AfterItem
     };
 
+    // keep in sync with QQuickMouseArea PressAndHoldDelay
+    static constexpr int DefaultPressAndHoldDelay{800};
+
     explicit UCMouse(QObject *parent = 0);
 
     static UCMouse *qmlAttachedProperties(QObject *owner);
@@ -161,7 +164,6 @@ protected:
     bool m_doubleClicked:1;
     bool m_ignoreSynthesizedEvents:1;
 };
-extern const int DefaultPressAndHoldDelay;
 
 }
 

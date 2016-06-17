@@ -38,6 +38,8 @@
 #include "uctestcase.h"
 #include "plugin.h"
 
+using namespace UbuntuToolkit;
+
 class tst_MainView : public QObject
 {
     Q_OBJECT

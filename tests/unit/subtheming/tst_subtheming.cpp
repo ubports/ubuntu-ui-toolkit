@@ -27,11 +27,13 @@
 #undef private
 #include "quickutils.h"
 #include "uctestcase.h"
-#include "ucstyleditembase_p.h"
+#include "private/ucstyleditembase_p.h"
 #include "ucnamespace.h"
 #include "ucunits.h"
 #include "uclabel.h"
 #include "plugin.h"
+
+using namespace UbuntuToolkit;
 
 class ThemeTestCase : public UbuntuTestCase
 {

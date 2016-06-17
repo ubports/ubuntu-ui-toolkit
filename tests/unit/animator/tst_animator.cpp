@@ -30,6 +30,8 @@
 #include "uctestcase.h"
 #include "uctheme.h"
 
+using namespace UbuntuToolkit;
+
 class Tst_Animator : public QObject
 {
     Q_OBJECT

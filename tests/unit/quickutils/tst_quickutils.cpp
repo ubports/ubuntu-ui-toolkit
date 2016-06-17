@@ -19,6 +19,8 @@
 #include "quickutils.h"
 #include <QtQml/QQmlEngine>
 
+using namespace UbuntuToolkit;
+
 class tst_QuickUtils : public QObject
 {
     Q_OBJECT

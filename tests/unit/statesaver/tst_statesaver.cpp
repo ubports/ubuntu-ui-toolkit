@@ -39,9 +39,11 @@
 #define protected public
 #define private public
 #include "ucstatesaver.h"
-#include "statesaverbackend_p.h"
+#include "private/statesaverbackend_p.h"
 #undef private
 #undef protected
+
+using namespace UbuntuToolkit;
 
 class tst_StateSaverTest : public QObject
 {

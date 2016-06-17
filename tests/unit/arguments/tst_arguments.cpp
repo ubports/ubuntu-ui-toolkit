@@ -30,6 +30,8 @@
 #include <QtQml/QQmlEngine>
 #include "i18n.h"
 
+using namespace UbuntuToolkit;
+
 class tst_UCArguments : public QObject
 {
     Q_OBJECT

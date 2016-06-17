@@ -28,7 +28,7 @@
 namespace UbuntuToolkit {
 
 class UCBottomEdgeStyle;
-class UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
+class UBUNTUTOOLKIT_EXPORT UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener
 {
     Q_DECLARE_PUBLIC(UCBottomEdge)
 
@@ -108,7 +108,7 @@ public:
     }
 };
 
-class UCCollapseAction : public UCAction
+class UBUNTUTOOLKIT_EXPORT UCCollapseAction : public UCAction
 {
     Q_OBJECT
 public:

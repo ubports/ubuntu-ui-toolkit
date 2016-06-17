@@ -17,10 +17,10 @@
  */
 
 #include "ucalarm.h"
-#include "ucalarm_p.h"
-#include "alarmmanager_p.h"
+#include "private/ucalarm_p.h"
+#include "private/alarmmanager_p.h"
 #include "ucalarmmodel.h"
-#include "adapters/alarmsadapter_p.h"
+#include "private/alarmsadapter_p.h"
 
 #include "uctestcase.h"
 #include <QtCore/QString>
@@ -31,6 +31,8 @@
 #include <QtCore/QTimeZone>
 #include <QtQml/QQmlEngine>
 #include "plugin.h"
+
+using namespace UbuntuToolkit;
 
 class tst_UCAlarms : public QObject
 {

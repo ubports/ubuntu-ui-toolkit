@@ -29,9 +29,6 @@
 
 namespace UbuntuToolkit {
 
-// keep in sync with QQuickMouseArea PressAndHoldDelay
-const int DefaultPressAndHoldDelay = 800;
-
 QEvent::Type ForwardedEvent::m_eventBase = QEvent::None;
 void ForwardedEvent::registerForwardedEvent()
 {

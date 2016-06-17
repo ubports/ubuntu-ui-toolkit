@@ -22,7 +22,7 @@
 namespace UbuntuToolkit {
 
 class UCTheme;
-class UCAppHeaderBase : public UCHeader
+class UBUNTUTOOLKIT_EXPORT UCAppHeaderBase : public UCHeader
 {
     Q_OBJECT
     Q_PROPERTY(bool animate MEMBER m_animate WRITE setAnimate NOTIFY animateChanged FINAL)

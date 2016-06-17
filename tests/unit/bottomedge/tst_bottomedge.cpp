@@ -18,8 +18,8 @@
 #include <QtTest/QtTest>
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
-#include "ucbottomedgeregion_p.h"
-#include "ucbottomedge_p.h"
+#include "private/ucbottomedgeregion_p.h"
+#include "private/ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
 #include "private/ucswipearea_p.h"
 #include "ucunits.h"
@@ -31,6 +31,8 @@
 #include "quickutils.h"
 #include "ucbottomedgestyle.h"
 #undef private
+
+using namespace UbuntuToolkit;
 
 Q_DECLARE_METATYPE(Qt::Key)
 

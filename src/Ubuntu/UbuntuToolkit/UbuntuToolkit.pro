@@ -1,13 +1,13 @@
 TEMPLATE=lib
 TARGET=UbuntuToolkit
 
+QT *= core-private gui-private qml qml-private quick quick-private testlib
+
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
 }
 QT *= dbus svg UbuntuGestures UbuntuGestures_private
-
-QT *= core-private gui-private qml qml-private quick quick-private testlib
 
 # QOrganizer for Alarm API
 QT *= organizer

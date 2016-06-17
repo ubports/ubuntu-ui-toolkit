@@ -29,7 +29,7 @@ class QQuickMouseArea;
 namespace UbuntuToolkit {
 
 class UCStyledItemBase;
-class UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker
+class UBUNTUTOOLKIT_EXPORT UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker
 {
     Q_INTERFACES(UbuntuToolkit::UCThemingExtension)
     Q_DECLARE_PUBLIC(UCStyledItemBase)

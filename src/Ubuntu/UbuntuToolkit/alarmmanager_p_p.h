@@ -26,7 +26,7 @@
 
 namespace UbuntuToolkit {
 
-class AlarmManagerPrivate
+class UBUNTUTOOLKIT_EXPORT AlarmManagerPrivate
 {
     Q_DECLARE_PUBLIC(AlarmManager)
 public:

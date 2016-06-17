@@ -22,7 +22,7 @@
 
 namespace UbuntuToolkit {
 
-class UCServicePropertiesPrivate
+class UBUNTUTOOLKIT_EXPORT UCServicePropertiesPrivate
 {
 public:
     UCServicePropertiesPrivate(UCServiceProperties *qq);

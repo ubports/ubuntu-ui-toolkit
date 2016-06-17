@@ -74,7 +74,7 @@ class AlarmRequest;
 class AlarmManagerPrivate;
 class AlarmRequestPrivate;
 class AlarmList;
-class AlarmManager : public QObject
+class UBUNTUTOOLKIT_EXPORT AlarmManager : public QObject
 {
     Q_OBJECT
 public:

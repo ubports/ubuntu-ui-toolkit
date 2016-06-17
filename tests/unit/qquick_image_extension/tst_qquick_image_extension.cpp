@@ -26,6 +26,8 @@
 
 #include "plugin.h"
 
+using namespace UbuntuToolkit;
+
 unsigned int numberOfTemporarySciFiles() {
     QStringList nameFilters;
     nameFilters << "*.sci";

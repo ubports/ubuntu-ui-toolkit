@@ -78,14 +78,14 @@ protected:
     static int count(QQmlListProperty<UCAction> *list);
 };
 
-class UCPopupContext : public UCActionContext
+class UBUNTUTOOLKIT_EXPORT UCPopupContext : public UCActionContext
 {
     Q_OBJECT
 public:
     explicit UCPopupContext(QObject *parent = 0);
 };
 
-class UCActionContextAttached : public QObject
+class UBUNTUTOOLKIT_EXPORT UCActionContextAttached : public QObject
 {
     Q_OBJECT
 public:

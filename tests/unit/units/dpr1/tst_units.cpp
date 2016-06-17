@@ -19,6 +19,8 @@
 #include <QtTest/QtTest>
 #include "ucunits.h"
 
+using namespace UbuntuToolkit;
+
 class tst_UCUnits: public QObject
 {
     Q_OBJECT

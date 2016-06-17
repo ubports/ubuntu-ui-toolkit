@@ -53,7 +53,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_globalEnableChanged(bool))
 };
 
-class UCStateSaver : public QObject
+class UBUNTUTOOLKIT_EXPORT UCStateSaver : public QObject
 {
     Q_OBJECT
 public:

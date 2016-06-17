@@ -19,7 +19,7 @@
 #define UCNAMESPACE_H
 
 #include <QtCore/QObject>
-#include "quickutils.h"
+#include <quickutils.h>
 
 #define BUILD_VERSION(major, minor)     ((((major) & 0x00FF) << 8) | ((minor) & 0x00FF))
 #define LATEST_UITK_VERSION             BUILD_VERSION(1, 3)
