@@ -238,7 +238,8 @@ Rectangle {
 
                 Switch {
                     id: subtitleSwitch
-                    checked: false
+                    // Subtitle enabled initially as a regression test for bug #1588837.
+                    checked: true
                 }
                 Label {
                     text: "subtitle"

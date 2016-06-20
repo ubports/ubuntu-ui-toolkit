@@ -63,6 +63,7 @@ FakeTimer::FakeTimer(const SharedTimeSource &timeSource, QObject *parent)
     , m_interval(0)
     , m_singleShot(false)
     , m_timeSource(timeSource)
+    , m_nextTimeoutTime(0)
 {
 }
 

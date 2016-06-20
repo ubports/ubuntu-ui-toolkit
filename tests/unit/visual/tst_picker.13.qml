@@ -100,6 +100,7 @@ Item {
     Loader {
         id: pickerLoader
         asynchronous: false
+        sourceComponent: defaultPicker
     }
 
     ListModel {

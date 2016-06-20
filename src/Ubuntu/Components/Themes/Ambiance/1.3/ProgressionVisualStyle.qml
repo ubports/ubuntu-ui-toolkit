@@ -46,7 +46,7 @@ Item {
             right: progressIcon.left
             rightMargin: styledItem.splitMargin
         }
-        source: progressionDividerSource
+        source: visible ? progressionDividerSource : ""
         opacity: enabled ? 1.0 : 0.5
     }
 }

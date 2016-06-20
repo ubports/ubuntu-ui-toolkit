@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,7 +19,8 @@ import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-MainView {
+// No MainView is used here as a regression test for bug #1588172.
+Item {
     id: root
     width: units.gu(120)
     height: units.gu(71)

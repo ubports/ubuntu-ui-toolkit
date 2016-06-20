@@ -875,6 +875,9 @@ Ubuntu.StyledItem {
             }
         }
     }
+
+    /*! \internal */
+    property Item __rightScrollbar: rightScrollbar
     Scrollbar {
         id: rightScrollbar
         flickableItem: flicker
@@ -884,10 +887,6 @@ Ubuntu.StyledItem {
         anchors.topMargin: -internal.frameSpacing
         anchors.rightMargin: -internal.frameSpacing
         anchors.bottomMargin: -internal.frameSpacing
-        Ubuntu.StyleHints {
-            // No background color
-            troughColorSteppersStyle: Qt.rgba(0, 0, 0, 0)
-        }
     }
 
     styleName: "TextAreaStyle"

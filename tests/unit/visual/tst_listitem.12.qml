@@ -172,7 +172,7 @@ Item {
         }
     }
 
-    ListItemTestCase {
+    ListItemTestCase12 {
         id: testCase
         name: "ListItemAPI"
         when: windowShown

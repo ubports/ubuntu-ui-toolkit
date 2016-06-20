@@ -26,7 +26,6 @@
 //     evaluated.
 
 #include "ucubuntushape.h"
-#include "ucubuntushapetexture.h"
 #include "ucunits.h"
 #include "ucnamespace.h"
 #include <QtCore/QPointer>
@@ -90,10 +89,11 @@ void ShapeShader::updateState(
 {
     Q_UNUSED(oldEffect);
 
-    const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
+    ShapeMaterial* material = static_cast<ShapeMaterial*>(newEffect);
+    const ShapeMaterial::Data* data = material->constData();
 
     // Bind shape texture.
-    glBindTexture(GL_TEXTURE_2D, data->shapeTextureId);
+    glBindTexture(GL_TEXTURE_2D, material->textureIds()[data->shapeTextureIndex]);
 
     // Bind source texture on the 2nd texture unit and update uniforms.
     bool textured = false;
@@ -151,12 +151,82 @@ void ShapeShader::updateState(
 
 // --- Scene graph material ---
 
+// Create and setup shape textures.
+static void createShapeTextures(QOpenGLContext* openglContext, quint32* ids)
+{
+    glGenTextures(shapeTextureCount, ids);
+
+    if (UCUbuntuShape::useDistanceFields(openglContext)) {
+        // Create distance field textures.
+        for (int i = 0; i < shapeTextureCount; i++) {
+            glBindTexture(GL_TEXTURE_2D, ids[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureWidth, shapeTextureHeight, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, shapeTextureData[i]);
+        }
+    } else {
+        // Create mipmap textures.
+        for (int i = 0; i < shapeTextureCount; i++) {
+            glBindTexture(GL_TEXTURE_2D, ids[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            for (int j = 0; j < shapeTextureMipmapCount; j++) {
+                glTexImage2D(GL_TEXTURE_2D, j, GL_RGBA, shapeTextureMipmapWidth >> j,
+                             shapeTextureMipmapHeight >> j, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                             &shapeTextureMipmapData[i][shapeTextureMipmapOffset[j]]);
+            }
+        }
+    }
+}
+
+class ShapeTextures {
+public:
+    ShapeTextures() : m_refCount(0) {}
+    quint32* ids() { return m_ids; }
+    quint32 ref() { Q_ASSERT(m_refCount < UINT_MAX); return ++m_refCount; }
+    quint32 unref() { Q_ASSERT(m_refCount > 0); return --m_refCount; }
+private:
+    quint32 m_refCount;
+    quint32 m_ids[shapeTextureCount];
+};
+
+static QHash<QOpenGLContext*, ShapeTextures> shapeTexturesHash;
+static QMutex shapeTexturesHashMutex;
+
 ShapeMaterial::ShapeMaterial()
 {
     // The whole struct (with the padding bytes) must be initialized for memcmp() to work as
     // expected in ShapeMaterial::compare().
     memset(&m_data, 0x00, sizeof(Data));
     setFlag(Blending);
+
+    // Get or create the set of textures associated with the current context. We assume that QtQuick
+    // associates the same graphics context to a material for its entire lifetime.
+    QOpenGLContext* context = QOpenGLContext::currentContext();
+    shapeTexturesHashMutex.lock();
+    ShapeTextures& textures = shapeTexturesHash[context];
+    if (textures.ref() == 1) {
+        createShapeTextures(context, textures.ids());
+    }
+    memcpy(m_shapeTexturesId, textures.ids(), shapeTextureCount * sizeof(quint32));
+    shapeTexturesHashMutex.unlock();
+}
+
+ShapeMaterial::~ShapeMaterial()
+{
+    shapeTexturesHashMutex.lock();
+    auto it = shapeTexturesHash.find(QOpenGLContext::currentContext());
+    Q_ASSERT(it != shapeTexturesHash.end());
+    if (it.value().unref() == 0) {
+        glDeleteTextures(shapeTextureCount, it.value().ids());
+        shapeTexturesHash.erase(it);
+    }
+    shapeTexturesHashMutex.unlock();
 }
 
 QSGMaterialType* ShapeMaterial::type() const
@@ -246,12 +316,6 @@ const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
 const float implicitWidthGU = 8.0f;
 const float implicitHeightGU = 8.0f;
 const float radiusGuMap[3] = { 1.45f, 2.55f, 3.65f };
-const int maxShapeTextures = 16;
-
-static struct { QOpenGLContext* openglContext; quint32 textureId[shapeTextureCount]; }
-    shapeTextures[maxShapeTextures];
-
-static int getShapeTexturesIndex(const QOpenGLContext* openglContext);
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
@@ -1041,67 +1105,6 @@ void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& old
     m_flags |= DirtySourceTransform;
 }
 
-// Gets the shapeTextures' slot used by the given context, or -1 if not stored.
-static int getShapeTexturesIndex(const QOpenGLContext* openglContext)
-{
-    int index = 0;
-    while (shapeTextures[index].openglContext != openglContext) {
-        index++;
-        if (index == maxShapeTextures) {
-            return -1;
-        }
-    }
-    return index;
-}
-
-// Gets an empty shapeTextures' slot.
-static int getEmptyShapeTexturesIndex()
-{
-    int index = 0;
-    while (shapeTextures[index].openglContext) {
-        index++;
-        if (index == maxShapeTextures) {
-            // Don't bother with a dynamic array, let's just set a high enough maxShapeTextures and
-            // increase the static array size if ever needed.
-            qFatal("reached maximum number of OpenGL contexts supported by UbuntuShape");
-        }
-    }
-    return index;
-}
-
-// Create and setup shape textures.
-static void createShapeTextures(QOpenGLContext* openglContext, int index)
-{
-    glGenTextures(shapeTextureCount, shapeTextures[index].textureId);
-
-    if (UCUbuntuShape::useDistanceFields(openglContext)) {
-        // Create distance field textures.
-        for (int i = 0; i < shapeTextureCount; i++) {
-            glBindTexture(GL_TEXTURE_2D, shapeTextures[index].textureId[i]);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, shapeTextureWidth, shapeTextureHeight, 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, shapeTextureData[i]);
-        }
-    } else {
-        // Create mipmap textures.
-        for (int i = 0; i < shapeTextureCount; i++) {
-            glBindTexture(GL_TEXTURE_2D, shapeTextures[index].textureId[i]);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            for (int j = 0; j < shapeTextureMipmapCount; j++) {
-                glTexImage2D(GL_TEXTURE_2D, j, GL_RGBA, shapeTextureMipmapWidth >> j,
-                             shapeTextureMipmapHeight >> j, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                             &shapeTextureMipmapData[i][shapeTextureMipmapOffset[j]]);
-            }
-        }
-    }
-}
-
 // Gets the nearest boundary to coord in the texel grid of the given size.
 static Q_DECL_CONSTEXPR float roundTextureCoord(float coord, float size)
 {
@@ -1182,22 +1185,6 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     QSGNode* node = oldNode ? oldNode : createSceneGraphNode();
     Q_ASSERT(node);
 
-    // Get or create the shape texture that's stored per context and shared by all the shape items.
-    Q_ASSERT(window());
-    QOpenGLContext* openglContext = window()->openglContext();
-    Q_ASSERT(openglContext);
-    int index = getShapeTexturesIndex(openglContext);
-    if (index < 0) {
-        index = getEmptyShapeTexturesIndex();
-        shapeTextures[index].openglContext = openglContext;
-        createShapeTextures(openglContext, index);
-        connect(openglContext, &QOpenGLContext::aboutToBeDestroyed, [index] {
-            shapeTextures[index].openglContext = NULL;
-            glDeleteTextures(shapeTextureCount, shapeTextures[index].textureId);
-        } );
-    }
-    const quint32 shapeTextureId = shapeTextures[index].textureId[m_aspect != DropShadow ? 0 : 1];
-
     // Get the source texture info and update the source transform if needed.
     QSGTextureProvider* provider = m_source ? m_source->textureProvider() : NULL;
     QSGTexture* sourceTexture = provider ? provider->texture() : NULL;
@@ -1256,7 +1243,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
                      / qGuiApp->devicePixelRatio();
     }
 
-    updateMaterial(node, radius, shapeTextureId, sourceTexture && m_sourceOpacity);
+    updateMaterial(node, radius, m_aspect != DropShadow ? 0 : 1, sourceTexture && m_sourceOpacity);
 
     // Get the affine transformation for the source texture coordinates.
     const QVector4D sourceCoordTransform(
@@ -1312,12 +1299,12 @@ QSGNode* UCUbuntuShape::createSceneGraphNode() const
 }
 
 void UCUbuntuShape::updateMaterial(
-    QSGNode* node, float radius, quint32 shapeTextureId, bool textured)
+    QSGNode* node, float radius, quint8 shapeTextureIndex, bool textured)
 {
     ShapeMaterial::Data* materialData = static_cast<ShapeNode*>(node)->material()->data();
     quint8 flags = 0;
 
-    materialData->shapeTextureId = shapeTextureId;
+    materialData->shapeTextureIndex = shapeTextureIndex;
     if (textured) {
         materialData->sourceTextureProvider = m_sourceTextureProvider;
         materialData->sourceOpacity = m_sourceOpacity;
@@ -1364,7 +1351,7 @@ void UCUbuntuShape::updateGeometry(
     const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
     const quint32 backgroundColor[3])
 {
-    // Used by subclasses, using the shapeTextureInfo.offset constant directly allows slightly
+    // Used by subclasses, using the shapeTextureOffset constant directly allows slightly
     // better optimization here.
     Q_UNUSED(shapeOffset);
 

@@ -26,6 +26,13 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
+    Button {
+        id: pressMe
+        anchors.top: parent.top
+        text: "Open Dialog"
+        onClicked: PopupUtils.open(dialog)
+    }
+
     UbuntuTestCase {
         id: test
         name: "Popups.Dialog"
@@ -45,7 +52,13 @@ MainView {
     Component {
         id: dialog
         Dialog {
+            id: ahojDialog
             title: "Ahoj"
+
+            Button {
+                text: "Close"
+                onClicked: PopupUtils.close(ahojDialog)
+            }
         }
     }
 }
