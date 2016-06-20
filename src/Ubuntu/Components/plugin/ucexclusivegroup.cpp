@@ -50,12 +50,18 @@ UCExclusiveGroup::UCExclusiveGroup(QObject *parent)
 void UCExclusiveGroup::onActionAdded(UCAction *action)
 {
     action->setExclusiveGroup(this);
+    if (!selected() && action->state().toBool() == true) {
+        setSelected(action);
+    }
     connect(action, &UCAction::stateChanged, this, [this, action]() { stateChanged(action); });
 }
 
 void UCExclusiveGroup::onActionRemoved(UCAction *action)
 {
     action->setExclusiveGroup(nullptr);
+    if (selected() == action) {
+        setSelected(nullptr);
+    }
     disconnect(action, &UCAction::stateChanged, this, 0);
 }
 
