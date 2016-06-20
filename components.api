@@ -138,8 +138,8 @@ Ubuntu.Components.BottomEdge 1.3 UbuntuToolkit::UCBottomEdge: UbuntuToolkit.UCSt
     readonly property double dragProgress
     readonly property UbuntuToolkit.UCBottomEdgeHint hint
     signal dragProgressChanged(double dragProgress)
-    signal dragDirectionChanged(UCBottomEdge.DragDirection direction)
-    signal statusChanged(UCBottomEdge.Status status)
+    signal dragDirectionChanged(UbuntuToolkit.UCBottomEdge direction)
+    signal statusChanged(UbuntuToolkit.UCBottomEdge status)
     signal contentChanged(url url)
     signal contentComponentChanged(Component component)
     signal activeRegionChanged(UbuntuToolkit.UCBottomEdgeRegion activeRegion)

@@ -82,8 +82,8 @@ public:
 
 Q_SIGNALS:
     void dragProgressChanged(qreal dragProgress);
-    void dragDirectionChanged(UCBottomEdge::DragDirection direction);
-    void statusChanged(UCBottomEdge::Status status);
+    void dragDirectionChanged(UT_PREPEND_NAMESPACE(UCBottomEdge::DragDirection) direction);
+    void statusChanged(UT_PREPEND_NAMESPACE(UCBottomEdge::Status) status);
     void contentChanged(const QUrl url);
     void contentComponentChanged(QQmlComponent *component);
     void contentItemChanged();
