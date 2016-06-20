@@ -24,7 +24,7 @@
 #include "i18n.h"
 #include "quickutils.h"
 
-#include <ColorUtils>
+#include <colorutils.h>
 
 #include <QCoreApplication>
 

@@ -40,7 +40,7 @@
 #include <QtQml/QQmlEngine>
 #include <QFileInfo>
 #include <QLibraryInfo>
-#include <enginedata.h>
+#include <ubuntutoolkitmodule.h>
 
 UT_NAMESPACE_BEGIN
 
