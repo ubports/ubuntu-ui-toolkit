@@ -32,11 +32,11 @@ TestCase {
     }
 
     function test_menu() {
-        compare(submenu1.data.length, 4, "Incorrect number of menu items in menu");
-        compare(submenu1.data[0], actionList, "Incorrect element found at menu index");
-        compare(submenu1.data[1], menuGroup, "Incorrect element found at menu index");
-        compare(submenu1.data[2], action1, "Incorrect element found at menu index");
-        compare(submenu1.data[3], action2, "Incorrect element found at menu index");
+        compare(floatingMenu.data.length, 4, "Incorrect number of menu items in menu");
+        compare(floatingMenu.data[0], actionList, "Incorrect element found at menu index");
+        compare(floatingMenu.data[1], menuGroup, "Incorrect element found at menu index");
+        compare(floatingMenu.data[2], action1, "Incorrect element found at menu index");
+        compare(floatingMenu.data[3], action2, "Incorrect element found at menu index");
     }
 
     function test_menugroup() {
@@ -80,27 +80,25 @@ TestCase {
         id: menuBar
         Menu {
             id: submenu1
-            ActionList {
-                id: actionList
-                Action {
-                }
-                Action {
-                }
-            }
-            MenuGroup {
-                id: menuGroup
-            }
-            Action {
-                id: action1
-            }
-            Action {
-                id: action2
-            }
         }
         Menu {
             id: submenu2
-            Action {
-            }
+        }
+    }
+
+    Menu {
+        id: floatingMenu
+        ActionList {
+            id: actionList
+        }
+        MenuGroup {
+            id: menuGroup
+        }
+        Action {
+            id: action1
+        }
+        Action {
+            id: action2
         }
     }
 
@@ -130,9 +128,5 @@ TestCase {
 
     ActionList {
         id: floatingList
-        Action {
-        }
-        Action {
-        }
     }
 }
