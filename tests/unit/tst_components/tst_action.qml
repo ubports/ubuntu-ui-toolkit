@@ -223,7 +223,9 @@ TestCase {
          for (var i = 0; i < data.inactive.length; i++) {
             compare(data.inactive[i].state, false, "State of active action should be 'false'");
          }
+         selectedSpy.wait();
          compare(exclusiveGroup.selected, data.selected, "Selected action in exclusiveGroup does not match");
+         selectedSpy.clear();
      }
 
      function test_always_one_action_selected() {
@@ -267,6 +269,11 @@ TestCase {
          id: textSpy
          target: action
          signalName: "textChanged"
+     }
+     SignalSpy {
+         id: selectedSpy
+         target: exclusiveGroup
+         signalName: "selectedChanged"
      }
 
      ActionManager {
@@ -316,7 +323,7 @@ TestCase {
          Action {
              id: action1
              parameterType: Action.Bool
-             state: true
+             state: false
          }
          Action {
              id: action2
