@@ -308,9 +308,11 @@ AbstractButton {
         __mouseArea.anchors.bottomMargin = Qt.binding(function () {
             return combo.expanded ? (combo.height - combo.collapsedHeight) : 0;
         });
-        // Only the dropdown button handles (Shift)Tab
-        activeFocusOnTab = false
     }
+    /*! \internal
+        Only the dropdown button handles (Shift)Tab
+     */
+    property alias activeFocusOnTab: dropDown.activeFocusOnTab
 
     sensingMargins {
         bottom: -(combo.height - combo.collapsedHeight)

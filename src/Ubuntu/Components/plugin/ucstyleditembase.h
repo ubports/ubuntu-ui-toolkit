@@ -40,7 +40,7 @@ class UCStyledItemBase : public QQuickItem, public UCThemingExtension
     Q_PROPERTY(bool activeFocusOnTab
             READ activeFocusOnTab2
             WRITE setActiveFocusOnTab2
-            NOTIFY activeFocusOnTabChanged2 FINAL)
+            NOTIFY activeFocusOnTabChanged2)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY styleInstanceChanged FINAL DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged FINAL REVISION 2)
