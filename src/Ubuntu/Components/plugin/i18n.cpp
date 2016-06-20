@@ -167,8 +167,10 @@ QString UbuntuI18n::tr(const QString& text)
 /*!
  * \qmlmethod string i18n::tr(string singular, string plural, int n)
  * Translate the given input string \a singular or \a plural (depending on the number of items \a n)
- * using gettext. Should be called like this:
- *          tr("%n file", "%n files", count)
+ * using gettext.
+ * Note that tr() does not automatically insert the values in the QString,
+ * so it should be called like this:
+ *          tr("%1 file", "%1 files", count).arg(count)
  */
 QString UbuntuI18n::tr(const QString &singular, const QString &plural, int n)
 {
@@ -191,7 +193,7 @@ QString UbuntuI18n::dtr(const QString& domain, const QString& text)
 /*!
  * \qmlmethod string i18n::dtr(string domain, string singular, string plural, int n)
  * Translate the given text using gettext. Should be called like this:
- *          tr(domain, "%n file", "%n files", count)
+ *          tr(domain, "%1 file", "%1 files", count).arg(count)
  * Uses \a domain for the domain instead of i18n.domain, and \a singular or \a plural
  * as input for the translation depending on the number of items \a n.
  */
