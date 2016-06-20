@@ -47,37 +47,33 @@ TestCase {
         compare(group.data[3], groupGroup, "MenuGroup not found at correct index in MenuGroup");
     }
 
-    function test_detached_menu() {
-        compare(detachedMenu.data.length, 0, "Incorrect number of menu items in menu");
-    }
-
     function test_dynamic_append() {
-        detachedMenu.appendObject(floatingAction);
-        compare(detachedMenu.data.length, 1, "Action not added to menu");
+        dynamicMenu.appendObject(floatingAction);
+        compare(dynamicMenu.data.length, 1, "Action not added to menu");
 
-        detachedMenu.removeObject(floatingAction);
-        compare(detachedMenu.data.length, 0, "Action not removed from menu");
+        dynamicMenu.removeObject(floatingAction);
+        compare(dynamicMenu.data.length, 0, "Action not removed from menu");
     }
 
     function test_dynamic_action_list_append() {
-        detachedMenu.appendObject(floatingList);
-        compare(detachedMenu.data.length, 1, "ActionList not added to menu");
+        dynamicMenu.appendObject(floatingList);
+        compare(dynamicMenu.data.length, 1, "ActionList not added to menu");
 
-        detachedMenu.removeObject(floatingList);
-        compare(detachedMenu.data.length, 0, "ActionList not removed from menu");
+        dynamicMenu.removeObject(floatingList);
+        compare(dynamicMenu.data.length, 0, "ActionList not removed from menu");
     }
 
     function test_dynamic_insert() {
-        detachedMenu.insertObject(0, floatingAction);
-        detachedMenu.insertObject(0, floatingList);
-        compare(detachedMenu.data.length, 2, "ActionList not removed from menu");
+        dynamicMenu.insertObject(0, floatingAction);
+        dynamicMenu.insertObject(0, floatingList);
+        compare(dynamicMenu.data.length, 2, "ActionList not removed from menu");
 
-        compare(detachedMenu.data[0], floatingList, "Object was not inserted at correct index");
-        compare(detachedMenu.data[1], floatingAction, "Object was not inserted at correct index");
+        compare(dynamicMenu.data[0], floatingList, "Object was not inserted at correct index");
+        compare(dynamicMenu.data[1], floatingAction, "Object was not inserted at correct index");
 
-        detachedMenu.removeObject(floatingAction);
-        detachedMenu.removeObject(floatingList);
-        compare(detachedMenu.data.length, 0, "Menu should be empty");
+        dynamicMenu.removeObject(floatingAction);
+        dynamicMenu.removeObject(floatingList);
+        compare(dynamicMenu.data.length, 0, "Menu should be empty");
     }
 
     MenuBar {
@@ -106,10 +102,6 @@ TestCase {
             Action {
             }
         }
-    }
-
-    Menu {
-        id: detachedMenu
     }
 
     MenuGroup {
