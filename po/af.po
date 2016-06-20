@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2016-06-09 06:22+0000\n"
+"X-Launchpad-Export-Date: 2016-06-16 04:57+0000\n"
 "X-Generator: Launchpad (build 18097)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -55,7 +55,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
 #, qt-format
 msgid "Invalid bus type: %1."
-msgstr ""
+msgstr "Ongeldige bus tipe: %1."
 
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
@@ -66,15 +66,15 @@ msgstr ""
 #, qt-format
 msgid "%1 minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 minuut gelede"
+msgstr[1] "%1 minute gelede"
 
 #: Ubuntu/Components/plugin/i18n.cpp:277
 #, qt-format
 msgid "%1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 minuut"
+msgstr[1] "%1 minute"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -86,7 +86,7 @@ msgstr ""
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:287
 msgid "HH:mm"
-msgstr ""
+msgstr "HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -98,7 +98,7 @@ msgstr ""
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
 msgid "'Yesterday 'HH:mm"
-msgstr ""
+msgstr "'Gister 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -110,7 +110,7 @@ msgstr ""
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
 msgid "'Tomorrow 'HH:mm"
-msgstr ""
+msgstr "'Môre 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -122,19 +122,19 @@ msgstr ""
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
 msgid "ddd' 'HH:mm"
-msgstr ""
+msgstr "ddd' 'HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
 msgid "ddd d MMM' 'h:mm ap"
-msgstr ""
+msgstr "ddd d MMM' 'h:mm ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
 msgid "ddd d MMM' 'HH:mm"
-msgstr ""
+msgstr "ddd d MMM' 'HH:mm"
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
 msgid ""
@@ -180,7 +180,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 verwag 'n waarde vir die argument: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
@@ -201,7 +201,7 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
 msgid "Changing connection parameters forbidden."
-msgstr ""
+msgstr "Die verandering van konneksie parameters is verbode."
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:160
 #, qt-format
@@ -229,11 +229,11 @@ msgstr ""
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "Tema nie gevind: \"%1\""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "Nie 'n palet komponent."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
