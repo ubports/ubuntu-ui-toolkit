@@ -3,10 +3,6 @@ usr/include/*/qt5/UbuntuToolkit/InverseMouseArea
 usr/include/*/qt5/UbuntuToolkit/PropertyChange
 usr/include/*/qt5/UbuntuToolkit/QQuickClipboard
 usr/include/*/qt5/UbuntuToolkit/Tree
-usr/include/*/qt5/UbuntuToolkit/UbuntuI18n
-usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
-usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
-usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
 usr/include/*/qt5/UbuntuToolkit/UCAbstractButton
 usr/include/*/qt5/UbuntuToolkit/UCAction
 usr/include/*/qt5/UbuntuToolkit/UCActionContext
@@ -57,9 +53,9 @@ usr/include/*/qt5/UbuntuToolkit/UCSlotsLayout
 usr/include/*/qt5/UbuntuToolkit/UCSlotsLayoutPadding
 usr/include/*/qt5/UbuntuToolkit/UCStateSaver
 usr/include/*/qt5/UbuntuToolkit/UCStateSaverAttached
-usr/include/*/qt5/UbuntuToolkit/UCStyledItemBase
 usr/include/*/qt5/UbuntuToolkit/UCStyleHints
 usr/include/*/qt5/UbuntuToolkit/UCStyleHintsParser
+usr/include/*/qt5/UbuntuToolkit/UCStyledItemBase
 usr/include/*/qt5/UbuntuToolkit/UCSwipeEvent
 usr/include/*/qt5/UbuntuToolkit/UCTheme
 usr/include/*/qt5/UbuntuToolkit/UCThemingExtension
@@ -69,6 +65,10 @@ usr/include/*/qt5/UbuntuToolkit/UCUbuntuShapeOverlay
 usr/include/*/qt5/UbuntuToolkit/UCUnits
 usr/include/*/qt5/UbuntuToolkit/UCUriHandler
 usr/include/*/qt5/UbuntuToolkit/UCViewItemsAttached
+usr/include/*/qt5/UbuntuToolkit/UbuntuI18n
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
 usr/include/*/qt5/UbuntuToolkit/UnityThemeIconProvider
 usr/include/*/qt5/UbuntuToolkit/UriHandlerObject
 usr/include/*/qt5/UbuntuToolkit/appheaderbase.h
@@ -97,8 +97,8 @@ usr/include/*/qt5/UbuntuToolkit/tree.h
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitglobal.h
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitversion.h
 usr/include/*/qt5/UbuntuToolkit/ucabstractbutton.h
-usr/include/*/qt5/UbuntuToolkit/ucactioncontext.h
 usr/include/*/qt5/UbuntuToolkit/ucaction.h
+usr/include/*/qt5/UbuntuToolkit/ucactioncontext.h
 usr/include/*/qt5/UbuntuToolkit/ucactionitem.h
 usr/include/*/qt5/UbuntuToolkit/ucactionmanager.h
 usr/include/*/qt5/UbuntuToolkit/ucalarm.h
@@ -117,8 +117,8 @@ usr/include/*/qt5/UbuntuToolkit/uchaptics.h
 usr/include/*/qt5/UbuntuToolkit/ucheader.h
 usr/include/*/qt5/UbuntuToolkit/ucinversemouse.h
 usr/include/*/qt5/UbuntuToolkit/uclabel.h
-usr/include/*/qt5/UbuntuToolkit/uclistitemactions.h
 usr/include/*/qt5/UbuntuToolkit/uclistitem.h
+usr/include/*/qt5/UbuntuToolkit/uclistitemactions.h
 usr/include/*/qt5/UbuntuToolkit/uclistitemlayout.h
 usr/include/*/qt5/UbuntuToolkit/uclistitemstyle.h
 usr/include/*/qt5/UbuntuToolkit/ucmainviewbase.h
