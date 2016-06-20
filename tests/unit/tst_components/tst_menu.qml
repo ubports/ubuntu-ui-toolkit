@@ -32,11 +32,12 @@ TestCase {
     }
 
     function test_menu() {
-        compare(floatingMenu.data.length, 4, "Incorrect number of menu items in menu");
+        compare(floatingMenu.data.length, 5, "Incorrect number of menu items in menu");
         compare(floatingMenu.data[0], actionList, "Incorrect element found at menu index");
         compare(floatingMenu.data[1], menuGroup, "Incorrect element found at menu index");
         compare(floatingMenu.data[2], action1, "Incorrect element found at menu index");
         compare(floatingMenu.data[3], action2, "Incorrect element found at menu index");
+        compare(floatingMenu.data[4], menu1, "Incorrect element found at menu index");
     }
 
     function test_menugroup() {
@@ -99,6 +100,9 @@ TestCase {
         }
         Action {
             id: action2
+        }
+        Menu {
+            id: menu1
         }
     }
 
