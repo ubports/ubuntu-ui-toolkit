@@ -25,6 +25,7 @@ usr/include/*/qt5/UbuntuGestures/timesource.h
 usr/include/*/qt5/UbuntuGestures/touchownershipevent.h
 usr/include/*/qt5/UbuntuGestures/touchregistry.h
 usr/include/*/qt5/UbuntuGestures/ubuntugesturesglobal.h
+usr/include/*/qt5/UbuntuGestures/ubuntugesturesmodule.h
 usr/include/*/qt5/UbuntuGestures/ubuntugesturesversion.h
 usr/include/*/qt5/UbuntuGestures/unownedtouchevent.h
 usr/lib/*/libUbuntuGestures.la

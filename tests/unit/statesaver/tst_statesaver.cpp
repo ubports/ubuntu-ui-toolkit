@@ -34,7 +34,7 @@
 #include <QtCore/QProcessEnvironment>
 #include "uctestcase.h"
 #include <signal.h>
-#include "plugin.h"
+#include <ubuntutoolkitmodule.h>
 
 #define protected public
 #define private public
@@ -112,7 +112,7 @@ private Q_SLOTS:
     void init()
     {
         engine = new QQmlEngine;
-        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        UbuntuToolkitModule::initializeContextProperties(engine);
         // invoke initialization
         StateSaverBackend::instance(engine);
     }

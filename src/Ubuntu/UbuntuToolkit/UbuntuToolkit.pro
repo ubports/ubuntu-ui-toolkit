@@ -44,7 +44,7 @@ HEADERS += \
     mousetouchadaptor.h \
     mousetouchadaptor_p.h \
     propertychange.h \
-    enginedata.h
+    ubuntutoolkitmodule.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -52,7 +52,7 @@ SOURCES += \
     asyncloader.cpp \
     mousetouchadaptor.cpp \
     propertychange.cpp \
-    enginedata.cpp
+    ubuntutoolkitmodule.cpp
 
 HEADERS += \
     uctheme.h \

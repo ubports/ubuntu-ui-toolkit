@@ -1232,7 +1232,7 @@ void UCListItemPrivate::showContextMenu()
 
     QString versionString(QStringLiteral("%1.%2").arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version)));
     const QString relativeUrl = versionString + "/ListItemPopover.qml";    
-    QUrl url(EngineData::baseUrl(qmlEngine(q)).resolved(relativeUrl));
+    QUrl url(UbuntuToolkitModule::baseUrl(qmlEngine(q)).resolved(relativeUrl));
 
     // Open Popover
     QQmlEngine* engine = qmlEngine(q);

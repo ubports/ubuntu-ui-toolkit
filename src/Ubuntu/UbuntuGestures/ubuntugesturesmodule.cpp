@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,32 +13,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UBUNTU_COMPONENTS_PLUGIN_H
-#define UBUNTU_COMPONENTS_PLUGIN_H
-
 #include <QtQml/QQmlEngine>
-#include <QtQml/QQmlExtensionPlugin>
-#include <ubuntutoolkitglobal.h>
+#include <QtQml>
+#include "ubuntugesturesmodule.h"
+#include <private/ucswipearea_p.h>
 
-class QWindow;
-
-UT_NAMESPACE_BEGIN
-
-class UbuntuComponentsPlugin : public QQmlExtensionPlugin
+void UbuntuGesturesModule::defineModule(const char *uri)
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+    qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
+}
 
-public:
-    void registerTypes(const char *uri) override;
-    void initializeEngine(QQmlEngine *engine, const char *uri) override;
-
-};
-
-UT_NAMESPACE_END
-
-#endif // UBUNTU_COMPONENTS_PLUGIN_H
+void UbuntuGesturesModule::undefineModule()
+{
+    // nothing so far
+}
 

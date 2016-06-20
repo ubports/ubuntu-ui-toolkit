@@ -30,7 +30,7 @@
 #include <QtTest/QSignalSpy>
 #include <QtCore/QTimeZone>
 #include <QtQml/QQmlEngine>
-#include "plugin.h"
+#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 
@@ -113,7 +113,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         engine = new QQmlEngine;
-        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        UbuntuToolkitModule::initializeContextProperties(engine);
 
         AlarmManager::instance();
 

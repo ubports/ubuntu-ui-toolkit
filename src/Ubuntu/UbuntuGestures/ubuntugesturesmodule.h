@@ -16,31 +16,16 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ENGINEDATA_H
-#define ENGINEDATA_H
+#ifndef UBUNTUGESTURESMODULE_H
+#define UBUNTUGESTURESMODULE_H
 
-#include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+#include <ubuntugesturesglobal.h>
 
-class QQmlEngine;
-
-UT_NAMESPACE_BEGIN
-
-class UBUNTUTOOLKIT_EXPORT EngineData : public QObject
+class UBUNTUGESTURES_EXPORT UbuntuGesturesModule
 {
-    Q_OBJECT
 public:
-    explicit EngineData(QObject *parent = 0);
-
-    static bool isDeclared(QQmlEngine *engine);
-    static void create(QQmlEngine *engine, const QUrl &urlOverride);
-
-    static QUrl baseUrl(QQmlEngine *engine);
-
-private:
-    QUrl m_baseUrl;
+    static void defineModule(const char *uri);
+    static void undefineModule();
 };
 
-UT_NAMESPACE_END
-
-#endif // ENGINEDATA_H
+#endif // UBUNTUGESTURESMODULE_H

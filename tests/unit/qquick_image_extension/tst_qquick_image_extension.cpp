@@ -23,8 +23,8 @@
 #define protected public
 #include "ucqquickimageextension.h"
 #undef protected
-
-#include "plugin.h"
+#include <QtQml/QQmlEngine>
+#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 
@@ -46,7 +46,7 @@ private Q_SLOTS:
     void init()
     {
         engine = new QQmlEngine;
-        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        UbuntuToolkitModule::initializeContextProperties(engine);
     }
 
     void cleanup()
