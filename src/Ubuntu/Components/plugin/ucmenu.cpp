@@ -108,8 +108,7 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
     qCInfo(ucMenu).nospace() << "UCMenu::insertObject(index="<< index << ", object=" << o << ")";
 
     if (!m_platformMenu) {
-        QVector<QObject*>::iterator position = m_data.count() > index ? m_data.begin() + index : m_data.end();
-        m_data.insert(position, o);
+        m_data.insert(m_data.count() > index ? index : m_data.count(), o);
         return;
     }
 
@@ -153,8 +152,7 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
         }
     }
 
-    QVector<QObject*>::iterator position = m_data.count() > index ? m_data.begin() + index : m_data.end();
-    m_data.insert(position, o);
+    m_data.insert(m_data.count() > index ? index : m_data.count(), o);
 
     // if an object changes, we need to remove and re-add it.
     std::function<void()> refreshObject = [o, this]() {
@@ -293,7 +291,7 @@ int UCMenuPrivate::data_count(QQmlListProperty<QObject> *prop)
 QObject *UCMenuPrivate::data_at(QQmlListProperty<QObject> *prop, int index)
 {
     UCMenuPrivate *p = static_cast<UCMenuPrivate *>(prop->data);
-    return p->m_data.value(index);
+    return p->m_data.value(index, Q_NULLPTR);
 }
 
 void UCMenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
