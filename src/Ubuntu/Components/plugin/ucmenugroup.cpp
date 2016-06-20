@@ -117,7 +117,7 @@ void UCMenuGroup::removeObject(QObject *object)
  */
 QQmlListProperty<QObject> UCMenuGroup::data()
 {
-    return QQmlListProperty<QObject>(this, 0, UCMenuGroup::append, UCMenuGroup::count, 0, UCMenuGroup::clear);
+    return QQmlListProperty<QObject>(this, 0, UCMenuGroup::append, UCMenuGroup::count, UCMenuGroup::at, UCMenuGroup::clear);
 }
 
 const QVector<QObject*> &UCMenuGroup::list() const
@@ -133,14 +133,6 @@ void UCMenuGroup::append(QQmlListProperty<QObject> *list, QObject *object)
     }
 }
 
-void UCMenuGroup::clear(QQmlListProperty<QObject> *list)
-{
-    UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
-    if (menuGroup) {
-        menuGroup->m_data.clear();
-    }
-}
-
 int UCMenuGroup::count(QQmlListProperty<QObject> *list)
 {
     UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
@@ -149,3 +141,20 @@ int UCMenuGroup::count(QQmlListProperty<QObject> *list)
     }
     return 0;
 }
+
+QObject* UCMenuGroup::at(QQmlListProperty<QObject> *list, int index)
+{
+    UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
+    if (menuGroup && index >=0 && menuGroup->m_data.count() > index) {
+        return menuGroup->m_data[index];
+    }
+    return Q_NULLPTR;
+}
+
+    void UCMenuGroup::clear(QQmlListProperty<QObject> *list)
+    {
+        UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
+        if (menuGroup) {
+            menuGroup->m_data.clear();
+        }
+    }

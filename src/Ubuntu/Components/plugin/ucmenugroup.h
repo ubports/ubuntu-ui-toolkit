@@ -46,8 +46,9 @@ protected:
     QVector<QObject*> m_data;
 
     static void append(QQmlListProperty<QObject> *list, QObject *action);
-    static void clear(QQmlListProperty<QObject> *list);
     static int count(QQmlListProperty<QObject> *list);
+    static QObject* at(QQmlListProperty<QObject> *list, int);
+    static void clear(QQmlListProperty<QObject> *list);
 };
 
 #endif // UCMENUGROUP_H
