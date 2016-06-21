@@ -25,7 +25,7 @@
  * \brief An \l ActionList which controls a set of Actions with mutually exclusive states.
  *
  * The ExclusiveGroup will only allow a single \l Action to have it's state set to "true" at any one time.
- * If the currently selected Action attempts to trigger with a false value, the trigger will be rejected.
+ * If the currently selected \l Action attempts to trigger with a false value, the trigger will be rejected.
  * \qml
  * ExclusiveGroup {
  *     Action {

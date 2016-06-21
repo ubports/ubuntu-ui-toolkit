@@ -250,31 +250,6 @@ void UCAction::setMnemonicFromText(const QString &text)
  */
 
 /*!
- * \qmlproperty enum Action::parameterType
- * Type of the parameter passed to \l trigger and \l triggered.
- * Type is an enumeration:
- * \list
- *  \li \b Action.None: No paramater. (default)
- *  \li \b Action.String: String parameter.
- *  \li \b Action.Integer: Integer parameter.
- *  \li \b Action.Bool: Boolean parameter.
- *  \li \b Action.Real: Single precision floating point parameter.
- *  \li \b Action.Object: The parameter is an object.
- * \endlist
- * \qml
- * Action {
- *     id: action
- *     parameterType: Action.String
- *     onTriggered: {
- *         // value arguments now contain strings
- *         console.log(value);
- *     }
- *     Component.onCompleted: action.trigger("Hello World")
- * }
- * \endqml
- */
-
-/*!
  * \qmlproperty bool Action::enabled
  * If set to false the action can not be triggered. Components visualizing the
  * action migth either hide the action or make it insensitive. However visibility
@@ -438,6 +413,30 @@ void UCAction::resetShortcut()
     Q_EMIT shortcutChanged();
 }
 
+/*!
+ * \qmlproperty enum Action::parameterType
+ * Type of the parameter passed to \l trigger and \l triggered.
+ * Type is an enumeration:
+ * \list
+ *  \li \b Action.None: No paramater. (default)
+ *  \li \b Action.String: String parameter.
+ *  \li \b Action.Integer: Integer parameter.
+ *  \li \b Action.Bool: Boolean parameter.
+ *  \li \b Action.Real: Single precision floating point parameter.
+ *  \li \b Action.Object: The parameter is an object.
+ * \endlist
+ * \qml
+ * Action {
+ *     id: action
+ *     parameterType: Action.String
+ *     onTriggered: {
+ *         // value arguments now contain strings
+ *         console.log(value);
+ *     }
+ *     Component.onCompleted: action.trigger("Hello World")
+ * }
+ * \endqml
+ */
 void UCAction::setParameterType(UCAction::Type type)
 {
     if (m_parameterType == type) {
@@ -447,6 +446,11 @@ void UCAction::setParameterType(UCAction::Type type)
     Q_EMIT parameterTypeChanged();
 }
 
+/*!
+ * \qmlproperty var Action::state
+ * The state of the action. This should set with a value ofthe  same type as parameterType.
+ * When the action is \l triggered, the state is set to the value.
+ */
 void UCAction::setState(const QVariant &state)
 {
     if (m_state == state) {
@@ -456,11 +460,12 @@ void UCAction::setState(const QVariant &state)
     Q_EMIT stateChanged();
 }
 
-UCExclusiveGroup *UCAction::exclusiveGroup() const
-{
-    return m_exclusiveGroup;
-}
-
+/*!
+ * \qmlproperty ExclusiveGroup Action::exclusiveGroup
+ * The \l ExclusiveGroup associated with this action.
+ * An exclusive group allows the \l Action \l state to be linked to other actions,
+ * as in radio controls.
+ */
 void UCAction::setExclusiveGroup(UCExclusiveGroup *exclusiveGroup)
 {
     if (m_exclusiveGroup == exclusiveGroup) {

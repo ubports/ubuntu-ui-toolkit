@@ -115,7 +115,7 @@ public:
     Type parameterType() const { return m_parameterType; }
     QVariant state() const { return m_state; }
 
-    UCExclusiveGroup *exclusiveGroup() const;
+    UCExclusiveGroup *exclusiveGroup() const { return m_exclusiveGroup; }
     void setExclusiveGroup(UCExclusiveGroup *exclusiveGroup);
 
 Q_SIGNALS:
