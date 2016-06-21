@@ -32,9 +32,15 @@ class UBUNTUTOOLKIT_EXPORT UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *contentItem READ contentItem CONSTANT)
+#ifndef Q_QDOC
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCListItemDivider) *divider READ divider CONSTANT)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCListItemActions) *leadingActions READ leadingActions WRITE setLeadingActions NOTIFY leadingActionsChanged DESIGNABLE false)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCListItemActions) *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
+#else
+    Q_PROPERTY(UCListItemDivider *divider READ divider CONSTANT)
+    Q_PROPERTY(UCListItemActions *leadingActions READ leadingActions WRITE setLeadingActions NOTIFY leadingActionsChanged DESIGNABLE false)
+    Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
+#endif
     Q_PROPERTY(bool highlighted READ highlighted NOTIFY highlightedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
@@ -43,12 +49,20 @@ class UBUNTUTOOLKIT_EXPORT UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
+#ifndef Q_QDOC
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UT_PREPEND_NAMESPACE(UCAction) *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
+#else
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
+#endif
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "listItemData")
     // 1.3
+#ifndef Q_QDOC
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCListItemExpansion)* expansion READ expansion CONSTANT REVISION 1)
+#else
+    Q_PROPERTY(UCListItemExpansion* expansion READ expansion CONSTANT REVISION 1)
+#endif
     Q_PROPERTY(bool swipeEnabled READ isSwipeEnabled WRITE setSwipeEnabled NOTIFY swipeEnabledChanged FINAL REVISION 1)
     Q_PROPERTY(bool swiped READ isSwiped NOTIFY swipedChanged FINAL REVISION 1)
 public:

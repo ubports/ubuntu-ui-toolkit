@@ -33,9 +33,15 @@ class UCThreeLabelsSlotPrivate;
 class UCThreeLabelsSlot : public QQuickItem
 {
     Q_OBJECT
+#ifdef Q_QDOC
+    Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *subtitle READ subtitle CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *summary READ summary CONSTANT FINAL)
+#else
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *title READ title CONSTANT FINAL)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *subtitle READ subtitle CONSTANT FINAL)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *summary READ summary CONSTANT FINAL)
+#endif
 
 public:
     explicit UCThreeLabelsSlot(QQuickItem *parent = 0);

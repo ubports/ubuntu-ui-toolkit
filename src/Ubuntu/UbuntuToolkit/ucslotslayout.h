@@ -32,7 +32,11 @@ class UBUNTUTOOLKIT_EXPORT UCSlotsLayout : public QQuickItem
     Q_OBJECT
 
     Q_PROPERTY(QQuickItem *mainSlot READ mainSlot WRITE setMainSlot NOTIFY mainSlotChanged)
+#ifdef Q_QDOC
+    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
+#else
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayoutPadding) *padding READ padding CONSTANT FINAL)
+#endif
 
     Q_ENUMS(UCSlotPosition)
 
@@ -84,8 +88,13 @@ class UCSlotsAttachedPrivate;
 class UBUNTUTOOLKIT_EXPORT UCSlotsAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayout)::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
+#ifdef Q_QDOC
+    Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
+#else
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayout::UCSlotPosition) position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayoutPadding) *padding READ padding CONSTANT FINAL)
+#endif
     Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
 public:

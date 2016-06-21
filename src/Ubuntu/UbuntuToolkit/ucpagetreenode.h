@@ -28,7 +28,11 @@ class UBUNTUTOOLKIT_EXPORT UCPageTreeNode : public UCStyledItemBase
     Q_PROPERTY(QQuickItem* toolbar READ toolbar WRITE setToolbar NOTIFY toolbarChanged)
     Q_PROPERTY(QQuickItem* activeLeafNode READ activeLeafNode NOTIFY activeLeafNodeChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+#ifndef Q_QDOC
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCPageTreeNode)* parentNode READ parentNode WRITE setParentNode NOTIFY parentNodeChanged)
+#else
+    Q_PROPERTY(UCPageTreeNode* parentNode READ parentNode WRITE setParentNode NOTIFY parentNodeChanged)
+#endif
     Q_PROPERTY(QQuickItem* pageStack READ pageStack WRITE setPageStack NOTIFY pageStackChanged)
 
     Q_PROPERTY(bool __isPageTreeNode READ isPageTreeNode NOTIFY isPageTreeNodeChanged)
@@ -67,7 +71,11 @@ public:
 Q_SIGNALS:
     void isLeafChanged(bool isLeaf);
     void activeChanged(bool active);
+#ifndef Q_QDOC
     void parentNodeChanged(UT_PREPEND_NAMESPACE(UCPageTreeNode) *parentNode);
+#else
+    void parentNodeChanged(UCPageTreeNode *parentNode);
+#endif
     void pageStackChanged(QQuickItem* pageStack);
     void activeLeafNodeChanged(QQuickItem* activeLeafNode);
     void propagatedChanged(QObject* propagated);

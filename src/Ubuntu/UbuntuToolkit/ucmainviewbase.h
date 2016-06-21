@@ -34,9 +34,15 @@ class UBUNTUTOOLKIT_EXPORT UCMainViewBase : public UCPageTreeNode
     Q_PROPERTY(QColor headerColor READ headerColor WRITE setHeaderColor NOTIFY headerColorChanged)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
     Q_PROPERTY(QColor footerColor READ footerColor WRITE setFooterColor NOTIFY footerColorChanged)
+#ifndef Q_QDOC
     Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCActionManager)* actionManager READ actionManager NOTIFY actionManagerChanged)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext READ actionContext NOTIFY actionContextChanged)
+#else
+    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
+    Q_PROPERTY(UCActionManager* actionManager READ actionManager NOTIFY actionManagerChanged)
+    Q_PROPERTY(UCPopupContext* actionContext READ actionContext NOTIFY actionContextChanged)
+#endif
 
 public:
     UCMainViewBase(QQuickItem *parent = nullptr);
@@ -73,8 +79,13 @@ Q_SIGNALS:
     void headerColorChanged(const QColor &headerColor);
     void backgroundColorChanged(const QColor &backgroundColor);
     void footerColorChanged(const QColor &footerColor);
+#ifndef Q_QDOC
     void actionManagerChanged(UT_PREPEND_NAMESPACE(UCActionManager)* actionManager);
     void actionContextChanged(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext);
+#else
+    void actionManagerChanged(UCActionManager* actionManager);
+    void actionContextChanged(UCPopupContext* actionContext);
+#endif
 
 protected:
     UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent);

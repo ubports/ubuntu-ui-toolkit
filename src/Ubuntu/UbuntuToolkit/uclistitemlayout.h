@@ -26,9 +26,15 @@ class UCLabel;
 class UBUNTUTOOLKIT_EXPORT UCListItemLayout : public UCSlotsLayout
 {
     Q_OBJECT
+#ifndef Q_QDOC
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *title READ title CONSTANT FINAL)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *subtitle READ subtitle CONSTANT FINAL)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCLabel) *summary READ summary CONSTANT FINAL)
+#else
+    Q_PROPERTY(UCLabel *title READ title CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *subtitle READ subtitle CONSTANT FINAL)
+    Q_PROPERTY(UCLabel *summary READ summary CONSTANT FINAL)
+#endif
 
 public:
     explicit UCListItemLayout(QQuickItem *parent = 0);
