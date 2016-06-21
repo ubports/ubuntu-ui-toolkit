@@ -47,7 +47,6 @@ static float getenvFloat(const char* name, float defaultValue)
 
 /*!
     \qmltype Units
-    \instantiates UCUnits
     \inqmlmodule Ubuntu.Components
     \ingroup resolution-independence
     \brief Units of measurement for sizes, spacing, margin, etc.

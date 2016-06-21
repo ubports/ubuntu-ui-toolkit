@@ -21,7 +21,6 @@
 UT_NAMESPACE_BEGIN
 /*!
  * \qmltype Argument
- * \instantiates UCArgument
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-commandline
  * \brief The Argument class specifies what type a given command line parameter should be.

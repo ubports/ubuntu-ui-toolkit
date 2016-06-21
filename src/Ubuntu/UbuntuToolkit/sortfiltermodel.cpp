@@ -24,7 +24,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype SortFilterModel
- * \instantiates QSortFilterProxyModelQML
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief SortFilterModel sorts and filters rows from an existing model.

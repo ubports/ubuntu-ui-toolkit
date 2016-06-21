@@ -29,7 +29,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype UbuntuApplication
- * \instantiates UCApplication
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief UbuntuApplication is a QML binding for a subset of QCoreApplication.

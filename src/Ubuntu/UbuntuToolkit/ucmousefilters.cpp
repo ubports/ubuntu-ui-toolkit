@@ -1013,7 +1013,6 @@ void UCMouse::setPriority(Priority priority)
  **/
 /*!
    \qmltype InverseMouse
-   \instantiates UCInverseMouse
    \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached object filtering mouse events occured outside the owner.

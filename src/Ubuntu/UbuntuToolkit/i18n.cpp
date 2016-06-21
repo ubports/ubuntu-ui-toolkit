@@ -32,7 +32,6 @@ namespace C {
 UT_NAMESPACE_BEGIN
 /*!
  * \qmltype i18n
- * \instantiates UbuntuI18n
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief i18n is a context property that provides internationalization support.

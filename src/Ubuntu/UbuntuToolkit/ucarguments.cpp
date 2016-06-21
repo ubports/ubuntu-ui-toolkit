@@ -29,7 +29,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype Arguments
- * \instantiates UCArguments
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-commandline
  * \brief The Arguments class provides a way to declare what command line

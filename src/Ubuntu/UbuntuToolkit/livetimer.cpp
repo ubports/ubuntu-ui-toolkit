@@ -20,7 +20,6 @@
 UT_NAMESPACE_BEGIN
 
 /*! \qmltype LiveTimer
-    \instantiates LiveTimer
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \since Ubuntu.Components 1.3

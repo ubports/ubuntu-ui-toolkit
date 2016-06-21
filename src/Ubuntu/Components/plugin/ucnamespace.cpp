@@ -21,7 +21,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype Ubuntu
- * \instantiates UCNamespace
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.2

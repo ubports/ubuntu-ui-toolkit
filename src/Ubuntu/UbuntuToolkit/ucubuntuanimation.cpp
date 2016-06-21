@@ -22,7 +22,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype UbuntuAnimation
- * \instantiates UCUbuntuAnimation
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief Singleton defining standard Ubuntu durations and easing for animations

@@ -24,7 +24,6 @@ const qreal aspectRatio = 16.0 / 15.0;
 const qreal invAspectRatio = 1.0 / aspectRatio;
 
 /*! \qmltype ProportionalShape
-    \instantiates UCProportionalShape
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Extended UbuntuShape mostly used for icons and vignettes.

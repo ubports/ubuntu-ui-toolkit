@@ -22,7 +22,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
   \qmltype InverseMouseArea
-  \instantiates InverseMouseAreaType
   \inqmlmodule Ubuntu.Components
   \ingroup ubuntu
   \brief The InverseMouseArea captures mouse events happening outside of a given

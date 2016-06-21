@@ -24,7 +24,6 @@ UT_NAMESPACE_BEGIN
 
 /*!
   \qmltype Haptics
-  \instantiates UCHaptics
   \inqmlmodule Ubuntu.Components
   \ingroup ubuntu-services
   \brief Singleton defining the haptics feedback used in components, where execution
