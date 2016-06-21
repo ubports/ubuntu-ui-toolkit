@@ -309,10 +309,6 @@ AbstractButton {
             return combo.expanded ? (combo.height - combo.collapsedHeight) : 0;
         });
     }
-    /*! \internal
-        Only the dropdown button handles (Shift)Tab
-     */
-    property alias activeFocusOnTab: dropDown.activeFocusOnTab
 
     sensingMargins {
         bottom: -(combo.height - combo.collapsedHeight)
@@ -321,6 +317,14 @@ AbstractButton {
     __mouseArea.objectName: "combobutton_mainbutton"
     height: collapsedHeight + __styleInstance.comboListPanel.height
 
+    /*! \internal
+        Only the dropdown button handles (Shift)Tab
+     */
+    property alias activeFocusOnTab: dropDown.activeFocusOnTab
+
+    /*! \internal
+        Only the dropdown button can have keyboard focus
+     */
     property alias keyNavigationFocus: dropDown.keyNavigationFocus
 
     // dropdown button
