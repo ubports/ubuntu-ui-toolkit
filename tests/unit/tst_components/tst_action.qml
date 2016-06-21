@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 
 TestCase {
      name: "ActionAPI"
@@ -166,6 +166,74 @@ TestCase {
          compare(data.action.invoked, data.invoked);
      }
 
+     function test_valid_state_data() {
+         return [
+            {tag: "None", type: Action.None, state: undefined},
+            {tag: "String", type: Action.String, state: "test"},
+            {tag: "Integer", type: Action.Integer, state: 100},
+            {tag: "Bool", type: Action.Bool, state: true},
+            {tag: "Real", type: Action.Real, state: 12.34},
+            {tag: "Object - QtObject", type: Action.Object, state: object},
+            {tag: "Object - Item", type: Action.Object, state: item},
+         ];
+     }
+     function test_valid_state(data) {
+         stateType.parameterType = data.type;
+         stateType.trigger(data.state);
+         stateTypeSpy.wait();
+         compare(stateType.state, data.state, "Test " + data.tag + " result differs");
+         stateTypeSpy.clear();
+     }
+
+     function test_invalid_state_data() {
+         return [
+             {tag: "None", type: Action.None, state: 120},
+             {tag: "String", type: Action.String, state: object},
+             {tag: "Integer", type: Action.Integer, state: "100"},
+             {tag: "Bool", type: Action.Bool, state: item},
+             {tag: "Real", type: Action.Real, state: undefined},
+             {tag: "Object - QtObject", type: Action.Object, state: true},
+             {tag: "Object - Item", type: Action.Object, state: "item"},
+         ];
+     }
+     function test_invalid_state(data) {
+         stateType.parameterType = data.type;
+         stateType.trigger(data.state);
+         stateTypeSpy.wait();
+         compare(stateType.state, undefined, "Test " + data.tag + " did not fail");
+         stateTypeSpy.clear();
+     }
+
+     function test_exclusive_group() {
+         compare(exclusiveGroup.actions.length, 3, "Incorrect number of actions");
+     }
+
+     function test_exclusive_group_activation_data() {
+         return [
+             {tag: "Activate action1", active: [action1], inactive: [action2, action3], selected: action1},
+             {tag: "Activate action2", active: [action2], inactive: [action1, action3], selected: action2},
+             {tag: "Activate action2, action3", active: [action2, action3], inactive: [action1, action2], selected: action3},
+         ];
+     }
+     function test_exclusive_group_activation(data) {
+         for (var i = 0; i < data.active.length; i++) {
+             data.active[i].trigger(true);
+             compare(data.active[i].state, true, "State of active action should be 'true'");
+         }
+         for (var i = 0; i < data.inactive.length; i++) {
+            compare(data.inactive[i].state, false, "State of active action should be 'false'");
+         }
+         selectedSpy.wait();
+         compare(exclusiveGroup.selected, data.selected, "Selected action in exclusiveGroup does not match");
+         selectedSpy.clear();
+     }
+
+     function test_always_one_action_selected() {
+         action1.trigger(true);
+         action1.trigger(false);
+         compare(action1.state, true, "Exclusive group should have one action set to 'true'.");
+     }
+
      Action {
          id: action
      }
@@ -193,9 +261,19 @@ TestCase {
          signalName: "triggered"
      }
      SignalSpy {
+         id: stateTypeSpy
+         target: stateType
+         signalName: "triggered"
+     }
+     SignalSpy {
          id: textSpy
          target: action
          signalName: "textChanged"
+     }
+     SignalSpy {
+         id: selectedSpy
+         target: exclusiveGroup
+         signalName: "selectedChanged"
      }
 
      ActionManager {
@@ -234,6 +312,29 @@ TestCase {
 
      ActionItem {
          id: testItem
+     }
+
+     Action {
+         id: stateType
+     }
+
+     ExclusiveGroup {
+         id: exclusiveGroup
+         Action {
+             id: action1
+             parameterType: Action.Bool
+             state: false
+         }
+         Action {
+             id: action2
+             parameterType: Action.Bool
+             state: false
+         }
+         Action {
+             id: action3
+             parameterType: Action.Bool
+             state: false
+         }
      }
 
 }

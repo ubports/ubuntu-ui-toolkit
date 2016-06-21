@@ -31,12 +31,10 @@ public:
     explicit UCExclusiveGroup(QObject *parent = 0);
 
     UCAction* selected() const;
-
-    bool checkValidTrigger(UCAction* action, const QVariant& value);
+    bool isTriggerValid(UCAction* action, const QVariant& value);
 
 Q_SIGNALS:
     void selectedChanged();
-
 
 protected Q_SLOTS:
     void onActionAdded(UCAction* action);

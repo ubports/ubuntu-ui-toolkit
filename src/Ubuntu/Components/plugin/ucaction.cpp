@@ -463,6 +463,11 @@ void UCAction::setParameterType(UCAction::Type type)
     Q_EMIT parameterTypeChanged();
 }
 
+/*!
+ * \qmlproperty var Action::state
+ * The state of the action. This should set with a value ofthe  same type as parameterType.
+ * When the action is \l triggered, the state is set to the value.
+ */
 void UCAction::setState(const QVariant &state)
 {
     if (m_state == state) {
@@ -472,11 +477,12 @@ void UCAction::setState(const QVariant &state)
     Q_EMIT stateChanged();
 }
 
-UCExclusiveGroup *UCAction::exclusiveGroup() const
-{
-    return m_exclusiveGroup;
-}
-
+/*!
+ * \qmlproperty ExclusiveGroup Action::exclusiveGroup
+ * The \l ExclusiveGroup associated with this action.
+ * An exclusive group allows the \l Action \l state to be linked to other actions,
+ * as in radio controls.
+ */
 void UCAction::setExclusiveGroup(UCExclusiveGroup *exclusiveGroup)
 {
     if (m_exclusiveGroup == exclusiveGroup) {
@@ -535,7 +541,7 @@ void UCAction::trigger(const QVariant &value)
         return;
     }
 
-    if (m_exclusiveGroup && !m_exclusiveGroup->checkValidTrigger(this, value)) {
+    if (m_exclusiveGroup && !m_exclusiveGroup->isTriggerValid(this, value)) {
         return;
     }
 
