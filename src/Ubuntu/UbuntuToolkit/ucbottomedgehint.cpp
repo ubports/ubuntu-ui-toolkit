@@ -29,6 +29,7 @@
 
 #define SWIPE_AREA_HEIGHT_GU    3
 
+UG_USE_NAMESPACE
 UT_NAMESPACE_BEGIN
 
 UCBottomEdgeHintPrivate::UCBottomEdgeHintPrivate()
@@ -461,7 +462,7 @@ void UCBottomEdgeHint::setDeactivateTimeout(int timeout)
  * The property specifies the SwipeArea attached to the component driving its
  * behavior.
  */
-UCSwipeArea *UCBottomEdgeHint::swipeArea() const
+UG_PREPEND_NAMESPACE(UCSwipeArea) *UCBottomEdgeHint::swipeArea() const
 {
     return d_func()->swipeArea;
 }

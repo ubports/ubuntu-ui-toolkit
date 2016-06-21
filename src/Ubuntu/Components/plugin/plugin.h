@@ -23,22 +23,16 @@
 #include <QtQml/QQmlExtensionPlugin>
 #include <ubuntutoolkitglobal.h>
 
-class QWindow;
-
-UT_NAMESPACE_BEGIN
-
 class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
+    ~UbuntuComponentsPlugin();
     void registerTypes(const char *uri) override;
     void initializeEngine(QQmlEngine *engine, const char *uri) override;
 
 };
 
-UT_NAMESPACE_END
-
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
-

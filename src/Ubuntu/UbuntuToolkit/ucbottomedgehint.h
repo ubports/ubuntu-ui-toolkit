@@ -20,9 +20,10 @@
 #define UCBOTTOMEDGEHINT_H
 
 #include "ucactionitem.h"
+#include <ubuntugesturesglobal.h>
 
 class QQuickFlickable;
-class UCSwipeArea;
+UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
 
 UT_NAMESPACE_BEGIN
 
@@ -35,7 +36,11 @@ class UBUNTUTOOLKIT_EXPORT UCBottomEdgeHint : public UCActionItem
     Q_PROPERTY(QQuickFlickable *flickable READ flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
     Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
     Q_PROPERTY(int deactivateTimeout READ deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
+#ifndef Q_QDOC
+    Q_PROPERTY(UG_PREPEND_NAMESPACE(UCSwipeArea)* swipeArea READ swipeArea CONSTANT FINAL)
+#else
     Q_PROPERTY(UCSwipeArea* swipeArea READ swipeArea CONSTANT FINAL)
+#endif
     // deprecated
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
@@ -53,7 +58,7 @@ public:
     void setStatus(Status status);
     int deactivateTimeout() const;
     void setDeactivateTimeout(int timeout);
-    UCSwipeArea *swipeArea() const;
+    UG_PREPEND_NAMESPACE(UCSwipeArea) *swipeArea() const;
 
     // deprecated
     QString state() const;

@@ -16,7 +16,7 @@
 
 #include "timer.h"
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 Timer::Timer(QObject *parent) : AbstractTimer(parent)
 {
@@ -150,4 +150,4 @@ AbstractTimer *FakeTimerFactory::createTimer(QObject *parent)
     return fakeTimer;
 }
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END

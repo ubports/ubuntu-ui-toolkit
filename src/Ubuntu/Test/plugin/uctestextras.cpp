@@ -369,13 +369,14 @@ void UCTestExtras::mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Q
 
 void UCTestExtras::removeTimeConstraintsFromSwipeArea(QQuickItem *item)
 {
-    UCSwipeArea *swipeArea = dynamic_cast<UCSwipeArea*>(item);
+    UG_PREPEND_NAMESPACE(UCSwipeArea) *swipeArea = dynamic_cast<UG_PREPEND_NAMESPACE(UCSwipeArea)*>(item);
     if (!swipeArea) {
         qWarning() << item << "is not a SwipeArea";
         return;
     }
 
-    UCSwipeAreaPrivate *priv = static_cast<UCSwipeAreaPrivate *>(QObjectPrivate::get(swipeArea));
+    UG_PREPEND_NAMESPACE(UCSwipeAreaPrivate) *priv =
+            static_cast<UG_PREPEND_NAMESPACE(UCSwipeAreaPrivate)*>(QObjectPrivate::get(swipeArea));
     priv->setMaxTime(60 * 60 * 1000);
     priv->setCompositionTime(0);
 }

@@ -157,7 +157,7 @@ Ubuntu.Components.BottomEdgeHint 1.3 UbuntuToolkit::UCBottomEdgeHint: UbuntuTool
     property Flickable flickable
     signal clicked()
     property Status status
-    readonly property SwipeArea swipeArea
+    readonly property UbuntuGestures.UCSwipeArea swipeArea
 Ubuntu.Components.BottomEdgeRegion 1.3 UbuntuToolkit::UCBottomEdgeRegion: QtObject
     property Component contentComponent
     property url contentUrl
@@ -1100,7 +1100,7 @@ Ubuntu.Components.ListItems.Subtitled 1.0 0.1: Base
     property string subText
 Ubuntu.Components.ListItems.Subtitled 1.3: Base
     property string subText
-Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
+Ubuntu.Components.SwipeArea 1.3 UbuntuGestures::UCSwipeArea: Item
     property Direction direction
     readonly property double distance
     readonly property bool dragging
@@ -1115,13 +1115,6 @@ Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
     signal grabGestureChanged(bool grabGesture)
     readonly property bool pressed
     readonly property QPointF touchPosition
-Ubuntu.Components.SwipeArea.Direction: Enum
-    Downwards
-    Horizontal
-    Leftwards
-    Rightwards
-    Upwards
-    Vertical
 Ubuntu.Components.SwipeEvent 1.2: QtObject
     property QPointF content
     readonly property QPointF from
@@ -1551,6 +1544,13 @@ Ubuntu.Components.UbuntuColors 1.3: QtObject singleton
     readonly property color silk
     readonly property color slate
     readonly property color warmGrey
+Ubuntu.Components.UbuntuGestures.UCSwipeArea: Enum
+    Downwards
+    Horizontal
+    Leftwards
+    Rightwards
+    Upwards
+    Vertical
 Ubuntu.Components.UbuntuListView 1.0 0.1: ListView
     property int expandedIndex
 Ubuntu.Components.UbuntuListView 1.1 UbuntuListView11: UbuntuListView

@@ -22,8 +22,9 @@
 #include "ucbottomedgehint.h"
 #include "ucactionitem_p.h"
 #include <PropertyChange>
+#include <ubuntugesturesglobal.h>
 
-class UCSwipeArea;
+UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
 
 UT_NAMESPACE_BEGIN
 
@@ -39,7 +40,7 @@ public:
     void init();
 
     QBasicTimer deactivationTimer;
-    UCSwipeArea *swipeArea;
+    UG_PREPEND_NAMESPACE(UCSwipeArea) *swipeArea;
     QQuickFlickable *flickable;
     PropertyChange *flickableBottomMargin;
     int deactivateTimeout;

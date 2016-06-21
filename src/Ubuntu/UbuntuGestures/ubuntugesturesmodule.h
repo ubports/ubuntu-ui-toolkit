@@ -21,11 +21,15 @@
 
 #include <ubuntugesturesglobal.h>
 
+UG_NAMESPACE_BEGIN
+
 class UBUNTUGESTURES_EXPORT UbuntuGesturesModule
 {
 public:
     static void defineModule(const char *uri);
     static void undefineModule();
 };
+
+UG_NAMESPACE_END
 
 #endif // UBUNTUGESTURESMODULE_H

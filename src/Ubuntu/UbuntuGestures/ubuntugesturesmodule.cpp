@@ -21,6 +21,8 @@
 #include "ubuntugesturesmodule.h"
 #include <private/ucswipearea_p.h>
 
+UG_NAMESPACE_BEGIN
+
 void UbuntuGesturesModule::defineModule(const char *uri)
 {
     qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
@@ -31,3 +33,4 @@ void UbuntuGesturesModule::undefineModule()
     // nothing so far
 }
 
+UG_NAMESPACE_END

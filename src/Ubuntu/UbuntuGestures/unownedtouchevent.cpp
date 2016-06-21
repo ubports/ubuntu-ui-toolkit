@@ -16,6 +16,8 @@
 
 #include "unownedtouchevent.h"
 
+UG_NAMESPACE_BEGIN
+
 QEvent::Type UnownedTouchEvent::m_unownedTouchEventType = (QEvent::Type)-1;
 
 UnownedTouchEvent::UnownedTouchEvent(QTouchEvent *touchEvent)
@@ -37,3 +39,5 @@ QTouchEvent *UnownedTouchEvent::touchEvent()
 {
     return m_touchEvent.data();
 }
+
+UG_NAMESPACE_END

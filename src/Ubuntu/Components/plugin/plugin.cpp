@@ -21,24 +21,26 @@
 #include <ubuntutoolkitmodule.h>
 #include <ubuntugesturesmodule.h>
 
-UT_NAMESPACE_BEGIN
+UbuntuComponentsPlugin::~UbuntuComponentsPlugin()
+{
+    UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::undefineModule();
+    UG_PREPEND_NAMESPACE(UbuntuGesturesModule)::undefineModule();
+}
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
     Q_UNUSED(uri);
 
-    qmlRegisterSimpleSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu");
-    qmlRegisterSimpleSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu");
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::UCNamespace>(uri, 1, 2, "Ubuntu");
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::UCNamespaceV13>(uri, 1, 3, "Ubuntu");
 
-    UbuntuGesturesModule::defineModule(uri);
-    UbuntuToolkitModule::defineModule();
+    UG_PREPEND_NAMESPACE(UbuntuGesturesModule)::defineModule(uri);
+    UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::defineModule();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    UbuntuToolkitModule::initializeModule(engine, baseUrl());
+    UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::initializeModule(engine, baseUrl());
     QQmlExtensionPlugin::initializeEngine(engine, uri);
 }
-
-UT_NAMESPACE_END
