@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -345,7 +345,7 @@ MainView {
             }
         }
 
-        function test_pageheader_height() {
+        function test_pageheader_automatic_height() {
             if (root.columns !== 2) {
                 skip("Only for wide view.");
             }
@@ -369,6 +369,42 @@ MainView {
             layout.removePages(sectionsPage);
             compare(pageWithHeader.header.height, baseHeight,
                     "Page header height is not reverted when header with sections is removed from next column.");
+        }
+
+        function test_pageheader_no_automatic_height() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
+
+            pageWithHeader.header.automaticHeight = false;
+
+            // baseHeight was checked in test_subheader_height().
+            var baseHeight = get_header(0).height;
+
+            layout.addPageToCurrentColumn(rootPage, pageWithHeader);
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header height does not match the base header height.");
+
+            layout.addPageToNextColumn(pageWithHeader, sectionsPage);
+
+            // withSectionsHeight was checked in test_subheader_height().
+            var withSectionsHeight = get_header(1).height;
+            compare(withSectionsHeight > baseHeight, true,
+                    "Header with sections is not higher than header without sections.");
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header automaticHeight==false adapts its height to header in other column.");
+
+            pageWithHeader.implicitHeight = withSectionsHeight + units.gu(10);
+            compare(get_header(1).height, withSectionsHeight,
+                    "Page header with automaticHeight==false influences other header heights.");
+            pageWithHeader.implicitHeight = baseHeight;
+            compare(pageWithHeader.header.height, baseHeight,
+                    "Page header height is not reverted when implicitHeight is reverted.");
+
+            layout.removePages(sectionsPage);
+
+            // reset to the initial value
+            pageWithHeader.header.automaticHeight = true;
         }
 
         function test_back_button_wide() {
