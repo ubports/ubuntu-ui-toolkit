@@ -17,6 +17,7 @@
 #include "listitemdraghandler.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
+#include <propertychange.h>
 #include <QtQuick/private/qquickanimation_p.h>
 
 UT_NAMESPACE_BEGIN

@@ -14,11 +14,8 @@
  "touchregistry.h" => "TouchRegistry",
  "touchownershipevent.h" => "TouchOwnershipEvent",
  "unownedtouchevent.h" => "UnownedTouchEvent",
- "asyncloader.h" => "AsyncLoader",
- "propertychange.h" => "PropertyChange",
- "tree.h" => "Tree",
- "i18n.h" => "UbuntuI18n",
- "inversemouseareatype.h" => "InverseMouseArea"
+ "ubuntugesturesmodule.h" => "UbuntuGesturesModule",
+ "ubuntutoolkitmodule.h" => "UbuntuToolkitModule"
 );
 
 # Module dependencies.
@@ -36,5 +33,4 @@
 );
 
 #export all classes that are in a Ubuntu* namespace
-#$publicclassregexp = "^Ubuntu[A-Za-z0-9]*::[^:]*\$"
-$publicclassregexp = "^UC[A-Za-z0-9]*\$"
+$publicclassregexp = "^Ubuntu[A-Za-z0-9]*::[^:]*\$"

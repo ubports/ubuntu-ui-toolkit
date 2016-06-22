@@ -20,7 +20,7 @@
 #include "ucbottomedge_p.h"
 #include "ucbottomedgeregion.h"
 #include "ucbottomedgeregion_p.h"
-#include <PropertyChange>
+#include <propertychange.h>
 #include <QtQml/private/qqmlproperty_p.h>
 
 
@@ -466,6 +466,7 @@ bool DefaultRegion::canCommit(qreal dragRatio)
     return (dragRatio >= 0.33);
 }
 
+#include "moc_ucbottomedgeregion.cpp"
+
 UT_NAMESPACE_END
 
-#include "moc_ucbottomedgeregion.cpp"

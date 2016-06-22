@@ -20,7 +20,7 @@
 #define UCBOTTOMEDGEREGION_P
 
 #include "ucbottomedgeregion.h"
-#include <AsyncLoader>
+#include <asyncloader.h>
 #include <QtCore/private/qobject_p.h>
 
 UT_NAMESPACE_BEGIN

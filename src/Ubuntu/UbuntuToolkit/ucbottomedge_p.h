@@ -23,8 +23,6 @@
 #include "ucstyleditembase_p.h"
 #include "ucaction.h"
 
-#include <AsyncLoader>
-
 UT_NAMESPACE_BEGIN
 
 class UCBottomEdgeStyle;

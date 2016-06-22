@@ -22,7 +22,7 @@
 #include <QtCore/private/qobject_p.h>
 #include <QtQml/QQmlIncubator>
 #include <ubuntutoolkitglobal.h>
-#include <AsyncLoader>
+#include <asyncloader.h>
 
 UT_NAMESPACE_BEGIN
 

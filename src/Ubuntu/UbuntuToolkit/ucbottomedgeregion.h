@@ -24,7 +24,7 @@
 #include <QtCore/QUrl>
 #include <QtCore/QPointer>
 #include <QtQml/QQmlIncubator>
-#include <AsyncLoader>
+#include <ubuntutoolkitglobal.h>
 
 class QQmlComponent;
 

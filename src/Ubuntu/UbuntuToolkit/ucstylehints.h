@@ -26,8 +26,7 @@
 #include <private/qpodvector_p.h>
 #undef foreach
 #include <QtQml/private/qqmlcompiler_p.h>
-
-#include <PropertyChange>
+#include <ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
@@ -35,6 +34,7 @@ UT_NAMESPACE_BEGIN
 
 class UCStyleHintsParser;
 class UCStyledItemBase;
+class PropertyChange;
 class UBUNTUTOOLKIT_EXPORT UCStyleHints : public QObject, public QQmlParserStatus
 {
     Q_OBJECT

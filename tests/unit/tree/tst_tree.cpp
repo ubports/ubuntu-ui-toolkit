@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 #include <QVariant>
 
-#include <UbuntuToolkit/Tree>
+#include <tree.h>
 
 UT_USE_NAMESPACE
 

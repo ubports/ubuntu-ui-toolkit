@@ -21,13 +21,13 @@
 
 #include "ucbottomedgehint.h"
 #include "ucactionitem_p.h"
-#include <PropertyChange>
 #include <ubuntugesturesglobal.h>
 
 UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
 
 UT_NAMESPACE_BEGIN
 
+class PropertyChange;
 class UCBottomEdgeHintPrivate : public UCActionItemPrivate
 {
     Q_DECLARE_PUBLIC(UCBottomEdgeHint)
