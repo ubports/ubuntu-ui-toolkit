@@ -17,8 +17,10 @@
 #include <QtTest/QtTest>
 
 #define private public
-#include "unitythemeiconprovider.h"
+#include <unitythemeiconprovider.h>
 #undef private
+
+UT_USE_NAMESPACE
 
 class tst_IconProvider : public QObject
 {

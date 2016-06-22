@@ -21,7 +21,9 @@
 #include <QSharedPointer>
 #include <QVariant>
 
-#include <UbuntuToolkit/Tree>
+#include <tree.h>
+
+UT_USE_NAMESPACE
 
 class tst_Tree : public QObject
 {
@@ -33,7 +35,7 @@ public:
 private Q_SLOTS:
 
     void test_populateTree () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -56,7 +58,7 @@ private Q_SLOTS:
     }
 
     void test_doubleAddNode () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         QTest::ignoreMessage(QtWarningMsg, "Cannot add the same node twice to a tree.");
 
@@ -66,7 +68,7 @@ private Q_SLOTS:
     }
 
     void test_addRootWithParent () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         QTest::ignoreMessage(QtWarningMsg, "Root node must have parentNode null.");
 
@@ -76,7 +78,7 @@ private Q_SLOTS:
     }
 
     void test_addSubNodeWithoutParent () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         QTest::ignoreMessage(QtWarningMsg, "Only root node has parentNode null.");
 
@@ -87,7 +89,7 @@ private Q_SLOTS:
     }
 
     void test_addSubNodeWithParentNotInTree () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         QTest::ignoreMessage(QtWarningMsg, "Cannot add non-root node if parentNode is not in the tree.");
 
@@ -99,7 +101,7 @@ private Q_SLOTS:
     }
 
     void test_parentNodes () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -126,7 +128,7 @@ private Q_SLOTS:
     }
 
     void test_pruneSingleStem () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -162,7 +164,7 @@ private Q_SLOTS:
     }
 
     void test_pruneMultipleStems () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -199,7 +201,7 @@ private Q_SLOTS:
     }
 
     void test_pruneAllStems () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -238,7 +240,7 @@ private Q_SLOTS:
     }
 
     void test_chopNode () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -262,7 +264,7 @@ private Q_SLOTS:
     }
 
     void test_chopNodeAndStemsExclusive () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -299,7 +301,7 @@ private Q_SLOTS:
     }
 
     void test_chopNodeAndStemsInclusive () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -336,7 +338,7 @@ private Q_SLOTS:
     }
 
     void test_chopNullNode () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -373,7 +375,7 @@ private Q_SLOTS:
     }
 
     void test_chopInvalidNode () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;
@@ -413,7 +415,7 @@ private Q_SLOTS:
     }
 
     void test_top () {
-        UbuntuToolkit::Tree tree;
+        Tree tree;
 
         //use as cleanup helper to delete all created objects
         QObject parent;

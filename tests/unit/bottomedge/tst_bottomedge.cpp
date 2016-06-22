@@ -18,8 +18,8 @@
 #include <QtTest/QtTest>
 #include "ucbottomedge.h"
 #include "ucbottomedgeregion.h"
-#include "ucbottomedgeregion_p.h"
-#include "ucbottomedge_p.h"
+#include "private/ucbottomedgeregion_p.h"
+#include "private/ucbottomedge_p.h"
 #include "ucbottomedgehint.h"
 #include "private/ucswipearea_p.h"
 #include "ucunits.h"
@@ -31,6 +31,8 @@
 #include "quickutils.h"
 #include "ucbottomedgestyle.h"
 #undef private
+
+UT_USE_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt::Key)
 
@@ -240,7 +242,7 @@ private Q_SLOTS:
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
         UCBottomEdge *bottomEdge = test->testItem();
         UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
-        QSignalSpy spy(bottomEdge, SIGNAL(statusChanged(UCBottomEdge::Status)));
+        QSignalSpy spy(bottomEdge, SIGNAL(statusChanged(UbuntuToolkit::UCBottomEdge::Status)));
 
         // swipe till we reveal it
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
@@ -263,9 +265,9 @@ private Q_SLOTS:
             // there must be two state changes here, one Hidden->Revealed, and one Revealed->Hidden
             QCOMPARE(spy.count(), 2);
             QList<QVariant> state1 = spy.at(0);
-            QCOMPARE(state1[0].value<int>(), (int)UCBottomEdge::Revealed);
+            QCOMPARE(state1[0].value<UCBottomEdge::Status>(), UCBottomEdge::Revealed);
             QList<QVariant> state2 = spy.at(1);
-            QCOMPARE(state2[0].value<int>(), (int)UCBottomEdge::Hidden);
+            QCOMPARE(state2[0].value<UCBottomEdge::Status>(), UCBottomEdge::Hidden);
         }
     }
 
@@ -566,7 +568,7 @@ private Q_SLOTS:
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
-        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
+        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UbuntuToolkit::UCBottomEdgeRegion*)));
 
         UCTestExtras::touchPress(0, bottomEdge, from);
         QPoint movePos(from);
@@ -829,7 +831,7 @@ private Q_SLOTS:
         UCBottomEdgeRegionPrivate::get(region)->to = 0.2;
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -(bottomEdge->height() / 2.0f));
-        QSignalSpy activeRegion(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
+        QSignalSpy activeRegion(bottomEdge, SIGNAL(activeRegionChanged(UbuntuToolkit::UCBottomEdgeRegion*)));
         if (withMouse) {
             bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
             UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0, 10);
@@ -908,7 +910,7 @@ private Q_SLOTS:
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
-        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
+        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UbuntuToolkit::UCBottomEdgeRegion*)));
 
         connect(bottomEdge, &UCBottomEdge::contentItemChanged, [=]() {
             regionObjects.append(bottomEdge->contentItem()

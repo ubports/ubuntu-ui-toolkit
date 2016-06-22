@@ -21,3 +21,27 @@
 #else
 #  define UBUNTUGESTURES_EXPORT Q_DECL_IMPORT
 #endif
+
+#if defined(UBUNTUGESTURES_NAMESPACE)
+
+#define UG_NAMESPACE_BEGIN          namespace UbuntuGestures {
+#define UG_NAMESPACE_END            }
+#define UG_PREPEND_NAMESPACE(name)  UbuntuGestures::name
+#define UG_USE_NAMESPACE            using namespace UbuntuGestures;
+#define UG_FORWARD_DECLARE_CLASS(name) \
+    UG_NAMESPACE_BEGIN class name; UG_NAMESPACE_END \
+    using UG_PREPEND_NAMESPACE(name);
+#define UG_FORWARD_DECLARE_STRUCT(name) \
+    UG_NAMESPACE_BEGIN struct name; UG_NAMESPACE_END \
+    using UG_PREPEND_NAMESPACE(name);
+
+#else // no namespace
+
+#define UG_NAMESPACE_BEGIN
+#define UG_NAMESPACE_END
+#define UG_PREPEND_NAMESPACE(name)  name
+#define UG_USE_NAMESPACE
+#define UG_FORWARD_DECLARE_CLASS(name) class name;
+#define UG_FORWARD_DECLARE_STRUCT(name) struct name;
+
+#endif

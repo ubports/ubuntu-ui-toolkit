@@ -17,6 +17,8 @@
 #include <QtTest/QtTest>
 #include "ucunits.h"
 
+UT_USE_NAMESPACE
+
 class tst_UCUnitsDPR3: public QObject
 {
     Q_OBJECT

@@ -33,6 +33,8 @@
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
 
+UT_USE_NAMESPACE
+
 #define QCOMPARE_RET(actual, expected) \
 do {\
     if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__))\

@@ -31,9 +31,7 @@
 // logging
 #include <QtCore/QLoggingCategory>
 
-namespace UbuntuGestures {
-    class AbstractTimerFactory;
-}
+UG_FORWARD_DECLARE_CLASS(AbstractTimerFactory)
 
 /*
   Where the ownership of touches is registered.
@@ -93,6 +91,9 @@ namespace UbuntuGestures {
 
   [1] - http://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt (see multitouch-ownership)
  */
+
+UG_NAMESPACE_BEGIN
+
 class UBUNTUGESTURES_EXPORT TouchRegistry : public QObject
 {
     Q_OBJECT
@@ -128,7 +129,7 @@ public:
     void addTouchWatcher(int touchId, QQuickItem *watcherItem);
 
     // Useful for tests, where you should use fake timers
-    void setTimerFactory(UbuntuGestures::AbstractTimerFactory *timerFactory);
+    void setTimerFactory(AbstractTimerFactory *timerFactory);
 
 private Q_SLOTS:
     void rejectCandidateOwnerForTouch(int id, QQuickItem *candidate);
@@ -153,7 +154,7 @@ private:
             InterimOwner = 2
         } state;
         QPointer<QQuickItem> item;
-        QPointer<UbuntuGestures::CandidateInactivityTimer> inactivityTimer;
+        QPointer<UG_PREPEND_NAMESPACE(CandidateInactivityTimer)> inactivityTimer;
     };
 
     class TouchInfo {
@@ -195,11 +196,13 @@ private:
 
     bool m_inDispatchLoop;
 
-    UbuntuGestures::AbstractTimerFactory *m_timerFactory;
+    AbstractTimerFactory *m_timerFactory;
 
     friend class tst_TouchRegistry;
     friend class tst_DirectionalDragArea;
 };
+
+UG_NAMESPACE_END
 
 Q_DECLARE_LOGGING_CATEGORY(ugTouchRegistry)
 

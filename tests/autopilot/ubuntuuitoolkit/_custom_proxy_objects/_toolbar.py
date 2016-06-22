@@ -98,7 +98,8 @@ class Toolbar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.click_object(button)
 
     def _get_button(self, object_name):
-        return self.select_single('UCActionItem', objectName=object_name)
+        return self.select_single(
+            'UbuntuToolkit::UCActionItem', objectName=object_name)
 
     @autopilot_logging.log_action(logger.info)
     def click_back_button(self):

@@ -21,7 +21,7 @@
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 /*
  * The class is used to save properties and their bindings while the property is
  * altered temporarily.
@@ -124,4 +124,4 @@ void PropertyChange::restore(PropertyChange *change)
     }
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END

@@ -36,7 +36,9 @@
 #include "ucapplication.h"
 #include "ucunits.h"
 #include "uctestcase.h"
-#include "plugin.h"
+#include <ubuntutoolkitmodule.h>
+
+UT_USE_NAMESPACE
 
 class tst_MainView : public QObject
 {
@@ -78,7 +80,7 @@ private Q_SLOTS:
 
         view = new QQuickView;
         QQmlEngine *quickEngine = view->engine();
-        UbuntuComponentsPlugin::initializeContextProperties(quickEngine);
+        UbuntuToolkitModule::initializeContextProperties(quickEngine);
 
         view->setGeometry(0,0, UCUnits::instance()->gu(40), UCUnits::instance()->gu(30));
         //add modules folder so we have access to the plugin from QML

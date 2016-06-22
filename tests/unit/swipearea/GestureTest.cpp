@@ -27,7 +27,7 @@
 #include <UbuntuGestures/Timer>
 #include <UbuntuGestures/TouchRegistry>
 
-using namespace UbuntuGestures;
+UG_USE_NAMESPACE
 
 GestureTest::GestureTest(const QString &qmlFilename)
     : QObject(), m_device(nullptr), m_view(nullptr), m_qmlFilename(qmlFilename)
