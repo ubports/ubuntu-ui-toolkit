@@ -20,6 +20,9 @@
 #define UBUNTUTOOLKITMODULE_H
 
 #include <QtCore/QObject>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QJSEngine>
+#include <qqml.h>
 #include <ubuntutoolkitglobal.h>
 
 class QQmlEngine;
@@ -28,12 +31,14 @@ class QWindow;
  * Type registration functions.
  */
 
-template<typename T> static QObject *qmlRegisterSimpleSingletonTypeCallback(QQmlEngine *, QJSEngine *)
+template<typename T>
+QObject *qmlRegisterSimpleSingletonTypeCallback(QQmlEngine *, QJSEngine *)
 {
     return (new T);
 }
 
-template<typename T> static int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const char *typeName)
+template<typename T>
+int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const char *typeName)
 {
     return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
 }
