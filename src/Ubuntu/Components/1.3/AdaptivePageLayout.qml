@@ -775,7 +775,6 @@ PageTreeNode {
             Connections {
                 ignoreUnknownSignals: true
                 target: page ? page.header : null
-                // FIXME TIM: only do this when needed
                 onImplicitHeightChanged: {
                     if (page.header.hasOwnProperty("automaticHeight") &&
                             page.header.automaticHeight) {
@@ -997,7 +996,7 @@ PageTreeNode {
                 body.headerHeight = h;
             }
 
-            // Update all the Page.header heights.
+            // Update the Page.header heights.
             for (i = 0; i < body.children.length; i++) {
                 page = body.children[i].page;
                 if (page && page.hasOwnProperty("header") && page.header &&

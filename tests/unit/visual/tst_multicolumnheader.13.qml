@@ -423,6 +423,8 @@ MainView {
             var baseHeight = get_header(0).height;
 
             layout.addPageToNextColumn(rootPage, pageNoAutomaticHeaderHeight);
+            compare(baseHeight === pageNoAutomaticHeaderHeight.header.height, false,
+                    "This test makes no sense if pageNoAutomaticHeaderHeight.header.height is the default height.");
             compare(get_header(0).height, baseHeight,
                     "Page header with no automatic height affects header height in other column.");
             layout.removePages(pageNoAutomaticHeaderHeight);
