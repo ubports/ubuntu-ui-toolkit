@@ -81,6 +81,7 @@ UCHeader::UCHeader(QQuickItem *parent)
     , m_previous_header_height(0)
     , m_exposed(true)
     , m_moving(false)
+    , m_automaticHeight(true)
 {
     m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);
@@ -335,6 +336,18 @@ void UCHeader::setExposed(bool exposed) {
 bool UCHeader::moving() {
     return m_moving;
 }
+
+/*!
+ * \qmlproperty bool Header::automaticHeight
+ * The heights of the \l Page headers in an \l AdaptivePageLayout are synchronized
+ * by the AdaptivePageLayout so that they all get the height of the largest
+ * implicitHeight of the visible Page headers to give a uniform look to the headers.
+ * To opt-out of this height synchronization, set automaticHeight to false. This will
+ * prevent the AdaptivePageLayout from taking the Header's implicitHeight into account
+ * for computing the maximum header height, and it will also not update the height of
+ * the header that has automaticHeight set to false to match the other header heights.
+ * Default value: true.
+ */
 
 // Called when moving due to user interaction with the flickable, or by
 // setting m_flickable.contentY programatically.
