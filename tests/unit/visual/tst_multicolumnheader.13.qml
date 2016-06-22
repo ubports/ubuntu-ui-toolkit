@@ -414,7 +414,7 @@ MainView {
                     "Page header height is not reverted when header with sections is removed from next column.");
         }
 
-        function test_pageheader_no_automatic_height() {
+        function test_pageheader_no_automatic_height_bug1540240() {
             if (root.columns !== 2) {
                 skip("Only for wide view.");
             }
