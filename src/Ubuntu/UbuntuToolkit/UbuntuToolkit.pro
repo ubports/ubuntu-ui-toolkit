@@ -131,7 +131,6 @@ HEADERS += \
     ucimportversionchecker_p.h \
     ucbottomedgehint.h \
     ucbottomedgehint_p.h \
-    gestures/ubuntugesturesqmlglobal.h \
     ucmathutils.h \
     ucbottomedge.h \
     ucbottomedge_p.h \

@@ -1,6 +1,7 @@
 usr/include/*/qt5/UbuntuToolkit/QQuickClipboard
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
+usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitModule
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
 usr/include/*/qt5/UbuntuToolkit/appheaderbase.h
 usr/include/*/qt5/UbuntuToolkit/asyncloader.h
