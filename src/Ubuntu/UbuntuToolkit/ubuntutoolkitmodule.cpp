@@ -19,6 +19,7 @@
 #include "ubuntutoolkitmodule.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlExtensionPlugin>
 #include <QtQuick/private/qquickimagebase_p.h>
 #include <QDBusConnection>
 #include <QtGui/QGuiApplication>
@@ -286,6 +287,25 @@ void UbuntuStylesModule::undefineModule()
     // nothing yet
 }
 
+/******************************************************************************
+ * Labs module
+ */
+void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin *plugin)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(plugin);
+}
 
+void UbuntuLabsModule::defineModule(const char *uri)
+{
+    Q_UNUSED(uri);
+    // a fake component so we can have the module types file created
+    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+}
+
+void UbuntuLabsModule::undefineModule()
+{
+    // nothing yet
+}
 
 UT_NAMESPACE_END
