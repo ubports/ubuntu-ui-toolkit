@@ -30,7 +30,7 @@
     #define ENABLE_TOUCH_EMULATION
 #endif
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 QTouchDevice *MouseTouchAdaptor::m_touchDevice = nullptr;
 
@@ -133,6 +133,6 @@ void MouseTouchAdaptorPrivate::setEnabled(bool value)
     qWarning() << "MouseTouchAdaptor not available on this architecture, thus cannot be enabled.";
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #include "moc_mousetouchadaptor.cpp"

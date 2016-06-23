@@ -1,9 +1,15 @@
 project = UbuntuUserInterfaceToolkit
 url = http://developer.ubuntu.com/api/ubuntu-15.04/qml/mobile/
 description = Ubuntu User Interface Toolkit Documentation
+defines = Q_QDOC
 sourcedirs = ./
+headerdirs = ../include
 sourcedirs += ../src/Ubuntu/Components
-headerdirs = ../src/Ubuntu/Components/plugin
+headerdirs += ../src/Ubuntu/Components/plugin
+sourcedirs += ../src/Ubuntu/UbuntuToolkit
+headerdirs += ../src/Ubuntu/UbuntuToolkit
+sourcedirs += ../src/Ubuntu/UbuntuGestures
+headerdirs += ../src/Ubuntu/UbuntuGestures
 sourcedirs += ../src/Ubuntu/Layouts
 headerdirs += ../src/Ubuntu/Layouts/plugin
 sourcedirs += ../src/Ubuntu/PerformanceMetrics
@@ -27,6 +33,7 @@ sources.fileextensions = "*.qml *.qdoc *.cpp *.js"
 headers.fileextensions = "*.h"
 # exclude qml files that have the component documented in a separate qdoc file
 excludefiles += $BLD/../src/Ubuntu/Components/1.3/PageWrapperUtils.js
+excludefiles += ../src/Ubuntu/UbuntuToolkit/asyncloader.cpp
 outputdir = $BLD/html
 outputformats = HTML
 version = 1.3

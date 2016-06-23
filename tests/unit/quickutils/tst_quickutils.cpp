@@ -19,6 +19,8 @@
 #include "quickutils.h"
 #include <QtQml/QQmlEngine>
 
+UT_USE_NAMESPACE
+
 class tst_QuickUtils : public QObject
 {
     Q_OBJECT

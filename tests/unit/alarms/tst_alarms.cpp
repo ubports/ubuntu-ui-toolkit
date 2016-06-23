@@ -17,10 +17,10 @@
  */
 
 #include "ucalarm.h"
-#include "ucalarm_p.h"
-#include "alarmmanager_p.h"
+#include "private/ucalarm_p.h"
+#include "private/alarmmanager_p.h"
 #include "ucalarmmodel.h"
-#include "adapters/alarmsadapter_p.h"
+#include "private/alarmsadapter_p.h"
 
 #include "uctestcase.h"
 #include <QtCore/QString>
@@ -30,7 +30,9 @@
 #include <QtTest/QSignalSpy>
 #include <QtCore/QTimeZone>
 #include <QtQml/QQmlEngine>
-#include "plugin.h"
+#include <ubuntutoolkitmodule.h>
+
+UT_USE_NAMESPACE
 
 class tst_UCAlarms : public QObject
 {
@@ -111,7 +113,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         engine = new QQmlEngine;
-        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        UbuntuToolkitModule::initializeContextProperties(engine);
 
         AlarmManager::instance();
 

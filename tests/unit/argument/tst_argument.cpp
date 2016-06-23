@@ -23,6 +23,8 @@
 #include <QtCore/QString>
 #include <QtTest/QTest>
 
+UT_USE_NAMESPACE
+
 class tst_UCArgument : public QObject
 {
     Q_OBJECT

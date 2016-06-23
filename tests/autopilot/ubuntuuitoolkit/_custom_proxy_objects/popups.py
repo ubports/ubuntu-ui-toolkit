@@ -62,7 +62,8 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _get_button(self, text):
         # Try the C++ class name in case this is a 1.3 AbstractButton
         try:
-            return self.wait_select_single('UCAbstractButton', text=text)
+            return self.wait_select_single(
+                'UbuntuToolkit::UCAbstractButton', text=text)
         except dbus.StateNotFoundError:
             return self.wait_select_single('AbstractButton', text=text)
 

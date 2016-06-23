@@ -37,4 +37,5 @@ OTHER_FILES += \
     features/ubuntu_qt_module.prf \
     features/ubuntu_enable_testing.prf \
     features/coverage.prf \
+    sync.profile \
     .qmake.conf

@@ -32,26 +32,25 @@ for _XML in $*; do
     fi
 
     EXCEPTIONS='components_benchmark \
-                tst_tabbar.qml \
-                tst_datepicker12.bug1567840.SEGFAULT.qml \
-                tst_datepicker13.bug1567840.SEGFAULT.qml \
-                tst_textinput_touch.SEGFAULT.qml \
+                tst_tabbar.11.qml \
+                tst_datepicker.bug1567840.SEGFAULT.12.qml \
+                tst_datepicker.bug1567840.SEGFAULT.13.qml \
+                tst_textinput_touch.SEGFAULT.11.qml \
                 swipearea \
                 qquick_image_extension \
-                tst_page.qml \
-                tst_toolbar.qml \
+                tst_page.11.qml \
                 tst_label13.qml \
                 performance \
-                tst_tabs.qml \
-                tst_focus.qml \
-                tst_pickerpanel.qml \
-                tst_picker.qml \
-                tst_picker13.qml \
+                tst_tabs.11.qml \
+                tst_focus.13.qml \
+                tst_pickerpanel.11.qml \
+                tst_picker.11.qml \
+                tst_picker.13.qml \
                 recreateview \
                 touchregistry \
                 mainview \
-                tst_listitems_itemselector.qml \
-                tst_tabs_with_repeater.deprecated_toolbar.qml \
+                tst_listitems_itemselector.11.qml \
+                tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
                 inversemousearea \
                 '
 
