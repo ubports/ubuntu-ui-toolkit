@@ -32,7 +32,7 @@
 #include <QtQuick/private/qsgcontext_p.h>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
-#include <MouseTouchAdaptor>
+#include <mousetouchadaptor.h>
 #include <QtGui/QTouchDevice>
 #include <QtQml/qqml.h>
 
@@ -144,7 +144,7 @@ int main(int argc, const char *argv[])
 
     if (args.isSet(_enableTouch)) {
         // has no effect if we have touch screen
-        new UbuntuToolkit::MouseTouchAdaptor(&application);
+        new UT_PREPEND_NAMESPACE(MouseTouchAdaptor)(&application);
     }
 
     QUrl source(QUrl::fromLocalFile(filename));

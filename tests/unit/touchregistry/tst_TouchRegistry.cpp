@@ -23,7 +23,7 @@
 #include <UbuntuGestures/TouchRegistry>
 #include <UbuntuGestures/UnownedTouchEvent>
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 class TouchMemento {
 public:
@@ -968,6 +968,8 @@ bool DummyCandidate::event(QEvent *e)
     }
 }
 
-QTEST_GUILESS_MAIN(tst_TouchRegistry)
+UG_NAMESPACE_END
+
+QTEST_GUILESS_MAIN(UG_PREPEND_NAMESPACE(tst_TouchRegistry))
 
 #include "tst_TouchRegistry.moc"

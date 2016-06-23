@@ -23,7 +23,9 @@
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qobject_p.h>
 #include <QSysInfo>
-#include <MouseTouchAdaptor>
+#include <mousetouchadaptor.h>
+
+UT_USE_NAMESPACE
 
 const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using registerTouchDevice() before using %1";
 
@@ -118,7 +120,7 @@ bool UCTestExtras::touchDevicePresent()
  */
 void UCTestExtras::registerTouchDevice()
 {
-    if (UbuntuToolkit::MouseTouchAdaptor::registerTouchDevice() && m_testExtras) {
+    if (MouseTouchAdaptor::registerTouchDevice() && m_testExtras) {
         Q_EMIT m_testExtras->touchDevicePresentChanged();
     }
 }
@@ -132,7 +134,7 @@ void UCTestExtras::registerTouchDevice()
 void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).press(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), MouseTouchAdaptor::touchDevice()).press(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchRelease(touchId, item, point)
@@ -142,7 +144,7 @@ void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point
 void UCTestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).release(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), MouseTouchAdaptor::touchDevice()).release(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchClick(touchId, item, point)
@@ -191,7 +193,7 @@ void UCTestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint 
 void UCTestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE(touchId, item);
-    QTest::touchEvent(item->window(), UbuntuToolkit::MouseTouchAdaptor::touchDevice()).move(touchId, item->mapToScene(point).toPoint(), item->window());
+    QTest::touchEvent(item->window(), MouseTouchAdaptor::touchDevice()).move(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchDrag(touchId, item, from, delta, steps = 5)
@@ -367,13 +369,14 @@ void UCTestExtras::mouseDragWithPoints(QQuickItem *item, QList<QPoint> points, Q
 
 void UCTestExtras::removeTimeConstraintsFromSwipeArea(QQuickItem *item)
 {
-    UCSwipeArea *swipeArea = dynamic_cast<UCSwipeArea*>(item);
+    UG_PREPEND_NAMESPACE(UCSwipeArea) *swipeArea = dynamic_cast<UG_PREPEND_NAMESPACE(UCSwipeArea)*>(item);
     if (!swipeArea) {
         qWarning() << item << "is not a SwipeArea";
         return;
     }
 
-    UCSwipeAreaPrivate *priv = static_cast<UCSwipeAreaPrivate *>(QObjectPrivate::get(swipeArea));
+    UG_PREPEND_NAMESPACE(UCSwipeAreaPrivate) *priv =
+            static_cast<UG_PREPEND_NAMESPACE(UCSwipeAreaPrivate)*>(QObjectPrivate::get(swipeArea));
     priv->setMaxTime(60 * 60 * 1000);
     priv->setCompositionTime(0);
 }

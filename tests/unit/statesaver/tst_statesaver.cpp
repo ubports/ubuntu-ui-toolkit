@@ -34,14 +34,16 @@
 #include <QtCore/QProcessEnvironment>
 #include "uctestcase.h"
 #include <signal.h>
-#include "plugin.h"
+#include <ubuntutoolkitmodule.h>
 
 #define protected public
 #define private public
 #include "ucstatesaver.h"
-#include "statesaverbackend_p.h"
+#include "private/statesaverbackend_p.h"
 #undef private
 #undef protected
+
+UT_USE_NAMESPACE
 
 class tst_StateSaverTest : public QObject
 {
@@ -110,7 +112,7 @@ private Q_SLOTS:
     void init()
     {
         engine = new QQmlEngine;
-        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        UbuntuToolkitModule::initializeContextProperties(engine);
         // invoke initialization
         StateSaverBackend::instance(engine);
     }

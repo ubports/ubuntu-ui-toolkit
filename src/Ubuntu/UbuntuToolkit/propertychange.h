@@ -28,7 +28,7 @@
 
 class QQmlAbstractBinding;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT PropertyChange
 {
@@ -59,6 +59,6 @@ private:
     void backup();
 };
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #endif // PROPERTYCHANGE_P_H
