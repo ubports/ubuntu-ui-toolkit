@@ -175,7 +175,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSimpleSingletonType<UCHaptics>(uri, major, minor, "Haptics");
     qmlRegisterSimpleSingletonType<UCMathUtils>(uri, major, minor, "MathUtils");
     qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
-    qmlRegisterType<UCActionList>(uri, major, minor, "ActionList");
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -238,6 +237,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
+    qmlRegisterType<UCActionList>(uri, 1, 3, "ActionList");
     qmlRegisterType<UCExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
 }
 

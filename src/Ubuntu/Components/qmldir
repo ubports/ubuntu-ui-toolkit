@@ -1,5 +1,6 @@
 module Ubuntu.Components
 plugin UbuntuComponents
+ActionList 0.1 1.2/ActionList.qml
 ToolbarItems 0.1 1.2/ToolbarItems.qml
 ToolbarButton 0.1 1.2/ToolbarButton.qml
 MainView 0.1 1.2/MainView.qml
@@ -39,6 +40,7 @@ SliderUtils 0.1 1.2/sliderUtils.js
 DateUtils 0.1 1.2/dateUtils.js
 
 #version 1.0
+ActionList 1.0 1.2/ActionList.qml
 ToolbarItems 1.0 1.2/ToolbarItems.qml
 ToolbarButton 1.0 1.2/ToolbarButton.qml
 MainView 1.0 1.2/MainView.qml
