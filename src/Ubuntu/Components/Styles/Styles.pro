@@ -1,4 +1,9 @@
+CXX_MODULE = qml
+TARGET  = UbuntuComponentsStyles
 TARGETPATH = Ubuntu/Components/Styles
+IMPORT_VERSION = 0.1
+
+include(plugin/plugin.pri)
 
 QML_FILES += 1.2/ComboButtonStyle.qml \
              1.2/PageHeadStyle.qml \
