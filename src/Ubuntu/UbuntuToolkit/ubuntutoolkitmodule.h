@@ -68,6 +68,13 @@ private:
     QUrl m_baseUrl;
 };
 
+class UBUNTUTOOLKIT_EXPORT UbuntuStylesModule
+{
+public:
+    static void defineModule(const char *uri);
+    static void undefineModule();
+};
+
 UT_NAMESPACE_END
 
 #endif // UBUNTUTOOLKITMODULE_H
