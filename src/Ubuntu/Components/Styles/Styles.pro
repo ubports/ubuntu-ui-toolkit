@@ -1,7 +1,7 @@
 CXX_MODULE = qml
 TARGET  = UbuntuComponentsStyles
 TARGETPATH = Ubuntu/Components/Styles
-IMPORT_VERSION = 0.1
+IMPORT_VERSION = 1.1
 
 include(plugin/plugin.pri)
 
