@@ -175,11 +175,6 @@ QUrl UbuntuToolkitModule::baseUrl(QQmlEngine *engine)
 void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &pluginBaseUrl)
 {
     UbuntuToolkitModule *module = create(engine, pluginBaseUrl);
-    // register internal styles
-    const char *styleUri = "Ubuntu.Components.Styles";
-    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
-    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
-    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
 
     // Register private types.
     const char *privateUri = "Ubuntu.Components.Private";
@@ -270,8 +265,27 @@ void UbuntuToolkitModule::defineModule()
 
 void UbuntuToolkitModule::undefineModule()
 {
-
+    // nothing yet
 }
+
+/******************************************************************************
+ * Styles module
+ */
+void UbuntuStylesModule::defineModule(const char *uri)
+{
+    // 1.2 styles
+    qmlRegisterType<UCListItemStyle>(uri, 1, 2, "ListItemStyle");
+
+    // 1.3 styles
+    qmlRegisterType<UCListItemStyle, 1>(uri, 1, 3, "ListItemStyle");
+    qmlRegisterType<UCBottomEdgeStyle>(uri, 1, 3, "BottomEdgeStyle");
+}
+
+void UbuntuStylesModule::undefineModule()
+{
+    // nothing yet
+}
+
 
 
 UT_NAMESPACE_END
