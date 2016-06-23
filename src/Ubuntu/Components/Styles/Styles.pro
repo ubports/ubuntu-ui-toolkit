@@ -14,6 +14,6 @@ QML_FILES += 1.2/ComboButtonStyle.qml \
 	     1.3/ToolbarStyle.qml \
 	     1.3/SectionsStyle.qml \
 
-load(ubuntu_qml_module)
+load(ubuntu_qml_plugin)
 
 OTHER_FILES+=qmldir
