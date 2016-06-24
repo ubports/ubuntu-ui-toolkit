@@ -33,7 +33,7 @@ class UBUNTUTOOLKIT_EXPORT UCMenuBar : public QObject, public QQmlParserStatus
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    Q_PROPERTY(QQmlListProperty<UCMenu> menus READ menus NOTIFY menusChanged FINAL)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCMenu)> menus READ menus NOTIFY menusChanged FINAL)
     Q_CLASSINFO("DefaultProperty", "menus")
 
 public:
