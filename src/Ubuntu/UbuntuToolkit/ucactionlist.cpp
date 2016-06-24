@@ -109,7 +109,11 @@ void UCActionList::removeAction(UCAction *action)
  */
 QQmlListProperty<UCAction> UCActionList::actions()
 {
-    return QQmlListProperty<UCAction>(this, 0, UCActionList::append, UCActionList::count, 0, UCActionList::clear);
+    return QQmlListProperty<UCAction>(this, 0,
+                                      UCActionList::append,
+                                      UCActionList::count,
+                                      UCActionList::at,
+                                      UCActionList::clear);
 }
 
 const QList<UCAction*> &UCActionList::list() const
@@ -131,6 +135,15 @@ void UCActionList::clear(QQmlListProperty<UCAction> *list)
     if (actionList) {
         actionList->m_actions.clear();
     }
+}
+
+UCAction* UCActionList::at(QQmlListProperty<UCAction> *list, int index)
+{
+    UCActionList *actionList = qobject_cast<UCActionList*>(list->object);
+    if (actionList) {
+        return actionList->m_actions.value(index, nullptr);
+    }
+    return Q_NULLPTR;
 }
 
 int UCActionList::count(QQmlListProperty<UCAction> *list)

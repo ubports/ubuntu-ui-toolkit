@@ -262,10 +262,10 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
     qmlRegisterType<UCActionList>(uri, 1, 3, "ActionList");
+    qmlRegisterType<UCExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
     qmlRegisterType<UCMenu>(uri, 1, 3, "Menu");
     qmlRegisterType<UCMenuBar>(uri, 1, 3, "MenuBar");
     qmlRegisterType<UCMenuGroup>(uri, 1, 3, "MenuGroup");
-
 }
 
 void UbuntuToolkitModule::undefineModule()
