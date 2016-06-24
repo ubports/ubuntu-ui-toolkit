@@ -60,7 +60,6 @@ class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
 
     // transferred from Unity Actions
     Q_ENUMS(Type)
-    Q_ENUMS(CheckState)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
     Q_PROPERTY(QString iconName MEMBER m_iconName WRITE setIconName NOTIFY iconNameChanged)
@@ -137,8 +136,8 @@ Q_SIGNALS:
     void iconSourceChanged();
     void visibleChanged();
     void shortcutChanged();
-    void checkableChanged();
-    void exclusiveGroupChanged();
+    Q_REVISION(1) void checkableChanged();
+    Q_REVISION(1) void exclusiveGroupChanged();
 
     void triggered(const QVariant &value);
     Q_REVISION(1) void toggled(bool);

@@ -24,7 +24,6 @@
 UT_NAMESPACE_BEGIN
 
 class UCAction;
-
 class UCActionList : public QObject
 {
     Q_OBJECT

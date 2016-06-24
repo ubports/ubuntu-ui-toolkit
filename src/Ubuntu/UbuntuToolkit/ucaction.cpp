@@ -319,7 +319,6 @@ UCAction::UCAction(QObject *parent)
     , m_published(false)
     , m_checkable(false)
     , m_checked(false)
-
 {
     generateName();
     // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
@@ -460,31 +459,6 @@ void UCAction::resetShortcut()
     m_shortcut = QVariant();
     Q_EMIT shortcutChanged();
 }
-
-/*!
- * \qmlproperty enum Action::parameterType
- * Type of the parameter passed to \l trigger and \l triggered.
- * Type is an enumeration:
- * \list
- *  \li \b Action.None: No paramater. (default)
- *  \li \b Action.String: String parameter.
- *  \li \b Action.Integer: Integer parameter.
- *  \li \b Action.Bool: Boolean parameter.
- *  \li \b Action.Real: Single precision floating point parameter.
- *  \li \b Action.Object: The parameter is an object.
- * \endlist
- * \qml
- * Action {
- *     id: action
- *     parameterType: Action.String
- *     onTriggered: {
- *         // value arguments now contain strings
- *         console.log(value);
- *     }
- *     Component.onCompleted: action.trigger("Hello World")
- * }
- * \endqml
- */
 
 /*!
  * \qmlproperty bool Action::checkable
