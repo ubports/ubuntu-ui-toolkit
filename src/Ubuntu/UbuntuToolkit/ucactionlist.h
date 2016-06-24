@@ -27,7 +27,7 @@ class UCAction;
 class UCActionList : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
     Q_CLASSINFO("DefaultProperty", "actions")
 public:
     explicit UCActionList(QObject *parent = 0);
@@ -37,8 +37,8 @@ public:
     const QList<UCAction*> &list() const;
 
 public Q_SLOTS:
-    void addAction(UCAction *action);
-    void removeAction(UCAction *action);
+    void addAction(UT_PREPEND_NAMESPACE(UCAction) *action);
+    void removeAction(UT_PREPEND_NAMESPACE(UCAction) *action);
 
 Q_SIGNALS:
     void added(UCAction *action);
@@ -49,6 +49,7 @@ protected:
 
     static void append(QQmlListProperty<UCAction> *list, UCAction *action);
     static void clear(QQmlListProperty<UCAction> *list);
+    static UCAction* at(QQmlListProperty<UCAction> *list, int index);
     static int count(QQmlListProperty<UCAction> *list);
 };
 
