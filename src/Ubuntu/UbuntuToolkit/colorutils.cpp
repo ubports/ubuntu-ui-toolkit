@@ -17,7 +17,7 @@
 #include "colorutils.h"
 #include <QColor>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ColorUtils::ColorUtils(QObject *parent) : QObject(parent)
 {}
@@ -27,4 +27,4 @@ qreal ColorUtils::luminance(const QColor &color)
     return color.lightnessF();
 }
 
-}
+UT_NAMESPACE_END

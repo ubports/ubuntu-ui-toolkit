@@ -19,12 +19,10 @@
 #define UCNAMESPACE_H
 
 #include <QtCore/QObject>
-#include "quickutils.h"
+#include <quickutils.h>
+#include <ubuntutoolkitglobal.h>
 
-#define BUILD_VERSION(major, minor)     ((((major) & 0x00FF) << 8) | ((minor) & 0x00FF))
-#define LATEST_UITK_VERSION             BUILD_VERSION(1, 3)
-#define MAJOR_VERSION(version)          ((version) >> 8)
-#define MINOR_VERSION(version)          ((version) & 0x00FF)
+UT_NAMESPACE_BEGIN
 
 #define UC_QML_DEPRECATION_WARNING(msg) \
     { \
@@ -84,5 +82,7 @@ protected:
 private:
     quint16 m_toolkitVersion;
 };
+
+UT_NAMESPACE_END
 
 #endif // UCNAMESPACE_H

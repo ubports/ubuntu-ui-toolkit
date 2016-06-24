@@ -24,34 +24,34 @@ FAILURES=0
 FATAL_WARNINGS=0
 EXCEPTED=0
 for _XML in $*; do
-    _TESTNAME=$(basename $_XML | sed -r 's@test_(.+)\.xml@\1@' -)
+    _TESTNAME=$(basename $_XML | sed -r 's@(.+)\.xml@\1@' -)
 
     if [ ! -f $_XML ]; then
       echo "$_XML doesn't exist"
       exit 1
     fi
 
-    EXCEPTIONS='tst_components_benchmark \
-                tst_tabbar.qml \
-                tst_datepicker12.bug1567840.SEGFAULT.qml \
-                tst_datepicker13.bug1567840.SEGFAULT.qml \
-                tst_swipearea \
-                tst_qquick_image_extension \
-                tst_page.qml \
-                tst_toolbar.qml \
+    EXCEPTIONS='components_benchmark \
+                tst_tabbar.11.qml \
+                tst_datepicker.bug1567840.SEGFAULT.12.qml \
+                tst_datepicker.bug1567840.SEGFAULT.13.qml \
+                tst_textinput_touch.SEGFAULT.11.qml \
+                swipearea \
+                qquick_image_extension \
+                tst_page.11.qml \
                 tst_label13.qml \
-                tst_performance \
-                tst_tabs.qml \
-                tst_focus.qml \
-                tst_pickerpanel.qml \
-                tst_picker.qml \
-                tst_picker13.qml \
-                tst_recreateview \
-                tst_touchregistry \
-                tst_mainview \
-                tst_listitems_itemselector.qml \
-                tst_tabs_with_repeater.deprecated_toolbar.qml \
-                tst_inversemousearea \
+                performance \
+                tst_tabs.11.qml \
+                tst_focus.13.qml \
+                tst_pickerpanel.11.qml \
+                tst_picker.11.qml \
+                tst_picker.13.qml \
+                recreateview \
+                touchregistry \
+                mainview \
+                tst_listitems_itemselector.11.qml \
+                tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
+                inversemousearea \
                 '
 
     WARNINGS=$(grep -c -P "$WARNINGS_PATTERN" $_XML)

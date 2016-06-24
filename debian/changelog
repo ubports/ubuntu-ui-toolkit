@@ -1,3 +1,58 @@
+ubuntu-ui-toolkit (1.3.2009+16.10.20160615.3) yakkety; urgency=medium
+
+  [ Tim Peeters ]
+  * Introduce Styles.SectionsStyle. Fixes LP: #1585548
+  * Update header contents only after its style was initialized. 
+    Fixes LP: #1588837
+  * Update export_qml_dir.qml to work inside a lxd container.
+  * Draw a red outline around the subheader in AdaptivePageLayout to warn that
+    the old header is deprecated. Fixes LP: #1583636
+  
+  [ Christian Dywan ]
+  * Select the current item before adding the test page.
+  * Introduce gallery for browsing visual tests.
+  * Put Scrollbar in ShaderEffectSource to blend with frame. Fixes LP: #1583543
+  * Correctly use build/src dir with unit tests. Fixes LP: #1589982
+
+  [ Florian Boucault ]
+  * Do not initialize haptics at startup but only when used for the first time.
+  * PageHeadButton: do not load the icon until the button is made visible.
+  
+  [ Albert Astals Cid ]
+  * Prepend UC_ to performance env vars.
+  * Using -1 as PERFORMANCE_MONITOR_WARNING_COUNT_THRESHOLD envvar disables the
+    warning count threshold.
+  * Add envvars to change the performance monitor variables. 
+
+ -- Zoltán Balogh <zoltan.balogh@canonical.com>  Wed, 15 Jun 2016 18:32:29 +0000
+
+ubuntu-ui-toolkit (1.3.1995+16.10.20160607.1) yakkety; urgency=medium
+
+  [ Albert Astals Cid ]
+  * Initialize two variables
+      physicallyEnded in the dummy TouchInfo constructor
+      m_nextTimeoutTime in the FakeTimer
+    It's not really needed since it's only used in update() if start()
+    has been called that then initializes m_nextTimeoutTime
+    But it's always nice to initialize all members.
+
+  [ Zsombor Egri ]
+  * Move PropertyChange into UbuntuToolkit package.
+
+  [ Christian Dywan ]
+  * Merge tests/unit and tests/unit_x11. Fixes LP: #1273696
+  * UCListItem needs to handle click/trigger by keyboard. Fixes LP: #1581027
+  * Remove TARGET pointing at "gallery" script
+    qmake can't tell that it's not a generated file. Fixes LP: #1523093.
+
+  [ Zoltan Balogh ]
+  * Skip unit tests only on Yakketi. Fixes LP: #1588598
+
+  [ Tarmac, Zoltán Balogh ]
+  * OTA12-2016-06-07 landing
+
+ -- Zoltán Balogh <zoltan.balogh@canonical.com>  Tue, 07 Jun 2016 18:25:12 +0000
+
 ubuntu-ui-toolkit (1.3.1988+16.10.20160601) yakkety; urgency=medium
 
   [ Christian Dywan ]

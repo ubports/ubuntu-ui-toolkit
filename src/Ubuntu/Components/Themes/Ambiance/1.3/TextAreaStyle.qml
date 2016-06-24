@@ -76,6 +76,12 @@ Item {
             radius: units.gu(1.7)
             backgroundColor: visuals.backgroundColor
             aspect: UbuntuShape.Flat
+            source: ShaderEffectSource {
+                sourceItem: styledItem.__rightScrollbar ? styledItem.__rightScrollbar : null
+                hideSource: true
+            }
+            sourceFillMode: UbuntuShape.Pad
+            sourceHorizontalAlignment: UbuntuShape.AlignRight
         }
     }
 

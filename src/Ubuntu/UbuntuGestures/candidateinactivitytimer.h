@@ -23,7 +23,7 @@ class QQuickItem;
 
 #include "timer.h"
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 class UBUNTUGESTURES_EXPORT CandidateInactivityTimer : public QObject {
     Q_OBJECT
@@ -46,6 +46,6 @@ private:
     QQuickItem *m_candidate;
 };
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END
 
 #endif // UBUNTUGESTURES_CANDIDATE_INACTIVITY_TIMER_H
