@@ -20,14 +20,12 @@
 
 #include <QElapsedTimer>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
+
 class RealTimeSourcePrivate {
 public:
     QElapsedTimer timer;
 };
-}
-
-using namespace UbuntuGestures;
 
 RealTimeSource::RealTimeSource()
     : UbuntuGestures::TimeSource()
@@ -45,3 +43,5 @@ qint64 RealTimeSource::msecsSinceReference()
 {
     return d->timer.elapsed();
 }
+
+UG_NAMESPACE_END

@@ -25,7 +25,7 @@
 #include <QWindow>
 #include <xcb/xcb.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class MouseTouchAdaptorPrivate : public QObjectPrivate, public QAbstractNativeEventFilter
 {
@@ -71,7 +71,7 @@ public:
 };
 #endif
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #endif // MOUSETOUCHADAPTOR_P
 

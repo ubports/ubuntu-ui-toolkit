@@ -15,44 +15,30 @@
  */
 import QtQuick 2.4
 import QtQuick.Window 2.2
-import Ubuntu.Components 1.3
 import QtGraphicalEffects 1.0
+import Ubuntu.Components 1.3
 import Ubuntu.Components.Private 1.3
+import Ubuntu.Components.Styles 1.3 as Style
 
-Item {
+Style.SectionsStyle {
     id: sectionsStyle
 
     implicitWidth: sectionsListView.contentWidth + 2 * listViewContainer.listViewMargins
     implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
-    /*!
-      The foreground color of unselected sections.
-     */
-    property color sectionColor: enabled
-                                 ? theme.palette.normal.backgroundTertiaryText
-                                 : theme.palette.disabled.backgroundTertiaryText
+    sectionColor: enabled
+                  ? theme.palette.normal.backgroundTertiaryText
+                  : theme.palette.disabled.backgroundTertiaryText
 
-    /*!
-      The foreground color of underline rectangle of unselected sections.
-     */
-    property color underlineColor: theme.palette.normal.base
+    underlineColor: theme.palette.normal.base
 
-    /*!
-      The foreground color of the selected section.
-     */
-    property color selectedSectionColor: enabled
-                                         ? theme.palette.selected.positionText
-                                         : theme.palette.selectedDisabled.positionText
+    selectedSectionColor: enabled
+                          ? theme.palette.selected.positionText
+                          : theme.palette.selectedDisabled.positionText
 
-    /*!
-      The background color for the pressed section button.
-     */
-    property color pressedBackgroundColor: theme.palette.highlighted.background
+    pressedBackgroundColor: theme.palette.highlighted.background
 
-    /*!
-      The size of text in the buttons.
-     */
-    property int textSize: Label.Medium
+    textSize: Label.Medium
 
     /*!
       The spacing on the left and right sides of the label

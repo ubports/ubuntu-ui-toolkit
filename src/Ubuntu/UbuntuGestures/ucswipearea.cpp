@@ -29,7 +29,7 @@
 #include <UbuntuGestures/TouchRegistry>
 #include <UbuntuGestures/UnownedTouchEvent>
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea", QtMsgType::QtWarningMsg)
 Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo", QtMsgType::QtWarningMsg)
@@ -1055,3 +1055,5 @@ void UCSwipeAreaPrivate::removeStatusChangeListener(UCSwipeAreaStatusListener *l
 {
     statusChangeListeners.removeAll(listener);
 }
+
+UG_NAMESPACE_END

@@ -16,6 +16,8 @@
 
 #include "touchownershipevent.h"
 
+UG_NAMESPACE_BEGIN
+
 QEvent::Type TouchOwnershipEvent::m_touchOwnershipType = (QEvent::Type)-1;
 
 TouchOwnershipEvent::TouchOwnershipEvent(int touchId, bool gained)
@@ -33,3 +35,5 @@ QEvent::Type TouchOwnershipEvent::touchOwnershipEventType()
 
     return m_touchOwnershipType;
 }
+
+UG_NAMESPACE_END

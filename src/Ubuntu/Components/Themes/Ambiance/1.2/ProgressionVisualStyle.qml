@@ -27,7 +27,7 @@ Item {
 
     Image {
         id: progressIcon
-        source: progressionIconSource
+        source: visible ? progressionIconSource : ""
         anchors {
             verticalCenter: parent.verticalCenter
             right: parent.right
@@ -46,7 +46,7 @@ Item {
             right: progressIcon.left
             rightMargin: styledItem.splitMargin
         }
-        source: progressionDividerSource
+        source: visible ? progressionDividerSource : ""
         opacity: enabled ? 1.0 : 0.5
     }
 }
