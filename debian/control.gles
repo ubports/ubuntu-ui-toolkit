@@ -117,9 +117,9 @@ Description: Qt Components for Ubuntu - QML plugin - GLES
 Package: qml-module-ubuntu-components-labs-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
-Conflicts: qml-module-ubuntu-components-labs
-Replaces: qml-module-ubuntu-components-labs
-Provides: qml-module-ubuntu-components-labs
+Conflicts: qml-module-ubuntu-components-labs,
+Replaces: qml-module-ubuntu-components-labs,
+Provides: qml-module-ubuntu-components-labs,
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},

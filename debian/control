@@ -115,7 +115,7 @@ Depends: libqt5svg5,
          ${misc:Depends},
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu-labs,
-Replaces: qt-components-ubuntu-labs
+Replaces: qt-components-ubuntu-labs,
 Provides: qt-components-ubuntu-labs,
 Description: Qt Components Labs for Ubuntu - Components QML plugin
  Qt Components Labs for Ubuntu offers a set of non-released and mostly
