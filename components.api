@@ -10,6 +10,8 @@ Ubuntu.Components.AbstractButton 1.3 UCAbstractButton: ActionItem
     readonly property bool pressed
     readonly property UCMargins sensingMargins
 Ubuntu.Components.Action 1.3 1.0 0.1 UCAction: QtObject
+    property bool checkable 1.3
+    property bool checked 1.3
     property string description
     property bool enabled
     property ExclusiveGroup exclusiveGroup 1.3
@@ -18,13 +20,12 @@ Ubuntu.Components.Action 1.3 1.0 0.1 UCAction: QtObject
     property Component itemHint
     property string keywords
     signal triggered(var value)
+    signal toggled(bool ) 1.3
     function trigger(var value)
     function trigger()
-    function setState(var )
     property string name
     property Type parameterType
     property var shortcut 1.3
-    property var state 1.3
     property string text
     property bool visible
 Ubuntu.Components.Action.Type: Enum
@@ -57,7 +58,10 @@ Ubuntu.Components.ActionItem 1.0 0.1 UCActionItem: StyledItem
     function trigger(var value)
     function trigger()
     property string text
-Ubuntu.Components.ActionList 1.0 0.1 UCActionList: QtObject
+Ubuntu.Components.ActionList 1.0 0.1: QtObject
+    property list<Action> actions
+    default property list<Action> children
+Ubuntu.Components.ActionList 1.3 UCActionList: QtObject
     default property list<Action> actions
     signal added(Action action)
     signal removed(Action action)
@@ -460,7 +464,9 @@ Ubuntu.Components.ListItems.Empty 1.3: AbstractButton
     readonly property string swipingState
     readonly property bool waitingConfirmationForRemoval
 Ubuntu.Components.ExclusiveGroup 1.3 UCExclusiveGroup: ActionList
-    readonly property Action selected
+    readonly property QtObject current
+    function bindCheckable(QtObject object)
+    function unbindCheckable(QtObject object)
 Ubuntu.Components.ListItems.Expandable 1.0 0.1: Empty
     property bool collapseOnClick
     property double collapsedHeight

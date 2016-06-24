@@ -56,6 +56,7 @@ class UCAction : public QObject
 
     // transferred from Unity Actions
     Q_ENUMS(Type)
+    Q_ENUMS(CheckState)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
     Q_PROPERTY(QString iconName MEMBER m_iconName WRITE setIconName NOTIFY iconNameChanged)
@@ -63,7 +64,9 @@ class UCAction : public QObject
     Q_PROPERTY(QString keywords MEMBER m_keywords NOTIFY keywordsChanged)
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged)
     Q_PROPERTY(Type parameterType READ parameterType WRITE setParameterType NOTIFY parameterTypeChanged)
-    Q_PROPERTY(QVariant state READ state WRITE setState NOTIFY stateChanged REVISION 1)
+
+    Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable NOTIFY checkableChanged REVISION 1)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled REVISION 1)
     Q_PROPERTY(UCExclusiveGroup* exclusiveGroup READ exclusiveGroup WRITE setExclusiveGroup NOTIFY exclusiveGroupChanged REVISION 1)
 
     // Toolkit Actions API
@@ -113,7 +116,10 @@ public:
     void resetShortcut();
     void setParameterType(Type type);
     Type parameterType() const { return m_parameterType; }
-    QVariant state() const { return m_state; }
+    void setCheckable(bool checkable);
+    bool isCheckable() const { return m_checkable; }
+    void setChecked(bool checked);
+    bool isChecked() const { return m_checkable && m_checked; }
 
     UCExclusiveGroup *exclusiveGroup() const { return m_exclusiveGroup; }
     void setExclusiveGroup(UCExclusiveGroup *exclusiveGroup);
@@ -129,16 +135,18 @@ Q_SIGNALS:
     void iconSourceChanged();
     void visibleChanged();
     void shortcutChanged();
-    void stateChanged();
+    void checkableChanged();
     void exclusiveGroupChanged();
+
     void triggered(const QVariant &value);
+    Q_REVISION(1) void toggled(bool);
 
 public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
-    void setState(const QVariant&);
 
 private:
     QPODVector<QQuickItem*, 4> m_owningItems;
+    UCExclusiveGroup *m_exclusiveGroup;
     QString m_name;
     QString m_text;
     QString m_iconName;
@@ -153,8 +161,8 @@ private:
     bool m_enabled:1;
     bool m_visible:1;
     bool m_published:1;
-    UCExclusiveGroup *m_exclusiveGroup;
-    QVariant m_state;
+    bool m_checkable:1;
+    bool m_checked:1;
 
     friend class UCActionContext;
     friend class UCActionItem;

@@ -22,13 +22,26 @@
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief List of \l Action items
+ * An ActionList provies a way of grouping actions together.
+ * \qml
+ * ActionList {
+ *     Action {
+ *         id: action1
+ *     }
+ *     Action {
+ *         id: action2
+ *     }
+ * }
+ * \endqml
  */
 /*!
  * \qmlsignal ActionList::added(Action action)
+ * \since Ubuntu.Components 1.3
  * Signal called when an action is added to the list
  */
 /*!
  * \qmlsignal ActionList::removed(Action action)
+ * \since Ubuntu.Components 1.3
  * Signal called when an action is removed from the list
  */
 UCActionList::UCActionList(QObject *parent)
@@ -38,8 +51,24 @@ UCActionList::UCActionList(QObject *parent)
 
 /*!
  * \qmlmethod ActionList::addAction(Action action)
- * \deprecated
+ * \since Ubuntu.Components 1.3
  * Adds an Action to the list programatically.
+ * \qml
+ * Item {
+ *     Instantiator {
+ *         model: 4
+ *         onObjectAdded: actionList.addAction(object)
+ *         onObjectRemoved: actionList.removeAction(object)
+ *
+ *         Action {}
+ *     }
+ *
+ *     ActionList {
+ *         id: actionList
+ *     }
+ * }
+ * \endqml
+ * \sa ActionList::removeAction
  */
 void UCActionList::addAction(UCAction *action)
 {
@@ -52,8 +81,9 @@ void UCActionList::addAction(UCAction *action)
 
 /*!
  * \qmlmethod ActionList::removeAction(Action action)
- * \deprecated
+ * \since Ubuntu.Components 1.3
  * Removes an action from the list programatically.
+ * \sa ActionList::addAction
  */
 void UCActionList::removeAction(UCAction *action)
 {

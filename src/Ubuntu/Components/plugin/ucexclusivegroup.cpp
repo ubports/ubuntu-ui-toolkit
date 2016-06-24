@@ -18,14 +18,34 @@
 #include "ucexclusivegroup.h"
 #include "ucaction.h"
 
+#include <QSignalMapper>
+
+#define CHECKED_PROPERTY "checked"
+
+static const char *checkableSignals[] = {
+    "toggled(bool)",
+    0
+};
+
+static bool isChecked(const QObject *o)
+{
+    if (!o) return false;
+    QVariant checkedVariant = o->property(CHECKED_PROPERTY);
+    return checkedVariant.isValid() && checkedVariant.toBool();
+}
+
 /*!
  * \qmltype ExclusiveGroup
  * \inqmlmodule Ubuntu.Components
+ * \since Ubuntu.Components 1.3
  * \ingroup ubuntu
- * \brief An \l ActionList which controls a set of Actions with mutually exclusive states.
+ * \inherits ActionList
+ * \brief ExclusiveGroup provides a way to declare several checkable controls as mutually exclusive.
  *
- * The ExclusiveGroup will only allow a single \l Action to have it's state set to "true" at any one time.
- * If the currently selected \l Action attempts to trigger with a false value, the trigger will be rejected.
+ * The ExclusiveGroup will only allow a single object to have it's checkable property set to "true"
+ * at any one time. The exclusive group accepts child Actions, but objects other than Actions can be
+ * used by using the \l bindCheckable function as long as they support one of the required signals,
+ * and a "checked" property.
  * \qml
  * ExclusiveGroup {
  *     Action {
@@ -41,97 +61,106 @@
  */
 UCExclusiveGroup::UCExclusiveGroup(QObject *parent)
     : UCActionList(parent)
+    , m_signalMapper(new QSignalMapper(this))
     , m_entranceGuard(false)
 {
     connect(this, &UCActionList::added, this, &UCExclusiveGroup::onActionAdded);
     connect(this, &UCActionList::removed, this, &UCExclusiveGroup::onActionRemoved);
+
+    int index = m_signalMapper->metaObject()->indexOfMethod("map()");
+    m_updateCurrentMethod = m_signalMapper->metaObject()->method(index);
+    connect(m_signalMapper, static_cast<void(QSignalMapper::*)(QObject *)>(&QSignalMapper::mapped), this, [this](QObject *object) {
+        if (isChecked(object)) {
+            setCurrent(object);
+        }
+    });
 }
 
 void UCExclusiveGroup::onActionAdded(UCAction *action)
 {
     action->setExclusiveGroup(this);
-    if (!selected() && action->state().toBool() == true) {
-        setSelected(action);
-    }
-    connect(action, &UCAction::stateChanged, this, [this, action]() { stateChanged(action); });
 }
 
 void UCExclusiveGroup::onActionRemoved(UCAction *action)
 {
     action->setExclusiveGroup(nullptr);
-    if (selected() == action) {
-        setSelected(nullptr);
-    }
-    disconnect(action, &UCAction::stateChanged, this, 0);
-}
-
-void UCExclusiveGroup::stateChanged(UCAction* action)
-{
-    if (m_entranceGuard) return;
-    m_entranceGuard = true;
-
-    if (action->state().type() != QVariant::Bool) {
-        m_entranceGuard = false;
-        return;
-    }
-
-    Q_FOREACH(UCAction* fromList, list()) {
-        if (fromList->parameterType() != UCAction::Bool) {
-            continue;
-        }
-
-        if (fromList != action && fromList->state().toBool() == true) {
-            fromList->trigger(false);
-        }
-    }
-
-    if (action->state().toBool() == true) {
-        setSelected(action);
-    } else {
-        setSelected(nullptr);
-    }
-
-    m_entranceGuard = false;
 }
 
 /*!
- * \qmlproperty Action ExclusiveGroup::selected
- * \default
- * Returns the currently selected action
+ * \qmlproperty Action ExclusiveGroup::current
+ * Returns the currently checked action
  */
-void UCExclusiveGroup::setSelected(UCAction *action)
+void UCExclusiveGroup::setCurrent(QObject *object)
 {
-    if (m_selected != action) {
-        if (action) {
-            m_selected = action;
-        } else {
-            m_selected.clear();
+    if (m_current == object)
+        return;
+
+    if (m_current)
+        m_current->setProperty(CHECKED_PROPERTY, QVariant(false));
+    m_current = object;
+    if (m_current)
+        m_current->setProperty(CHECKED_PROPERTY, QVariant(true));
+    Q_EMIT currentChanged();
+}
+
+QObject *UCExclusiveGroup::current() const
+{
+    return m_current.data();
+}
+
+/*!
+ * \qmlmethod void ExclusiveGroup::bindCheckable(object object)
+ * Explicitly bind an objects checkability to this exclusive group.
+ * \note This only works with objects which support the following signals signals:
+ * \list
+ *  \li \b toggled(bool)
+ * \endlist
+ * \qml
+ * Item {
+ *     ExclusiveGroup {
+ *         id: exclusiveGroup
+ *     }
+ *     Instantiator {
+ *         model: 4
+ *         onObjectAdded: exclusiveGroup.bindCheckable(object)
+ *         onObjectRemoved: exclusiveGroup.unbindCheckable(object)
+ *
+ *         Action {
+ *             checkable: true
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \sa ExclusiveGroup::unbindCheckable
+ */
+void UCExclusiveGroup::bindCheckable(QObject *object)
+{
+    for (const char **signalName = checkableSignals; *signalName; signalName++) {
+        int signalIndex = object->metaObject()->indexOfSignal(*signalName);
+        if (signalIndex != -1) {
+            QMetaMethod signalMethod = object->metaObject()->method(signalIndex);
+            connect(object, signalMethod, m_signalMapper, m_updateCurrentMethod, Qt::UniqueConnection);
+            m_signalMapper->setMapping(object, object);
+            connect(object, SIGNAL(destroyed(QObject*)), this, SLOT(unbindCheckable(QObject*)), Qt::UniqueConnection);
+            if (!m_current && isChecked(object))
+                setCurrent(object);
+            break;
         }
-        Q_EMIT selectedChanged();
     }
 }
-UCAction *UCExclusiveGroup::selected() const
+
+/*!
+ * \qmlmethod void ExclusiveGroup::unbindCheckable(object object)
+ * Explicitly unbind an objects checkability from this exclusive group.
+ * \sa ExclusiveGroup::bindCheckable
+ */
+void UCExclusiveGroup::unbindCheckable(QObject *object)
 {
-    return m_selected;
+    if (m_current == object)
+        setCurrent(0);
+
+    disconnect(object, 0, m_signalMapper, 0);
+    disconnect(object, SIGNAL(destroyed(QObject*)), this, SLOT(unbindCheckable(QObject*)));
 }
 
-bool UCExclusiveGroup::isTriggerValid(UCAction *action, const QVariant &value)
-{
-    // deselect others.
-    if (value.type() == QVariant::Bool && value.toBool() == false) {
 
-        int trueCount = 0;
-        Q_FOREACH(UCAction* fromList, list()) {
-            if (fromList->parameterType() != UCAction::Bool ||
-                action == fromList) {
-                continue;
-            }
-            trueCount += fromList->state().toBool();
-        }
-
-        if (trueCount == 0) {
-            return false;
-        }
-    }
-    return true;
-}

@@ -39,6 +39,12 @@ TestCase {
          triggeredSignalSpy.clear();
          context1.active = false;
          context2.active = false;
+
+         checkableAction.checkable = true;
+         checkableAction.checked = false;
+         action1.checked = true;
+         currentActionSpy.clear();
+         checkableSpy.clear();
      }
 
      function initTestCase() {
@@ -166,42 +172,17 @@ TestCase {
          compare(data.action.invoked, data.invoked);
      }
 
-     function test_valid_state_data() {
-         return [
-            {tag: "None", type: Action.None, state: undefined},
-            {tag: "String", type: Action.String, state: "test"},
-            {tag: "Integer", type: Action.Integer, state: 100},
-            {tag: "Bool", type: Action.Bool, state: true},
-            {tag: "Real", type: Action.Real, state: 12.34},
-            {tag: "Object - QtObject", type: Action.Object, state: object},
-            {tag: "Object - Item", type: Action.Object, state: item},
-         ];
-     }
-     function test_valid_state(data) {
-         stateType.parameterType = data.type;
-         stateType.trigger(data.state);
-         stateTypeSpy.wait();
-         compare(stateType.state, data.state, "Test " + data.tag + " result differs");
-         stateTypeSpy.clear();
+     function test_checkable() {
+         checkableAction.checkable = true;
+         checkableAction.checked = true;
+         checkableSpy.wait();
+         compare(checkableAction.checked, true, "Checkable action should be checked");
      }
 
-     function test_invalid_state_data() {
-         return [
-             {tag: "None", type: Action.None, state: 120},
-             {tag: "String", type: Action.String, state: object},
-             {tag: "Integer", type: Action.Integer, state: "100"},
-             {tag: "Bool", type: Action.Bool, state: item},
-             {tag: "Real", type: Action.Real, state: undefined},
-             {tag: "Object - QtObject", type: Action.Object, state: true},
-             {tag: "Object - Item", type: Action.Object, state: "item"},
-         ];
-     }
-     function test_invalid_state(data) {
-         stateType.parameterType = data.type;
-         stateType.trigger(data.state);
-         stateTypeSpy.wait();
-         compare(stateType.state, undefined, "Test " + data.tag + " did not fail");
-         stateTypeSpy.clear();
+     function test_not_checkable() {
+         checkableAction.checkable = false;
+         checkableAction.checked = true;
+         compare(checkableAction.checked, false, "Non-checkable action should never be checked");
      }
 
      function test_exclusive_group() {
@@ -210,28 +191,28 @@ TestCase {
 
      function test_exclusive_group_activation_data() {
          return [
-             {tag: "Activate action1", active: [action1], inactive: [action2, action3], selected: action1},
-             {tag: "Activate action2", active: [action2], inactive: [action1, action3], selected: action2},
-             {tag: "Activate action2, action3", active: [action2, action3], inactive: [action1, action2], selected: action3},
+             {tag: "Activate action2", active: [action2], inactive: [action1, action3], current: action2},
+             {tag: "Activate action3", active: [action3], inactive: [action1, action2], current: action3},
+             {tag: "Activate action2, action3", active: [action2, action3], inactive: [action1, action2], current: action3},
          ];
      }
      function test_exclusive_group_activation(data) {
          for (var i = 0; i < data.active.length; i++) {
-             data.active[i].trigger(true);
-             compare(data.active[i].state, true, "State of active action should be 'true'");
+             data.active[i].trigger();
+             compare(data.active[i].checked, true, "Active action checked property should be 'true'");
          }
          for (var i = 0; i < data.inactive.length; i++) {
-            compare(data.inactive[i].state, false, "State of active action should be 'false'");
+            compare(data.inactive[i].checked, false, "Inactive action checked property should be 'false'");
          }
-         selectedSpy.wait();
-         compare(exclusiveGroup.selected, data.selected, "Selected action in exclusiveGroup does not match");
-         selectedSpy.clear();
+         currentActionSpy.wait();
+         compare(exclusiveGroup.current, data.current, "Current action in exclusiveGroup does not match");
      }
 
      function test_always_one_action_selected() {
-         action1.trigger(true);
-         action1.trigger(false);
-         compare(action1.state, true, "Exclusive group should have one action set to 'true'.");
+         action1.trigger();
+         compare(action1.checked, true, "Triggering an exclusive group action should check the action");
+         action1.trigger();
+         compare(action1.checked, true, "Triggering an exclusive group action again will not uncheck the action.");
      }
 
      Action {
@@ -261,19 +242,19 @@ TestCase {
          signalName: "triggered"
      }
      SignalSpy {
-         id: stateTypeSpy
-         target: stateType
-         signalName: "triggered"
-     }
-     SignalSpy {
          id: textSpy
          target: action
          signalName: "textChanged"
      }
      SignalSpy {
-         id: selectedSpy
+         id: checkableSpy
+         target: checkableAction
+         signalName: "toggled"
+     }
+     SignalSpy {
+         id: currentActionSpy
          target: exclusiveGroup
-         signalName: "selectedChanged"
+         signalName: "currentChanged"
      }
 
      ActionManager {
@@ -315,25 +296,26 @@ TestCase {
      }
 
      Action {
-         id: stateType
+         id: checkableAction
+         checkable: true
      }
 
      ExclusiveGroup {
          id: exclusiveGroup
          Action {
              id: action1
-             parameterType: Action.Bool
-             state: false
+             checkable: true
+             checked: true
          }
          Action {
              id: action2
-             parameterType: Action.Bool
-             state: false
+             checkable: true
+             checked: false
          }
          Action {
              id: action3
-             parameterType: Action.Bool
-             state: false
+             checkable: true
+             checked: false
          }
      }
 

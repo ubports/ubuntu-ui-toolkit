@@ -20,31 +20,35 @@
 
 #include "ucactionlist.h"
 #include "ucaction.h"
-#include <QQmlParserStatus>
+
+class QSignalMapper;
 
 class UCExclusiveGroup : public UCActionList
 {
     Q_OBJECT
-    Q_PROPERTY(UCAction* selected READ selected NOTIFY selectedChanged)
+    Q_PROPERTY(QObject* current READ current NOTIFY currentChanged)
 
 public:
     explicit UCExclusiveGroup(QObject *parent = 0);
 
-    UCAction* selected() const;
-    bool isTriggerValid(UCAction* action, const QVariant& value);
+    QObject* current() const;
+
+    Q_INVOKABLE void bindCheckable(QObject* object);
+    Q_INVOKABLE void unbindCheckable(QObject* object);
 
 Q_SIGNALS:
-    void selectedChanged();
+    void currentChanged();
 
 protected Q_SLOTS:
     void onActionAdded(UCAction* action);
     void onActionRemoved(UCAction* action);
 
 private:
-    void stateChanged(UCAction* action);
-    void setSelected(UCAction* action);
+    void setCurrent(QObject* action);
 
-    QPointer<UCAction> m_selected;
+    QSignalMapper* m_signalMapper;
+    QPointer<QObject> m_current;
+    QMetaMethod m_updateCurrentMethod;
     bool m_entranceGuard;
 };
 
