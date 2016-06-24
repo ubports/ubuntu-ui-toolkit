@@ -38,6 +38,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QLoggingCategory>
+#include <QRegularExpression>
 
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlengine_p.h>
@@ -140,30 +141,29 @@ bool typeNameSort(const QQmlType* type1, const QQmlType* type2)
 */
 QByteArray convertToId(const QString &cppName)
 {
-    QString qmlType(cppName);
+    QString qmlType(QString(qPrintable(cppName)).replace(QRegExp("(QQmlListProperty|QList)<(.+)>"), "\\2"));
+    QString typeFormat(qmlType != cppName ? "list<%1>" : "%1");
+
+    QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(qmlType)].toList());
+    std::sort(types.begin(), types.end(), typeNameSort);
+    std::reverse(types.begin(), types.end());
+
     if (qmlType.contains("::")) {
         QStringList parts(qmlType.split("::"));
-        return qPrintable(convertToId(parts[0]) + "." + convertToId(parts[1]));
+        qmlType = parts[1];
+        if (!types.isEmpty())
+            qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
+        return qPrintable(typeFormat.arg(parts[0] + "." + qmlType));
     }
 
-    QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
-    std::sort(types.begin(), types.end(), typeNameSort);
     if (!types.isEmpty())
         qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
     else
-        qmlType = cppToId.value(qPrintable(qmlType), qPrintable(cppName));
+        qmlType = cppToId.value(qPrintable(qmlType), qPrintable(qmlType));
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
-    // List type
-    if (qmlType.startsWith("QQmlListProperty<")) {
-        QString subType(qmlType.mid(17, qmlType.size() - 18));
-        qmlType = "list<" + convertToId(subType) + ">";
-    }
-    else if (qmlType.startsWith("QList<")) {
-        QString subType(qmlType.mid(6, qmlType.size() - 7));
-        qmlType = "list<" + convertToId(subType) + ">";
-    }
-    return qPrintable(qmlType.replace("QTestRootObject", "QtObject"));
+
+    return qPrintable(typeFormat.arg(qmlType.replace("QTestRootObject", "QtObject")));
 }
 
 QByteArray convertToId(const QMetaObject *mo)
