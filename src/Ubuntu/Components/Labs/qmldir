@@ -1,0 +1,3 @@
+module Ubuntu.Components.Labs
+plugin UbuntuComponentsLabs
+typeinfo plugins.qmltypes

@@ -114,6 +114,36 @@ Description: Qt Components for Ubuntu - QML plugin - GLES
  This package contains the Ubuntu Components QML plugin (built with
  the OpenGLES backend).
 
+Package: qml-module-ubuntu-components-labs-gles
+Architecture: amd64 i386
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+Conflicts: qml-module-ubuntu-components-labs,
+Replaces: qml-module-ubuntu-components-labs,
+Provides: qml-module-ubuntu-components-labs,
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: libqt5svg5,
+         libubuntugestures5-gles (= ${binary:Version}),
+         libubuntutoolkit5-gles (= ${binary:Version}),
+         qml-module-qtfeedback,
+         qml-module-qtgraphicaleffects,
+         qml-module-qtquick-layouts,
+         qml-module-qtquick-window2,
+         qml-module-qtquick2,
+         qtdeclarative5-unity-action-plugin (>= 1.1.0),
+         suru-icon-theme,
+         ttf-ubuntu-font-family,
+         ubuntu-ui-toolkit-theme,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Qt Components Labs for Ubuntu - QML plugin - GLES
+ Qt Components Labs for Ubuntu offers a set of non-released and mostly
+ unstable user interface components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Components Labs QML plugin (built with
+ the OpenGLES backend).
+
 Package: qml-module-ubuntu-performancemetrics-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
