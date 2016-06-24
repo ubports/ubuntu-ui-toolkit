@@ -25,7 +25,7 @@ class QSignalMapper;
 
 UT_NAMESPACE_BEGIN
 
-class UCExclusiveGroup : public UCActionList
+class UBUNTUTOOLKIT_EXPORT UCExclusiveGroup : public UCActionList
 {
     Q_OBJECT
     Q_PROPERTY(QObject* current READ current NOTIFY currentChanged)

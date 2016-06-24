@@ -24,7 +24,7 @@
 UT_NAMESPACE_BEGIN
 
 class UCAction;
-class UCActionList : public QObject
+class UBUNTUTOOLKIT_EXPORT UCActionList : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
