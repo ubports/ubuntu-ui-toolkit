@@ -153,7 +153,7 @@ QByteArray convertToId(const QString &cppName)
         qmlType = parts[1];
         if (!types.isEmpty())
             qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
-        return qPrintable(typeFormat.arg(parts[0] + "." + qmlType));
+        return qPrintable(typeFormat.arg(convertToId(parts[0]) + "." + qmlType));
     }
 
     if (!types.isEmpty())
