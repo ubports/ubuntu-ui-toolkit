@@ -27,6 +27,7 @@
 
 class QQmlEngine;
 class QWindow;
+class QQmlExtensionPlugin;
 /*
  * Type registration functions.
  */
@@ -66,6 +67,21 @@ private:
     static void registerTypesToVersion(const char *uri, int major, int minor);
 
     QUrl m_baseUrl;
+};
+
+class UBUNTUTOOLKIT_EXPORT UbuntuStylesModule
+{
+public:
+    static void defineModule(const char *uri);
+    static void undefineModule();
+};
+
+class UBUNTUTOOLKIT_EXPORT UbuntuLabsModule
+{
+public:
+    static void initializeModule(QQmlEngine *engine, QQmlExtensionPlugin *plugin);
+    static void defineModule(const char *uri);
+    static void undefineModule();
 };
 
 UT_NAMESPACE_END

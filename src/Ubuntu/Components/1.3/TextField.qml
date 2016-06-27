@@ -1030,6 +1030,7 @@ Ubuntu.ActionItem {
 
             // overrides
             selectByMouse: true
+            persistentSelection: false
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]
