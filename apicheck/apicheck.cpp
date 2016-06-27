@@ -156,7 +156,7 @@ QByteArray convertToId(const QString &cppName)
         // Distinguish C++ namespace by trying to convert it to QML
         QString nameSpace(convertToId(parts[0]));
         if (nameSpace != parts[0])
-            return qPrintable(typeFormat.arg(convertToId(parts[0]) + "." + qmlType));
+            return qPrintable(typeFormat.arg(nameSpace) + "." + qmlType);
         return qPrintable(typeFormat.arg(qmlType));
     }
 
