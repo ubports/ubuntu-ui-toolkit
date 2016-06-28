@@ -24,7 +24,7 @@
 #include "alarmmanager_p.h"
 #include <QtCore/QUrl>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT AlarmManagerPrivate
 {

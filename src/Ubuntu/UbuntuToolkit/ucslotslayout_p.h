@@ -37,7 +37,7 @@
 #define SLOTSLAYOUT_BOTTOMMARGIN1_GU                 1
 #define SLOTSLAYOUT_BOTTOMMARGIN2_GU                 2
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCSlotsLayoutPrivate : public QQuickItemPrivate
 {

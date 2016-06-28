@@ -27,7 +27,7 @@ class QQmlComponent;
 class QQmlContext;
 class QQmlEngine;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCTheme;
 class UBUNTUTOOLKIT_EXPORT UCDeprecatedTheme : public QObject

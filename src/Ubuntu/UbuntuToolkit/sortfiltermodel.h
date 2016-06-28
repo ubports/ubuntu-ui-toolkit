@@ -25,7 +25,7 @@
 #include "sortbehavior.h"
 #include "filterbehavior.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 {

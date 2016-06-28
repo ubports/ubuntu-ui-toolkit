@@ -22,7 +22,7 @@
 #include <QtCore/QEasingCurve>
 #include <ubuntutoolkitglobal.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCUbuntuAnimation : public QObject
 {

@@ -18,7 +18,7 @@
 
 #include "ucstyleditembase.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCPageTreeNodePrivate;
 class UBUNTUTOOLKIT_EXPORT UCPageTreeNode : public UCStyledItemBase

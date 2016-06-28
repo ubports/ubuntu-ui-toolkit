@@ -27,7 +27,7 @@ class QQuickItem;
 class QQmlEngine;
 class QQmlComponent;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT QuickUtils : public QObject
 {

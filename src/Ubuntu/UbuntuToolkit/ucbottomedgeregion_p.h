@@ -23,7 +23,7 @@
 #include <asyncloader.h>
 #include <QtCore/private/qobject_p.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCBottomEdgeRegionPrivate : public QObjectPrivate
 {

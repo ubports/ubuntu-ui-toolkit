@@ -21,7 +21,7 @@
 #include <QtCore/QObject>
 #include <ubuntutoolkitglobal.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCUnits;
 class UBUNTUTOOLKIT_EXPORT UCFontUtils : public QObject
