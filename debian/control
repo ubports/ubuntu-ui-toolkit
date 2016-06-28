@@ -94,6 +94,35 @@ Description: Qt Components for Ubuntu - Components QML plugin
  .
  This package contains the Ubuntu Components QML plugin.
 
+Package: qml-module-ubuntu-components-labs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: libqt5svg5,
+         libubuntugestures5 (= ${binary:Version}),
+         libubuntutoolkit5 (= ${binary:Version}),
+         qml-module-qtfeedback,
+         qml-module-qtgraphicaleffects,
+         qml-module-qtquick-layouts,
+         qml-module-qtquick-window2,
+         qml-module-qtquick2,
+         qml-module-ubuntu-performancemetrics,
+         qtdeclarative5-unity-action-plugin (>= 1.1.0),
+         suru-icon-theme,
+         ttf-ubuntu-font-family,
+         ubuntu-ui-toolkit-theme (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Conflicts: qt-components-ubuntu-labs,
+Replaces: qt-components-ubuntu-labs,
+Provides: qt-components-ubuntu-labs,
+Description: Qt Components Labs for Ubuntu - Components QML plugin
+ Qt Components Labs for Ubuntu offers a set of non-released and mostly
+ unstable user interface components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Components Labs QML plugin.
+
 Package: qml-module-ubuntu-layouts
 Architecture: any
 Multi-Arch: same
