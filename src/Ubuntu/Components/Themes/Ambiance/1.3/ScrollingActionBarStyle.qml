@@ -55,18 +55,6 @@ Style.ActionBarStyle {
 
     defaultNumberOfSlots: 3
 
-
-    Rectangle {
-        id: verticalDivider
-        color: "black"
-        anchors {
-            left: listViewContainer.left
-            verticalCenter: listViewContainer.verticalCenter
-        }
-        width: units.dp(1)
-        height: units.gu(2)
-        visible: actionsListView.contentWidth > actionsListView.width
-    }
     Item {
         id: listViewContainer
         anchors.fill: parent
@@ -86,11 +74,6 @@ Style.ActionBarStyle {
             return visibleActionList;
         }
 
-//        Rectangle {
-//            color: "orange"
-//            anchors.fill: actionsListView
-//        }
-
         ListView {
             id: actionsListView
             anchors {
@@ -104,6 +87,10 @@ Style.ActionBarStyle {
             //            width: Math.min(listViewContainer.width - 2*listViewContainer.listViewMargins,
             //                            contentWidth)
             width: listViewContainer.width - units.dp(1)
+
+            // FIXME TIM: No need for margins because the button is not visible when scrolled to the edge.
+//            leftMargin: units.gu(4)
+//            rightMargin: units.gu(4)
 
             clip: true
             orientation: ListView.Horizontal
@@ -121,102 +108,83 @@ Style.ActionBarStyle {
                 duration: UbuntuAnimation.FastDuration
                 velocity: units.gu(10)
             }
-        }
-    }
-    MouseArea {
-        // Detect hovering over the left and right areas to show the scrolling chevrons.
-        id: hoveringArea
-//visible: false
-//enabled: false
-        property real iconsDisabledOpacity: 0.3
 
-        anchors.fill: parent
-        hoverEnabled: true
-
-        property bool pressedLeft: false
-        property bool pressedRight: false
-        onPressed: {
-            pressedLeft = leftIcon.contains(mouse);
-            pressedRight = rightIcon.contains(mouse);
-            mouse.accepted = pressedLeft || pressedRight;
-        }
-        onClicked: {
-            // positionViewAtIndex() does not provide animation
-            var scrollDirection = 0;
-            if (pressedLeft && leftIcon.contains(mouse)) {
-                scrollDirection = -1;
-            } else if (pressedRight && rightIcon.contains(mouse)) {
-                scrollDirection = 1;
-            } else {
-                // User pressed on the left or right icon, and then released inside of the
-                // MouseArea but outside of the icon that was pressed.
-                return;
+            // direction == -1 to show more icons on the left
+            // direction == 1 to show more icons on the right
+            function scroll(direction) {
+                if (contentXAnim.running) contentXAnim.stop();
+                var newContentX = actionsListView.contentX + (actionsListView.width * direction);
+                contentXAnim.from = actionsListView.contentX;
+                // make sure we don't overshoot bounds
+                contentXAnim.to = MathUtils.clamp(
+                            newContentX,
+                            0.0, // estimation of originX is some times wrong when scrolling towards the beginning
+                            actionsListView.originX + actionsListView.contentWidth - actionsListView.width);
+                contentXAnim.start();
             }
-            if (contentXAnim.running) contentXAnim.stop();
-            var newContentX = actionsListView.contentX + (actionsListView.width * scrollDirection);
-            contentXAnim.from = actionsListView.contentX;
-            // make sure we don't overshoot bounds
-            contentXAnim.to = MathUtils.clamp(
-                        newContentX,
-                        0.0, // estimation of originX is some times wrong when scrolling towards the beginning
-                        actionsListView.originX + actionsListView.contentWidth - actionsListView.width);
-            contentXAnim.start();
         }
-
-        Icon {
-            id: leftIcon
-            objectName: "left_scroll_icon"
-            // return whether the pressed event was done inside the area of the icon
-            function contains(mouse) {
-                return (mouse.x < listViewContainer.listViewMargins &&
-                        !actionsListView.atXBeginning);
-            }
+        AbstractButton {
+            id: leftButton
             anchors {
                 left: parent.left
-                leftMargin: (listViewContainer.listViewMargins - width) / 2
-                //                    bottom: parent.bottom
-                //                    bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
-                verticalCenter: parent.verticalCenter
+                top: parent.top
+                bottom: parent.bottom
             }
-            width: units.gu(1)
-            height: units.gu(1)
-            visible: false
-            rotation: 180
-            opacity: visible
-                     ? actionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0 : 0.0
-            name: "chevron"
+            width: units.gu(4)
+            enabled: opacity === 1.0
+            onClicked: actionsListView.scroll(-1);
+            opacity: actionsListView.atXBeginning ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.FastDuration
+                    duration: 1000//UbuntuAnimation.FastDuration
                 }
+            }
+
+            Rectangle {
+                // FIXME TIM: Use the background color of the actionbar.
+                anchors.fill: parent
+//                color: "yellow"
+//                opacity: 0.5
+                color: "white"
+            }
+            Icon {
+                id: leftIcon
+                objectName: "left_scroll_icon"
+                anchors.centerIn: parent
+                width: units.gu(1)
+                height: units.gu(1)
+                rotation: 180
+                name: "chevron"
             }
         }
-
-        Icon {
-            id: rightIcon
-            objectName: "right_scroll_icon"
-            // return whether the pressed event was done inside the area of the icon
-            function contains(mouse) {
-                return (mouse.x > (hoveringArea.width - listViewContainer.listViewMargins) &&
-                        !actionsListView.atXEnd);
-            }
+        AbstractButton {
+            id: rightButton
             anchors {
                 right: parent.right
-                rightMargin: (listViewContainer.listViewMargins - width) / 2
-                //                    bottom: parent.bottom
-                //                    bottomMargin: sectionsStyle.height < units.gu(4) ? units.gu(1) : units.gu(2)
-                verticalCenter: parent.verticalCenter
+                top: parent.top
+                bottom: parent.bottom
             }
-            width: units.gu(1)
-            height: units.gu(1)
-            visible: false
-            opacity: visible
-                     ? actionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0 : 0.0
-            name: "chevron"
+            width: units.gu(4)
+            enabled: opacity === 1.0
+            onClicked: actionsListView.scroll(1);
+            opacity: actionsListView.atXEnd ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.FastDuration
+                    duration: 1000//UbuntuAnimation.FastDuration
                 }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "white"
+            }
+            Icon {
+                id: rightIcon
+                objectName: "right_scroll_icon"
+                anchors.centerIn: parent
+                width: units.gu(1)
+                height: units.gu(1)
+                name: "chevron"
             }
         }
     }
