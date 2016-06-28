@@ -1,10 +1,10 @@
-usr/include/*/qt5/UbuntuToolkit/QQuickClipboard
 usr/include/*/qt5/UbuntuToolkit/AsyncLoader
 usr/include/*/qt5/UbuntuToolkit/ColorUtils
 usr/include/*/qt5/UbuntuToolkit/MouseTouchAdaptor
 usr/include/*/qt5/UbuntuToolkit/PropertyChange
-usr/include/*/qt5/UbuntuToolkit/Tree
 usr/include/*/qt5/UbuntuToolkit/QQuickClipboard
+usr/include/*/qt5/UbuntuToolkit/QQuickClipboard
+usr/include/*/qt5/UbuntuToolkit/Tree
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkit
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitDepends
 usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitModule
