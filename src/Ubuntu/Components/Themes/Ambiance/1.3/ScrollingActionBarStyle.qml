@@ -220,47 +220,4 @@ Style.ActionBarStyle {
             }
         }
     }
-
-    LinearGradient {
-        id: gradient
-        anchors.fill: parent
-        visible: false // this will be the maskSource for the mask below.
-        start: Qt.point(0,0)
-        end: Qt.point(width,0)
-
-        property real gradientWidth: listViewContainer.listViewMargins / gradient.width
-        //the width is gradientWidth, but we want the gradient to actually start/finish at gradientSplitPosition
-        //just to leave some margin.
-        property real gradientSplitPosition: 2/3 * gradientWidth
-
-        gradient: Gradient {
-            //left gradient
-            GradientStop { position: 0.0 ; color: Qt.rgba(1,1,1,0) }
-            GradientStop { position: gradient.gradientSplitPosition ; color: Qt.rgba(1,1,1,0) }
-            GradientStop { position: gradient.gradientWidth; color: Qt.rgba(1,1,1,1) }
-            //right gradient
-            GradientStop { position: 1.0 - gradient.gradientWidth; color: Qt.rgba(1,1,1,1) }
-            GradientStop { position: 1.0 - gradient.gradientSplitPosition; color: Qt.rgba(1,1,1,0) }
-            GradientStop { position: 1.0; color: Qt.rgba(1,1,1,0) }
-        }
-    }
-
-    OpacityMask {
-        id: mask
-        anchors.fill: parent
-        visible: false
-        source: listViewContainer
-        maskSource: gradient
-    }
-
-    states: [
-        State {
-            name: "hovering"
-            when: hoveringArea.containsMouse
-            PropertyChanges { target: mask; visible: true }
-            PropertyChanges { target: listViewContainer; opacity: 0.0 }
-            PropertyChanges { target: leftIcon; visible: true }
-            PropertyChanges { target: rightIcon; visible: true }
-        }
-    ]
 }
