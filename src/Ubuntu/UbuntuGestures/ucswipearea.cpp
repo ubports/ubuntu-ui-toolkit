@@ -128,7 +128,7 @@ public:
 };
 /*!
  * \qmltype SwipeArea
- * \instantiates UCSwipeArea
+ * \instantiates UbuntuGestures::UCSwipeArea
  * \inherits Item
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3

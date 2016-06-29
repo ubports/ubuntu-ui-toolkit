@@ -208,7 +208,7 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
 
 /*!
  * \qmltype Alarm
- * \instantiates UCAlarm
+ * \instantiates UbuntuToolkit::UCAlarm
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-services
  * \brief Alarm component is a representation of an alarm event.
