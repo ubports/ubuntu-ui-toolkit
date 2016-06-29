@@ -80,13 +80,10 @@ Style.ActionBarStyle {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
-//                leftMargin: units.dp(1)
-                //                leftMargin: listViewContainer.listViewMargins
-                //                rightMargin: listViewContainer.listViewMargins
             }
             //            width: Math.min(listViewContainer.width - 2*listViewContainer.listViewMargins,
             //                            contentWidth)
-            width: listViewContainer.width - units.dp(1)
+            width: Math.min(listViewContainer.width, contentWidth)
 
             // FIXME TIM: No need for margins because the button is not visible when scrolled to the edge.
 //            leftMargin: units.gu(4)
