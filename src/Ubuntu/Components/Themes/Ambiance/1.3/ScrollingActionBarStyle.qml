@@ -53,6 +53,7 @@ Style.ActionBarStyle {
         divider.visible: false
     }
 
+    // FIXME TIM: remove this.
     defaultNumberOfSlots: 3
 
     Item {
@@ -62,10 +63,9 @@ Style.ActionBarStyle {
 
         property real listViewMargins: units.gu(2)
 
-        property var visibleActions: getReversedVisibleActions(styledItem.actions)
-        function getReversedVisibleActions(actions) {
+        property var visibleActions: getVisibleActions(styledItem.actions)
+        function getVisibleActions(actions) {
             var visibleActionList = [];
-//            for (var i = actions.length - 1; i >= 0 ; i--) {
             for (var i = 0; i < actions.length; i++) {
                 var action = actions[i];
                 if (action && action.hasOwnProperty("visible") && action.visible) {
@@ -82,15 +82,8 @@ Style.ActionBarStyle {
                 top: parent.top
                 bottom: parent.bottom
             }
-            //            width: Math.min(listViewContainer.width - 2*listViewContainer.listViewMargins,
-            //                            contentWidth)
             width: listViewContainer.width //Math.min(listViewContainer.width, contentWidth)
-//            Component.onCompleted: positionViewAtEnd()
             layoutDirection: Qt.RightToLeft
-
-            // FIXME TIM: No need for margins because the button is not visible when scrolled to the edge.
-//            leftMargin: units.gu(4)
-//            rightMargin: units.gu(4)
 
             clip: true
             orientation: ListView.Horizontal
@@ -99,7 +92,6 @@ Style.ActionBarStyle {
             model: listViewContainer.visibleActions
 
             onCurrentIndexChanged: print("current index = "+currentIndex)
-onContentXChanged: print("contentX = "+contentX+", origniX = "+originX  )
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
                 id: contentXAnim
@@ -109,19 +101,6 @@ onContentXChanged: print("contentX = "+contentX+", origniX = "+originX  )
                 velocity: units.gu(20)
                 onRunningChanged: print("running = "+running)
             }
-
-//            function scrollToIndex(index) {
-//                contentXAnim.running = false;
-//                var oldPos = actionsListView.contentX;
-//                var newPos;
-//                // FIXME: TIM probably pass the 2nd parameter too
-//                actionsListView.positionViewAtIndex(index, ListView.Beginning);
-//                newPos = actionsListView.contentX;
-//                contentXAnim.from = oldPos;
-//                contentXAnim.to = newPos;
-//                print("oldPos = "+oldPos+", newPos = "+newPos)
-//                contentXAnim.running = true;
-//            }
 
             // direction == 1 to show more icons on the left
             // direction == -1 to show more icons on the right
@@ -133,13 +112,9 @@ onContentXChanged: print("contentX = "+contentX+", origniX = "+originX  )
                 // make sure we don't overshoot bounds
                 contentXAnim.to = MathUtils.clamp(
                             newContentX,
-//                            0.0, // estimation of originX is some times wrong when scrolling towards the beginning
                             originX,
                             actionsListView.originX + actionsListView.contentWidth - actionsListView.width);
-                print("newContentX = "+newContentX+", to = "+contentXAnim.to);
                 contentXAnim.start();
-//                positionViewAtBeginning();
-//                scrollToIndex(0);
             }
         }
         AbstractButton {
@@ -158,12 +133,9 @@ onContentXChanged: print("contentX = "+contentX+", origniX = "+originX  )
                     duration: 1000//UbuntuAnimation.FastDuration
                 }
             }
-
             Rectangle {
                 // FIXME TIM: Use the background color of the actionbar.
                 anchors.fill: parent
-//                color: "yellow"
-//                opacity: 0.5
                 color: "white"
             }
             Icon {
@@ -192,7 +164,6 @@ onContentXChanged: print("contentX = "+contentX+", origniX = "+originX  )
                     duration: 1000//UbuntuAnimation.FastDuration
                 }
             }
-
             Rectangle {
                 anchors.fill: parent
                 color: "white"
