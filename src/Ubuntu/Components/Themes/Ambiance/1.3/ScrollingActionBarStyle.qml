@@ -65,7 +65,8 @@ Style.ActionBarStyle {
         property var visibleActions: getReversedVisibleActions(styledItem.actions)
         function getReversedVisibleActions(actions) {
             var visibleActionList = [];
-            for (var i = actions.length - 1; i >= 0 ; i--) {
+//            for (var i = actions.length - 1; i >= 0 ; i--) {
+            for (var i = 0; i < actions.length; i++) {
                 var action = actions[i];
                 if (action && action.hasOwnProperty("visible") && action.visible) {
                     visibleActionList.push(action);
@@ -83,7 +84,9 @@ Style.ActionBarStyle {
             }
             //            width: Math.min(listViewContainer.width - 2*listViewContainer.listViewMargins,
             //                            contentWidth)
-            width: Math.min(listViewContainer.width, contentWidth)
+            width: listViewContainer.width //Math.min(listViewContainer.width, contentWidth)
+//            Component.onCompleted: positionViewAtEnd()
+            layoutDirection: Qt.RightToLeft
 
             // FIXME TIM: No need for margins because the button is not visible when scrolled to the edge.
 //            leftMargin: units.gu(4)
@@ -96,28 +99,47 @@ Style.ActionBarStyle {
             model: listViewContainer.visibleActions
 
             onCurrentIndexChanged: print("current index = "+currentIndex)
-
+onContentXChanged: print("contentX = "+contentX+", origniX = "+originX  )
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
                 id: contentXAnim
                 target: actionsListView
                 property: "contentX"
-                duration: UbuntuAnimation.FastDuration
-                velocity: units.gu(10)
+//                duration: UbuntuAnimation.FastDuration
+                velocity: units.gu(20)
+                onRunningChanged: print("running = "+running)
             }
 
-            // direction == -1 to show more icons on the left
-            // direction == 1 to show more icons on the right
+//            function scrollToIndex(index) {
+//                contentXAnim.running = false;
+//                var oldPos = actionsListView.contentX;
+//                var newPos;
+//                // FIXME: TIM probably pass the 2nd parameter too
+//                actionsListView.positionViewAtIndex(index, ListView.Beginning);
+//                newPos = actionsListView.contentX;
+//                contentXAnim.from = oldPos;
+//                contentXAnim.to = newPos;
+//                print("oldPos = "+oldPos+", newPos = "+newPos)
+//                contentXAnim.running = true;
+//            }
+
+            // direction == 1 to show more icons on the left
+            // direction == -1 to show more icons on the right
             function scroll(direction) {
                 if (contentXAnim.running) contentXAnim.stop();
-                var newContentX = actionsListView.contentX + (actionsListView.width * direction);
+                print("direction = "+direction)
+                var newContentX = actionsListView.contentX - (actionsListView.width * direction);
                 contentXAnim.from = actionsListView.contentX;
                 // make sure we don't overshoot bounds
                 contentXAnim.to = MathUtils.clamp(
                             newContentX,
-                            0.0, // estimation of originX is some times wrong when scrolling towards the beginning
+//                            0.0, // estimation of originX is some times wrong when scrolling towards the beginning
+                            originX,
                             actionsListView.originX + actionsListView.contentWidth - actionsListView.width);
+                print("newContentX = "+newContentX+", to = "+contentXAnim.to);
                 contentXAnim.start();
+//                positionViewAtBeginning();
+//                scrollToIndex(0);
             }
         }
         AbstractButton {
@@ -129,7 +151,7 @@ Style.ActionBarStyle {
             }
             width: units.gu(4)
             enabled: opacity === 1.0
-            onClicked: actionsListView.scroll(-1);
+            onClicked: actionsListView.scroll(1);
             opacity: actionsListView.atXBeginning ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
@@ -163,7 +185,7 @@ Style.ActionBarStyle {
             }
             width: units.gu(4)
             enabled: opacity === 1.0
-            onClicked: actionsListView.scroll(1);
+            onClicked: actionsListView.scroll(-1);
             opacity: actionsListView.atXEnd ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
