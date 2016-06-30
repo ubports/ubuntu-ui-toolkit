@@ -48,7 +48,7 @@ void UCBottomEdgeRegionPrivate::init()
 
 /*!
  * \qmltype BottomEdgeRegion
- * \instantiates UCBottomEdgeRegion
+ * \instantiates UbuntuToolkit::UCBottomEdgeRegion
  * \inherits QtObject
  * \inmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3

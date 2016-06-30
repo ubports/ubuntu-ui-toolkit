@@ -23,7 +23,7 @@
 #include <QtQml/QQmlParserStatus>
 #include "ucalarm.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCAlarm;
 class UBUNTUTOOLKIT_EXPORT UCAlarmModel : public QAbstractListModel, public QQmlParserStatus

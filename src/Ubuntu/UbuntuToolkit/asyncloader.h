@@ -25,7 +25,7 @@
 class QQuickItem;
 class QQmlContext;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class AsyncLoaderPrivate;
 class UBUNTUTOOLKIT_EXPORT AsyncLoader : public QObject

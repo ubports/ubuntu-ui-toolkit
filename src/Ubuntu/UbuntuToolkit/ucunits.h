@@ -27,7 +27,7 @@
 
 class QPlatformWindow;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCUnits : public QObject
 {

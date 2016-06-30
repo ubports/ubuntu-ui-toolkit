@@ -19,7 +19,7 @@
 
 #include "ucpagetreenode.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCMainViewBasePrivate;
 class UCActionManager;

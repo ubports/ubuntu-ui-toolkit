@@ -28,7 +28,7 @@
 // logging
 #include <QtCore/QLoggingCategory>
 
-UG_NAMESPACE_BEGIN
+namespace UbuntuGestures {
 
 class TouchOwnershipEvent;
 class UnownedTouchEvent;

@@ -46,7 +46,7 @@ void UCAbstractButtonPrivate::init()
 
 /*!
     \qmltype AbstractButton
-    \instantiates UCAbstractButton
+    \instantiates UbuntuToolkit::UCAbstractButton
     \inherits ActionItem
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu

@@ -25,7 +25,7 @@
 class QQuickFlickable;
 UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class PropertyChange;
 class UCBottomEdgeHintPrivate;

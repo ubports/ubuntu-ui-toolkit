@@ -98,7 +98,7 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
 // --- QtQuick item ---
 
 /*! \qmltype UbuntuShapeOverlay
-    \instantiates UCUbuntuShapeOverlay
+    \instantiates UbuntuToolkit::UCUbuntuShapeOverlay
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Extended UbuntuShape adding a colored overlay layer.
