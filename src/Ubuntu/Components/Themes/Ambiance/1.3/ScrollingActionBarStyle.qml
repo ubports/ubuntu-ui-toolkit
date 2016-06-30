@@ -48,7 +48,6 @@ Style.ActionBarStyle {
             height: parent ? parent.height : undefined
             action: modelData
                     activeFocusOnTab: false
-            onClicked: print("whee")
         }
         divider.visible: false
     }
@@ -56,7 +55,11 @@ Style.ActionBarStyle {
     // FIXME TIM: remove this.
     defaultNumberOfSlots: 3
 
-    Item {
+    property color backgroundColor: "white"
+
+//    Item {
+    Rectangle {
+        color: actionBarStyle.backgroundColor
         id: listViewContainer
         anchors.fill: parent
 //        clip: true

@@ -165,6 +165,27 @@ Item {
             }
         }
 
+        RowLayout {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                anchors {
+                    verticalCenter: bar.verticalCenter
+                }
+                text: "" + coloredBar.numberOfSlots + " slot(s):"
+            }
+            ActionBar {
+                id: coloredBar
+                Layout.fillWidth: true
+                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+                actions: root.actionList
+                styleName: root.actionBarStyleName
+                StyleHints {
+                    backgroundColor: UbuntuColors.blue
+                }
+            }
+        }
+
         Slider {
             id: numberOfActionsSlider
             anchors {
