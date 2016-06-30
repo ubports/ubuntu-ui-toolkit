@@ -110,6 +110,9 @@ Item {
     implicitWidth: image.implicitWidth
     implicitHeight: image.implicitHeight
 
+    property bool completed: false
+    Component.onCompleted: completed = true
+
     Image {
         id: image
         objectName: "image"
@@ -121,7 +124,7 @@ Item {
             height: icon.height
         }
 
-        source: icon.name ? "image://theme/%1".arg(icon.name) : ""
+        source: icon.completed && icon.name ? "image://theme/%1".arg(icon.name) : ""
 
         cache: true
         visible: !colorizedImage.visible
