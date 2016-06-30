@@ -20,8 +20,8 @@ import Ubuntu.Components 1.3
 
 Item {
     id: root
-    width: 400
-    height: 600
+    width: units.gu(50)
+    height: units.gu(60)
 
     property list<Action> actionList:  [
         Action {
