@@ -21,7 +21,7 @@
 
 #include <QTimer>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class SharedLiveTimer : public QObject
 {

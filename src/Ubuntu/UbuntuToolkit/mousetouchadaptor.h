@@ -29,7 +29,7 @@ class QTouchDevice;
 class QQmlEngine;
 class QJSEngine;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 // Transforms QMouseEvents into single-finger QTouchEvents.
 class MouseTouchAdaptorPrivate;

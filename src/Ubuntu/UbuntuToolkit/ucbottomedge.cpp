@@ -494,7 +494,7 @@ void UCBottomEdgePrivate::setOperationStatus(OperationStatus s)
 
 /*!
  * \qmltype BottomEdge
- * \instantiates UCBottomEdge
+ * \instantiates UbuntuToolkit::UCBottomEdge
  * \inqmlmodule Ubuntu.Components
  * \inherits StyledItem
  * \ingroup ubuntu

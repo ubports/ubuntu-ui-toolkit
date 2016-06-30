@@ -25,7 +25,7 @@
 #include "sortbehavior.h"
 #include "filterbehavior.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 {
@@ -33,8 +33,13 @@ class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 
     Q_PROPERTY(QAbstractItemModel* model READ sourceModel WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
+#ifndef Q_QDOC
     Q_PROPERTY(UT_PREPEND_NAMESPACE(SortBehavior)* sort READ sortBehavior NOTIFY sortChanged)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(FilterBehavior)* filter READ filterBehavior NOTIFY filterChanged)
+#else
+    Q_PROPERTY(SortBehavior* sort READ sortBehavior NOTIFY sortChanged)
+    Q_PROPERTY(FilterBehavior* filter READ filterBehavior NOTIFY filterChanged)
+#endif
 
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);

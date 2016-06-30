@@ -21,7 +21,7 @@
 #include <QScopedPointer>
 #include "ubuntugesturesglobal.h"
 
-UG_NAMESPACE_BEGIN
+namespace UbuntuGestures {
 /*
  A touch event with touch points that do not belong the item receiving it.
 

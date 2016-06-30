@@ -23,7 +23,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype ActionManager
- * \instantiates UCActionManager
+ * \instantiates UbuntuToolkit::UCActionManager
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief ActionManager manages actions and action contexts withion an application.

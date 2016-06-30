@@ -23,7 +23,7 @@
 #include <functional>
 #include <ubuntutoolkitglobal.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCLabelPrivate;
 class UBUNTUTOOLKIT_EXPORT UCLabel : public QQuickText, public UCThemingExtension

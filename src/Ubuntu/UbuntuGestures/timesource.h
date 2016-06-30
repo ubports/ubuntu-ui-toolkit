@@ -22,7 +22,7 @@
 #include "ubuntugesturesglobal.h"
 #include <QSharedPointer>
 
-UG_NAMESPACE_BEGIN
+namespace UbuntuGestures {
 /*
     Interface for a time source.
  */
@@ -57,6 +57,6 @@ public:
     qint64 m_msecsSinceReference;
 };
 
-UG_NAMESPACE_END
+}
 
 #endif // UBUNTUGESTURES_TIMESOURCE_H

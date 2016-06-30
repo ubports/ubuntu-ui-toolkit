@@ -146,7 +146,7 @@ void UCStyleHints::propertyNotFound(const QString &styleName, const QString &pro
 
 /*!
  * \qmltype StyleHints
- * \instantiates UCStyleHints
+ * \instantiates UbuntuToolkit::UCStyleHints
  * \inmodule Ubuntu Components 1.3
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.3

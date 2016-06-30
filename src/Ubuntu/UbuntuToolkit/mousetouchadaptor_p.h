@@ -25,7 +25,7 @@
 #include <QWindow>
 #include <xcb/xcb.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class MouseTouchAdaptorPrivate : public QObjectPrivate, public QAbstractNativeEventFilter
 {

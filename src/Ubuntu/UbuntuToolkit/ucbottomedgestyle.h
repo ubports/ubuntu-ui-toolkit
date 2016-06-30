@@ -25,7 +25,7 @@
 class QQuickItem;
 class QQuickAbstractAnimation;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCBottomEdge;
 class UBUNTUTOOLKIT_EXPORT UCBottomEdgeStyle : public QQuickItem

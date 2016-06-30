@@ -37,7 +37,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
 
 /*!
  * \qmltype ListItemActions
- * \instantiates UCListItemActions
+ * \instantiates UbuntuToolkit::UCListItemActions
  * \inherits QtQObject
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.2
