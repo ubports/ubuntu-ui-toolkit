@@ -28,18 +28,37 @@ Style.ActionBarStyle {
     // Unused with the standard action icon buttons, but may be used with a custom delegate.
     overflowText: "More"
 
+    foregroundColor: theme.palette.normal.backgroundText
+    disabledForegroundColor: theme.palette.disabled.backgroundText
+    backgroundColor: theme.palette.normal.background
+    pressedBackgroundColor: theme.palette.highlighted.background
+
     /*!
       The default action delegate if the styled item does
       not provide a delegate.
      */
     defaultDelegate: AbstractButton {
-        style: IconButtonStyle { }
+        id: button
+        style: IconButtonStyle {
+            foregroundColor: button.enabled
+                             ? actionBarStyle.foregroundColor
+                             : actionBarStyle.disabledForegroundColor
+            backgroundColor: button.pressed
+                             ? actionBarStyle.pressedBackgroundColor
+                             : "transparent" // background is already colored below
+        }
         objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
         action: modelData
     }
 
     defaultNumberOfSlots: 3
+
+    Rectangle {
+        id: background
+        anchors.fill: parent
+        color: actionBarStyle.backgroundColor
+    }
 
     Component {
         id: fadeInComponent
