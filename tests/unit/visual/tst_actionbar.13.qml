@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import QtQuick.Layouts 1.2
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
@@ -27,26 +28,58 @@ Rectangle {
         Action {
             iconName: "alarm-clock"
             text: "Tick tock"
+            onTriggered: print("tock")
         },
         Action {
             iconName: "appointment"
             text: "Date"
+            onTriggered: print("date")
         },
         Action {
             iconName: "attachment"
             text: "Attach"
+            onTriggered: print("attach")
         },
         Action {
             iconName: "contact"
             text: "Contact"
+            onTriggered: print("contact")
         },
         Action {
             iconName: "like"
             text: "Like"
+            onTriggered: print("+1")
         },
         Action {
             iconName: "lock"
             text: "Lock"
+            onTriggered: print("lock")
+        },
+        Action {
+            iconName: "camcorder"
+            text: "Camera"
+            onTriggered: print("cam")
+        },
+        Action {
+            iconName: "location"
+            text: "Location"
+            onTriggered: print("loc")
+            enabled: false
+        },
+        Action {
+            iconName: "message"
+            text: "Message"
+            onTriggered: print("msg")
+        },
+        Action {
+            iconName: "livetv"
+            text: "Television"
+            onTriggered: print("tv")
+        },
+        Action {
+            iconName: "lock-broken"
+            text: "Unlock"
+            onTriggered: print("unlock")
         }
     ]
 
@@ -54,10 +87,12 @@ Rectangle {
         Action {
             iconName: "share"
             text: "Share"
+            onTriggered: print("share")
         },
         Action {
             iconName: "starred"
             text: "Favorite"
+            onTriggered: print("fav")
         }
     ]
 
@@ -65,18 +100,17 @@ Rectangle {
         anchors {
             left: parent.left
             right: parent.right
-            top: parent.top
+            top: scrollingSwitchRow.bottom
             margins: units.gu(2)
         }
         height: childrenRect.height
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: shortBar.verticalCenter
                 }
                 text: "" + shortBar.numberOfSlots + " slot(s):"
@@ -85,18 +119,17 @@ Rectangle {
             ActionBar {
                 // no numberOfSlots specified. Using default value.
                 id: shortBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.shortActionList
             }
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: bar.verticalCenter
                 }
                 text: "" + bar.numberOfSlots + " slot(s):"
@@ -104,9 +137,30 @@ Rectangle {
 
             ActionBar {
                 id: bar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
+            }
+        }
+
+        RowLayout {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                anchors {
+                    verticalCenter: bar.verticalCenter
+                }
+                text: "colored:"
+            }
+            ActionBar {
+                id: coloredBar
+                Layout.fillWidth: true
+                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+                actions: root.actionList
+                StyleHints {
+                    foregroundColor: "white"
+                    backgroundColor: UbuntuColors.blue
+                }
             }
         }
 
@@ -122,20 +176,19 @@ Rectangle {
             live: true
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: customDelegateBar.verticalCenter
                 }
                 text: "Custom delegate"
             }
             ActionBar {
                 id: customDelegateBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.shortActionList
                 delegate: Button {
                     action: modelData
@@ -146,23 +199,24 @@ Rectangle {
             }
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: greenButtonsBar.verticalCenter
                 }
                 text: "Custom delegate 2"
             }
             ActionBar {
                 id: greenButtonsBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
+//                width: units.gu(20)
                 actions: root.actionList
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
                     action: modelData
+                    height: greenButtonsBar.height
                     StyleHints {
                         foregroundColor: UbuntuColors.green
                     }
