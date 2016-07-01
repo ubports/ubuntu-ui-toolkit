@@ -25,6 +25,21 @@ import QtQuick 2.4
   */
 Item {
     /*!
+      The color of the action buttons in the action bar.
+     */
+    property color foregroundColor
+
+    /*!
+      The color of disabled action buttons in the action bar.
+     */
+    property color disabledForegroundColor
+
+    /*!
+      The color of the background of the action bar.
+     */
+    property color backgroundColor
+
+    /*!
       The default action delegate if the styled item does
       not provide a different delegate.
      */
