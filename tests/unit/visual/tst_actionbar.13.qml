@@ -100,7 +100,7 @@ Rectangle {
         anchors {
             left: parent.left
             right: parent.right
-            top: scrollingSwitchRow.bottom
+            top: parent.top
             margins: units.gu(2)
         }
         height: childrenRect.height
@@ -209,9 +209,10 @@ Rectangle {
                 text: "Custom delegate 2"
             }
             ActionBar {
+                // Note: The same result (green buttons) can be accomplished
+                //  by setting the foregroundColor in the style.
                 id: greenButtonsBar
                 Layout.fillWidth: true
-//                width: units.gu(20)
                 actions: root.actionList
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
