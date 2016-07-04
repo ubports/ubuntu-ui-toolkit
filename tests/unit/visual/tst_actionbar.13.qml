@@ -19,7 +19,7 @@ import QtQuick.Layouts 1.2
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
-Rectangle {
+Item {
     id: root
     width: units.gu(50)
     height: units.gu(60)
