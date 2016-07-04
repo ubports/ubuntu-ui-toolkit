@@ -24,6 +24,13 @@ Ubuntu.Components.Action 1.3 1.0 0.1 UbuntuToolkit::UCAction: QtObject
     property var shortcut 1.3
     property string text
     property bool visible
+Ubuntu.Components.Action.Type: Enum
+    Bool
+    Integer
+    None
+    Object
+    Real
+    String
 Ubuntu.Components.ActionBar 1.3: StyledItem
     property list<Action> actions
     property Component delegate
@@ -98,10 +105,51 @@ Ubuntu.Components.Alarm 1.0 0.1 UbuntuToolkit::UCAlarm: QtObject
     property url sound
     readonly property Status status
     property AlarmType type
+Ubuntu.Components.Alarm.AlarmType: Enum
+    OneTime
+    Repeating
+Ubuntu.Components.Alarm.DayOfWeek: Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Ubuntu.Components.Alarm.DaysOfWeek: Flag
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Ubuntu.Components.Alarm.Error: Enum
+    AdaptationError
+    EarlyDate
+    InvalidDate
+    InvalidEvent
+    NoDaysOfWeek
+    NoError
+    OneTimeOnMoreDays
+    OperationPending
+Ubuntu.Components.Alarm.Operation: Enum
+    Canceling
+    NoOperation
+    Reseting
+    Saving
+Ubuntu.Components.Alarm.Status: Enum
+    Fail
+    InProgress
+    Ready
 Ubuntu.Components.AlarmModel 1.0 0.1 UbuntuToolkit::UCAlarmModel: QAbstractListModel
     readonly property int count
     function refresh() 1.0
-    function UCAlarm* get(int index)
+    function Alarm get(int index)
 Ubuntu.Components.Argument 1.0 0.1 UbuntuToolkit::UCArgument: QtObject
     property string help
     function var at(int i)
@@ -138,8 +186,8 @@ Ubuntu.Components.BottomEdge 1.3 UbuntuToolkit::UCBottomEdge: StyledItem
     readonly property double dragProgress
     readonly property BottomEdgeHint hint
     signal dragProgressChanged(double dragProgress)
-    signal dragDirectionChanged(UCBottomEdge direction)
-    signal statusChanged(UCBottomEdge status)
+    signal dragDirectionChanged(BottomEdge.DragDirection direction)
+    signal statusChanged(BottomEdge.Status status)
     signal contentChanged(url url)
     signal contentComponentChanged(Component component)
     signal activeRegionChanged(BottomEdgeRegion activeRegion)
@@ -152,12 +200,25 @@ Ubuntu.Components.BottomEdge 1.3 UbuntuToolkit::UCBottomEdge: StyledItem
     property bool preloadContent
     property list<BottomEdgeRegion> regions
     readonly property Status status
+Ubuntu.Components.BottomEdge.DragDirection: Enum
+    Downwards
+    Undefined
+    Upwards
+Ubuntu.Components.BottomEdge.Status: Enum
+    Committed
+    Hidden
+    Revealed
 Ubuntu.Components.BottomEdgeHint 1.3 UbuntuToolkit::UCBottomEdgeHint: ActionItem
     property int deactivateTimeout
     property Flickable flickable
     signal clicked()
     property Status status
     readonly property SwipeArea swipeArea
+Ubuntu.Components.BottomEdgeHint.Status: Enum
+    Active
+    Hidden
+    Inactive
+    Locked
 Ubuntu.Components.BottomEdgeRegion 1.3 UbuntuToolkit::UCBottomEdgeRegion: QtObject
     property Component contentComponent
     property url contentUrl
@@ -211,7 +272,7 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
     readonly property MimeData data
     function push(var data)
     function clear()
-    function QQuickMimeData* newData()
+    function MimeData newData()
 Ubuntu.Components.ColorUtils 1.0 0.1: QtObject singleton
     function double luminance(color color)
 Ubuntu.Components.ComboButton 1.1: Button
@@ -493,6 +554,13 @@ Ubuntu.Components.Label 1.0 0.1: Text
 Ubuntu.Components.Label 1.3 UbuntuToolkit::UCLabel: Text
     property string fontSize
     property TextSize textSize
+Ubuntu.Components.Label.TextSize: Enum
+    Large
+    Medium
+    Small
+    XLarge
+    XSmall
+    XxSmall
 Ubuntu.Layouts.Layouts 1.0 0.1 ULLayouts: Item
     readonly property string currentLayout
     property list<ConditionalLayout> layouts
@@ -530,6 +598,10 @@ Ubuntu.Components.ListItemDrag 1.2: QtObject
     property int minimumIndex
     readonly property Status status
     readonly property int to
+Ubuntu.Components.ListItemDrag.Status: Enum
+    Dropped
+    Moving
+    Started
 Ubuntu.Components.ListItemLayout 1.3 UbuntuToolkit::UCListItemLayout: SlotsLayout
     readonly property Label subtitle
     readonly property Label summary
@@ -540,19 +612,19 @@ Ubuntu.Components.Styles.ListItemStyle 1.3 1.2 UbuntuToolkit::UCListItemStyle: I
     property PropertyAnimation dropAnimation
     readonly property Flickable flickable 1.3
     readonly property int listItemIndex 1.3
-    function swipeEvent(UCSwipeEvent event)
+    function swipeEvent(SwipeEvent event)
     function rebound()
     property Animation snapAnimation
-Ubuntu.Components.LiveTimer: Enum
+Ubuntu.Components.LiveTimer 1.3 UbuntuToolkit::LiveTimer: QtObject
+    property Frequency frequency
+    signal trigger()
+    property QDateTime relativeTime
+Ubuntu.Components.LiveTimer.Frequency: Enum
     Disabled
     Hour
     Minute
     Relative
     Second
-Ubuntu.Components.LiveTimer 1.3 UbuntuToolkit::LiveTimer: QtObject
-    property Frequency frequency
-    signal trigger()
-    property QDateTime relativeTime
 Ubuntu.Components.MainView 1.0 0.1: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
@@ -592,7 +664,7 @@ Ubuntu.Components.MimeData 1.0 0.1 UbuntuToolkit::QQuickMimeData: QtObject
     property string text
     property list<url> urls
 Ubuntu.Components.Mouse 1.0 0.1 UbuntuToolkit::UCMouse: QtObject
-    readonly property MouseButtons acceptedButtons
+    readonly property Qt.MouseButtons acceptedButtons
     property int clickAndHoldThreshold
     property bool enabled
     property list<Item> forwardTo
@@ -607,6 +679,9 @@ Ubuntu.Components.Mouse 1.0 0.1 UbuntuToolkit::UCMouse: QtObject
     signal entered(QQuickMouseEvent event, Item host)
     signal exited(QQuickMouseEvent event, Item host)
     property Priority priority
+Ubuntu.Components.Mouse.Priority: Enum
+    AfterItem
+    BeforeItem
 Ubuntu.Test.MouseTouchAdaptor 1.0: QtObject singleton
     property bool enabled
     signal enabledChanged(bool value)
@@ -960,7 +1035,7 @@ Ubuntu.Components.ProgressionSlot 1.3: Item
     property color keyColor
     property string name
     property url source
-Ubuntu.Components.ProportionalShape 1.3 UbuntuToolkit::UCProportionalShape: Shape
+Ubuntu.Components.ProportionalShape 1.3 UbuntuToolkit::UCProportionalShape: UbuntuShape
 Ubuntu.Components.PullToRefresh 1.1: StyledItem
     property Component content
     signal refresh()
@@ -984,7 +1059,7 @@ Ubuntu.PerformanceMetrics.RenderingTimes 1.0 0.1 UPMRenderingTimes: Item
     signal frameRendered(qlonglong renderTime)
     property int period
     property int samples
-    property TimerType timerType
+    property RenderTimer.TimerType timerType
 Ubuntu.Components.ScrollView 1.3: StyledItem
     default property Item contentItem
     readonly property Flickable flickableItem
@@ -1015,6 +1090,15 @@ Ubuntu.Components.ServiceProperties 1.1 UbuntuToolkit::UCServiceProperties: QtOb
     property string serviceInterface 1.1
     readonly property Status status 1.1
     property ServiceType type 1.1
+Ubuntu.Components.ServiceProperties.ServiceType: Enum
+    Session
+    System
+    Undefined
+Ubuntu.Components.ServiceProperties.Status: Enum
+    Active
+    ConnectionError
+    Inactive
+    Synchronizing
 Ubuntu.Components.Popups.SheetBase 1.0 0.1: PopupBase
     default property list<QtObject> container
     property double contentsHeight
@@ -1056,17 +1140,22 @@ Ubuntu.Components.SliderUtils 0.1 1.0
 Ubuntu.Components.SlotsAttached 1.3: QtObject
     property bool overrideVerticalPositioning
     readonly property SlotsLayoutPadding padding
-    property UCSlotsLayout position
+    property SlotsLayout.UCSlotPosition position
 Ubuntu.Components.SlotsLayout 1.3 UbuntuToolkit::UCSlotsLayout: Item
     property Item mainSlot
     readonly property SlotsLayoutPadding padding
+Ubuntu.Components.SlotsLayout.UCSlotPosition: Enum
+    First
+    Last
+    Leading
+    Trailing
 Ubuntu.Components.SlotsLayoutPadding 1.3: QtObject
     property double bottom
     property double leading
     property double top
     property double trailing
 Ubuntu.Components.SortBehavior 1.1: QtObject
-    property SortOrder order
+    property Qt.SortOrder order
     property string property
 Ubuntu.Components.SortFilterModel 1.1 UbuntuToolkit::QSortFilterProxyModelQML: QSortFilterProxyModel
     readonly property int count
@@ -1096,7 +1185,7 @@ Ubuntu.Components.StyledItem 1.3 1.3 1.1 1.0 0.1 UbuntuToolkit::UCStyledItemBase
     property bool activeFocusOnPress 1.3
     readonly property bool keyNavigationFocus 1.3
     signal activeFocusOnTabChanged2() 1.3
-    function bool requestFocus(FocusReason reason) 1.3
+    function bool requestFocus(Qt.FocusReason reason) 1.3
     function bool requestFocus() 1.3
     property Component style
     property string styleName 1.3
@@ -1120,11 +1209,22 @@ Ubuntu.Components.SwipeArea 1.3 UbuntuGestures::UCSwipeArea: Item
     signal grabGestureChanged(bool grabGesture)
     readonly property bool pressed
     readonly property QPointF touchPosition
+Ubuntu.Components.SwipeArea.Direction: Enum
+    Downwards
+    Horizontal
+    Leftwards
+    Rightwards
+    Upwards
+    Vertical
 Ubuntu.Components.SwipeEvent 1.2: QtObject
     property QPointF content
     readonly property QPointF from
     readonly property Status status
     readonly property QPointF to
+Ubuntu.Components.SwipeEvent.Status: Enum
+    Finished
+    Started
+    Updated
 Ubuntu.Components.Switch 1.0 0.1: AbstractButton
     property bool checked
 Ubuntu.Components.Switch 1.3: AbstractButton
@@ -1182,10 +1282,10 @@ Ubuntu.Test.TestExtras 1.0: QtObject singleton
     function touchMove(int touchId, Item item, Qt.point point)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta, int steps)
     function touchDrag(int touchId, Item item, Qt.point from, Qt.point delta)
-    function mouseDrag(Item item, Qt.point from, Qt.point delta, MouseButton button, KeyboardModifiers stateKey, int steps, int delay)
-    function mouseDrag(Item item, Qt.point from, Qt.point delta, MouseButton button, KeyboardModifiers stateKey, int steps)
-    function mouseDrag(Item item, Qt.point from, Qt.point delta, MouseButton button, KeyboardModifiers stateKey)
-    function mouseDrag(Item item, Qt.point from, Qt.point delta, MouseButton button)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps, int delay)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey, int steps)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button, Qt.KeyboardModifiers stateKey)
+    function mouseDrag(Item item, Qt.point from, Qt.point delta, Qt.MouseButton button)
     function removeTimeConstraintsFromSwipeArea(Item item)
     readonly property bool touchPresent
 Ubuntu.Components.TextArea 1.0 0.1: StyledItem
@@ -1472,85 +1572,13 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property Item pageStack
 Ubuntu.Components.Styles.ToolbarStyle 1.3: Item
     property Component defaultDelegate
-Ubuntu.Components.UCAction: Enum
-    Bool
-    Integer
-    None
-    Object
-    Real
-    String
 UCActionContextAttached: QtObject
-Ubuntu.Components.UCAlarm: Enum
-    Fail
-    InProgress
-    Ready
-Ubuntu.Components.UCAlarm: Enum
-    Canceling
-    NoOperation
-    Reseting
-    Saving
-Ubuntu.Components.UCAlarm: Enum
-    AdaptationError
-    EarlyDate
-    InvalidDate
-    InvalidEvent
-    NoDaysOfWeek
-    NoError
-    OneTimeOnMoreDays
-    OperationPending
-Ubuntu.Components.UCAlarm: Flag
-    AutoDetect
-    Daily
-    Friday
-    Monday
-    Saturday
-    Sunday
-    Thursday
-    Tuesday
-    Wednesday
-Ubuntu.Components.UCAlarm: Enum
-    AutoDetect
-    Daily
-    Friday
-    Monday
-    Saturday
-    Sunday
-    Thursday
-    Tuesday
-    Wednesday
-Ubuntu.Components.UCAlarm: Enum
-    OneTime
-    Repeating
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
     property QtObject inputMethod
-Ubuntu.Components.UCBottomEdge: Enum
-    Committed
-    Hidden
-    Revealed
-Ubuntu.Components.UCBottomEdge: Enum
-    Downwards
-    Undefined
-    Upwards
-Ubuntu.Components.UCBottomEdgeHint: Enum
-    Active
-    Hidden
-    Inactive
-    Locked
-Ubuntu.Components.UCDragEvent: Enum
-    Dropped
-    Moving
-    Started
 Ubuntu.Components.UCFontUtils 1.0 0.1: QtObject
     function double sizeToPixels(string size)
     function double modularScale(string size)
-Ubuntu.Components.UCLabel: Enum
-    Large
-    Medium
-    Small
-    XLarge
-    XSmall
-    XxSmall
 UCListItemDivider: Item
     property color colorFrom
     property color colorTo
@@ -1563,71 +1591,13 @@ UCMargins: QtObject
     property double left
     property double right
     property double top
-Ubuntu.Components.UCMouse: Enum
-    AfterItem
-    BeforeItem
-Ubuntu.Components.UCNamespace: Enum
-    SummaryCaptionStyle
-    TitleCaptionStyle
-Ubuntu.Components.UCServiceProperties: Enum
-    Active
-    ConnectionError
-    Inactive
-    Synchronizing
-Ubuntu.Components.UCServiceProperties: Enum
-    Session
-    System
-    Undefined
-Ubuntu.Components.UCSlotsLayout: Enum
-    First
-    Last
-    Leading
-    Trailing
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties
-Ubuntu.Components.UCSwipeArea: Enum
-    Downwards
-    Horizontal
-    Leftwards
-    Rightwards
-    Upwards
-    Vertical
-Ubuntu.Components.UCSwipeEvent: Enum
-    Finished
-    Started
-    Updated
-Ubuntu.Components.UCUbuntuShape: Enum
-    Repeat
-    Transparent
-Ubuntu.Components.UCUbuntuShape: Enum
-    AlignBottom
-    AlignTop
-    AlignVCenter
-Ubuntu.Components.UCUbuntuShape: Enum
-    AlignHCenter
-    AlignLeft
-    AlignRight
-Ubuntu.Components.UCUbuntuShape: Enum
-    Pad
-    PreserveAspectCrop
-    PreserveAspectFit
-    Stretch
-Ubuntu.Components.UCUbuntuShape: Enum
-    SolidColor
-    VerticalGradient
-Ubuntu.Components.UCUbuntuShape: Enum
-    DropShadow
-    Flat
-    Inset
 Ubuntu.Components.UCUnits 1.0 0.1: QtObject
     property float gridUnit
     function float dp(float value)
     function float gu(float value)
-Ubuntu.Components.UCViewItemsAttached: Enum
-    CollapseOnOutsidePress
-    Exclusive
-    UnlockExpanded
 ULLayoutsAttached: QtObject
     property string item
 UPMGraphModel: QtObject
@@ -1641,6 +1611,9 @@ Ubuntu.Components.Ubuntu 1.3: Ubuntu singleton
     readonly property ushort toolkitVersion
     readonly property ushort toolkitVersionMajor
     readonly property ushort toolkitVersionMinor
+Ubuntu.Components.Ubuntu.CaptionsStyle: Enum
+    SummaryCaptionStyle
+    TitleCaptionStyle
 Ubuntu.Components.UbuntuAnimation 1.0 0.1: QtObject singleton
     readonly property int BriskDuration
     readonly property int FastDuration
@@ -1727,7 +1700,30 @@ Ubuntu.Components.UbuntuShape 1.3 1.2 1.0 0.1 Shape 1.0 0.1 UbuntuToolkit::UCUbu
     property WrapMode sourceVerticalWrapMode 1.3
     property bool stretched
     property VAlignment verticalAlignment
-Ubuntu.Components.UbuntuShapeOverlay 1.2 UbuntuToolkit::UCUbuntuShapeOverlay: Shape
+Ubuntu.Components.UbuntuShape.Aspect: Enum
+    DropShadow
+    Flat
+    Inset
+Ubuntu.Components.UbuntuShape.BackgroundMode: Enum
+    SolidColor
+    VerticalGradient
+Ubuntu.Components.UbuntuShape.FillMode: Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
+Ubuntu.Components.UbuntuShape.HAlignment: Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
+Ubuntu.Components.UbuntuShape.VAlignment: Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
+Ubuntu.Components.UbuntuShape.WrapMode: Enum
+    Repeat
+    Transparent
+Ubuntu.Components.UbuntuShapeOverlay 1.2 UbuntuToolkit::UCUbuntuShapeOverlay: UbuntuShape
     property color overlayColor
     property QRectF overlayRect
 Ubuntu.Test.UbuntuTestCase 1.0 0.1: TestCase
@@ -1779,10 +1775,14 @@ Ubuntu.Components.ViewItems 1.2: QtObject
     property list<int> expandedIndices
     property int expansionFlags
     signal selectedIndicesChanged(list<int> indices)
-    signal dragUpdated(UCDragEvent event)
+    signal dragUpdated(ListItemDrag event)
     signal expandedIndicesChanged(list<int> indices)
     property bool selectMode
     property list<int> selectedIndices
+Ubuntu.Components.ViewItems.ExpansionFlag: Enum
+    CollapseOnOutsidePress
+    Exclusive
+    UnlockExpanded
 Ubuntu.Components.i18n 1.0 0.1: QtObject
     property string domain
     property string language
