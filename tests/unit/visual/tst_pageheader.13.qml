@@ -139,6 +139,27 @@ Rectangle {
             navigationActions: leadingActionsSwitch.checked ?
                                           root.actionList : []
             extension: extensionSwitch.checked ? appendix : null
+
+            StyleHints {
+                foregroundColor: customColorsSwitch.checked
+                                 ? "white"
+                                 : theme.palette.normal.backgroundText
+                disabledForegroundColor: customColorsSwitch.checked
+                                         ? "black"
+                                         : theme.palette.disabled.backgroundText
+                subtitleColor: customColorsSwitch.checked
+                               ? UbuntuColors.red
+                               : theme.palette.normal.backgroundTertiaryText
+                backgroundColor: customColorsSwitch.checked
+                                 ? UbuntuColors.blue
+                                 : theme.palette.normal.background
+                pressedBackgroundColor: customColorsSwitch.checked
+                                        ? UbuntuColors.green
+                                        : theme.palette.highlighted.background
+                dividerColor: customColorsSwitch.checked
+                              ? UbuntuColors.red
+                              : theme.palette.normal.base
+            }
         }
 
         Flickable {
@@ -243,6 +264,14 @@ Rectangle {
                 }
                 Label {
                     text: "subtitle"
+                }
+
+                Switch {
+                    id: customColorsSwitch
+                    checked: false
+                }
+                Label {
+                    text: "custom colors"
                 }
             }
 

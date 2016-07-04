@@ -227,6 +227,12 @@ Header {
         numberOfSlots: MathUtils.clamp(0.3*header.width/units.gu(4), 3, 6)
         delegate: header.__styleInstance.defaultActionDelegate
         visible: trailing.width > 0 // at least 1 visible action
+        StyleHints {
+            foregroundColor: header.__styleInstance.foregroundColor
+            disabledForegroundColor: header.__styleInstance.disabledForegroundColor
+            backgroundColor: header.__styleInstance.backgroundColor
+            pressedBackgroundColor: header.__styleInstance.pressedBackgroundColor
+        }
     }
 
     /*!
