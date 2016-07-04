@@ -22,7 +22,7 @@
 #include <QtQml/QQmlParserStatus>
 #include "ubuntutoolkitglobal.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCAction;
 class UCActionContext;

@@ -21,7 +21,7 @@
 
 #include "ucubuntushape.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCProportionalShape : public UCUbuntuShape
 {

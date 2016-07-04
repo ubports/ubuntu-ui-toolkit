@@ -23,7 +23,7 @@
 #include "ucthemingextension.h"
 #include "ubuntutoolkitglobal.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCStyledItemBasePrivate;
 class UCTheme;

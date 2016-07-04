@@ -518,7 +518,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
 
 /*!
  * \qmltype ListItem
- * \instantiates UCListItem
+ * \instantiates UbuntuToolkit::UCListItem
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2

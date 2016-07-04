@@ -92,7 +92,7 @@ UG_FORWARD_DECLARE_CLASS(AbstractTimerFactory)
   [1] - http://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt (see multitouch-ownership)
  */
 
-UG_NAMESPACE_BEGIN
+namespace UbuntuGestures {
 
 class UBUNTUGESTURES_EXPORT TouchRegistry : public QObject
 {

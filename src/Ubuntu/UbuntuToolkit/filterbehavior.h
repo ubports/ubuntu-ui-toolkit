@@ -23,7 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <ubuntutoolkitglobal.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT FilterBehavior : public QObject {
     Q_OBJECT

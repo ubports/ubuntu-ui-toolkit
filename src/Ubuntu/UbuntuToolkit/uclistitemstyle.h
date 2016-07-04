@@ -25,7 +25,7 @@ class QQuickPropertyAnimation;
 class QQuickBehavior;
 class QQuickFlickable;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCSwipeEvent : public QObject
 {

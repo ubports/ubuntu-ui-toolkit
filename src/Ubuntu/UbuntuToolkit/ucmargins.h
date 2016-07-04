@@ -21,7 +21,7 @@
 #include <QtQuick/QQuickItem>
 #include <ubuntutoolkitglobal.h>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCMargins : public QObject
 {

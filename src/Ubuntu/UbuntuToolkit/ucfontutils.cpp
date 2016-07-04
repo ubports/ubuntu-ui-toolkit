@@ -24,7 +24,7 @@ UCFontUtils *UCFontUtils::m_instance = nullptr;
 
 /*!
  * \qmltype FontUtils
- * \instantiates UCFontUtils
+ * \instantiates UbuntuToolkit::UCFontUtils
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief FontUtils is a \l {http://qt-project.org/doc/qt-5.0/qtqml/qqmlcontext.html#details} {context property},

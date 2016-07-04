@@ -21,7 +21,7 @@
 #include "QtCore/private/qobject_p.h"
 #include <QtQml/QQmlListProperty>
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCListItem;
 class UCListItemActionsPrivate : public QObjectPrivate {
