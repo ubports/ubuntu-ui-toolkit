@@ -31,7 +31,7 @@ Style.ActionBarStyle {
     foregroundColor: theme.palette.normal.backgroundText
     disabledForegroundColor: theme.palette.disabled.backgroundText
     backgroundColor: theme.palette.normal.background
-    pressedBackgroundColor: theme.palette.highlighted.background
+    pressedButtonBackgroundColor: theme.palette.highlighted.background
 
     /*!
       The default action delegate if the styled item does
@@ -44,7 +44,7 @@ Style.ActionBarStyle {
                              ? actionBarStyle.foregroundColor
                              : actionBarStyle.disabledForegroundColor
             backgroundColor: button.pressed
-                             ? actionBarStyle.pressedBackgroundColor
+                             ? actionBarStyle.pressedButtonBackgroundColor
                              : "transparent" // background is already colored below
         }
         objectName: action.objectName + "_button"

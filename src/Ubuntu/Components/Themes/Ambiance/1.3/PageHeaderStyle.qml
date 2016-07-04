@@ -25,7 +25,7 @@ Style.PageHeaderStyle {
     disabledForegroundColor: theme.palette.disabled.backgroundText
     subtitleColor: theme.palette.normal.backgroundTertiaryText
     backgroundColor: theme.palette.normal.background
-    pressedBackgroundColor: theme.palette.highlighted.background
+    pressedButtonBackgroundColor: theme.palette.highlighted.background
     dividerColor: theme.palette.normal.base
 
     // Font weight for the title and subtitle
@@ -95,7 +95,7 @@ Style.PageHeaderStyle {
                              ? pageHeaderStyle.foregroundColor
                              : pageHeaderStyle.disabledForegroundColor
             backgroundColor: button.pressed
-                             ? pageHeaderStyle.pressedBackgroundColor
+                             ? pageHeaderStyle.pressedButtonBackgroundColor
                              : "transparent" // background is already colored
 
         }

@@ -47,7 +47,7 @@ Item {
     /*!
       The color of the background of a pressed button header.
      */
-    property color pressedBackgroundColor
+    property color pressedButtonBackgroundColor
 
     /*!
       The color of the divider at the bottom of the header.

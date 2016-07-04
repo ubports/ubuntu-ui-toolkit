@@ -42,7 +42,7 @@ Item {
     /*!
       The color of the background of a pressed button in the action bar.
      */
-    property color pressedBackgroundColor
+    property color pressedButtonBackgroundColor
 
     /*!
       The default action delegate if the styled item does

@@ -153,9 +153,9 @@ Rectangle {
                 backgroundColor: customColorsSwitch.checked
                                  ? UbuntuColors.blue
                                  : theme.palette.normal.background
-                pressedBackgroundColor: customColorsSwitch.checked
-                                        ? UbuntuColors.green
-                                        : theme.palette.highlighted.background
+                pressedButtonBackgroundColor: customColorsSwitch.checked
+                                              ? UbuntuColors.green
+                                              : theme.palette.highlighted.background
                 dividerColor: customColorsSwitch.checked
                               ? UbuntuColors.red
                               : theme.palette.normal.base
