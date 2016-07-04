@@ -29,11 +29,15 @@ Ubuntu.Components.ActionBar 1.3: UbuntuToolkit.UCStyledItemBase
     property Component delegate
     property int numberOfSlots
 Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
+    property color backgroundColor
     property Component defaultDelegate
     property int defaultNumberOfSlots
+    property color disabledForegroundColor
+    property color foregroundColor
     property string overflowIconName
     property url overflowIconSource
     property string overflowText
+    property color pressedBackgroundColor
 Ubuntu.Components.ActionContext 1.0 0.1 UbuntuToolkit::UCActionContext: QtObject
     default property list<UbuntuToolki>.UCAction> actions
     property bool active
