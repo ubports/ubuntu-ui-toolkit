@@ -25,9 +25,9 @@
 #include <private/qquickwindow_p.h>
 
 // local
-#include <UbuntuGestures/TouchOwnershipEvent>
-#include <UbuntuGestures/TouchRegistry>
-#include <unownedtouchevent.h>
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+#include <UbuntuGestures/private/touchregistry_p.h>
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
 
 UG_NAMESPACE_BEGIN
 

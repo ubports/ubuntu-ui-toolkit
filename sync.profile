@@ -8,10 +8,6 @@
 %classnames = (
  #add classnames that are not automatically detected
  #e.g. "someheader.h" => "SomeType"
- "timer.h" => "Timer",
- "timesource.h" => "TimeSource",
- "touchregistry.h" => "TouchRegistry",
- "touchownershipevent.h" => "TouchOwnershipEvent",
  "ubuntugesturesmodule.h" => "UbuntuGesturesModule",
  "ubuntutoolkitmodule.h" => "UbuntuToolkitModule"
 );

@@ -27,7 +27,7 @@
 #include "private/ucswipearea_p_p.h"
 #define protected public
 #define private public
-#include <UbuntuGestures/TouchRegistry>
+#include <UbuntuGestures/private/touchregistry_p.h>
 #undef protected
 #undef private
 
