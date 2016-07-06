@@ -23,7 +23,7 @@
 #include "ucstyleditembase_p.h"
 #include "ucaction.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdgeStyle;
 class UBUNTUTOOLKIT_EXPORT UCBottomEdgePrivate : public UCStyledItemBasePrivate, protected QQuickItemChangeListener

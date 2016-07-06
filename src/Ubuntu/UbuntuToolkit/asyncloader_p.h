@@ -24,7 +24,7 @@
 #include <ubuntutoolkitglobal.h>
 #include <asyncloader.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class AsyncLoaderPrivate : public QObjectPrivate, public QQmlIncubator
 {

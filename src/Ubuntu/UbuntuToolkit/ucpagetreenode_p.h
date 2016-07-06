@@ -18,7 +18,7 @@
 
 #include "ucstyleditembase_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCPageTreeNode;
 class UCPageTreeNodePrivate : public UCStyledItemBasePrivate

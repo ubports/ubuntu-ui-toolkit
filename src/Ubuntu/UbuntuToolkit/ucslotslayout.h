@@ -22,7 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCSlotsAttached;
 class UCSlotsLayoutPadding;
@@ -82,7 +82,7 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCSlotsLayout), QML_HAS_ATTACHED_PROPERTIES)
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCSlotsAttachedPrivate;
 class UBUNTUTOOLKIT_EXPORT UCSlotsAttached : public QObject

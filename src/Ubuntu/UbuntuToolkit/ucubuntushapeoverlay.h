@@ -23,7 +23,7 @@
 
 // --- Scene graph shader ---
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class ShapeOverlayShader : public ShapeShader
 {

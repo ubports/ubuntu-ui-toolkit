@@ -22,7 +22,7 @@
 
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT InverseMouseAreaType : public QQuickMouseArea
 {

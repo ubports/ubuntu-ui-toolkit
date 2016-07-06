@@ -41,7 +41,7 @@ MouseTouchAdaptorPrivate::~MouseTouchAdaptorPrivate()
 
 /*!
  * \qmltype MouseTouchAdaptor
- * \instantiates UbuntuToolkit::MouseTouchAdaptor
+ * \instantiates MouseTouchAdaptor
  * \inqmlmodule Ubuntu.Test 1.0
  * \ingroup ubuntu-test
  * \brief Singleton type turning mouse events into single finger touch events.

@@ -28,7 +28,7 @@
 
 class QQmlComponent;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdge;
 class PropertyChange;

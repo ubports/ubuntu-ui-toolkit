@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QTimer>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 /* Check the system locale setting to see if the format is 24-hour
   time or 12-hour time */

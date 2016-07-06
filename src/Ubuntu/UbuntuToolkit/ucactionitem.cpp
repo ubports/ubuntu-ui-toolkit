@@ -39,7 +39,7 @@ void UCActionItemPrivate::init()
 
 /*!
  * \qmltype ActionItem
- * \instantiates UbuntuToolkit::UCActionItem
+ * \instantiates UCActionItem
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief A visual representation of an Action. The API of ActionItem is a

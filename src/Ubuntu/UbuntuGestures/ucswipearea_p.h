@@ -22,13 +22,13 @@
 #include "ubuntugesturesglobal.h"
 
 // lib UbuntuGestures
-#include <UbuntuGestures/Pool>
+#include <pool.h>
 #include <UbuntuGestures/Timer>
 
 // logging
 #include <QtCore/QLoggingCategory>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 class TouchOwnershipEvent;
 class UnownedTouchEvent;

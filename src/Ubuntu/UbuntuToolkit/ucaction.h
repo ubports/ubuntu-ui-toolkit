@@ -29,7 +29,7 @@
 class QQmlComponent;
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 // the function detects whether QML has an overridden trigger() slot available
 // and invokes the one with the appropriate signature

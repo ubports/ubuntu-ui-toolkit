@@ -69,7 +69,7 @@ void UCLabelPrivate::updateRenderType()
 /*!
  * \qmltype Label
  * \qmlabstract
- * \instantiates UbuntuToolkit::UCLabel
+ * \instantiates UCLabel
  * \inherits Text
  * \inqmlmodule Ubuntu.Components 1.3
  * \ingroup ubuntu

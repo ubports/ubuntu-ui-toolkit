@@ -81,7 +81,7 @@ void printLocked(UCServiceProperties *owner)
 
 /*!
  * \qmltype ServiceProperties
- * \instantiates UbuntuToolkit::UCServiceProperties
+ * \instantiates UCServiceProperties
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.1
  * \ingroup ubuntu-services

@@ -25,7 +25,7 @@
 
 #include "ucalarm.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class AlarmUtils {
 public:

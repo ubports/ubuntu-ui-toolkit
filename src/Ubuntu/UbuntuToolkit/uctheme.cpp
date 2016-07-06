@@ -50,7 +50,7 @@ const char *CONTEXT_THEME = "theme";
 quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
- * \instantiates UbuntuToolkit::UCTheme
+ * \instantiates UCTheme
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \ingroup theming

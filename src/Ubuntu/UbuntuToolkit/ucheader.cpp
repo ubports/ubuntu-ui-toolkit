@@ -26,7 +26,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype Header
-    \instantiates UbuntuToolkit::UCHeader
+    \instantiates UCHeader
     \inherits StyledItem
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu

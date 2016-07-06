@@ -24,7 +24,7 @@ HEADERS += candidateinactivitytimer.h \
            ucswipearea_p.h \
            ucswipearea_p_p.h \
            damper_p.h \
-    ubuntugesturesmodule.h
+           ubuntugesturesmodule.h
 
 
 SOURCES += candidateinactivitytimer.cpp \
@@ -36,5 +36,5 @@ SOURCES += candidateinactivitytimer.cpp \
            unownedtouchevent.cpp \
            ucswipearea.cpp \
            damper.cpp \
-    ubuntugesturesmodule.cpp
+           ubuntugesturesmodule.cpp
 

@@ -24,7 +24,7 @@
 
 class QSocketNotifier;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UnixSignalHandler : public QObject
 {

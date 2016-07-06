@@ -28,7 +28,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype AlarmModel
- * \instantiates UbuntuToolkit::UCAlarmModel
+ * \instantiates UCAlarmModel
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-services
  * \brief AlarmModel holds the list of alarms defined.

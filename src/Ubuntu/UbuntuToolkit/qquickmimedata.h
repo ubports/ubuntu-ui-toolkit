@@ -25,7 +25,7 @@
 #include <QtCore/QUrl>
 #include "qquickclipboard.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT QQuickMimeData : public QObject
 {

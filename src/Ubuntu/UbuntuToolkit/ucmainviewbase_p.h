@@ -20,7 +20,7 @@
 #include "ucpagetreenode_p.h"
 #include <QQmlProperty>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCMainViewBase;
 class UCActionManager;

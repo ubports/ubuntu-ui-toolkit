@@ -28,7 +28,7 @@
 
 class QQmlAbstractBinding;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT PropertyChange
 {

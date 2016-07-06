@@ -23,7 +23,7 @@
 class QQuickFlickable;
 class QQuickNumberAnimation;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCUbuntuAnimation;
 class UBUNTUTOOLKIT_EXPORT UCHeader : public UCStyledItemBase

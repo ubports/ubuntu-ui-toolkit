@@ -22,7 +22,7 @@
 #include <QtQml>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCInverseMouse : public UCMouse {
     Q_OBJECT

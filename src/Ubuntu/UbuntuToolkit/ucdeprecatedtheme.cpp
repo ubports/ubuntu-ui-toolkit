@@ -29,7 +29,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype Theme
-    \instantiates UbuntuToolkit::UCTheme
+    \instantiates UCTheme
     \inqmlmodule Ubuntu.Components
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.

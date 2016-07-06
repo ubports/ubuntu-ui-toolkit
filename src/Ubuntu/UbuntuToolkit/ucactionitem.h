@@ -18,7 +18,7 @@
 
 #include "ucstyleditembase.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAction;
 class UCActionItemPrivate;

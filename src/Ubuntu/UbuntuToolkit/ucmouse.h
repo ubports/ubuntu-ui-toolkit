@@ -25,7 +25,7 @@
 #include <QtCore/qbasictimer.h>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT ForwardedEvent : public QEvent {
 public:

@@ -24,7 +24,7 @@
 #include <QtCore/QVariant>
 #include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCArgument : public QObject
 {

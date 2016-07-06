@@ -28,7 +28,7 @@
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCArguments : public QObject, public QQmlParserStatus
 {

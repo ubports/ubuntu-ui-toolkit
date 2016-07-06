@@ -21,7 +21,7 @@
 #include <QtCore/QObject>
 #include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCUriHandler;
 

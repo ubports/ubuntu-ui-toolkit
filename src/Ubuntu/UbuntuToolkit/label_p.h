@@ -19,7 +19,7 @@
 
 #include "uclabel.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCLabelPrivate
 {

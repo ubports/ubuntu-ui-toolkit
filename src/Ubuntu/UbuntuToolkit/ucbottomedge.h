@@ -26,7 +26,7 @@
 
 class QQuickAbstractAnimation;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCBottomEdgeHint;
 class UCBottomEdgeRegion;

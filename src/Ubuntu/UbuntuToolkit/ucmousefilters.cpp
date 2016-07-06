@@ -56,7 +56,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 
 /*!
    \qmltype Mouse
-   \instantiates UbuntuToolkit::UCMouse
+   \instantiates UCMouse
    \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached property filtering mouse events occured inside the owner.

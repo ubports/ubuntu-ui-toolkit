@@ -26,7 +26,7 @@
 
 class QQuickMouseArea;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStyledItemBase;
 class UBUNTUTOOLKIT_EXPORT UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker

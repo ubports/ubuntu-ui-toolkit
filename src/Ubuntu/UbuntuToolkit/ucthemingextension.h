@@ -29,7 +29,7 @@
 
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCTheme;
 class UBUNTUTOOLKIT_EXPORT UCThemingExtension

@@ -598,7 +598,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
 /*!
     \qmltype SlotsLayout
-    \instantiates UbuntuToolkit::UCSlotsLayout
+    \instantiates UCSlotsLayout
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu-slotslayout
     \inherits Item

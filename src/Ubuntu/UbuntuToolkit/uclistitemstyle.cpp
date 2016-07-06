@@ -27,7 +27,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype ListItemStyle
- * \instantiates UbuntuToolkit::UCListItemStyle
+ * \instantiates UCListItemStyle
  * \inqmlmodule Ubuntu.Components.Styles 1.2
  * \ingroup style-api
  * \since Ubuntu.Components.Styles 1.2

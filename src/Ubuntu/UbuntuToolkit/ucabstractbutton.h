@@ -24,7 +24,7 @@
 class QQuickMouseArea;
 class QQuickMouseEvent;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAbstractButtonPrivate;
 class UBUNTUTOOLKIT_EXPORT UCAbstractButton : public UCActionItem

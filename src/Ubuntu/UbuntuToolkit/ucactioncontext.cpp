@@ -34,7 +34,7 @@ UCActionContextAttached::UCActionContextAttached(QObject *owner)
 
 /*!
  * \qmltype ActionContext
- * \instantiates UbuntuToolkit::UCActionContext
+ * \instantiates UCActionContext
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief ActionContext groups actions together and by providing multiple contexts
@@ -257,7 +257,7 @@ void UCActionContext::removeAction(UCAction *action)
 
 /*!
  * \qmltype PopupContext
- * \instantiates UbuntuToolkit::UCPopupContext
+ * \instantiates UCPopupContext
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \inherits ActionContext

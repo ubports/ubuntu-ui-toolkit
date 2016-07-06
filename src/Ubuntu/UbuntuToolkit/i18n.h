@@ -25,7 +25,7 @@
 class QQmlContext;
 class QQmlEngine;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UbuntuI18n : public QObject
 {

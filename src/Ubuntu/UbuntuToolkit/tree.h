@@ -21,7 +21,7 @@
 #include <QVariant>
 #include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class TreePrivate;
 class UBUNTUTOOLKIT_EXPORT Tree : public QObject

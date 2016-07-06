@@ -27,7 +27,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype ListItemLayout
-    \instantiates UbuntuToolkit::UCListItemLayout
+    \instantiates UCListItemLayout
     \inqmlmodule Ubuntu.Components
     \since Ubuntu.Components 1.3
     \inherits SlotsLayout

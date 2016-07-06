@@ -25,7 +25,7 @@
 #include <QtCore/QPointer>
 #include <QtQml/QQmlListProperty>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCAlarmPrivate
 {

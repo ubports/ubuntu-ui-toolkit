@@ -22,7 +22,7 @@
 #include "ucactionitem.h"
 #include "ucstyleditembase_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCActionItemPrivate : public UCStyledItemBasePrivate
 {

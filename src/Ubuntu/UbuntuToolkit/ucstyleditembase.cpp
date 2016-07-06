@@ -130,7 +130,7 @@ bool UCStyledItemBasePrivate::isParentFocusable()
 
 /*!
  * \qmltype StyledItem
- * \instantiates UbuntuToolkit::UCStyledItemBase
+ * \instantiates UCStyledItemBase
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.1

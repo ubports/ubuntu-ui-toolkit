@@ -36,7 +36,7 @@
 class QQmlAbstractBinding;
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStyledItemBase;
 class UBUNTUTOOLKIT_EXPORT UCTheme : public QObject, public QQmlParserStatus

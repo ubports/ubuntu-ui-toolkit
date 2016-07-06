@@ -20,7 +20,7 @@
 #include "ucabstractbutton.h"
 #include "ucactionitem_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCAbstractButtonPrivate : public UCActionItemPrivate
 {

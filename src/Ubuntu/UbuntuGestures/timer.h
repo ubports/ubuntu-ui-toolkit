@@ -24,7 +24,7 @@
 #include <QPointer>
 #include <QTimer>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 /* Defines an interface for a Timer. */
 class UBUNTUGESTURES_EXPORT AbstractTimer : public QObject

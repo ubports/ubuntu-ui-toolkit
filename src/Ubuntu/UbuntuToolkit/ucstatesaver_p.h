@@ -23,7 +23,7 @@
 
 #include <QStringList>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStateSaverAttachedPrivate
 {

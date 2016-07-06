@@ -20,7 +20,7 @@
 #include "ucserviceproperties.h"
 #include <QtCore/QStringList>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCServicePropertiesPrivate
 {

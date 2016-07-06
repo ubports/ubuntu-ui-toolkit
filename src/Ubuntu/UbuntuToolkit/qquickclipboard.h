@@ -27,7 +27,7 @@
 class QQmlEngine;
 class QJSEngine;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class QQuickMimeData;
 class QQuickClipboardPrivate;

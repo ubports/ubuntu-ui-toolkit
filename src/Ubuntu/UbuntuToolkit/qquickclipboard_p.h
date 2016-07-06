@@ -22,7 +22,7 @@
 #include "qquickclipboard.h"
 #include <QtGui/QClipboard>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class QQuickMimeData;
 class QQuickClipboardPrivate {

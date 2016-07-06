@@ -30,7 +30,7 @@
 
 class QQuickItem;
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCStyleHintsParser;
 class UCStyledItemBase;

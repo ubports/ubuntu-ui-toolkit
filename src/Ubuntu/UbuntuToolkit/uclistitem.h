@@ -20,7 +20,7 @@
 #include <QtQuick/QQuickItem>
 #include "ucstyleditembase.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCListItemContent;
 class UCListItemDivider;
@@ -241,7 +241,7 @@ UT_NAMESPACE_END
 Q_DECLARE_OPERATORS_FOR_FLAGS(UT_PREPEND_NAMESPACE(UCViewItemsAttached)::ExpansionFlags)
 QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCViewItemsAttached), QML_HAS_ATTACHED_PROPERTIES)
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UCListItemExpansion : public QObject
 {

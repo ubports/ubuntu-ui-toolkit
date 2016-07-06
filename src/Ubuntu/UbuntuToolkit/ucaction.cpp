@@ -85,7 +85,7 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
 
 /*!
  * \qmltype Action
- * \instantiates UbuntuToolkit::UCAction
+ * \instantiates UCAction
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief Describe an action that can be re-used and shared between different
