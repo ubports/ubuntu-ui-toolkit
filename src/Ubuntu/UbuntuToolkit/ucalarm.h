@@ -24,7 +24,7 @@
 #include <QtCore/QUrl>
 #include "ubuntutoolkitglobal.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UCAlarmPrivate;
 class UBUNTUTOOLKIT_EXPORT UCAlarm : public QObject

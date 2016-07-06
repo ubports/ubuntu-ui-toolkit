@@ -1,9 +1,14 @@
-ubuntu-ui-toolkit (1.3.2021+16.10) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.2027+16.10) UNRELEASED; urgency=medium
+  [ William Hua ]
+  * Make qml-module-ubuntu-components-gles depend on 
+    qml-module-ubuntu-performancemetrics-gles.
 
   [ Christian Dywan ]
   * Set default for TextArea.persistentSelection and correct type. 
     Fixes LP: #1594400
   * Add version suffix to all unit tests in visual.
+  * Stop using macros for namespaces in headers. Fixes LP: #1596536.
+
 
   [ Zsombor Egri ]
   * Separate plugin for Ubuntu.Components.Labs.
@@ -14,6 +19,7 @@ ubuntu-ui-toolkit (1.3.2021+16.10) UNRELEASED; urgency=medium
   * Improve the i18n documentation for plurals. Fixes LP: #1184810
   * Don't get APL subheader colors from MainView AppHeader when there is no 
     MainView. Fixes LP: #1588172
+  * Add Header.automaticHeight property. Fixes: https://bugs.launchpad.net/bugs/1540240.
 
   [ Loïc Molinari ]
   * UbuntuShape - Use reference counting to handle shape textures.
@@ -32,13 +38,21 @@ ubuntu-ui-toolkit (1.3.2021+16.10) UNRELEASED; urgency=medium
     items anymore in a scene and recreated when there is a new one appearing. 
     These operations being quite uncommon and relatively fast, the advantages 
     seem to be higher than the drawbacks.
+  * Expansion of LD_LIBRARY_PATH is broken since it doesn't include a ":", which
+    means PerformanceMetrics path, which is at the end, is actually not 
+    available, nor the current content of LD_LIBRARY_PATH.
+    That fixes it using the proper shell expansion syntax.
 
   [ Timo Jyrinki ]
   * Fix packaging sorting bzr hook to work on bzr branches that are local only.
 
   [ Florian Boucault ]
-  * ProgressionVisual: do not load the icon until the progression is made visible.
+  * ProgressionVisual: do not load the icon until the progression is made 
+    visible.
   * Scrollbar: do not load the stepper icon until it is visible.
+  * Scrollbar: load stepper icon asynchronously.
+  * Icon: only load when completed and therefore avoids multiple reloads caused
+    by size changes.
                                                                 
  -- Zoltán Balogh <zoltan@bakter.hu>  Mon, 27 Jun 2016 08:10:03 +0200
 

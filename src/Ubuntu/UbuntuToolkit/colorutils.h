@@ -19,7 +19,7 @@
 #include <QObject>
 #include "ubuntutoolkitglobal.h"
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT ColorUtils : public QObject
 {

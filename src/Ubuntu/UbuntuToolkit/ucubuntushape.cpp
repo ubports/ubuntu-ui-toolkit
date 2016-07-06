@@ -321,7 +321,7 @@ const float implicitHeightGU = 8.0f;
 const float radiusGuMap[3] = { 1.45f, 2.55f, 3.65f };
 
 /*! \qmltype UbuntuShape
-    \instantiates UCUbuntuShape
+    \instantiates UbuntuToolkit::UCUbuntuShape
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Rounded rectangle containing a source image blended over a background color.

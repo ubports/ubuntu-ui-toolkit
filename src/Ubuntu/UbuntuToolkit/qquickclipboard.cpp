@@ -27,7 +27,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype Clipboard
- * \instantiates QQuickClipboard
+ * \instantiates UbuntuToolkit::QQuickClipboard
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief This is a singleton type providing access to the system clipboard.

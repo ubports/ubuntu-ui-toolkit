@@ -174,7 +174,7 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 
 /*!
  * \qmltype ViewItems
- * \instantiates UCViewItemsAttached
+ * \instantiates UbuntuToolkit::UCViewItemsAttached
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2

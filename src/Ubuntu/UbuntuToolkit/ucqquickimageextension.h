@@ -29,7 +29,7 @@
 
 class QQuickImageBase;
 
-UT_NAMESPACE_BEGIN
+namespace UbuntuToolkit {
 
 class UBUNTUTOOLKIT_EXPORT UCQQuickImageExtension : public QObject
 {

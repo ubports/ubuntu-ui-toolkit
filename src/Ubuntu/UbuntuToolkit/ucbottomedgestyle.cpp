@@ -23,7 +23,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype BottomEdgeStyle
- * \instantiates UCBottomEdgeStyle
+ * \instantiates UbuntuToolkit::UCBottomEdgeStyle
  * \inqmlmodule Ubuntu.Components.Styles 1.3
  * \since Ubuntu.Components.Styles 1.3
  * \ingroup style-api

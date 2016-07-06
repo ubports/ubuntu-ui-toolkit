@@ -1,6 +1,16 @@
+usr/include/*/qt5/UbuntuGestures/AbstractTimer
+usr/include/*/qt5/UbuntuGestures/AbstractTimerFactory
+usr/include/*/qt5/UbuntuGestures/CandidateInactivityTimer
 usr/include/*/qt5/UbuntuGestures/DebugHelpers
+usr/include/*/qt5/UbuntuGestures/FakeTimeSource
+usr/include/*/qt5/UbuntuGestures/FakeTimer
+usr/include/*/qt5/UbuntuGestures/FakeTimerFactory
 usr/include/*/qt5/UbuntuGestures/Pool
+usr/include/*/qt5/UbuntuGestures/RealTimeSource
+usr/include/*/qt5/UbuntuGestures/SharedTimeSource
+usr/include/*/qt5/UbuntuGestures/TimeSource
 usr/include/*/qt5/UbuntuGestures/Timer
+usr/include/*/qt5/UbuntuGestures/TimerFactory
 usr/include/*/qt5/UbuntuGestures/TouchOwnershipEvent
 usr/include/*/qt5/UbuntuGestures/TouchRegistry
 usr/include/*/qt5/UbuntuGestures/UbuntuGestures
