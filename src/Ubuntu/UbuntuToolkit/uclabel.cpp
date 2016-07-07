@@ -283,3 +283,5 @@ void UCLabel::setFontSize(const QString& fontSize)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_uclabel_p.cpp"

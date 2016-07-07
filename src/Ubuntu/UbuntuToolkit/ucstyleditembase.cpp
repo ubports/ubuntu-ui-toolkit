@@ -619,3 +619,5 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucstyleditembase_p.cpp"

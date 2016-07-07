@@ -340,3 +340,5 @@ void UCMainViewBase::classBegin()
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucmainviewbase_p.cpp"

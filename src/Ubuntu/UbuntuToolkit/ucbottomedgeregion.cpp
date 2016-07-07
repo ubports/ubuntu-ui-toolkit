@@ -466,3 +466,5 @@ bool DefaultRegion::canCommit(qreal dragRatio)
 
 UT_NAMESPACE_END
 
+#include "moc_ucbottomedgeregion_p.cpp"
+

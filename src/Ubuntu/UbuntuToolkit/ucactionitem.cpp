@@ -380,3 +380,5 @@ void UCActionItem::trigger(const QVariant &value)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucactionitem_p.cpp"

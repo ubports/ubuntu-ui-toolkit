@@ -633,3 +633,5 @@ QQuickItem *UCPageTreeNode::pageStack() const
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucpagetreenode_p.cpp"

@@ -403,3 +403,5 @@ bool UCAbstractButton::contains(const QPointF &point) const
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucabstractbutton_p.cpp"

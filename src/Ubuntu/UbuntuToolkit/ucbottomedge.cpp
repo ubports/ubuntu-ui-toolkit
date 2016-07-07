@@ -1182,3 +1182,5 @@ void UCBottomEdgePrivate::resetCurrentContent(QQuickItem *newContent)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucbottomedge_p.cpp"

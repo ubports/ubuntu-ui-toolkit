@@ -1300,3 +1300,6 @@ void UCSlotsLayoutPadding::setBottomQml(qreal val)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucslotslayout_p.cpp"
+
