@@ -19,7 +19,7 @@
 #define UCNAMESPACE_H
 
 #include <QtCore/QObject>
-#include "UbuntuToolkit/private/quickutils_p.h"
+#include <UbuntuToolkit/private/quickutils_p.h>
 #include <ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
