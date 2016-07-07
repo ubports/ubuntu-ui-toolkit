@@ -23,6 +23,8 @@
 
 #include "damper_p.h"
 
+namespace UbuntuGestures {
+
 // Information about an active touch point
 struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {
     ActiveTouchInfo() : id(-1), startTime(-1) {}
@@ -170,5 +172,7 @@ class UBUNTUGESTURES_EXPORT UCSwipeAreaStatusListener
 public:
     virtual void swipeStatusChanged(UCSwipeAreaPrivate::Status /*old*/, UCSwipeAreaPrivate::Status /*new*/) {}
 };
+
+UG_NAMESPACE_END
 
 #endif // UCSWIPEAREAPRIVATE_H

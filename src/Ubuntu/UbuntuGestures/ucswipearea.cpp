@@ -29,7 +29,7 @@
 #include <UbuntuGestures/TouchRegistry>
 #include <UbuntuGestures/UnownedTouchEvent>
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea", QtMsgType::QtWarningMsg)
 Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo", QtMsgType::QtWarningMsg)
@@ -128,9 +128,9 @@ public:
 };
 /*!
  * \qmltype SwipeArea
- * \instantiates UCSwipeArea
+ * \instantiates UbuntuGestures::UCSwipeArea
  * \inherits Item
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \ingroup ubuntu-gestures
  * \brief An area which detects axis-aligned single-finger drag gestures.
@@ -1055,3 +1055,5 @@ void UCSwipeAreaPrivate::removeStatusChangeListener(UCSwipeAreaStatusListener *l
 {
     statusChangeListeners.removeAll(listener);
 }
+
+UG_NAMESPACE_END

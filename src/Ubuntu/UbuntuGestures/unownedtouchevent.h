@@ -21,6 +21,7 @@
 #include <QScopedPointer>
 #include "ubuntugesturesglobal.h"
 
+namespace UbuntuGestures {
 /*
  A touch event with touch points that do not belong the item receiving it.
 
@@ -41,5 +42,7 @@ private:
     static Type m_unownedTouchEventType;
     QScopedPointer<QTouchEvent> m_touchEvent;
 };
+
+UG_NAMESPACE_END
 
 #endif // UBUNTU_UNOWNEDTOUCHEVENT_H

@@ -22,7 +22,7 @@
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 AsyncLoader::AsyncLoader(QObject *parent)
     : QObject(*(new AsyncLoaderPrivate), parent)
@@ -218,4 +218,4 @@ void AsyncLoader::forceCompletion()
     d_func()->forceCompletion();
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END

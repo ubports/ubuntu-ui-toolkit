@@ -21,7 +21,8 @@
 
 #include <QtCore/private/qobject_p.h>
 #include <QtQml/QQmlIncubator>
-#include <AsyncLoader>
+#include <ubuntutoolkitglobal.h>
+#include <asyncloader.h>
 
 namespace UbuntuToolkit {
 
@@ -48,7 +49,7 @@ public:
     void detachComponent();
 };
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #endif // ASYNCLOADER_P_H
 

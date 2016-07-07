@@ -30,7 +30,7 @@
     #define ENABLE_TOUCH_EMULATION
 #endif
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 QTouchDevice *MouseTouchAdaptor::m_touchDevice = nullptr;
 
@@ -41,7 +41,7 @@ MouseTouchAdaptorPrivate::~MouseTouchAdaptorPrivate()
 
 /*!
  * \qmltype MouseTouchAdaptor
- * \instantiates MouseTouchAdaptor
+ * \instantiates UbuntuToolkit::MouseTouchAdaptor
  * \inqmlmodule Ubuntu.Test 1.0
  * \ingroup ubuntu-test
  * \brief Singleton type turning mouse events into single finger touch events.
@@ -133,6 +133,6 @@ void MouseTouchAdaptorPrivate::setEnabled(bool value)
     qWarning() << "MouseTouchAdaptor not available on this architecture, thus cannot be enabled.";
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #include "moc_mousetouchadaptor.cpp"

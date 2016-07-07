@@ -58,6 +58,6 @@ protected:
     Q_DECLARE_PRIVATE(AsyncLoader)
 };
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #endif // ASYNCLOADER_H

@@ -43,6 +43,6 @@ private:
     Q_DECLARE_PRIVATE(Tree)
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // TREE_H

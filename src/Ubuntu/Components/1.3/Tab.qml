@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype Tab
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \deprecated
     \brief Component to represent a single tab in a \l Tabs environment.

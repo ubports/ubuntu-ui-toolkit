@@ -112,6 +112,6 @@ private:
     QSharedPointer<FakeTimeSource> m_timeSource;
 };
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END
 
 #endif // UBUNTUGESTURES_TIMER_H

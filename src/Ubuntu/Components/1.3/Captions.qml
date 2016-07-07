@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
 
 /*!
   \qmltype Captions
-  \inqmlmodule Ubuntu.Components 1.2
+  \inqmlmodule Ubuntu.Components
   \ingroup ubuntu-listitem
   \since Ubuntu.Components 1.2
   \brief Container providing captionStyles for a twin-label column that can be used in

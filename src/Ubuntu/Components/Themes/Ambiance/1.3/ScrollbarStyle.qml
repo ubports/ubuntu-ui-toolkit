@@ -952,7 +952,8 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
-                        source: "../artwork/toolkit_scrollbar-stepper.svg"
+                        source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
+                        asynchronous: true
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtBeginning])
                                                         ? __stepperImgOpacityDisabled
@@ -995,7 +996,8 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
-                        source: "../artwork/toolkit_scrollbar-stepper.svg"
+                        source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
+                        asynchronous: true
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtEnd])
                                                         ? __stepperImgOpacityDisabled

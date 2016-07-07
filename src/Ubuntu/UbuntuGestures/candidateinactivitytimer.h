@@ -46,6 +46,6 @@ private:
     QQuickItem *m_candidate;
 };
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END
 
 #endif // UBUNTUGESTURES_CANDIDATE_INACTIVITY_TIMER_H

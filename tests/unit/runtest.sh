@@ -43,23 +43,23 @@ if [ -z $_TARGETPATH ]; then
   echo "  $0 TEST_EXECUTABLE [QML_FILE] [QT_QPA_PLATFORM]"
   echo ''
   echo 'Examples:'
-  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/tst_components/tst_components) tst_label13.qml minimal"
+  echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/components/components) $(relpath ${SRC_DIR}/tests/unit/components/tst_label13.qml) minimal"
   echo ''
-  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/tst_mainview)"
-  echo "  ../$(basename $0) tst_mainview minimal"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/mainview)"
+  echo "  ../$(basename $0) mainview minimal"
   echo "  cd ../../.."
   echo ''
-  echo "  cd $(relpath ${BUILD_DIR}/tests/unit_x11/tst_components)"
-  echo "  ../../xvfb.sh ../../unit/$(basename $0) tst_components tst_listitem13.qml"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/visual)"
+  echo "  ../../xvfb.sh ../../unit/$(basename $0) visual ../../unit/visual/tst_listitem13.qml"
   echo "  cd ../../.."
   echo ''
-  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit_x11/tst_bottomedge/tst_bottomedge)"
+  echo "  $(relpath ${BUILD_DIR}/tests/xvfb.sh) $0 $(relpath ${BUILD_DIR}/tests/unit/bottomedge/bottomedge)"
   exit 1
 fi
 
 _TARGET=$(basename $_TARGETPATH)
 _TESTFILE=$(basename $_TESTFILEPATH)
-_XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
+_XML="${BUILD_DIR}/tests/$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 
@@ -74,20 +74,26 @@ function create_fallback_xml {
 EOF
 }
 
-function create_test_cmd {
-  if [[ "$_TARGETPATH" = /* ]]; then
-      EXE=$_TARGETPATH
+function abspath {
+  if [[ "$1" = /* ]]; then
+      ABSPATH=$1
   else
-      EXE=./$_TARGETPATH
+      ABSPATH=./$1
   fi
+  # Note: '|| echo' so we get a sane error message if it doesn't exist
+  echo -n $(readlink -f $ABSPATH || echo $ABSPATH)
+}
+
+function create_test_cmd {
+  EXE=$(abspath $_TARGETPATH)
   _CMD="-n $_TESTFILE -m 500"
 
   DEB_HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
   if [[ ${DEB_HOST_ARCH} =~ 'arm' ]]; then
-    _CMD="dbus-test-runner --task $(readlink -f $EXE) $_CMD"
+    _CMD="dbus-test-runner --task $EXE $_CMD"
   else
     _CMD="dbus-test-runner --task gdb -p --quiet $_CMD"
-    _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $(readlink -f $EXE)"
+    _CMD="$_CMD -p --batch -p -ex -p 'set print thread-events off' -p -ex -p run -p -ex -p bt -p --return-child-result -p --args -p $EXE"
   fi
 
   if [[ 'minimal custom' == *$_MINIMAL* ]]; then
@@ -95,27 +101,26 @@ function create_test_cmd {
   fi
 
   if [[ $_TESTFILEPATH == *\.qml* ]]; then
-      _CMD="$_CMD -p -input -p $_TESTFILEPATH"
+      _CMD="$_CMD -p -input -p $(abspath $_TESTFILEPATH)"
   fi
   _CMD="$_CMD -p -maxwarnings -p 100"
 }
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
-  echo "Working directory: $PWD"
   if [ ! -x $_TARGETPATH ]; then
     echo "Error: $_TARGET wasn't built!"
     RESULT=2
   elif [ $DISPLAY ]; then
-    cd $(dirname $_TARGETPATH)
+    SRC_TARGETPATH=$(echo $EXE | sed "s@$BUILD_DIR@$SRC_DIR@")
+    cd $(dirname $SRC_TARGETPATH)
 
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-	
     # QV4_MM_AGGRESSIVE_GC=1 \
     ALARM_BACKEND=memory SUPPRESS_DEPRECATED_NOTE=no \
     QT_LOGGING_RULES="[PERFORMANCE].warning=false" \
-    $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
+    $_CMD $_ARGS 2>&1 | sed "s@$_TESTFILE: @@" | grep -v 'QFontDatabase: Cannot find font directory'
     if [ ! -s $_XML ]; then
         # Write fallback in case it crashed and the file is empty
         if [[ $_XML == *".SEGFAULT"* ]]; then
@@ -125,7 +130,7 @@ function execute_test_cmd {
         fi
     fi
     if [ "x$UITK_TEST_KEEP_RUNNING" != "x1" ]; then
-        ${BUILD_DIR}/tests/checkresults.sh $_XML
+        ${SRC_DIR}/tests/checkresults.sh $_XML
         RESULT=$?
     fi
   else

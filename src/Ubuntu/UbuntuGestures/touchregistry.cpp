@@ -31,7 +31,7 @@ Q_LOGGING_CATEGORY(ugTouchRegistry, "libubuntugestures.TouchRegistry", QtMsgType
 #include "debughelpers.h"
 #define UG_DEBUG qCDebug(ugTouchRegistry) << "[TouchRegistry]"
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 TouchRegistry *TouchRegistry::m_instance = nullptr;
 
@@ -524,3 +524,5 @@ void TouchRegistry::TouchInfo::notifyCandidatesOfOwnershipResolution()
         QCoreApplication::sendEvent(items[i], &lostOwnershipEvent);
     }
 }
+
+UG_NAMESPACE_END

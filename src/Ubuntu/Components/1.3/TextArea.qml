@@ -20,7 +20,7 @@ import Ubuntu.Components.Popups 1.3
 
 /*!
     \qmltype TextArea
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The TextArea item displays a block of editable, scrollable, formatted
     text.
@@ -400,9 +400,9 @@ Ubuntu.StyledItem {
 
     /*!
       Whether the TextArea should keep the selection visible when it loses active
-      focus to another item in the scene. By default this is set to true;
+      focus to another item in the scene. By default this is set to true.
 
-      \qmlproperty enumeration persistentSelection
+      \qmlproperty bool persistentSelection
       */
     property alias persistentSelection: editor.persistentSelection
 
@@ -849,6 +849,7 @@ Ubuntu.StyledItem {
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
+            persistentSelection: true
             selectByMouse: true
             cursorDelegate: TextCursor {
                 handler: inputHandler
@@ -875,6 +876,9 @@ Ubuntu.StyledItem {
             }
         }
     }
+
+    /*! \internal */
+    property Item __rightScrollbar: rightScrollbar
     Scrollbar {
         id: rightScrollbar
         flickableItem: flicker
@@ -884,10 +888,6 @@ Ubuntu.StyledItem {
         anchors.topMargin: -internal.frameSpacing
         anchors.rightMargin: -internal.frameSpacing
         anchors.bottomMargin: -internal.frameSpacing
-        Ubuntu.StyleHints {
-            // No background color
-            troughColorSteppersStyle: Qt.rgba(0, 0, 0, 0)
-        }
     }
 
     styleName: "TextAreaStyle"

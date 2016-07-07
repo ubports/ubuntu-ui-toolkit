@@ -29,6 +29,6 @@ public:
     Q_INVOKABLE static qreal luminance(const QColor &color);
 };
 
-}
+UT_NAMESPACE_END
 
 #endif // COLORUTILS_H

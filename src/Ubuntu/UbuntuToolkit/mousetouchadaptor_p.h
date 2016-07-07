@@ -71,7 +71,7 @@ public:
 };
 #endif
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
 #endif // MOUSETOUCHADAPTOR_P
 

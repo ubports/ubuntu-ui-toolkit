@@ -1,5 +1,6 @@
 module Ubuntu.Components
 plugin UbuntuComponents
+typeinfo plugins.qmltypes
 ActionList 0.1 1.2/ActionList.qml
 ToolbarItems 0.1 1.2/ToolbarItems.qml
 ToolbarButton 0.1 1.2/ToolbarButton.qml

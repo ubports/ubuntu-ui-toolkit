@@ -20,6 +20,7 @@
 #include <QEvent>
 #include "ubuntugesturesglobal.h"
 
+namespace UbuntuGestures {
 /*
    When an item get an ownership event for a touch it can grab/steal that touch
    with a clean conscience.
@@ -46,5 +47,7 @@ private:
     int m_touchId;
     bool m_gained;
 };
+
+UG_NAMESPACE_END
 
 #endif // UBUNTU_TOUCHOWNERSHIPEVENT_H

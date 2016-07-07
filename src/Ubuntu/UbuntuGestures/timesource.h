@@ -57,6 +57,6 @@ public:
     qint64 m_msecsSinceReference;
 };
 
-} // namespace UbuntuGestures
+}
 
 #endif // UBUNTUGESTURES_TIMESOURCE_H

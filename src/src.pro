@@ -21,4 +21,4 @@ src_test.target  = sub-test
 src_test.depends = sub-components 
 
 #order is important
-SUBDIRS += src_toolkitlib src_gestures src_components src_layouts src_performance_metrics src_test
+SUBDIRS += src_gestures src_toolkitlib src_components src_layouts src_performance_metrics src_test

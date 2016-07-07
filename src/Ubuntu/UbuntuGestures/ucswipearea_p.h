@@ -28,10 +28,10 @@
 // logging
 #include <QtCore/QLoggingCategory>
 
+namespace UbuntuGestures {
+
 class TouchOwnershipEvent;
 class UnownedTouchEvent;
-class UCSwipeAreaPrivate;
-
 class UCSwipeAreaPrivate;
 class UBUNTUGESTURES_EXPORT UCSwipeArea : public QQuickItem
 {
@@ -100,6 +100,8 @@ protected:
 private:
     Q_DECLARE_PRIVATE(UCSwipeArea)
 };
+
+UG_NAMESPACE_END
 
 Q_DECLARE_LOGGING_CATEGORY(ucSwipeArea)
 Q_DECLARE_LOGGING_CATEGORY(ucActiveTouchInfo)

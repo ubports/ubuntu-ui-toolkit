@@ -16,7 +16,7 @@
 
 #include "candidateinactivitytimer.h"
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 CandidateInactivityTimer::CandidateInactivityTimer(int touchId, QQuickItem *candidate,
         AbstractTimer *timer, QObject *parent)
@@ -43,4 +43,4 @@ void CandidateInactivityTimer::onTimeout()
     Q_EMIT candidateDefaulted(m_touchId, m_candidate);
 }
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END
