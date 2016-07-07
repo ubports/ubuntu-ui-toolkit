@@ -772,3 +772,5 @@ void UCPageWrapper::resetTheme2()
  */
 
 UT_NAMESPACE_END
+
+#include "moc_ucpagewrapper_p.cpp"

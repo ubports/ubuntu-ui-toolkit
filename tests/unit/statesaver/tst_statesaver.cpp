@@ -28,8 +28,8 @@
 #include <QMatrix4x4>
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlProperty>
-#include "quickutils.h"
-#include "ucapplication.h"
+#include <UbuntuToolkit/private/quickutils_p.h>
+#include <UbuntuToolkit/private/ucapplication_p.h>
 #include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
 #include "uctestcase.h"

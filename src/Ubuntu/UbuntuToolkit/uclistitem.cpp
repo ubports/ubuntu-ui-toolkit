@@ -1996,3 +1996,5 @@ bool UCListItem::isSwiped()
 }
 
 UT_NAMESPACE_END
+
+#include "moc_uclistitem_p.cpp"
