@@ -30,9 +30,9 @@ class UCStateSaverAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCStateSaverAttached)
 public:
-    UCStateSaverAttachedPrivate(UCStateSaverAttached *qq, QObject *attachee);
+    UCStateSaverAttachedPrivate();
+    void init(QObject *attachee);
 
-    UCStateSaverAttached *q_ptr;
     QObject *m_attachee;
     bool m_enabled:1;
     QString m_id;

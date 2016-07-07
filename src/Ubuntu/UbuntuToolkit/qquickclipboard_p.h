@@ -56,7 +56,6 @@ public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(QQuickClipboard)
-//    QScopedPointer<QQuickClipboardPrivate> d_ptr;
 };
 
 UT_NAMESPACE_END

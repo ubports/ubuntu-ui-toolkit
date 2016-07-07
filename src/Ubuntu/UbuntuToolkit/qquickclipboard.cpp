@@ -107,29 +107,37 @@ UT_NAMESPACE_BEGIN
  * The signal is triggered when clipboard content gets changed.
  */
 
-QQuickClipboardPrivate::QQuickClipboardPrivate(QQuickClipboard *qq) :
-    q_ptr(qq),
+QQuickClipboardPrivate::QQuickClipboardPrivate() :
     clipboard(QGuiApplication::clipboard()),
     mode(QClipboard::Clipboard),
     mimeData(0)
 {
+}
+
+void QQuickClipboardPrivate::init()
+{
+    Q_Q(QQuickClipboard);
     // connect to the system clipboard's dataChanged signal so we get update
-    QObject::connect(clipboard, SIGNAL(dataChanged()), q_ptr, SIGNAL(dataChanged()));
+    QObject::connect(clipboard, SIGNAL(dataChanged()), q, SIGNAL(dataChanged()));
 }
 
 void QQuickClipboardPrivate::updateMimeData()
 {
     const QMimeData *data = clipboard->mimeData(mode);
-    if (!mimeData)
-        mimeData = new QQuickMimeData(clipboard->mimeData(mode), true, q_ptr);
-    else
+    if (!mimeData) {
+        Q_Q(QQuickClipboard);
+        mimeData = new QQuickMimeData(clipboard->mimeData(mode), true, q);
+    } else {
         mimeData->fromMimeData(data);
+    }
 }
 
 
 QQuickClipboard::QQuickClipboard(QObject *parent) :
-    QObject(*(new QQuickClipboardPrivate(this)), parent)
+    QObject(*(new QQuickClipboardPrivate), parent)
 {
+    Q_D(QQuickClipboard);
+    d->init();
 }
 
 /*!

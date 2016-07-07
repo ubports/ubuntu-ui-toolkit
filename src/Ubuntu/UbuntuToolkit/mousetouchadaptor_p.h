@@ -36,7 +36,7 @@ class MouseTouchAdaptorPrivate;
 class UBUNTUTOOLKIT_EXPORT MouseTouchAdaptor : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(d_func(), bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PRIVATE_PROPERTY(MouseTouchAdaptor::d_func(), bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
     explicit MouseTouchAdaptor(QObject *parent = Q_NULLPTR);
 

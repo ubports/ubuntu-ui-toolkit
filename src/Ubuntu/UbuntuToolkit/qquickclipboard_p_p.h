@@ -29,9 +29,9 @@ class QQuickMimeData;
 class QQuickClipboardPrivate : public QObjectPrivate {
     Q_DECLARE_PUBLIC(QQuickClipboard)
 public:
-    QQuickClipboardPrivate(QQuickClipboard *qq);
+    QQuickClipboardPrivate();
+    void init();
 
-    QQuickClipboard *q_ptr;
     QClipboard *clipboard;
     QClipboard::Mode mode;
     QQuickMimeData *mimeData;

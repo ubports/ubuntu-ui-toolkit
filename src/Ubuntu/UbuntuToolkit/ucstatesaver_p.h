@@ -46,8 +46,7 @@ Q_SIGNALS:
     void propertiesChanged();
 
 private:
-    QScopedPointer<UCStateSaverAttachedPrivate> d_ptr;
-    Q_DECLARE_PRIVATE_D(d_ptr.data(), UCStateSaverAttached)
+    Q_DECLARE_PRIVATE(UCStateSaverAttached)
     Q_PRIVATE_SLOT(d_func(), void _q_init())
     Q_PRIVATE_SLOT(d_func(), void _q_save())
     Q_PRIVATE_SLOT(d_func(), void _q_globalEnableChanged(bool))

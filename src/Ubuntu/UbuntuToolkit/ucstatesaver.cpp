@@ -31,11 +31,16 @@
 
 UT_NAMESPACE_BEGIN
 
-UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *qq, QObject *attachee)
-    : q_ptr(qq)
-    , m_attachee(attachee)
+UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate()
+    : m_attachee(Q_NULLPTR)
     , m_enabled(false)
 {
+}
+
+void UCStateSaverAttachedPrivate::init(QObject *attachee)
+{
+    qDebug() << "qq=" << attachee << this;
+    m_attachee = attachee;
 }
 
 /*
@@ -256,8 +261,10 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  */
 
 UCStateSaverAttached::UCStateSaverAttached(QObject *attachee)
-    : QObject(*(new UCStateSaverAttachedPrivate(this, attachee)), attachee)
+    : QObject(*(new UCStateSaverAttachedPrivate), attachee)
 {
+    Q_D(UCStateSaverAttached);
+    d->init(attachee);
     // make sure we have the backend linked to the engine
     Q_ASSERT(qmlEngine(attachee));
     StateSaverBackend::instance(qmlEngine(attachee));
