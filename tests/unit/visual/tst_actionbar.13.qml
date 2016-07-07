@@ -148,7 +148,7 @@ Item {
             height: childrenRect.height
             Label {
                 anchors {
-                    verticalCenter: bar.verticalCenter
+                    verticalCenter: coloredBar.verticalCenter
                 }
                 text: "colored:"
             }
@@ -158,8 +158,10 @@ Item {
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
                 StyleHints {
+//                    ignoreUnknownProperties: false
                     foregroundColor: "white"
                     backgroundColor: UbuntuColors.blue
+//                    defaultButton.backgroundColor: "yellow"
                 }
             }
         }
