@@ -20,8 +20,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
-#include "ucdeprecatedtheme.h"
-#include "uctheme.h"
+#include <UbuntuToolkit/private/ucdeprecatedtheme_p.h>
+#include <UbuntuToolkit/private/uctheme_p.h>
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
 #include <ubuntutoolkitmodule.h>

@@ -22,12 +22,12 @@
 #include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
 
-#include "ucmouse.h"
-#include "ucinversemouse.h"
+#include <UbuntuToolkit/private/ucmouse_p.h>
+#include <UbuntuToolkit/private/ucinversemouse_p.h>
 
-#include "ucunits.h"
-#include "quickutils.h"
-#include "inversemouseareatype.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
+#include <UbuntuToolkit/private/quickutils_p.h>
+#include <UbuntuToolkit/private/inversemouseareatype_p.h>
 #include "uctestcase.h"
 #include "uctestextras.h"
 #include <private/qquickevents_p_p.h>

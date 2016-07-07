@@ -20,7 +20,7 @@
 #define UCBOTTOMEDGEREGION_P
 
 #include "ucbottomedgeregion_p.h"
-#include <asyncloader_p.h>
+#include <UbuntuToolkit/private/asyncloader_p_p.h>
 #include <QtCore/private/qobject_p.h>
 
 UT_NAMESPACE_BEGIN

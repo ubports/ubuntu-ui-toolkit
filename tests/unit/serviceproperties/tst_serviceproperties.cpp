@@ -15,8 +15,8 @@
  */
 
 #include "uctestcase.h"
-#include "ucserviceproperties.h"
-#include "private/ucserviceproperties_p.h"
+#include <UbuntuToolkit/private/ucserviceproperties_p.h>
+#include <UbuntuToolkit/private/ucserviceproperties_p_p.h>
 #include <QtCore/QString>
 #include <QtCore/QDebug>
 #include <QtTest/QTest>
