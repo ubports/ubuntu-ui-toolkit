@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "uclistitemstyle.h"
-#include "i18n.h"
-#include "uclistitem_p.h"
+#include "uclistitemstyle_p.h"
+#include "i18n_p.h"
+#include "uclistitem_p_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>

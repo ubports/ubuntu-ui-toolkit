@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tree.h"
+#include "tree_p.h"
 
 #include <private/qobject_p.h>
 #include <QQmlEngine>

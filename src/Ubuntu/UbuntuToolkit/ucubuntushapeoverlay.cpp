@@ -20,7 +20,7 @@
 //     batched. It would be very useful to implement it with uniforms and compare the perf by
 //     plotting the rendering speed of a scene with an increasing number of overlaid shapes.
 
-#include "ucubuntushapeoverlay.h"
+#include "ucubuntushapeoverlay_p.h"
 
 // -- Scene graph shader ---
 

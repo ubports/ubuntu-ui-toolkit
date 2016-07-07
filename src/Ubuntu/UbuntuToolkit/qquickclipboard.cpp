@@ -19,9 +19,8 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QGuiApplication>
 
-#include "qquickclipboard.h"
-#include "qquickclipboard_p.h"
-#include "qquickmimedata.h"
+#include "qquickclipboard_p_p.h"
+#include "qquickmimedata_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -129,8 +128,7 @@ void QQuickClipboardPrivate::updateMimeData()
 
 
 QQuickClipboard::QQuickClipboard(QObject *parent) :
-    QObject(parent),
-    d_ptr(new QQuickClipboardPrivate(this))
+    QObject(*(new QQuickClipboardPrivate(this)), parent)
 {
 }
 
@@ -199,5 +197,3 @@ void QQuickClipboard::clear()
 }
 
 UT_NAMESPACE_END
-
-#include "moc_qquickclipboard.cpp"

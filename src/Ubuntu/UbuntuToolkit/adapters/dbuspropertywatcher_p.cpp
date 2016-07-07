@@ -18,7 +18,7 @@
 #include <QtDBus/QDBusReply>
 #include <unistd.h>
 #include <sys/types.h>
-#include "i18n.h"
+#include "i18n_p.h"
 #include <QtQml/QQmlInfo>
 
 #define DYNAMIC_PROPERTY    "__q_property"

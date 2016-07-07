@@ -18,13 +18,13 @@
  */
 
 #include "ubuntutoolkitglobal.h"
-#include "uctheme.h"
-#include "listener.h"
-#include "quickutils.h"
-#include "i18n.h"
-#include "ucfontutils.h"
-#include "ucstyleditembase_p.h"
-#include "ucthemingextension.h"
+#include "uctheme_p.h"
+#include "listener_p.h"
+#include "quickutils_p.h"
+#include "i18n_p.h"
+#include "ucfontutils_p.h"
+#include "ucstyleditembase_p_p.h"
+#include "ucthemingextension_p.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>

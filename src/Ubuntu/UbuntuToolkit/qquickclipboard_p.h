@@ -16,28 +16,49 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef QQUICKCLIPBOARD_P_H
-#define QQUICKCLIPBOARD_P_H
+#ifndef QQUICKCLIPBOARD_H
+#define QQUICKCLIPBOARD_H
 
-#include "qquickclipboard.h"
-#include <QtGui/QClipboard>
+#include <QtCore/QObject>
+#include <QtQml/QJSEngine>
+#include <QtQml/QQmlEngine>
+#include <ubuntutoolkitglobal.h>
+
+class QQmlEngine;
+class QJSEngine;
 
 UT_NAMESPACE_BEGIN
 
 class QQuickMimeData;
-class QQuickClipboardPrivate {
-    Q_DECLARE_PUBLIC(QQuickClipboard)
+class QQuickClipboardPrivate;
+class UBUNTUTOOLKIT_EXPORT QQuickClipboard : public QObject
+{
+    Q_OBJECT
+#ifndef Q_QDOC
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(QQuickMimeData) *data READ data NOTIFY dataChanged)
+#else
+    Q_PROPERTY(QQuickMimeData *data READ data NOTIFY dataChanged)
+#endif
 public:
-    QQuickClipboardPrivate(QQuickClipboard *qq);
+    explicit QQuickClipboard(QObject *parent = 0);
 
-    QQuickClipboard *q_ptr;
-    QClipboard *clipboard;
-    QClipboard::Mode mode;
-    QQuickMimeData *mimeData;
+    Q_INVOKABLE UT_PREPEND_NAMESPACE(QQuickMimeData) *newData();
 
-    void updateMimeData();
+private: //getter/setter
+    QQuickMimeData *data();
+    
+Q_SIGNALS:
+    void dataChanged();
+    
+public Q_SLOTS:
+    void push(const QVariant& data);
+    void clear();
+
+private:
+    Q_DECLARE_PRIVATE(QQuickClipboard)
+//    QScopedPointer<QQuickClipboardPrivate> d_ptr;
 };
 
 UT_NAMESPACE_END
 
-#endif // QQUICKCLIPBOARD_P_H
+#endif // QQUICKCLIPBOARD_H

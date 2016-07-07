@@ -14,8 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucpagetreenode.h"
-#include "ucpagetreenode_p.h"
+#include "ucpagetreenode_p_p.h"
 
 #include <QQmlEngine>
 
@@ -634,5 +633,3 @@ QQuickItem *UCPageTreeNode::pageStack() const
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucpagetreenode.cpp"

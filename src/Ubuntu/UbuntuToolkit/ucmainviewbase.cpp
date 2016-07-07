@@ -14,17 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucmainviewbase.h"
-#include "ucmainviewbase_p.h"
+#include "ucmainviewbase_p_p.h"
 
-#include "ucactionmanager.h"
-#include "ucactioncontext.h"
-#include "ucapplication.h"
-#include "uctheme.h"
-#include "i18n.h"
-#include "quickutils.h"
+#include "ucactionmanager_p.h"
+#include "ucactioncontext_p.h"
+#include "ucapplication_p.h"
+#include "uctheme_p.h"
+#include "i18n_p.h"
+#include "quickutils_p.h"
 
-#include <colorutils.h>
+#include <colorutils_p.h>
 
 #include <QCoreApplication>
 
@@ -341,5 +340,3 @@ void UCMainViewBase::classBegin()
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucmainviewbase.cpp"

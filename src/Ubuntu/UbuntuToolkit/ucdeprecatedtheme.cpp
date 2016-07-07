@@ -16,10 +16,10 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucdeprecatedtheme.h"
-#include "uctheme.h"
-#include "quickutils.h"
-#include "listener.h"
+#include "ucdeprecatedtheme_p.h"
+#include "uctheme_p.h"
+#include "quickutils_p.h"
+#include "listener_p.h"
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlInfo>

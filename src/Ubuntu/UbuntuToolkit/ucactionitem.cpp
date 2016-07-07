@@ -14,10 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucactionitem.h"
-#include "ucactionitem_p.h"
-#include "ucaction.h"
-#include "ucstyleditembase_p.h"
+#include "ucactionitem_p_p.h"
+#include "ucaction_p.h"
+#include "ucstyleditembase_p_p.h"
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
@@ -381,5 +380,3 @@ void UCActionItem::trigger(const QVariant &value)
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucactionitem.cpp"

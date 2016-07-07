@@ -16,11 +16,10 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucstatesaver.h"
-#include "ucstatesaver_p.h"
+#include "ucstatesaver_p_p.h"
 #include "statesaverbackend_p.h"
-#include "i18n.h"
-#include "quickutils.h"
+#include "i18n_p.h"
+#include "quickutils_p.h"
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlProperty>
@@ -257,8 +256,7 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  */
 
 UCStateSaverAttached::UCStateSaverAttached(QObject *attachee)
-    : QObject(attachee)
-    , d_ptr(new UCStateSaverAttachedPrivate(this, attachee))
+    : QObject(*(new UCStateSaverAttachedPrivate(this, attachee)), attachee)
 {
     // make sure we have the backend linked to the engine
     Q_ASSERT(qmlEngine(attachee));
@@ -330,5 +328,3 @@ void UCStateSaverAttached::setProperties(const QString &list)
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucstatesaver.cpp"

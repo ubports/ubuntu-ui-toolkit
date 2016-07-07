@@ -17,7 +17,7 @@
  *              Zsombor Egri <zsomboir.egri@canonical.com>
  */
 
-#include "mousetouchadaptor_p.h"
+#include "mousetouchadaptor_p_p.h"
 
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qwindowsysteminterface.h>
@@ -134,5 +134,3 @@ void MouseTouchAdaptorPrivate::setEnabled(bool value)
 }
 
 UT_NAMESPACE_END
-
-#include "moc_mousetouchadaptor.cpp"

@@ -15,10 +15,10 @@
  */
 
 #include "label_p.h"
-#include "ucfontutils.h"
-#include "ucunits.h"
-#include "uctheme.h"
-#include <quickutils.h>
+#include "ucfontutils_p.h"
+#include "ucunits_p.h"
+#include "uctheme_p.h"
+#include <quickutils_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -283,5 +283,3 @@ void UCLabel::setFontSize(const QString& fontSize)
 }
 
 UT_NAMESPACE_END
-
-#include "moc_uclabel.cpp"

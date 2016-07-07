@@ -25,10 +25,10 @@
 //     the trade-off between shader cycles and bandwidth requirements needs to be precisely
 //     evaluated.
 
-#include "ucubuntushape.h"
-#include "ucunits.h"
+#include "ucubuntushape_p.h"
+#include "ucunits_p.h"
 #include "ubuntutoolkitglobal.h"
-#include "quickutils.h"
+#include "quickutils_p.h"
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlInfo>

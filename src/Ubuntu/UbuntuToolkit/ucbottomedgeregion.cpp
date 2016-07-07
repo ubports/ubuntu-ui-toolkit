@@ -16,11 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedge.h"
-#include "ucbottomedge_p.h"
-#include "ucbottomedgeregion.h"
-#include "ucbottomedgeregion_p.h"
-#include <propertychange.h>
+#include "ucbottomedge_p_p.h"
+#include "ucbottomedgeregion_p_p.h"
+#include <propertychange_p.h>
 #include <QtQml/private/qqmlproperty_p.h>
 
 
@@ -465,8 +463,6 @@ bool DefaultRegion::canCommit(qreal dragRatio)
 {
     return (dragRatio >= 0.33);
 }
-
-#include "moc_ucbottomedgeregion.cpp"
 
 UT_NAMESPACE_END
 

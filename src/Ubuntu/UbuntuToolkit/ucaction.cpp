@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucaction.h"
-#include "quickutils.h"
-#include "ucactioncontext.h"
+#include "ucaction_p.h"
+#include "quickutils_p.h"
+#include "ucactioncontext_p.h"
 
 #include <QtDebug>
 #include <QtQml/QQmlInfo>

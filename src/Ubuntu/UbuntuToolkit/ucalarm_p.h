@@ -16,78 +16,131 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCALARM_P_H
-#define UCALARM_P_H
+#ifndef UCALARM_H
+#define UCALARM_H
 
-#include "ucalarm.h"
-#include "alarmmanager_p.h"
+#include <QtCore/QObject>
 #include <QtCore/QDateTime>
-#include <QtCore/QPointer>
-#include <QtQml/QQmlListProperty>
+#include <QtCore/QUrl>
+#include "ubuntutoolkitglobal.h"
 
 UT_NAMESPACE_BEGIN
 
-class UBUNTUTOOLKIT_EXPORT UCAlarmPrivate
+class UCAlarmPrivate;
+class UBUNTUTOOLKIT_EXPORT UCAlarm : public QObject
 {
-    Q_DECLARE_PUBLIC(UCAlarm)
+    Q_OBJECT
+
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+    Q_PROPERTY(QDateTime date READ date WRITE setDate NOTIFY dateChanged)
+    Q_PROPERTY(AlarmType type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(DaysOfWeek daysOfWeek READ daysOfWeek WRITE setDaysOfWeek NOTIFY daysOfWeekChanged)
+    Q_PROPERTY(QUrl sound READ sound WRITE setSound NOTIFY soundChanged)
+
+    Q_PROPERTY(int error READ error NOTIFY errorChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+
+    Q_ENUMS(Status Operation Error AlarmType DayOfWeek)
+    Q_FLAGS(DaysOfWeek)
+public: // enums
+    enum Status { // keep values in sync with AlarmRequest::Status
+        Ready = 1,
+        InProgress,
+        Fail
+    };
+
+    enum Operation { // keep values in sync with AlarmRequest::Operation
+        NoOperation,
+        Saving,
+        Canceling,
+        Reseting
+    };
+
+    enum Error {
+        NoError = 0,
+        InvalidDate = 1,
+        EarlyDate = 2,
+        NoDaysOfWeek = 3,
+        OneTimeOnMoreDays = 4,
+        InvalidEvent = 5,
+        OperationPending = 6,
+        AdaptationError = 100
+    };
+
+    enum AlarmType {
+        OneTime,
+        Repeating // more to be added
+    };
+
+    enum DayOfWeek {
+        Monday      = 0x01,
+        Tuesday     = 0x02,
+        Wednesday   = 0x04,
+        Thursday    = 0x08,
+        Friday      = 0x10,
+        Saturday    = 0x20,
+        Sunday      = 0x40,
+        Daily = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday,
+        AutoDetect  = 0x80
+    };
+    Q_DECLARE_FLAGS(DaysOfWeek, DayOfWeek)
+
 public:
-    UCAlarmPrivate(UCAlarm *qq);
-    virtual ~UCAlarmPrivate();
+    explicit UCAlarm(QObject *parent = 0);
+    UCAlarm(const QDateTime &dt, const QString &message = QString(), QObject *parent = 0);
+    UCAlarm(const QDateTime &dt, DaysOfWeek days = AutoDetect, const QString &message = QString(), QObject *parent = 0);
+    ~UCAlarm();
 
-    static UCAlarmPrivate *get(const UCAlarm *alarm) {
-        return const_cast<UCAlarm*>(alarm)->d_ptr.data();
-    }
+    bool operator==(const UCAlarm &that) const;
 
-    void setDefaults();
+public: // getter/setter
+    bool enabled() const;
+    void setEnabled(bool enabled);
+    QDateTime date() const;
+    void setDate(const QDateTime &date);
+    QString message() const;
+    void setMessage(const QString &message);
+    AlarmType type() const;
+    void setType(AlarmType type);
+    DaysOfWeek daysOfWeek() const;
+    void setDaysOfWeek(DaysOfWeek days);
+    QUrl sound() const;
+    void setSound(const QUrl &sound);
 
-    // adaptation API
-    virtual bool enabled() const = 0;
-    virtual bool setEnabled(bool enabled) = 0;
-    virtual QDateTime date() const = 0;
-    virtual bool setDate(const QDateTime &date) = 0;
-    virtual QString message() const = 0;
-    virtual bool setMessage(const QString &message) = 0;
-    virtual UCAlarm::AlarmType type() const = 0;
-    virtual bool setType(UCAlarm::AlarmType type) = 0;
-    virtual UCAlarm::DaysOfWeek daysOfWeek() const = 0;
-    virtual bool setDaysOfWeek(UCAlarm::DaysOfWeek days) = 0;
-    virtual QUrl sound() const = 0;
-    virtual bool setSound(const QUrl &sound) = 0;
-    virtual QVariant cookie() const = 0;
-    virtual UCAlarm::Error checkAlarm() = 0;
+    int error() const;
+    Status status() const;
+    QVariant cookie() const;
+    void wait(int msec = 0);
 
-    virtual void save() = 0;
-    virtual void cancel() = 0;
-    virtual void reset() = 0;
-    virtual void completeSave() = 0;
-    virtual void completeCancel() = 0;
-    virtual void copyAlarmData(const UCAlarm &other) = 0;
+Q_SIGNALS:
+    void enabledChanged();
+    void messageChanged();
+    void dateChanged();
+    void typeChanged();
+    void daysOfWeekChanged();
+    void soundChanged();
 
-    // common privates
-    UCAlarm *q_ptr;
-    unsigned int changes;
-    int error;
-    UCAlarm::Status status;
+    void errorChanged();
+    void statusChanged(Operation operation);
 
-    // utility functions
-    static UCAlarm::DayOfWeek dayOfWeek(const QDateTime &dt);
-    static inline bool isDaySet(int dayNumber, UCAlarm::DaysOfWeek days);
-    static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
-    static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
-    static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
-    UCAlarm::Error adjustDow();
-    UCAlarm::Error checkOneTime();
-    UCAlarm::Error checkRepeatingWeekly();
+public Q_SLOTS:
+    void save();
+    void cancel();
+    void reset();
 
-    // private slots
-    void _q_syncStatus(int operation, int status, int error);
+private:
+    Q_DISABLE_COPY(UCAlarm)
+    QScopedPointer<UCAlarmPrivate> d_ptr;
+    Q_DECLARE_PRIVATE_D(d_ptr.data(), UCAlarm)
+
+    Q_PRIVATE_SLOT(d_ptr, void _q_syncStatus(int operation, int status, int error))
+    Q_PRIVATE_SLOT(d_ptr, void completeSave())
+    Q_PRIVATE_SLOT(d_ptr, void completeCancel())
 };
 
-inline bool UCAlarmPrivate::isDaySet(int dayNumber, UCAlarm::DaysOfWeek days)
-{
-    return (days & (1 << (dayNumber - 1))) == (1 << (dayNumber - 1));
-}
+Q_DECLARE_OPERATORS_FOR_FLAGS(UCAlarm::DaysOfWeek)
 
 UT_NAMESPACE_END
 
-#endif // UUALARM_P_H
+#endif // UUALARM_H

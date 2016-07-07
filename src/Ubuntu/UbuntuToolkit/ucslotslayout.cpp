@@ -19,9 +19,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 
-#include "ucunits.h"
-#include "ucslotslayout.h"
-#include "ucslotslayout_p.h"
+#include "ucunits_p.h"
+#include "ucslotslayout_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -1301,5 +1300,3 @@ void UCSlotsLayoutPadding::setBottomQml(qreal val)
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucslotslayout.cpp"

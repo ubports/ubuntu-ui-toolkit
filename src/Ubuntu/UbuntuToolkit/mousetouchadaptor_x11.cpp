@@ -53,7 +53,7 @@
 **
 ****************************************************************************/
 
-#include "mousetouchadaptor_p.h"
+#include "mousetouchadaptor_p_p.h"
 
 #include <qpa/qplatformnativeinterface.h>
 

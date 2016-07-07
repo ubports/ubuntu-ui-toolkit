@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "livetimer_p.h"
+#include "livetimer_p_p.h"
 #include "timeutils_p.h"
 
 #include <QDBusConnection>

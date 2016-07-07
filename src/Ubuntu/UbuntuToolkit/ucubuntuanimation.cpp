@@ -15,7 +15,7 @@
  *
  */
 
-#include "ucubuntuanimation.h"
+#include "ucubuntuanimation_p.h"
 #include <QtCore/QPointF>
 
 UT_NAMESPACE_BEGIN
