@@ -328,3 +328,5 @@ void UCStateSaverAttached::setProperties(const QString &list)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucstatesaver_p.cpp"

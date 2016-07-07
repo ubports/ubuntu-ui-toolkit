@@ -134,3 +134,5 @@ void MouseTouchAdaptorPrivate::setEnabled(bool value)
 }
 
 UT_NAMESPACE_END
+
+#include "moc_mousetouchadaptor_p.cpp"

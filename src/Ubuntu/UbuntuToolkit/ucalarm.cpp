@@ -702,3 +702,5 @@ QVariant UCAlarm::cookie() const
 }
 
 UT_NAMESPACE_END
+
+#include "moc_ucalarm_p.cpp"
