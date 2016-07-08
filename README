@@ -44,6 +44,25 @@ from the root directory of this repository, but is lost when you close your
 shell.
 
 
+Tests
+-----
+
+tests
+ - autopilot/ubuntuuitoolkit: Autopilot test cases and CPOs
+ - api: Tests for apicheck (API description generator)
+ - license: Script to verify that sources contains copright headers
+ - resources: Manual test cases (deprecated, should move to unit/visual)
+ - unit:
+   Unit tests using QTest/UbuntuTestCase
+   As a rule of thumb, use 'make check' to run test cases with the correct
+   environment already setup from the folder containing your test.
+   This is driven by runtest.sh and checkresults.sh.
+  - visual: All tests in this folder can be run as unit tests as well as
+    interactively. That means 'make check' or via gallery.sh.
+    Note for adding new files: The root must be a visual Item-based type
+    with a width and height. TestCase or UbuntuTestCase must be a child.
+
+
 Documentation
 -------------
 
