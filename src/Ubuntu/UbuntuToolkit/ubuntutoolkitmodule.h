@@ -44,7 +44,7 @@ int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const 
     return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
 }
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT UbuntuToolkitModule : public QObject
 {

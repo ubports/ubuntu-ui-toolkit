@@ -14,16 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucactionmanager.h"
+#include "ucactionmanager_p.h"
 #include "adapters/actionsproxy_p.h"
-#include "ucactioncontext.h"
-#include "ucaction.h"
+#include "ucactioncontext_p.h"
+#include "ucaction_p.h"
 
 UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype ActionManager
- * \instantiates UbuntuToolkit::UCActionManager
+ * \instantiates UCActionManager
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief ActionManager manages actions and action contexts withion an application.

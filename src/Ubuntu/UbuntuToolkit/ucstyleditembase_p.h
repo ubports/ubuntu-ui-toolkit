@@ -16,72 +16,79 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTYLEDITEMBASE_P_H
-#define UCSTYLEDITEMBASE_P_H
+#ifndef UCSTYLEDITEMBASE_H
+#define UCSTYLEDITEMBASE_H
 
-#include <QtQuick/private/qquickitem_p.h>
-#include "ucstyleditembase.h"
-#include "ucthemingextension.h"
-#include "ucimportversionchecker_p.h"
+#include <QtQuick/QQuickItem>
+#include "ucthemingextension_p.h"
+#include "ubuntutoolkitglobal.h"
 
-class QQuickMouseArea;
+UT_NAMESPACE_BEGIN
 
-namespace UbuntuToolkit {
-
-class UCStyledItemBase;
-class UBUNTUTOOLKIT_EXPORT UCStyledItemBasePrivate : public QQuickItemPrivate, public UCImportVersionChecker
+class UCStyledItemBasePrivate;
+class UCTheme;
+class UCStyleHints;
+class UBUNTUTOOLKIT_EXPORT UCStyledItemBase : public QQuickItem, public UCThemingExtension
 {
+    Q_OBJECT
     Q_INTERFACES(UT_PREPEND_NAMESPACE(UCThemingExtension))
-    Q_DECLARE_PUBLIC(UCStyledItemBase)
+    Q_PROPERTY(bool keyNavigationFocus
+              READ keyNavigationFocus
+              NOTIFY keyNavigationFocusChanged REVISION 2)
+    Q_PROPERTY(bool activeFocusOnPress
+               READ activefocusOnPress WRITE setActiveFocusOnPress
+               NOTIFY activeFocusOnPressChanged REVISION 1)
+    // FIXME Re-expose property that would be inaccessible due to a QML bug
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    Q_PROPERTY(bool activeFocusOnTab
+            READ activeFocusOnTab2
+            WRITE setActiveFocusOnTab2
+            NOTIFY activeFocusOnTabChanged2 FINAL)
+    Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged FINAL DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY styleInstanceChanged FINAL DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(UCStyledItemBase::d_func(), QString styleName READ styleName WRITE setStyleName NOTIFY styleNameChanged FINAL REVISION 2)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCTheme) *theme READ getTheme WRITE setTheme RESET resetTheme NOTIFY themeChanged FINAL REVISION 2)
 public:
+    explicit UCStyledItemBase(QQuickItem *parent = 0);
 
-    static UCStyledItemBasePrivate *get(UCStyledItemBase *item) {
-        return item->d_func();
-    }
+    virtual bool keyNavigationFocus() const;
+    bool activefocusOnPress() const;
+    void setActiveFocusOnPress(bool value);
+    bool activeFocusOnTab2() const;
+    void setActiveFocusOnTab2(bool value);
 
-    void _q_styleResized();
+public Q_SLOTS:
+    Q_REVISION(1) bool requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
 
-    UCStyledItemBasePrivate();
-    virtual ~UCStyledItemBasePrivate();
-    void init();
-
-    virtual void setFocusable(bool focus);
-    bool isParentFocusable();
-
-    QQmlComponent *style() const;
-    void setStyle(QQmlComponent *style);
-    void resetStyle();
-    QQuickItem *styleInstance();
-
-    QString styleName() const;
-    void setStyleName(const QString &name);
-
-    virtual void preStyleChanged();
-    virtual void postStyleChanged() {}
-    virtual bool loadStyleItem(bool animated = true);
-    virtual void completeComponentInitialization();
-
-    // from UCImportVersionChecker
-    QString propertyForVersion(quint16 version) const override;
-
-public:
-
-    QPointer<QQmlContext> styleItemContext;
-    QString styleDocument;
-    QQuickItem *oldParentItem;
-    QQmlComponent *styleComponent;
-    QQuickItem *styleItem;
-    quint16 styleVersion;
-    bool keyNavigationFocus:1;
-    bool activeFocusOnPress:1;
-    bool wasStyleLoaded:1;
-    bool isFocusScope:1;
+Q_SIGNALS:
+    void styleChanged();
+    void styleInstanceChanged();
+    Q_REVISION(2) void keyNavigationFocusChanged();
+    Q_REVISION(1) void activeFocusOnPressChanged();
+    Q_REVISION(1) void activeFocusOnTabChanged2();
+    Q_REVISION(2) void themeChanged();
+    Q_REVISION(2) void styleNameChanged();
 
 protected:
+    UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
-    void connectStyleSizeChanges(bool attach);
+    // from UCThemingExtension interface
+    void preThemeChanged() override;
+    void postThemeChanged() override;
+
+    void classBegin() override;
+    void componentComplete() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
+    void focusInEvent(QFocusEvent *key) override;
+    void setKeyNavigationFocus(bool value);
+    void mousePressEvent(QMouseEvent *event) override;
+    bool childMouseEventFilter(QQuickItem *child, QEvent *event) override;
+
+private:
+    Q_DECLARE_PRIVATE(UCStyledItemBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_styleResized())
 };
 
 UT_NAMESPACE_END
 
-#endif // UCSTYLEDITEMBASE_P_H
+#endif // UCSTYLEDITEMBASE_H

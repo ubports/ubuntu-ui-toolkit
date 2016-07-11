@@ -32,7 +32,7 @@
 #include <QtQuick/private/qsgcontext_p.h>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
-#include <mousetouchadaptor.h>
+#include <UbuntuToolkit/private/mousetouchadaptor_p.h>
 #include <QtGui/QTouchDevice>
 #include <QtQml/qqml.h>
 

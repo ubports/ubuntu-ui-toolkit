@@ -15,17 +15,17 @@
  *
  */
 
-#include "ucmouse.h"
-#include "ucinversemouse.h"
+#include "ucmouse_p.h"
+#include "ucinversemouse_p.h"
 #include <QtQml/QQmlInfo>
 #include <QtGui/QGuiApplication>
 #include <private/qqmlglobal_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
-#include "inversemouseareatype.h"
-#include "i18n.h"
+#include "inversemouseareatype_p.h"
+#include "i18n_p.h"
 
-#include "quickutils.h"
-#include "ucunits.h"
+#include "quickutils_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -56,7 +56,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 
 /*!
    \qmltype Mouse
-   \instantiates UbuntuToolkit::UCMouse
+   \instantiates UCMouse
    \inqmlmodule Ubuntu.Components
    \ingroup ubuntu
    \brief Attached property filtering mouse events occured inside the owner.

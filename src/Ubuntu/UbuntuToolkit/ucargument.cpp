@@ -16,7 +16,7 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucargument.h"
+#include "ucargument_p.h"
 
 UT_NAMESPACE_BEGIN
 /*!

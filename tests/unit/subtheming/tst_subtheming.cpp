@@ -22,15 +22,15 @@
 #include <QtQml/QQmlComponent>
 #define private public
 #define protected public
-#include "uctheme.h"
+#include <UbuntuToolkit/private/uctheme_p.h>
 #undef protected
 #undef private
-#include "quickutils.h"
+#include <UbuntuToolkit/private/quickutils_p.h>
 #include "uctestcase.h"
-#include "private/ucstyleditembase_p.h"
+#include "private/ucstyleditembase_p_p.h"
 #include "ucnamespace.h"
-#include "ucunits.h"
-#include "uclabel.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
+#include <UbuntuToolkit/private/uclabel_p.h>
 #include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE

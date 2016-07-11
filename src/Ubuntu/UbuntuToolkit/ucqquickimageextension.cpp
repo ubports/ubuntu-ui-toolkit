@@ -22,8 +22,8 @@
 #include <QtGui/QGuiApplication>
 #include <QtQuick/private/qquickimagebase_p.h>
 
-#include "ucqquickimageextension.h"
-#include "ucunits.h"
+#include "ucqquickimageextension_p.h"
+#include "ucunits_p.h"
 
 
 UT_NAMESPACE_BEGIN

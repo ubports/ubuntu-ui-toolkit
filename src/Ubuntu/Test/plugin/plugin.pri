@@ -1,4 +1,4 @@
-QT *= core-private qml qml-private quick quick-private gui-private testlib UbuntuGestures UbuntuToolkit
+QT *= core-private qml qml-private quick quick-private gui-private testlib UbuntuGestures UbuntuToolkit-private
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT *= v8-private

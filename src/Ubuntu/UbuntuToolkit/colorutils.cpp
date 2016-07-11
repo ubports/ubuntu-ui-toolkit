@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "colorutils.h"
+#include "colorutils_p.h"
 #include <QColor>
 
 UT_NAMESPACE_BEGIN

@@ -24,8 +24,8 @@
 
 #include "uctestextras.h"
 #include "uctestcase.h"
-#include "inversemouseareatype.h"
-#include "ucunits.h"
+#include <UbuntuToolkit/private/inversemouseareatype_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 #include <private/qquickevents_p_p.h>
 
 #define DOUBLECLICK_TIMEOUT 400

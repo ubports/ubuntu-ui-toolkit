@@ -15,7 +15,7 @@
  */
 
 #include "actionsproxy_p.h"
-#include "ucactioncontext.h"
+#include "ucactioncontext_p.h"
 
 #include <QDebug>
 
