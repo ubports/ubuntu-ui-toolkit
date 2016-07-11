@@ -31,9 +31,15 @@ class ViewColumnPrivate : public QObjectPrivate
 public:
     ViewColumnPrivate() {}
 
+    static ViewColumnPrivate *get(ViewColumn *q)
+    {
+        return q->d_func();
+    }
+
     qreal minimumWidth{0.0};
     qreal maximumWidth{0xFFFFFFFF};
     qreal preferredWidth{0.0};
+    int column{-1};
     bool fillWidth{false};
 };
 
@@ -42,11 +48,30 @@ class SplitViewLayoutPrivate : public QObjectPrivate
     Q_DECLARE_PUBLIC(SplitViewLayout)
 public:
     SplitViewLayoutPrivate() {}
+    static SplitViewLayoutPrivate *get(SplitViewLayout *q)
+    {
+        return q->d_func();
+    }
 
     QQmlListProperty<ViewColumn> data();
 
     bool when{false};
     QList<ViewColumn*> columnData;
+
+private:
+    static void data_Append(QQmlListProperty<ViewColumn> *, ViewColumn*);
+    static int data_Count(QQmlListProperty<ViewColumn> *);
+    static ViewColumn *data_At(QQmlListProperty<ViewColumn> *, int);
+    static void data_Clear(QQmlListProperty<ViewColumn> *);
+};
+
+class SplitViewAttachedPrivate : public QObjectPrivate
+{
+    Q_DECLARE_PUBLIC(SplitViewAttached)
+public:
+    SplitViewAttachedPrivate() {}
+
+    int column{-1};
 };
 
 class SplitViewPrivate

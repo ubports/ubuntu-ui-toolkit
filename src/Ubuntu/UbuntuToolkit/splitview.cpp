@@ -37,10 +37,57 @@ SplitViewLayout::SplitViewLayout(QObject *parent)
 {
 }
 
+void SplitViewLayoutPrivate::data_Append(QQmlListProperty<ViewColumn> *list, ViewColumn* data)
+{
+    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
+    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
+    ViewColumnPrivate::get(data)->column = d->columnData.size();
+    d->columnData.append(data);
+}
+int SplitViewLayoutPrivate::data_Count(QQmlListProperty<ViewColumn> *list)
+{
+    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
+    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
+    return d->columnData.size();
+}
+ViewColumn *SplitViewLayoutPrivate::data_At(QQmlListProperty<ViewColumn> *list, int index)
+{
+    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
+    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
+    return d->columnData.at(index);
+}
+void SplitViewLayoutPrivate::data_Clear(QQmlListProperty<ViewColumn> *list)
+{
+    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
+    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
+    qDeleteAll(d->columnData);
+    d->columnData.clear();
+}
 QQmlListProperty<ViewColumn> SplitViewLayoutPrivate::data()
 {
     Q_Q(SplitViewLayout);
-    return QQmlListProperty<ViewColumn>(q, columnData);
+    return QQmlListProperty<ViewColumn>(q, &columnData,
+                                        data_Append,
+                                        data_Count,
+                                        data_At,
+                                        data_Clear);
+}
+QQmlListProperty<ViewColumn> SplitViewLayout::data()
+{
+    Q_D(SplitViewLayout);
+    return QQmlListProperty<ViewColumn>(this, &d->columnData,
+                                        SplitViewLayoutPrivate::data_Append,
+                                        SplitViewLayoutPrivate::data_Count,
+                                        SplitViewLayoutPrivate::data_At,
+                                        SplitViewLayoutPrivate::data_Clear);
+}
+
+/******************************************************************************
+ * SplitViewAttached
+ */
+SplitViewAttached::SplitViewAttached(QObject *parent)
+    : QObject(*(new SplitViewAttachedPrivate), parent)
+{
 }
 
 /******************************************************************************
@@ -53,6 +100,11 @@ SplitViewPrivate::SplitViewPrivate(SplitView *qq)
 
 SplitViewPrivate::~SplitViewPrivate()
 {
+}
+
+SplitViewAttached *SplitView::qmlAttachedProperties(QObject *owner)
+{
+    return new SplitViewAttached(owner);
 }
 
 void SplitViewPrivate::layout_Append(QQmlListProperty<SplitViewLayout> *list, SplitViewLayout* layout)
