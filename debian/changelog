@@ -19,7 +19,7 @@ ubuntu-ui-toolkit (1.3.2027+16.10) UNRELEASED; urgency=medium
   * Improve the i18n documentation for plurals. Fixes LP: #1184810
   * Don't get APL subheader colors from MainView AppHeader when there is no 
     MainView. Fixes LP: #1588172
-  * Add Header.automaticHeight property. Fixes: https://bugs.launchpad.net/bugs/1540240.
+  * Add Header.automaticHeight property. Fixes LP: #1540240
 
   [ Loïc Molinari ]
   * UbuntuShape - Use reference counting to handle shape textures.
