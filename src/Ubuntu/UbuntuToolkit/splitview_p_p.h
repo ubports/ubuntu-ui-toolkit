@@ -53,7 +53,7 @@ public:
         return q->d_func();
     }
 
-    QQmlListProperty<ViewColumn> data();
+    QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> data();
 
     bool when{false};
     QList<ViewColumn*> columnData;
@@ -88,7 +88,7 @@ public:
         return q->d_func();
     }
 
-    QQmlListProperty<SplitViewLayout> layouts();
+    QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts();
 
     QList<SplitViewLayout*> columnLatouts;
 

@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Test 1.0
+import Ubuntu.Test 1.3
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Labs 1.0
 
@@ -27,6 +27,7 @@ Item {
     SplitView {
         anchors.fill: parent
         layouts: SplitViewLayout {
+            id: mainLayout
             when: true
             ViewColumn {
                 preferredWidth: units.gu(40)
@@ -48,13 +49,13 @@ Item {
             color: UbuntuColors.green
             height: parent.height
             // render in the second column (if available)
-//            SplitView.column: 1
+            SplitView.column: 1
         }
         Rectangle {
             color: UbuntuColors.blue
             height: parent.height
             // render in the third column (if available)
-//            SplitView.column: 2
+            SplitView.column: 2
         }
     }
 }

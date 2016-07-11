@@ -18,6 +18,8 @@
 
 #include "splitview_p.h"
 #include "splitview_p_p.h"
+#include <QtQuick/private/qquickitem_p.h>
+#include <QtQuick/private/qquickanchors_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -63,23 +65,14 @@ void SplitViewLayoutPrivate::data_Clear(QQmlListProperty<ViewColumn> *list)
     qDeleteAll(d->columnData);
     d->columnData.clear();
 }
-QQmlListProperty<ViewColumn> SplitViewLayoutPrivate::data()
+QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> SplitViewLayoutPrivate::data()
 {
     Q_Q(SplitViewLayout);
-    return QQmlListProperty<ViewColumn>(q, &columnData,
-                                        data_Append,
-                                        data_Count,
-                                        data_At,
-                                        data_Clear);
-}
-QQmlListProperty<ViewColumn> SplitViewLayout::data()
-{
-    Q_D(SplitViewLayout);
-    return QQmlListProperty<ViewColumn>(this, &d->columnData,
-                                        SplitViewLayoutPrivate::data_Append,
-                                        SplitViewLayoutPrivate::data_Count,
-                                        SplitViewLayoutPrivate::data_At,
-                                        SplitViewLayoutPrivate::data_Clear);
+    return QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)>(q, &columnData,
+                                        &data_Append,
+                                        &data_Count,
+                                        &data_At,
+                                        &data_Clear);
 }
 
 /******************************************************************************
@@ -142,10 +135,10 @@ QQmlListProperty<SplitViewLayout> SplitViewPrivate::layouts()
 {
     Q_Q(SplitView);
     return QQmlListProperty<SplitViewLayout>(q, (void*)&columnLatouts,
-                                             layout_Append,
-                                             layout_Count,
-                                             layout_At,
-                                             layout_Clear);
+                                             &layout_Append,
+                                             &layout_Count,
+                                             &layout_At,
+                                             &layout_Clear);
 }
 
 // invoked when one of the SplitViewLayouts emits whenChanged()
@@ -161,7 +154,7 @@ SplitView::SplitView(QQuickItem *parent)
 }
 
 SplitView::SplitView(SplitViewPrivate &dd, QQuickItem *parent)
-    : QQuickBasePositioner(Horizontal, parent)
+    : QQuickBasePositioner(Vertical, parent)
     , d_ptr(&dd)
 {
 }
@@ -174,12 +167,49 @@ SplitView::~SplitView()
 
 void SplitView::doPositioning(QSizeF *contentSize)
 {
-    Q_UNUSED(contentSize);
-    // TODO: implement QQuickColumn functionality
+    // Inspired from QtQuick QQuickColumn code
+    // FIXME: revisit the code once we move to Qt 5.6 as there were more properties added to positioner
+
+    //Precondition: All items in the positioned list have a valid item pointer and should be positioned
+    qreal voffset = 0;
+
+    for (int ii = 0; ii < positionedItems.count(); ++ii) {
+        PositionedItem &child = positionedItems[ii];
+        positionItemY(voffset, &child);
+        contentSize->setWidth(qMax(contentSize->width(), child.item->width()));
+
+        voffset += child.item->height();
+        voffset += spacing();
+    }
+
+    if (voffset != 0)//If we positioned any items, undo the spacing from the last item
+        voffset -= spacing();
+    contentSize->setHeight(voffset);
 }
 void SplitView::reportConflictingAnchors()
 {
-    // TODO: implement QQuickColumn functionality
+    // Inspired from QtQuick QQuickColumn code
+    bool anchorConflict = false;
+    for (int ii = 0; ii < positionedItems.count(); ++ii) {
+        const PositionedItem &child = positionedItems.at(ii);
+        if (child.item) {
+            QQuickAnchors *anchors = QQuickItemPrivate::get(static_cast<QQuickItem *>(child.item))->_anchors;
+            if (anchors) {
+                QQuickAnchors::Anchors usedAnchors = anchors->usedAnchors();
+                if (usedAnchors & QQuickAnchors::TopAnchor ||
+                    usedAnchors & QQuickAnchors::BottomAnchor ||
+                    usedAnchors & QQuickAnchors::VCenterAnchor ||
+                    anchors->fill() || anchors->centerIn()) {
+                    anchorConflict = true;
+                    break;
+                }
+            }
+        }
+    }
+    if (anchorConflict) {
+        qmlInfo(this) << "Cannot specify top, bottom, verticalCenter, fill or centerIn anchors for items inside SplitView."
+            << " SplitView will not function.";
+    }
 }
 
 UT_NAMESPACE_END

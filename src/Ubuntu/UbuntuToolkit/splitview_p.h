@@ -29,10 +29,10 @@ class ViewColumnPrivate;
 class ViewColumn : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(d_func(), bool fillWidth MEMBER fillWidth)
-    Q_PRIVATE_PROPERTY(d_func(), qreal minimumWidth MEMBER minimumWidth)
-    Q_PRIVATE_PROPERTY(d_func(), qreal maximumWidth MEMBER maximumWidth)
-    Q_PRIVATE_PROPERTY(d_func(), qreal preferredWidth MEMBER preferredWidth)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), bool fillWidth MEMBER fillWidth)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal minimumWidth MEMBER minimumWidth)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal maximumWidth MEMBER maximumWidth)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal preferredWidth MEMBER preferredWidth)
 public:
     explicit ViewColumn(QObject *parent = 0);
 
@@ -46,12 +46,10 @@ class SplitViewLayout : public QObject
     Q_OBJECT
 
     Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), bool when MEMBER when NOTIFY whenChanged)
-    Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), QQmlListProperty<ViewColumn> data READ data DESIGNABLE false)
-//    Q_PROPERTY(QQmlListProperty<ViewColumn> data READ data DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> data READ data DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit SplitViewLayout(QObject *parent = 0);
-    QQmlListProperty<ViewColumn> data();
 Q_SIGNALS:
     void whenChanged();
 
@@ -63,7 +61,7 @@ class SplitViewAttachedPrivate;
 class SplitViewAttached : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(d_func(), int column MEMBER column NOTIFY columnChanged)
+    Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), int column MEMBER column NOTIFY columnChanged)
 public:
     explicit SplitViewAttached(QObject *parent = 0);
 
@@ -78,15 +76,15 @@ class SplitViewPrivate;
 class SplitView : public QQuickBasePositioner
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(d_func(), QQmlListProperty<SplitViewLayout> layouts READ layouts)
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts READ layouts DESIGNABLE false)
 public:
     explicit SplitView(QQuickItem *parent = 0);
+
+    static SplitViewAttached *qmlAttachedProperties(QObject*);
 
 protected:
     SplitView(SplitViewPrivate &, QQuickItem *);
     ~SplitView();
-
-    static SplitViewAttached *qmlAttachedProperties(QObject*);
 
     // from QQuickBasePositioner
     void doPositioning(QSizeF *contentSize) override;
