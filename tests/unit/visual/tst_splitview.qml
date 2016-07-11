@@ -42,7 +42,7 @@ Item {
             color: UbuntuColors.red
             height: parent.height
             // render it the first column
-//            SplitView.column: 0
+            SplitView.column: 0
         }
         Rectangle {
             color: UbuntuColors.green
