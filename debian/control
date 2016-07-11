@@ -85,6 +85,7 @@ Depends: libqt5svg5,
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu,
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+        unity8 (<< 8.13),
 Replaces: qt-components-ubuntu,
           qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Provides: qt-components-ubuntu,
@@ -131,6 +132,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+        unity8 (<< 8.13),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Layouts QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -148,6 +150,7 @@ Depends: qml-module-qttest | qtdeclarative5-test-plugin,
          ${misc:Depends},
          ${shlibs:Depends},
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+        unity8 (<< 8.13),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Test QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -163,6 +166,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+        unity8 (<< 8.13),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface

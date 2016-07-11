@@ -19,9 +19,8 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 
-#include "ucunits.h"
-#include "ucslotslayout.h"
-#include "ucslotslayout_p.h"
+#include "ucunits_p.h"
+#include "ucslotslayout_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -598,7 +597,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
 /*!
     \qmltype SlotsLayout
-    \instantiates UbuntuToolkit::UCSlotsLayout
+    \instantiates UCSlotsLayout
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu-slotslayout
     \inherits Item
@@ -1302,4 +1301,5 @@ void UCSlotsLayoutPadding::setBottomQml(qreal val)
 
 UT_NAMESPACE_END
 
-#include "moc_ucslotslayout.cpp"
+#include "moc_ucslotslayout_p.cpp"
+

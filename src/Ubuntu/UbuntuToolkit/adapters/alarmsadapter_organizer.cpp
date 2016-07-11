@@ -16,9 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucalarm.h"
 #include "ucalarm_p.h"
-#include "alarmmanager_p.h"
+#include "ucalarm_p_p.h"
+#include "alarmmanager_p_p.h"
 #include "alarmsadapter_p.h"
 #include <qorganizertodooccurrence.h>
 

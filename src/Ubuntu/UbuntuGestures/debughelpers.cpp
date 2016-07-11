@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "debughelpers.h"
+#include <UbuntuGestures/private/debughelpers_p.h>
 #include <QTouchEvent>
 #include <QMouseEvent>
 

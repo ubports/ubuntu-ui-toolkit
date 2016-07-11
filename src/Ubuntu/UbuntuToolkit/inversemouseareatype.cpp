@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "inversemouseareatype.h"
+#include "inversemouseareatype_p.h"
 #include <QtGui/QGuiApplication>
-#include "quickutils.h"
+#include "quickutils_p.h"
 
 UT_NAMESPACE_BEGIN
 

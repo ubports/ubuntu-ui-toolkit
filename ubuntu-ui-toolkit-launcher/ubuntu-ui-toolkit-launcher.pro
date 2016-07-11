@@ -1,7 +1,7 @@
 TEMPLATE = app
 QT += qml quick
 # For setSharedOpenGLContext
-QT += core-private gui-private testlib quick-private UbuntuToolkit
+QT += core-private gui-private testlib quick-private UbuntuToolkit UbuntuToolkit_private
 CONFIG += no_keywords c++11
 SOURCES += launcher.cpp
 installPath = $$[QT_INSTALL_PREFIX]/bin

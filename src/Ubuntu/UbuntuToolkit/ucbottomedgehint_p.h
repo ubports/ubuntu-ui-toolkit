@@ -16,38 +16,90 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGEHINT_P
-#define UCBOTTOMEDGEHINT_P
+#ifndef UCBOTTOMEDGEHINT_H
+#define UCBOTTOMEDGEHINT_H
 
-#include "ucbottomedgehint.h"
 #include "ucactionitem_p.h"
 #include <ubuntugesturesglobal.h>
 
+class QQuickFlickable;
 UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class PropertyChange;
-class UCBottomEdgeHintPrivate : public UCActionItemPrivate
+class UCBottomEdgeHintPrivate;
+class UBUNTUTOOLKIT_EXPORT UCBottomEdgeHint : public UCActionItem
 {
-    Q_DECLARE_PUBLIC(UCBottomEdgeHint)
+    Q_OBJECT
+    Q_ENUMS(Status)
+    Q_PROPERTY(QQuickFlickable *flickable READ flickable WRITE setFlickable NOTIFY flickableChanged FINAL)
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged FINAL)
+    Q_PROPERTY(int deactivateTimeout READ deactivateTimeout WRITE setDeactivateTimeout NOTIFY deactivateTimeoutChanged FINAL)
+#ifndef Q_QDOC
+    Q_PROPERTY(UG_PREPEND_NAMESPACE(UCSwipeArea)* swipeArea READ swipeArea CONSTANT FINAL)
+#else
+    Q_PROPERTY(UCSwipeArea* swipeArea READ swipeArea CONSTANT FINAL)
+#endif
+    // deprecated
+    Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 public:
-    static UCBottomEdgeHintPrivate *get(UCBottomEdgeHint *item)
-    {
-        return item->d_func();
-    }
-    UCBottomEdgeHintPrivate();
-    void init();
+    enum Status {
+        Hidden,
+        Inactive,
+        Active,
+        Locked
+    };
+    explicit UCBottomEdgeHint(QQuickItem *parent = 0);
 
-    QBasicTimer deactivationTimer;
-    UG_PREPEND_NAMESPACE(UCSwipeArea) *swipeArea;
-    QQuickFlickable *flickable;
-    PropertyChange *flickableBottomMargin;
-    int deactivateTimeout;
-    UCBottomEdgeHint::Status status;
-    bool pressed:1;
+    QQuickFlickable *flickable() const;
+    void setFlickable(QQuickFlickable *flickable);
+    Status status();
+    void setStatus(Status status);
+    int deactivateTimeout() const;
+    void setDeactivateTimeout(int timeout);
+    UG_PREPEND_NAMESPACE(UCSwipeArea) *swipeArea() const;
+
+    // deprecated
+    QString state() const;
+    void setState(const QString &state);
+
+Q_SIGNALS:
+    void textChanged();
+    void iconSourceChanged();
+    void iconNameChanged();
+    void flickableChanged();
+    void statusChanged();
+    void deactivateTimeoutChanged();
+
+    void clicked();
+
+    // deprecated
+    void stateChanged();
+protected:
+    UCBottomEdgeHint(UCBottomEdgeHintPrivate &&, QQuickItem *parent);
+    void classBegin() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
+    void timerEvent(QTimerEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+    void handleFlickableActivation();
+    void onDraggingChanged(bool dragging);
+
+    void init();
+    void onMouseAttached();
+    void onGridUnitChanged();
+
+private:
+    Q_DECLARE_PRIVATE(UCBottomEdgeHint)
+
+    friend class UCBottomEdge;
+
+    void adjustFlickableBottomMargin();
 };
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGEHINT_P
+#endif // UCBOTTOMEDGEHINT_H

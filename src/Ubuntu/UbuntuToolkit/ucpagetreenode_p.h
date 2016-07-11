@@ -13,60 +13,90 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UCPAGETREENODE_P_H
-#define UCPAGETREENODE_P_H
+#ifndef UCPAGETREENODE_H
+#define UCPAGETREENODE_H
 
 #include "ucstyleditembase_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
-class UCPageTreeNode;
-class UCPageTreeNodePrivate : public UCStyledItemBasePrivate
+class UCPageTreeNodePrivate;
+class UBUNTUTOOLKIT_EXPORT UCPageTreeNode : public UCStyledItemBase
 {
-    Q_DECLARE_PUBLIC(UCPageTreeNode)
+    Q_OBJECT
+    Q_PROPERTY(bool isLeaf READ isLeaf WRITE setIsLeaf NOTIFY isLeafChanged)
+    Q_PROPERTY(QQuickItem* toolbar READ toolbar WRITE setToolbar NOTIFY toolbarChanged)
+    Q_PROPERTY(QQuickItem* activeLeafNode READ activeLeafNode NOTIFY activeLeafNodeChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+#ifndef Q_QDOC
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCPageTreeNode)* parentNode READ parentNode WRITE setParentNode NOTIFY parentNodeChanged)
+#else
+    Q_PROPERTY(UCPageTreeNode* parentNode READ parentNode WRITE setParentNode NOTIFY parentNodeChanged)
+#endif
+    Q_PROPERTY(QQuickItem* pageStack READ pageStack WRITE setPageStack NOTIFY pageStackChanged)
 
+    Q_PROPERTY(bool __isPageTreeNode READ isPageTreeNode NOTIFY isPageTreeNodeChanged)
+    Q_PROPERTY(QObject* __propagated READ propagated WRITE setPropagated NOTIFY propagatedChanged)
 public:
-    UCPageTreeNodePrivate ();
-    void init ();
-    void updatePageTree ();
-    UCPageTreeNode *getParentPageTreeNode ();
+    UCPageTreeNode(QQuickItem *parent = 0);
 
-    enum PropertyFlags {
-        FirstFlag            = 0x01,
-        CustomPropagated     = FirstFlag,
-        CustomActive         = FirstFlag << 1,
-        CustomPageStack      = FirstFlag << 2,
-        LastPageTreeNodeFlag = FirstFlag << 8
-    };
+    void setIsLeaf(bool isLeaf);
+    bool isLeaf() const;
 
-    struct Node {
-        UCPageTreeNode *m_node = 0;
-        QList<Node> m_children;
-    };
+    void setParentNode(UCPageTreeNode *parentNode);
+    UCPageTreeNode *parentNode() const;
 
-    void _q_activeBinding (bool active);
-    void _q_pageStackBinding (QQuickItem *pageStack);
-    void _q_propagatedBinding (QObject *propagated);
-    void updateParentLeafNode ();
-    void dumpNodeTree ();
-    void initActive();
-    void initPageStack();
-    void initPropagated();
+    virtual void setActive(bool active);
+    bool active() const;
+
+    void setPageStack(QQuickItem *pageStack);
+    QQuickItem *pageStack() const;
+
+    QQuickItem *activeLeafNode() const;
+
+    QObject *propagated() const;
+    void setPropagated(QObject *propagated);
+    void resetPropagated();
+
+    QQuickItem *toolbar() const;
+    void setToolbar(QQuickItem *toolbar);
+
+    bool isPageTreeNode() const;
+
+    // QQmlParserStatus interface
+    void componentComplete() override;
+
+    Q_INVOKABLE void dumpNodeTree ();
+
+Q_SIGNALS:
+    void isLeafChanged(bool isLeaf);
+    void activeChanged(bool active);
+#ifndef Q_QDOC
+    void parentNodeChanged(UT_PREPEND_NAMESPACE(UCPageTreeNode) *parentNode);
+#else
+    void parentNodeChanged(UCPageTreeNode *parentNode);
+#endif
+    void pageStackChanged(QQuickItem* pageStack);
+    void activeLeafNodeChanged(QQuickItem* activeLeafNode);
+    void propagatedChanged(QObject* propagated);
+    void toolbarChanged(QQuickItem* toolbar);
+    void isPageTreeNodeChanged(bool isPageTreeNode);
+
+protected:
+    UCPageTreeNode(UCPageTreeNodePrivate &, QQuickItem *parent);
+
+    void setActiveLeafNode(QQuickItem* activeLeafNode);
+
+    // QQuickItem interface
+    void itemChange(ItemChange change, const ItemChangeData &value) override;
 
 private:
-    void dumpNode(const Node &n, const QString &oldDepth = QString(), const QString &depth = QString(), bool isRoot = true);
-
-public:
-    UCPageTreeNode *m_parentNode;
-    QQuickItem* m_activeLeafNode;
-    QQuickItem* m_pageStack;
-    QObject* m_propagated;
-    QQuickItem* m_toolbar;
-    qint8 m_flags;
-    bool m_isLeaf:1;
-    bool m_active:1;
+    Q_DECLARE_PRIVATE(UCPageTreeNode)
+    Q_PRIVATE_SLOT(d_func(), void _q_activeBinding(bool active))
+    Q_PRIVATE_SLOT(d_func(), void _q_pageStackBinding (QQuickItem *pageStack))
+    Q_PRIVATE_SLOT(d_func(), void _q_propagatedBinding (QObject *propagated))
 };
 
 UT_NAMESPACE_END
 
-#endif // UCPAGETREENODE_P_H
+#endif // UCPAGETREENODE_H

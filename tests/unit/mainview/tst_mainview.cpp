@@ -33,8 +33,8 @@
 #include <QCryptographicHash>
 #include <QSettings>
 
-#include "ucapplication.h"
-#include "ucunits.h"
+#include <UbuntuToolkit/private/ucapplication_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 #include "uctestcase.h"
 #include <ubuntutoolkitmodule.h>
 
