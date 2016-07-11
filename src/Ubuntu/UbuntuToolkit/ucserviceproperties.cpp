@@ -14,9 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucserviceproperties.h"
-#include "ucserviceproperties_p.h"
-#include "i18n.h"
+#include "ucserviceproperties_p_p.h"
+#include "i18n_p.h"
 #include <QtQml/QQmlInfo>
 #include <QtCore/QMetaProperty>
 #include <QtQml/QQmlProperty>
@@ -81,7 +80,7 @@ void printLocked(UCServiceProperties *owner)
 
 /*!
  * \qmltype ServiceProperties
- * \instantiates UbuntuToolkit::UCServiceProperties
+ * \instantiates UCServiceProperties
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.1
  * \ingroup ubuntu-services
@@ -331,5 +330,3 @@ UCServiceProperties::Status UCServiceProperties::status() const
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucserviceproperties.cpp"

@@ -16,7 +16,7 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucunits.h"
+#include "ucunits_p.h"
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlFile>

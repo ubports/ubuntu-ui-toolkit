@@ -16,7 +16,7 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucscalingimageprovider.h"
+#include "ucscalingimageprovider_p.h"
 
 #include <QtCore/QFile>
 #include <QtGui/QImageReader>

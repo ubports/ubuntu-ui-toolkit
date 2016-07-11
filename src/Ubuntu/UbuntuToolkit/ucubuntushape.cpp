@@ -25,10 +25,10 @@
 //     the trade-off between shader cycles and bandwidth requirements needs to be precisely
 //     evaluated.
 
-#include "ucubuntushape.h"
-#include "ucunits.h"
+#include "ucubuntushape_p.h"
+#include "ucunits_p.h"
 #include "ubuntutoolkitglobal.h"
-#include "quickutils.h"
+#include "quickutils_p.h"
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlInfo>
@@ -321,7 +321,7 @@ const float implicitHeightGU = 8.0f;
 const float radiusGuMap[3] = { 1.45f, 2.55f, 3.65f };
 
 /*! \qmltype UbuntuShape
-    \instantiates UbuntuToolkit::UCUbuntuShape
+    \instantiates UCUbuntuShape
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Rounded rectangle containing a source image blended over a background color.

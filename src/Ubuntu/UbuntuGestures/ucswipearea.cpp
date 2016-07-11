@@ -25,9 +25,9 @@
 #include <private/qquickwindow_p.h>
 
 // local
-#include <UbuntuGestures/TouchOwnershipEvent>
-#include <UbuntuGestures/TouchRegistry>
-#include <UbuntuGestures/UnownedTouchEvent>
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+#include <UbuntuGestures/private/touchregistry_p.h>
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
 
 UG_NAMESPACE_BEGIN
 
@@ -128,7 +128,7 @@ public:
 };
 /*!
  * \qmltype SwipeArea
- * \instantiates UbuntuGestures::UCSwipeArea
+ * \instantiates UCSwipeArea
  * \inherits Item
  * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3

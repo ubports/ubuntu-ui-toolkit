@@ -16,7 +16,7 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "asyncloader_p.h"
+#include "asyncloader_p_p.h"
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>

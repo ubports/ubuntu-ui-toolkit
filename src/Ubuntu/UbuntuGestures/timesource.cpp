@@ -16,7 +16,7 @@
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#include "timesource.h"
+#include <UbuntuGestures/private/timesource_p.h>
 
 #include <QElapsedTimer>
 

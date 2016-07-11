@@ -12,54 +12,71 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
+#ifndef UCACTIONITEM_H
+#define UCACTIONITEM_H
 
-#ifndef UCACTIONITEM_P
-#define UCACTIONITEM_P
-
-#include "ucactionitem.h"
 #include "ucstyleditembase_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
-class UCActionItemPrivate : public UCStyledItemBasePrivate
+class UCAction;
+class UCActionItemPrivate;
+class UBUNTUTOOLKIT_EXPORT UCActionItem : public UCStyledItemBase
 {
-    Q_DECLARE_PUBLIC(UCActionItem)
+    Q_OBJECT
+#ifndef Q_QDOC
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCAction) *action READ action WRITE setAction NOTIFY actionChanged FINAL)
+#else
+    Q_PROPERTY(UCAction *action READ action WRITE setAction NOTIFY actionChanged FINAL)
+#endif
+    Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
+    Q_PROPERTY(QUrl iconSource READ iconSource WRITE setIconSource RESET resetIconSource NOTIFY iconSourceChanged)
+    Q_PROPERTY(QString iconName READ iconName WRITE setIconName RESET resetIconName NOTIFY iconNameChanged)
+
+    // overrides
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled2 NOTIFY enabledChanged2)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible2 NOTIFY visibleChanged2 FINAL)
 public:
-    static UCActionItemPrivate* get(UCActionItem *item)
-    {
-        return item->d_func();
-    }
+    explicit UCActionItem(QQuickItem *parent = 0);
 
-    UCActionItemPrivate();
-    void init();
+    UCAction *action() const;
+    void setAction(UCAction *action);
+    QString text();
+    void setText(const QString &text);
+    void resetText();
+    QUrl iconSource();
+    void setIconSource(const QUrl &iconSource);
+    void resetIconSource();
+    QString iconName();
+    void setIconName(const QString &iconName);
+    void resetIconName();
 
-    bool hasBindingOnProperty(const QString &name);
-    void updateProperties();
-    void attachAction(bool attach);
+    void setVisible2(bool visible);
+    void setEnabled2(bool enabled);
 
-    // private slots
-    void _q_visibleBinding();
-    void _q_enabledBinding();
-    void _q_invokeActionTrigger(const QVariant &value);
+Q_SIGNALS:
+    void actionChanged();
+    void textChanged();
+    void iconSourceChanged();
+    void iconNameChanged();
+    void triggered(const QVariant &value);
 
-    enum {
-        CustomText = 0x01,
-        CustomIconSource = 0x02,
-        CustomIconName = 0x04,
-        CustomVisible = 0x40,
-        CustomEnabled = 0x80
-    };
-    QString text;
-    QString iconName;
-    QUrl iconSource;
-    UCAction *action;
-    quint8 flags;
+    void enabledChanged2();
+    void visibleChanged2();
+
+public Q_SLOTS:
+    void trigger(const QVariant &value = QVariant());
+
+protected:
+    UCActionItem(UCActionItemPrivate &, QQuickItem *parent);
+
+    Q_DECLARE_PRIVATE(UCActionItem)
+    Q_PRIVATE_SLOT(d_func(), void _q_visibleBinding())
+    Q_PRIVATE_SLOT(d_func(), void _q_enabledBinding())
+    Q_PRIVATE_SLOT(d_func(), void _q_invokeActionTrigger(const QVariant &value))
 };
 
 UT_NAMESPACE_END
 
-#endif // UCACTIONITEM_P
-
+#endif // UCACTIONITEM_H

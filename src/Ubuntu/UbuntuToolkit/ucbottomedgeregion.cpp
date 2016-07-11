@@ -16,11 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedge.h"
-#include "ucbottomedge_p.h"
-#include "ucbottomedgeregion.h"
-#include "ucbottomedgeregion_p.h"
-#include <propertychange.h>
+#include "ucbottomedge_p_p.h"
+#include "ucbottomedgeregion_p_p.h"
+#include <propertychange_p.h>
 #include <QtQml/private/qqmlproperty_p.h>
 
 
@@ -48,7 +46,7 @@ void UCBottomEdgeRegionPrivate::init()
 
 /*!
  * \qmltype BottomEdgeRegion
- * \instantiates UbuntuToolkit::UCBottomEdgeRegion
+ * \instantiates UCBottomEdgeRegion
  * \inherits QtObject
  * \inmodule Ubuntu.Components 1.3
  * \since Ubuntu.Components 1.3
@@ -466,7 +464,7 @@ bool DefaultRegion::canCommit(qreal dragRatio)
     return (dragRatio >= 0.33);
 }
 
-#include "moc_ucbottomedgeregion.cpp"
-
 UT_NAMESPACE_END
+
+#include "moc_ucbottomedgeregion_p.cpp"
 

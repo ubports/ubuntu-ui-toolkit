@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "filterbehavior.h"
+#include "filterbehavior_p.h"
 
 UT_NAMESPACE_BEGIN
 

@@ -17,7 +17,7 @@
  */
 
 #include "statesaverbackend_p.h"
-#include "ucapplication.h"
+#include "ucapplication_p.h"
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlProperty>
 #include <QtQml/qqmlinfo.h>
@@ -25,8 +25,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
 #include <QtCore/QStringList>
-#include "i18n.h"
-#include "quickutils.h"
+#include "i18n_p.h"
+#include "quickutils_p.h"
 #include <QtCore/QStandardPaths>
 
 #include "unixsignalhandler_p.h"

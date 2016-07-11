@@ -17,7 +17,7 @@
  */
 
 #include <QtTest/QtTest>
-#include "ucunits.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
 
 UT_USE_NAMESPACE
 
@@ -26,12 +26,6 @@ class tst_UCUnits: public QObject
     Q_OBJECT
 
 private Q_SLOTS:
-
-//    void singletonInstance() {
-//        UCUnits& units1 = UCUnits::instance();
-//        UCUnits& units2 = UCUnits::instance();
-//        QCOMPARE(&units1, &units2);
-//    }
 
     void defaultGridUnit() {
         qputenv("GRID_UNIT_PX", "");

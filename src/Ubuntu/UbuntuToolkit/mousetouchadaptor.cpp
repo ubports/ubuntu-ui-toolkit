@@ -17,7 +17,7 @@
  *              Zsombor Egri <zsomboir.egri@canonical.com>
  */
 
-#include "mousetouchadaptor_p.h"
+#include "mousetouchadaptor_p_p.h"
 
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qwindowsysteminterface.h>
@@ -41,7 +41,7 @@ MouseTouchAdaptorPrivate::~MouseTouchAdaptorPrivate()
 
 /*!
  * \qmltype MouseTouchAdaptor
- * \instantiates UbuntuToolkit::MouseTouchAdaptor
+ * \instantiates MouseTouchAdaptor
  * \inqmlmodule Ubuntu.Test 1.0
  * \ingroup ubuntu-test
  * \brief Singleton type turning mouse events into single finger touch events.
@@ -135,4 +135,4 @@ void MouseTouchAdaptorPrivate::setEnabled(bool value)
 
 UT_NAMESPACE_END
 
-#include "moc_mousetouchadaptor.cpp"
+#include "moc_mousetouchadaptor_p.cpp"

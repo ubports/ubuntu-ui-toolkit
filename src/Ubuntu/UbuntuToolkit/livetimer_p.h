@@ -14,49 +14,60 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIVETIMER_P_H
-#define LIVETIMER_P_H
+#ifndef LIVETIMER_H
+#define LIVETIMER_H
 
-#include "livetimer.h"
+#include <QObject>
+#include <QDateTime>
+#include <ubuntutoolkitglobal.h>
 
-#include <QTimer>
+UT_NAMESPACE_BEGIN
 
-namespace UbuntuToolkit {
-
-class SharedLiveTimer : public QObject
+class UBUNTUTOOLKIT_EXPORT LiveTimer : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(Frequency)
+    Q_PROPERTY(Frequency frequency READ frequency WRITE setFrequency NOTIFY frequencyChanged)
+    Q_PROPERTY(QDateTime relativeTime READ relativeTime WRITE setRelativeTime NOTIFY relativeTimeChanged)
 public:
-    SharedLiveTimer(QObject* parent = NULL);
+    explicit LiveTimer(QObject *parent = 0);
+    ~LiveTimer();
 
-    static SharedLiveTimer& instance()
-    {
-        static SharedLiveTimer instance;
-        return instance;
-    }
+    enum Frequency {
+        Disabled = 0,
+        Second = 1,
+        Minute = 2,
+        Hour = 3,
+        Relative = 4
+    };
 
-    void registerTimer(LiveTimer* timer);
-    void unregisterTimer(LiveTimer* timer);
+    Frequency frequency() const { return m_frequency; }
+    void setFrequency(Frequency frequency);
 
-private Q_SLOTS:
-    void timeout();
-    void timedate1PropertiesChanged(const QString &interface, const QVariantMap &changed, const QStringList&);
+    QDateTime relativeTime() const { return m_relativeTime; }
+    void setRelativeTime(const QDateTime& relativeTime);
+
+    Frequency effectiveFrequency() const { return m_effectiveFrequency; }
 
 Q_SIGNALS:
+    void frequencyChanged();
+    void relativeTimeChanged();
+
     void trigger();
 
 private:
-    void updateFrequency();
-    void reInitTimer();
+    void registerTimer();
+    void unregisterTimer();
+    void setEffectiveFrequency(Frequency frequency);
 
-    QList<LiveTimer*> m_liveTimers;
-    QTimer m_timer;
-    LiveTimer::Frequency m_frequency;
+    Frequency m_frequency;
+    Frequency m_effectiveFrequency;
+    QDateTime m_relativeTime;
+    quint64 m_lastUpdate;
 
-    QDateTime m_nextUpdate;
-    QDateTime m_lastUpdate;
+    friend class SharedLiveTimer;
 };
 
 UT_NAMESPACE_END
 
-#endif // LIVETIMER_P_H
+#endif // LIVETIMER_H

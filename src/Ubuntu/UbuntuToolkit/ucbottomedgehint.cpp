@@ -16,14 +16,13 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedgehint.h"
-#include "ucbottomedgehint_p.h"
-#include "ucstyleditembase_p.h"
-#include "quickutils.h"
-#include "ucunits.h"
-#include "ucaction.h"
-#include "private/ucswipearea_p.h"
-#include <propertychange.h>
+#include "ucbottomedgehint_p_p.h"
+#include "ucstyleditembase_p_p.h"
+#include "quickutils_p.h"
+#include "ucunits_p.h"
+#include "ucaction_p.h"
+#include "private/ucswipearea_p_p.h"
+#include <propertychange_p.h>
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
@@ -468,5 +467,3 @@ UG_PREPEND_NAMESPACE(UCSwipeArea) *UCBottomEdgeHint::swipeArea() const
 }
 
 UT_NAMESPACE_END
-
-#include "moc_ucbottomedgehint.cpp"

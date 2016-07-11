@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "uchaptics.h"
+#include "uchaptics_p.h"
 #include <QtQml/QQmlComponent>
 #include <QtCore/QUrl>
 #include <QDebug>
