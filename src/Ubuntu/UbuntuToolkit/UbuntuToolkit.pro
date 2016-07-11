@@ -44,7 +44,9 @@ HEADERS += \
     mousetouchadaptor_p.h \
     mousetouchadaptor_p_p.h \
     propertychange_p.h \
-    ubuntutoolkitmodule.h
+    ubuntutoolkitmodule.h \
+    splitview_p.h \
+    splitview_p_p.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -52,7 +54,8 @@ SOURCES += \
     asyncloader.cpp \
     mousetouchadaptor.cpp \
     propertychange.cpp \
-    ubuntutoolkitmodule.cpp
+    ubuntutoolkitmodule.cpp \
+    splitview.cpp
 
 HEADERS += \
     uctheme_p.h \
