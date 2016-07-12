@@ -21,10 +21,12 @@
 
 #include <iostream>
 #include <QtCore/qdebug.h>
+#include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickView>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlComponent>
 #include <QtCore/QFileInfo>
 #include <QLibrary>
 #include <QOpenGLContext>
@@ -117,42 +119,98 @@ int main(int argc, const char *argv[])
     // Allow manual execution of unit tests using Qt.Test
     qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
-    QQmlEngine* engine;
+    QPointer<QQmlEngine> engine;
+    QScopedPointer<QQuickWindow> window;
+    QString testCaseImport;
+    // Let's see if the source file exists
+    QFile sourceCode(filename);
+    if (!sourceCode.open(QIODevice::ReadOnly)) {
+        qCritical("%s", qPrintable(sourceCode.errorString()));
+        return 1;
+    }
+    while (!sourceCode.atEnd()) {
+        QByteArray line(sourceCode.readLine());
+        if (line.contains("{"))
+            break;
+        // Hack to avoid assertion if QtTest or Ubuntu.Test is used:
+        // ASSERT: "QTest::TestLoggers::loggerCount() != 0" in file qtestlog.cpp, line 278
+        if ((line.startsWith("import ") && QString(line).split("//")[0].split("/*")[0].contains("Test"))) {
+            testCaseImport = line;
+            break;
+        }
+    }
+    QUrl source(QUrl::fromLocalFile(filename));
+
     // The default constructor affects the components tree (autopilot vis)
-    QScopedPointer<QQuickView> view;
-    if (args.isSet(_engine)) {
-        view.reset(new QQuickView());
+    if (args.isSet(_engine) || !testCaseImport.isEmpty()) {
+        QQuickView *view(new QQuickView());
+        if (args.isSet(_import)) {
+            QStringList paths = args.values(_import);
+            Q_FOREACH(const QString &path, paths) {
+                engine->addImportPath(path);
+            }
+        }
+
+        view->setSource(source);
+        while (view->status() == QQuickView::Loading)
+            QCoreApplication::processEvents();
+        if (view->errors().count() > 0) {
+            args.showHelp(3);
+        }
+        // An unsupported root object is not technically an error
+        if (!view->rootObject()) {
+            if (!testCaseImport.isEmpty())
+                qCritical("Note: QtTest or Ubuntu.Test was detected here: %s", qPrintable(testCaseImport));
+            return 1;
+        }
+
+        window.reset(view);
         engine = view->engine();
     } else {
         engine = new QQmlEngine();
-        view.reset(new QQuickView(engine, NULL));
-        engine->setParent(view.data());
-    }
+        if (args.isSet(_import)) {
+            QStringList paths = args.values(_import);
+            Q_FOREACH(const QString &path, paths) {
+                engine->addImportPath(path);
+            }
+        }
 
-    if (args.isSet(_import)) {
-        QStringList paths = args.values(_import);
-        Q_FOREACH(const QString &path, paths) {
-            engine->addImportPath(path);
+        QObject::connect(engine, SIGNAL(quit()), QCoreApplication::instance(), SLOT(quit()));
+        QPointer<QQmlComponent> component(new QQmlComponent(engine));
+        component->loadUrl(source, QQmlComponent::Asynchronous);
+        while (component->isLoading())
+            QCoreApplication::processEvents();
+        QObject *toplevel(component->create());
+        if (!toplevel && component->isError()) {
+            qCritical("%s", qPrintable(component->errorString()));
+            return 1;
+        }
+
+        window.reset(qobject_cast<QQuickWindow *>(toplevel));
+        if (window)
+            engine->setIncubationController(window->incubationController());
+        else {
+            QQuickItem *rootItem = qobject_cast<QQuickItem *>(toplevel);
+            if (rootItem) {
+                QQuickView *view(new QQuickView(engine, 0));
+                window.reset(view);
+                view->setResizeMode(QQuickView::SizeRootObjectToView);
+                view->setContent(source, component, rootItem);
+            }
         }
     }
 
-    view->setResizeMode(QQuickView::SizeRootObjectToView);
-    view->setTitle("UI Toolkit QQuickView");
+    if (window->title().isEmpty())
+        window->setTitle("UI Toolkit QQuickView");
     if (args.isSet(_frameless)) {
-        view->setFlags(Qt::FramelessWindowHint);
+        window->setFlags(Qt::FramelessWindowHint);
     }
+    window->show();
 
     if (args.isSet(_enableTouch)) {
         // has no effect if we have touch screen
         new UT_PREPEND_NAMESPACE(MouseTouchAdaptor)(&application);
     }
-
-    QUrl source(QUrl::fromLocalFile(filename));
-    view->setSource(source);
-    if (view->errors().count() > 0) {
-        args.showHelp(3);
-    }
-    view->show();
 
     return application.exec();
 }
