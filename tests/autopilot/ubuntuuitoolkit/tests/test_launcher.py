@@ -44,8 +44,8 @@ class LauncherWindowTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_launcher.window.qml')
 
     def test_window_root_item(self):
-        textfield = self.main_view.select_single(objectName="textarea")
-        self.assertThat(textfield.text,
+        label = self.main_view.select_single(objectName="label")
+        self.assertThat(label.text,
                         Eventually(Equals("Lorem ipsum dolor sit amet")))
 
 

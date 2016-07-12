@@ -121,7 +121,7 @@ int main(int argc, const char *argv[])
 
     QPointer<QQmlEngine> engine;
     QScopedPointer<QQuickWindow> window;
-    bool looksLikeAtestCase(false);
+    QString testCaseImport;
     // Let's see if the source file exists
     QFile sourceCode(filename);
     if (!sourceCode.open(QIODevice::ReadOnly)) {
@@ -134,15 +134,15 @@ int main(int argc, const char *argv[])
             break;
         // Hack to avoid assertion if QtTest or Ubuntu.Test is used:
         // ASSERT: "QTest::TestLoggers::loggerCount() != 0" in file qtestlog.cpp, line 278
-        if (line.contains("import ") && line.contains("Test")) {
-            looksLikeAtestCase = true;
+        if ((line.startsWith("import ") && QString(line).split("//")[0].split("/*")[0].contains("Test"))) {
+            testCaseImport = line;
             break;
         }
     }
     QUrl source(QUrl::fromLocalFile(filename));
 
     // The default constructor affects the components tree (autopilot vis)
-    if (args.isSet(_engine) || looksLikeAtestCase) {
+    if (args.isSet(_engine) || !testCaseImport.isEmpty()) {
         QQuickView *view(new QQuickView());
         if (args.isSet(_import)) {
             QStringList paths = args.values(_import);
@@ -152,8 +152,16 @@ int main(int argc, const char *argv[])
         }
 
         view->setSource(source);
+        while (view->status() == QQuickView::Loading)
+            QCoreApplication::processEvents();
         if (view->errors().count() > 0) {
             args.showHelp(3);
+        }
+        // An unsupported root object is not technically an error
+        if (!view->rootObject()) {
+            if (!testCaseImport.isEmpty())
+                qCritical("Note: QtTest or Ubuntu.Test was detected here: %s", qPrintable(testCaseImport));
+            return 1;
         }
 
         window.reset(view);
