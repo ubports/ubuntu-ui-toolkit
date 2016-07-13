@@ -33,6 +33,12 @@ Style.ActionBarStyle {
     backgroundColor: theme.palette.normal.background
     pressedButtonBackgroundColor: theme.palette.highlighted.background
 
+    property QtObject buttons: QtObject {
+        property color backgroundColor: button.pressed ?
+                                            theme.palette.highlighted.background :
+                                            "transparent"
+    }
+
     /*!
       The default action delegate if the styled item does
       not provide a delegate.
@@ -43,9 +49,10 @@ Style.ActionBarStyle {
             foregroundColor: button.enabled
                              ? actionBarStyle.foregroundColor
                              : actionBarStyle.disabledForegroundColor
-            backgroundColor: button.pressed
-                             ? actionBarStyle.pressedButtonBackgroundColor
-                             : "transparent" // background is already colored below
+//            backgroundColor: button.pressed
+//                             ? actionBarStyle.pressedButtonBackgroundColor
+//                             : "transparent" // background is already colored below
+            backgroundColor: actionBarStyle.buttons.backgroundColor
         }
         objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
