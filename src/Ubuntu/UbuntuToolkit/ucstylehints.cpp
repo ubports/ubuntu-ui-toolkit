@@ -232,12 +232,12 @@ void UCStyleHints::_q_applyStyleHints()
         //  item->metaObject is not sufficient in case of a grouped property, so we use
         //  PropertyChange to detect all properties that are not valid.
         PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
-        PropertyChange::setValue(change, m_values[i].second);
         if (!change->property().isValid()) {
             propertyNotFound(styleName, m_values[i].first);
             delete change;
             continue;
         }
+        PropertyChange::setValue(change, m_values[i].second);
         m_propertyBackup << change;
     }
 
