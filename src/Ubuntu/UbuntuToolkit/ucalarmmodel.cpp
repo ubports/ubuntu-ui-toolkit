@@ -16,10 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucalarmmodel.h"
-#include "ucalarm.h"
-#include "ucalarm_p.h"
-#include "alarmmanager_p.h"
+#include "ucalarmmodel_p.h"
+#include "ucalarm_p_p.h"
+#include "alarmmanager_p_p.h"
 #include <QtQml/QQmlPropertyMap>
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlEngine>
@@ -28,7 +27,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype AlarmModel
- * \instantiates UbuntuToolkit::UCAlarmModel
+ * \instantiates UCAlarmModel
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-services
  * \brief AlarmModel holds the list of alarms defined.

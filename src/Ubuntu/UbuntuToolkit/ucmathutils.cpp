@@ -15,7 +15,7 @@
  *
  */
 
-#include "ucmathutils.h"
+#include "ucmathutils_p.h"
 #include <QDebug>
 
 UT_NAMESPACE_BEGIN

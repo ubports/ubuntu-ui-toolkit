@@ -44,6 +44,41 @@ from the root directory of this repository, but is lost when you close your
 shell.
 
 
+Tests
+-----
+
+tests
+ - autopilot/ubuntuuitoolkit: Autopilot test cases and CPOs
+   ./run_tests.sh list
+   ./run_tests.sh run [TESTCASE]
+ - api: Tests for apicheck (API description generator)
+   Run 'make check' in the folder
+ - license: Script to verify that sources contains copright headers
+   make license
+ - resources: Manual test cases (deprecated, should move to unit/visual)
+ - unit:
+   Unit tests using QTest/UbuntuTestCase
+   Run 'make check[_BASENAME_WITH_UNDERSCORES]' in the respective subfolder
+   eg. 'tst_label_extras.13.qml' becomes 'make check_tst_label_extras_13'
+   This is driven by runtest.sh and checkresults.sh.
+  - visual: All tests in this folder can be run as unit tests as well as
+    interactively. That means 'make check' or via gallery.sh.
+    Optional: prefix with './tests/xvfb.sh' to run inside XVfb.
+    Note for adding new files: The root must be a visual Item-based type
+    with a width and height. TestCase or UbuntuTestCase must be a child.
+
+ Verify the whole Toolkit API:
+ './tests/qmlapicheck.sh' inspects components.api and produces components.api.new
+
+ Verify the tidyness of packaging:
+ ./packaging-sorting.sh
+
+ Verify the coding style of Python source code:
+ pyflakes .
+
+ 'source export_qml_dir.sh' can be used in bash to setup the environment.
+
+
 Documentation
 -------------
 

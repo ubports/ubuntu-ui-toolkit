@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "propertychange.h"
+#include "propertychange_p.h"
 
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH //workaround to fix private includes

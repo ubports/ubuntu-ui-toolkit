@@ -16,9 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucstylehints.h"
-#include "ucstyleditembase_p.h"
-#include <propertychange.h>
+#include "ucstylehints_p.h"
+#include "ucstyleditembase_p_p.h"
+#include <propertychange_p.h>
 #include <QtQml/QQmlInfo>
 
 UT_NAMESPACE_BEGIN
@@ -146,7 +146,7 @@ void UCStyleHints::propertyNotFound(const QString &styleName, const QString &pro
 
 /*!
  * \qmltype StyleHints
- * \instantiates UbuntuToolkit::UCStyleHints
+ * \instantiates UCStyleHints
  * \inmodule Ubuntu Components 1.3
  * \ingroup ubuntu
  * \since Ubuntu.Components 1.3

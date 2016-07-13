@@ -21,7 +21,7 @@
 
 #include <ubuntugesturesglobal.h>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 class UBUNTUGESTURES_EXPORT UbuntuGesturesModule
 {

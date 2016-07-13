@@ -19,12 +19,11 @@
 #ifndef ALARMMANAGER_P_H
 #define ALARMMANAGER_P_H
 
-#include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
 #include <QtCore/QUrl>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UBUNTUTOOLKIT_EXPORT AlarmManagerPrivate
 {

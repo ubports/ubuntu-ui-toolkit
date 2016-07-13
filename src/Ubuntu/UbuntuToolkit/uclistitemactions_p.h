@@ -14,36 +14,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMACTIONS_P_H
-#define UCLISTITEMACTIONS_P_H
+#ifndef UCLISTITEMACTIONS_H
+#define UCLISTITEMACTIONS_H
 
-#include "uclistitemactions.h"
-#include "QtCore/private/qobject_p.h"
-#include <QtQml/QQmlListProperty>
+#include <QtCore/QObject>
+#include "uclistitem_p_p.h"
 
-namespace UbuntuToolkit {
+class QQmlComponent;
 
-class UCListItem;
-class UCListItemActionsPrivate : public QObjectPrivate {
-    Q_DECLARE_PUBLIC(UCListItemActions)
+UT_NAMESPACE_BEGIN
+
+class UCAction;
+class UCListItemActionsPrivate;
+class UBUNTUTOOLKIT_EXPORT UCListItemActions : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions CONSTANT)
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data)
+    Q_CLASSINFO("DefaultProperty", "data")
 public:
-    UCListItemActionsPrivate();
-    ~UCListItemActionsPrivate();
-    static UCListItemActionsPrivate* get(UCListItemActions *actions)
-    {
-        return actions ? actions->d_func() : 0;
-    }
+    explicit UCListItemActions(QObject *parent = 0);
+    ~UCListItemActions();
 
-    QQmlComponent *delegate;
-    QList<UCAction*> actions;
-    QList<QObject*> data;
+    QQmlComponent *delegate() const;
+    void setDelegate(QQmlComponent *delegate);
+    QQmlListProperty<UCAction> actions();
+    QQmlListProperty<QObject> data();
 
-    static int actions_count(QQmlListProperty<UCAction> *p);
-    static void actions_append(QQmlListProperty<UCAction> *p, UCAction *v);
-    static UCAction *actions_at(QQmlListProperty<UCAction>*, int);
-    static void actions_clear(QQmlListProperty<UCAction>*);
+Q_SIGNALS:
+    void delegateChanged();
+
+private:
+    Q_DECLARE_PRIVATE(UCListItemActions)
 };
 
 UT_NAMESPACE_END
 
-#endif // UCLISTITEMACTIONS_P_H
+#endif // UCLISTITEMACTIONS_H
