@@ -33,7 +33,7 @@ public:
 
     static ViewColumnPrivate *get(ViewColumn *q)
     {
-        return q->d_func();
+        return q ? q->d_func() : nullptr;
     }
 
     qreal minimumWidth{0.0};
@@ -71,7 +71,24 @@ class SplitViewAttachedPrivate : public QObjectPrivate
 public:
     SplitViewAttachedPrivate() {}
 
+    static SplitViewAttachedPrivate *get(SplitViewAttached *q)
+    {
+        return q->d_func();
+    }
+
+    UT_PREPEND_NAMESPACE(SplitView*) view() const
+    {
+        return splitView;
+    }
+    int getColumn() const
+    {
+        return column;
+    }
+    void configure(SplitView *view, int column);
+    UT_PREPEND_NAMESPACE(ViewColumn*) config();
+
     int column{-1};
+    SplitView *splitView{nullptr};
 };
 
 class SplitViewPrivate
@@ -80,6 +97,12 @@ class SplitViewPrivate
     Q_DECLARE_PUBLIC(SplitView)
 
 public:
+    enum RelayoutOperation {
+        SetPreferredSize = 0x01,
+        CalculateFillWidth = 0x02,
+        RecalculateAll = 0xFF
+    };
+
     SplitViewPrivate(SplitView *qq);
     virtual ~SplitViewPrivate();
 
@@ -90,7 +113,10 @@ public:
 
     QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts();
 
+    void relayout(RelayoutOperation operation);
+
     QList<SplitViewLayout*> columnLatouts;
+    SplitViewLayout* activeLayout{nullptr};
 
     // private slots
     void changeLayout();

@@ -15,17 +15,19 @@
  */
 
 import QtQuick 2.4
+import QtQuick.Window 2.1
 import Ubuntu.Test 1.3
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Labs 1.0
 
-Item {
+Window {
     id: main
     width: units.gu(200)
     height: units.gu(70)
 
     SplitView {
         anchors.fill: parent
+        spacing: units.dp(6)
         layouts: SplitViewLayout {
             id: mainLayout
             when: true
@@ -38,24 +40,31 @@ Item {
             ViewColumn {
                 preferredWidth: units.gu(50)
             }
+            ViewColumn {
+                fillWidth: true
+            }
         }
         Rectangle {
             color: UbuntuColors.red
             height: parent.height
-            // render it the first column
-            SplitView.column: 0
         }
         Rectangle {
             color: UbuntuColors.green
             height: parent.height
-            // render in the second column (if available)
-            SplitView.column: 1
+            Component.onCompleted: print(SplitView.column)
         }
         Rectangle {
             color: UbuntuColors.blue
             height: parent.height
-            // render in the third column (if available)
-            SplitView.column: 2
+        }
+        Rectangle {
+            color: UbuntuColors.ash
+            height: parent.height
+        }
+        Rectangle {
+            color: "pink"
+            height: parent.height
+            width: units.gu(30)
         }
     }
 }
