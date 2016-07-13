@@ -37,6 +37,7 @@ OTHER_FILES += \
     StyleHintsWithObject.qml \
     StyleHintsElsewhere.qml \
     StyleHintsInvalidProperty.qml \
+    StyleHintsInvalidGroupedProperty.qml \
     PropertyBindingHints.qml \
     MoreStyleHints.qml \
     GroupPropertyBindingHints.qml \

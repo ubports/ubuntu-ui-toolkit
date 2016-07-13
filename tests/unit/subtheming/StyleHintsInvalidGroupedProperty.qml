@@ -22,12 +22,9 @@ Item {
     height: units.gu(71)
 
     Button {
-        objectName: "Button"
-        id: button
-        gradient: UbuntuColors.greyGradient
         StyleHints {
             ignoreUnknownProperties: false
-            gradientProxy.topColor: "orange"
+            gradientProxy.invalidProperty: 10
         }
     }
 }

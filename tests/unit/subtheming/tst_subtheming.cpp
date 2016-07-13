@@ -827,6 +827,9 @@ private Q_SLOTS:
                 << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared in a StyledItem or a derivate of it.";
         QTest::newRow("Invalid property")
                 << "StyleHintsInvalidProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
+        QTest::newRow("Invalid grouped property")
+                << "StyleHintsInvalidGroupedProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'gradientProxy.invalidProperty'.";
+
     }
     void test_stylehints_errors()
     {
