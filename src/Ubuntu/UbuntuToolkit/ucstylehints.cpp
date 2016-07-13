@@ -228,10 +228,9 @@ void UCStyleHints::_q_applyStyleHints()
     const QString styleName = UCStyledItemBasePrivate::get(m_styledItem)->styleName();
     // apply values first
     for (int i = 0; i < m_values.size(); i++) {
-        // Note: Getting the index of m_values[i].first in item->metaObject
-        //  is not sufficient in case of a grouped property, but we can
-        //  use PropertyChange to detect invalid changes in both grouped and
-        //  simple (ungrouped) properties.
+        // Checking the validity of the property using the index of m_values[i].first in
+        //  item->metaObject is not sufficient in case of a grouped property, so we use
+        //  PropertyChange to detect all properties that are not valid.
         PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
         PropertyChange::setValue(change, m_values[i].second);
         if (!change->property().isValid()) {
