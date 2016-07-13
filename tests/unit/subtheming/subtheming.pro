@@ -40,6 +40,7 @@ OTHER_FILES += \
     PropertyBindingHints.qml \
     MoreStyleHints.qml \
     GroupPropertyBindingHints.qml \
+    GroupPropertyValueHints.qml \
     OverrideStyleHints.qml \
     HintedButton.qml \
     OtherVersion.qml \

@@ -879,6 +879,9 @@ private Q_SLOTS:
                 << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << units.gu(20);
         QTest::newRow("Different document")
                 << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << units.gu(20);
+        // regression test for bug #1602836.
+        QTest::newRow("Different document")
+                << "GroupPropertyValueHints.qml" << "gradientProxy.topColor" << QColor("orange") << QColor("orange") << "minimumWidth" << units.gu(20);
     }
     void test_stylehints_multiple()
     {
