@@ -16,9 +16,9 @@
 
 #include "threelabelsslot_p.h"
 #include "label_p.h"
-#include "ucunits.h"
-#include "ucfontutils.h"
-#include "uctheme.h"
+#include "ucunits_p.h"
+#include "ucfontutils_p.h"
+#include "uctheme_p.h"
 
 UT_NAMESPACE_BEGIN
 

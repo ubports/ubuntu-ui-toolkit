@@ -83,6 +83,7 @@ Description: Transitional package for Qt Components for Ubuntu, OpenGLES
 Package: qml-module-ubuntu-components-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+        unity8 (<< 8.13),
 Conflicts: qml-module-ubuntu-components,
            qtdeclarative5-ubuntu-ui-toolkit-plugin,
 Replaces: qml-module-ubuntu-components,
@@ -118,6 +119,7 @@ Description: Qt Components for Ubuntu - QML plugin - GLES
 Package: qml-module-ubuntu-components-labs-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+        unity8 (<< 8.13),
 Conflicts: qml-module-ubuntu-components-labs,
 Replaces: qml-module-ubuntu-components-labs,
 Provides: qml-module-ubuntu-components-labs,
@@ -148,6 +150,7 @@ Description: Qt Components Labs for Ubuntu - QML plugin - GLES
 Package: qml-module-ubuntu-performancemetrics-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+        unity8 (<< 8.13),
 Conflicts: qml-module-ubuntu-performancemetrics,
 Replaces: qml-module-ubuntu-performancemetrics,
           qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),

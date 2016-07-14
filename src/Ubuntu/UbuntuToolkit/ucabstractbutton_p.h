@@ -14,44 +14,74 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCABSTRACTBUTTON_P
-#define UCABSTRACTBUTTON_P
+#ifndef UCABSTRACTBUTTON_H
+#define UCABSTRACTBUTTON_H
 
-#include "ucabstractbutton.h"
 #include "ucactionitem_p.h"
+#include "ucmargins_p.h"
+#include <QtQuick/private/qquickevents_p_p.h>
 
-namespace UbuntuToolkit {
+class QQuickMouseArea;
+class QQuickMouseEvent;
 
-class UCAbstractButtonPrivate : public UCActionItemPrivate
+UT_NAMESPACE_BEGIN
+
+class UCAbstractButtonPrivate;
+class UBUNTUTOOLKIT_EXPORT UCAbstractButton : public UCActionItem
 {
-    Q_DECLARE_PUBLIC(UCAbstractButton)
+    Q_OBJECT
+    Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
+    Q_PROPERTY(bool hovered READ hovered NOTIFY hoveredChanged)
+#ifndef Q_QDOC
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCMargins) *sensingMargins READ sensingMargins CONSTANT FINAL)
+#else
+    Q_PROPERTY(UCMargins *sensingMargins READ sensingMargins CONSTANT FINAL)
+#endif
+
+    // internal, declared to support the deprecated ListItem module
+    Q_PROPERTY(bool __acceptEvents READ acceptEvents WRITE setAcceptEvents)
+    Q_PROPERTY(QQuickMouseArea *__mouseArea READ privateMouseArea CONSTANT)
 public:
-    static UCAbstractButtonPrivate *get(UCAbstractButton *item)
-    {
-        return item->d_func();
-    }
+    explicit UCAbstractButton(QQuickItem *parent = 0);
 
-    UCAbstractButtonPrivate();
-    void init();
+    bool pressed() const;
+    bool hovered() const;
+    UCMargins *sensingMargins();
 
-    void completeComponentInitialization() override;
+    bool privateAcceptEvents() const;
+    void setPrivateAcceptEvents(bool accept);
+    bool acceptEvents() const;
+    void setAcceptEvents(bool value);
+    QQuickMouseArea *privateMouseArea() const;
 
-    bool isPressAndHoldConnected();
-    void onClicked();
+    // override containment check
+    bool contains(const QPointF &point) const override;
 
-    // private slots
-    void _q_mouseAreaPressed();
-    void _q_mouseAreaClicked();
-    void _q_mouseAreaPressAndHold();
-    void _q_adjustSensingArea();
+protected:
+    void classBegin() override;
+    void geometryChanged(const QRectF &newGeometry,
+                         const QRectF &oldGeometry) override;
+    void keyReleaseEvent(QKeyEvent *key) override;
+    void touchEvent(QTouchEvent *event) override;
 
-    QRectF sensingArea;
-    QQuickMouseArea *mouseArea;
-    UCMargins *sensingMargins = nullptr;
-    bool acceptEvents:1;
-    bool pressAndHoldConnected:1;
+Q_SIGNALS:
+    void pressedChanged();
+    void hoveredChanged();
+    void clicked();
+    void pressAndHold();
+
+protected:
+    UCAbstractButton(UCAbstractButtonPrivate &&, QQuickItem *parent = 0);
+
+    Q_DECLARE_PRIVATE(UCAbstractButton)
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaClicked())
+    Q_PRIVATE_SLOT(d_func(), void _q_mouseAreaPressAndHold())
+    Q_PRIVATE_SLOT(d_func(), void _q_adjustSensingArea())
 };
 
 UT_NAMESPACE_END
 
-#endif // UCABSTRACTBUTTON_P
+QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCMargins))
+
+#endif // UCABSTRACTBUTTON_H

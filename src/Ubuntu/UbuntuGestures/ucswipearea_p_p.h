@@ -23,7 +23,7 @@
 
 #include "damper_p.h"
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 // Information about an active touch point
 struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {

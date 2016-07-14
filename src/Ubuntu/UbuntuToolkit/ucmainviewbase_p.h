@@ -14,48 +14,87 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMAINVIEWBASE_P_H
-#define UCMAINVIEWBASE_P_H
+#ifndef UCMAINVIEWBASE_H
+#define UCMAINVIEWBASE_H
 
 #include "ucpagetreenode_p.h"
-#include <QQmlProperty>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
-class UCMainViewBase;
+class UCMainViewBasePrivate;
 class UCActionManager;
 class UCPopupContext;
+class UCAction;
 
-class UCMainViewBasePrivate : public UCPageTreeNodePrivate
+class UBUNTUTOOLKIT_EXPORT UCMainViewBase : public UCPageTreeNode
 {
-    Q_DECLARE_PUBLIC(UCMainViewBase)
+    Q_OBJECT
+    Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)
+    Q_PROPERTY(bool anchorToKeyboard READ anchorToKeyboard WRITE setAnchorToKeyboard NOTIFY anchorToKeyboardChanged)
+    Q_PROPERTY(QColor headerColor READ headerColor WRITE setHeaderColor NOTIFY headerColorChanged)
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
+    Q_PROPERTY(QColor footerColor READ footerColor WRITE setFooterColor NOTIFY footerColorChanged)
+#ifndef Q_QDOC
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCActionManager)* actionManager READ actionManager NOTIFY actionManagerChanged)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext READ actionContext NOTIFY actionContextChanged)
+#else
+    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
+    Q_PROPERTY(UCActionManager* actionManager READ actionManager NOTIFY actionManagerChanged)
+    Q_PROPERTY(UCPopupContext* actionContext READ actionContext NOTIFY actionContextChanged)
+#endif
 
 public:
-    UCMainViewBasePrivate();
-    void init();
+    UCMainViewBase(QQuickItem *parent = nullptr);
 
-    enum PropertyFlags {
-        CustomHeaderColor     = 0x01,
-        CustomBackgroundColor = 0x02,
-        CustomFooterColor     = 0x04
-    };
 
-    void _q_headerColorBinding (const QColor &col);
-    void _q_footerColorBinding (const QColor &col);
-    void doAutoTheme();
-    void _q_updateWindow();
+    QString applicationName() const;
+    void setApplicationName(QString applicationName);
 
-    QString m_applicationName;
-    QColor m_headerColor;
-    QColor m_backgroundColor;
-    QColor m_footerColor;
-    UCActionManager *m_actionManager = nullptr;
-    UCPopupContext* m_actionContext = nullptr;
-    qint8 m_flags;
-    bool m_anchorToKeyboard:1;
+    bool anchorToKeyboard() const;
+    void setAnchorToKeyboard(bool anchorToKeyboard);
 
+    QColor headerColor() const;
+    void setHeaderColor(QColor headerColor);
+
+    QColor backgroundColor() const;
+    void setBackgroundColor(QColor backgroundColor);
+
+    QColor footerColor() const;
+    void setFooterColor(QColor footerColor);
+
+    QQmlListProperty<UCAction> actions() const;
+
+    UCActionManager *actionManager() const;
+
+    UCPopupContext* actionContext() const;
+
+    // QQmlParserStatus interface
+    void componentComplete() override;
+    void classBegin() override;
+
+Q_SIGNALS:
+    void applicationNameChanged(QString applicationName);
+    void anchorToKeyboardChanged(bool anchorToKeyboard);
+    void headerColorChanged(const QColor &headerColor);
+    void backgroundColorChanged(const QColor &backgroundColor);
+    void footerColorChanged(const QColor &footerColor);
+#ifndef Q_QDOC
+    void actionManagerChanged(UT_PREPEND_NAMESPACE(UCActionManager)* actionManager);
+    void actionContextChanged(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext);
+#else
+    void actionManagerChanged(UCActionManager* actionManager);
+    void actionContextChanged(UCPopupContext* actionContext);
+#endif
+
+protected:
+    UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent);
+
+private:
+    Q_DECLARE_PRIVATE(UCMainViewBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_updateWindow())
 };
 
 UT_NAMESPACE_END
 
-#endif // UCMAINVIEWBASE_P_H
+#endif // UCMAINVIEWBASE_H

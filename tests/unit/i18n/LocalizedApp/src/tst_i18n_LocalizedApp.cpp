@@ -36,8 +36,8 @@ namespace C {
 #include <libintl.h>
 }
 
-#include "ucunits.h"
-#include "i18n.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
+#include <UbuntuToolkit/private/i18n_p.h>
 #include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE

@@ -14,12 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listitemdragarea.h"
-#include "listitemdraghandler.h"
-#include "uclistitem.h"
-#include "uclistitem_p.h"
-#include "ucunits.h"
-#include "i18n.h"
+#include "listitemdragarea_p.h"
+#include "listitemdraghandler_p.h"
+#include "uclistitem_p_p.h"
+#include "ucunits_p.h"
+#include "i18n_p.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>

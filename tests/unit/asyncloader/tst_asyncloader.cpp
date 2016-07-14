@@ -18,7 +18,7 @@
 #include <QtTest/QtTest>
 #include "uctestcase.h"
 #include "uctestextras.h"
-#include <asyncloader.h>
+#include <UbuntuToolkit/private/asyncloader_p.h>
 #include <functional>
 #include <QtQml/QQmlEngine>
 

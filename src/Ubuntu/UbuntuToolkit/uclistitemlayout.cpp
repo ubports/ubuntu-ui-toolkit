@@ -20,14 +20,14 @@
 #include <QtQml/QQmlEngine>
 
 #include "privates/threelabelsslot_p.h"
-#include "uclistitemlayout.h"
-#include "uclabel.h"
+#include "uclistitemlayout_p.h"
+#include "uclabel_p.h"
 
 UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype ListItemLayout
-    \instantiates UbuntuToolkit::UCListItemLayout
+    \instantiates UCListItemLayout
     \inqmlmodule Ubuntu.Components
     \since Ubuntu.Components 1.3
     \inherits SlotsLayout

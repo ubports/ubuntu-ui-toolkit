@@ -23,9 +23,9 @@
 #include <QtQml/QQmlListProperty>
 #include <QtCore/QSet>
 
-#include "ucalarm.h"
+#include "ucalarm_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class AlarmUtils {
 public:

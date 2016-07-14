@@ -36,14 +36,14 @@ DEFINES -= QT_DEPRECATED_WARNINGS
 DEFINES -= QT_ASCII_CAST_WARNINGS
 
 HEADERS += \
-    colorutils.h \
+    colorutils_p.h \
     ubuntutoolkitglobal.h \
-    tree.h \
-    asyncloader.h \
+    tree_p.h \
     asyncloader_p.h \
-    mousetouchadaptor.h \
+    asyncloader_p_p.h \
     mousetouchadaptor_p.h \
-    propertychange.h \
+    mousetouchadaptor_p_p.h \
+    propertychange_p.h \
     ubuntutoolkitmodule.h
 
 SOURCES += \ 
@@ -55,100 +55,100 @@ SOURCES += \
     ubuntutoolkitmodule.cpp
 
 HEADERS += \
-    uctheme.h \
-    i18n.h \
-    listener.h \
-    ucscalingimageprovider.h \
-    ucunits.h \
-    ucqquickimageextension.h \
-    quickutils.h \
-    ucubuntushapetextures.h \
-    ucubuntushape.h \
-    ucubuntushapeoverlay.h \
-    ucproportionalshape.h \
-    inversemouseareatype.h \
-    qquickclipboard.h \
-    qquickmimedata.h \
+    uctheme_p.h \
+    i18n_p.h \
+    listener_p.h \
+    ucscalingimageprovider_p.h \
+    ucunits_p.h \
+    ucqquickimageextension_p.h \
+    quickutils_p.h \
+    ucubuntushapetextures_p.h \
+    ucubuntushape_p.h \
+    ucubuntushapeoverlay_p.h \
+    ucproportionalshape_p.h \
+    inversemouseareatype_p.h \
     qquickclipboard_p.h \
-    ucubuntuanimation.h \
-    ucfontutils.h \
-    ucapplication.h \
-    ucarguments.h \
-    ucargument.h \
-    ucalarm.h \
+    qquickmimedata_p.h \
+    qquickclipboard_p_p.h \
+    ucubuntuanimation_p.h \
+    ucfontutils_p.h \
+    ucapplication_p.h \
+    ucarguments_p.h \
+    ucargument_p.h \
     ucalarm_p.h \
+    ucalarm_p_p.h \
     alarmmanager_p_p.h \
     alarmmanager_p.h \
-    ucalarmmodel.h \
-    unitythemeiconprovider.h \
+    ucalarmmodel_p.h \
+    unitythemeiconprovider_p.h \
     adapters/alarmsadapter_p.h \
-    ucstatesaver.h \
-    sortbehavior.h \
-    filterbehavior.h \
-    sortfiltermodel.h \
-    statesaverbackend_p.h \
     ucstatesaver_p.h \
-    ucurihandler.h \
-    ucinversemouse.h \
-    ucmouse.h \
+    sortbehavior_p.h \
+    filterbehavior_p.h \
+    sortfiltermodel_p.h \
+    statesaverbackend_p.h \
+    ucstatesaver_p_p.h \
+    ucurihandler_p.h \
+    ucinversemouse_p.h \
+    ucmouse_p.h \
     unixsignalhandler_p.h \
-    ucstyleditembase.h \
     ucstyleditembase_p.h \
-    ucaction.h \
-    ucactioncontext.h \
-    ucactionmanager.h \
+    ucstyleditembase_p_p.h \
+    ucaction_p.h \
+    ucactioncontext_p.h \
+    ucactionmanager_p.h \
     adapters/actionsproxy_p.h \
     adapters/dbuspropertywatcher_p.h \
-    uclistitem.h \
     uclistitem_p.h \
-    uclistitemactions.h \
+    uclistitem_p_p.h \
     uclistitemactions_p.h \
-    uclistitemstyle.h \
-    ucserviceproperties.h \
+    uclistitemactions_p_p.h \
+    uclistitemstyle_p.h \
     ucserviceproperties_p.h \
-    privates/listitemdragarea.h \
-    privates/listitemdraghandler.h \
-    privates/listitemselection.h \
-    ucdeprecatedtheme.h \
-    ucdefaulttheme.h \
-    ucstylehints.h \
-    ucslotslayout.h \
+    ucserviceproperties_p_p.h \
+    privates/listitemdragarea_p.h \
+    privates/listitemdraghandler_p.h \
+    privates/listitemselection_p.h \
+    ucdeprecatedtheme_p.h \
+    ucdefaulttheme_p.h \
+    ucstylehints_p.h \
     ucslotslayout_p.h \
-    livetimer.h \
+    ucslotslayout_p_p.h \
     livetimer_p.h \
+    livetimer_p_p.h \
     timeutils_p.h \
-    ucactionitem.h \
     ucactionitem_p.h \
-    uchaptics.h \
-    ucabstractbutton.h \
+    ucactionitem_p_p.h \
+    uchaptics_p.h \
     ucabstractbutton_p.h \
-    ucmargins.h \
-    ucthemingextension.h \
-    ucheader.h \
-    uclabel.h \
-    uclistitemlayout.h \
+    ucabstractbutton_p_p.h \
+    ucmargins_p.h \
+    ucthemingextension_p.h \
+    ucheader_p.h \
+    uclabel_p.h \
+    uclistitemlayout_p.h \
     privates/threelabelsslot_p.h \
     ucimportversionchecker_p.h \
-    ucbottomedgehint.h \
     ucbottomedgehint_p.h \
-    ucmathutils.h \
-    ucbottomedge.h \
+    ucbottomedgehint_p_p.h \
+    ucmathutils_p.h \
     ucbottomedge_p.h \
-    ucbottomedgestyle.h \
-    ucbottomedgeregion.h \
-    ucpagetreenode.h \
+    ucbottomedge_p_p.h \
+    ucbottomedgestyle_p.h \
+    ucbottomedgeregion_p.h \
     ucpagetreenode_p.h \
-    ucmainviewbase.h \
+    ucpagetreenode_p_p.h \
     ucmainviewbase_p.h \
-    ucperformancemonitor.h \
-    privates/listviewextensions.h \
-    privates/frame.h \
-    privates/ucpagewrapper.h \
+    ucmainviewbase_p_p.h \
+    ucperformancemonitor_p.h \
+    privates/listviewextensions_p.h \
+    privates/frame_p.h \
     privates/ucpagewrapper_p.h \
+    privates/ucpagewrapper_p_p.h \
     privates/ucpagewrapperincubator_p.h \
-    privates/appheaderbase.h \
+    privates/appheaderbase_p.h \
     label_p.h \
-    ucbottomedgeregion_p.h
+    ucbottomedgeregion_p_p.h
 
 SOURCES += \
     uctheme.cpp \

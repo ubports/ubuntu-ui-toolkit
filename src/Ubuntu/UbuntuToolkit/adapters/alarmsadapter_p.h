@@ -19,6 +19,7 @@
 #ifndef ALARMSADAPTER_P_H
 #define ALARMSADAPTER_P_H
 
+#include "private/ucalarm_p_p.h"
 #include "private/alarmmanager_p_p.h"
 
 #include <qorganizer.h>

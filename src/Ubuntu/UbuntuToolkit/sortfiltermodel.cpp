@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "sortfiltermodel.h"
+#include "sortfiltermodel_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -258,6 +258,3 @@ QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
 }
 
 UT_NAMESPACE_END
-
-#include "moc_sortfiltermodel.cpp"
-

@@ -14,8 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucpagewrapper.h"
-#include "ucpagewrapper_p.h"
+#include "ucpagewrapper_p_p.h"
 #include "ucpagewrapperincubator_p.h"
 
 #include <QQmlEngine>
@@ -774,4 +773,4 @@ void UCPageWrapper::resetTheme2()
 
 UT_NAMESPACE_END
 
-#include "moc_ucpagewrapper.cpp"
+#include "moc_ucpagewrapper_p.cpp"

@@ -38,6 +38,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QLoggingCategory>
+#include <QRegularExpression>
 
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlengine_p.h>
@@ -140,30 +141,37 @@ bool typeNameSort(const QQmlType* type1, const QQmlType* type2)
 */
 QByteArray convertToId(const QString &cppName)
 {
-    QString qmlType(cppName);
+    QString qmlType(QString(qPrintable(cppName)).replace(QRegExp("(QQmlListProperty|QList)<(.+)>"), "\\2"));
+    QString typeFormat(qmlType != cppName ? "list<%1>" : "%1");
+
+    QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(qmlType)].toList());
+    std::sort(types.begin(), types.end(), typeNameSort);
+
     if (qmlType.contains("::")) {
         QStringList parts(qmlType.split("::"));
-        return qPrintable(convertToId(parts[0]) + "." + convertToId(parts[1]));
+        // Enum or Flags
+        if (parts.length() > 2) {
+            qmlType = convertToId(parts[0] + "::" + parts[1]) + "." + parts[2];
+        } else {
+            // Namespace
+            qmlType = parts[1];
+            // FIXME: Namespaces in properties?
+            if (parts[0] == "Qt" || parts[0] == "RenderTimer")
+                return qPrintable(typeFormat.arg(parts[0] + "." + qmlType));
+        }
     }
 
-    QList<const QQmlType*>types(qmlTypesByCppName[qPrintable(cppName)].toList());
-    std::sort(types.begin(), types.end(), typeNameSort);
-    if (!types.isEmpty())
-        qmlType = QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
-    else
-        qmlType = cppToId.value(qPrintable(qmlType), qPrintable(cppName));
+    if (types.isEmpty())
+        qmlType = cppToId.value(qPrintable(qmlType), qPrintable(qmlType));
+    else {
+        // Cache QML type name
+        QString newQmlType(QString(types[0]->qmlTypeName()).split("/")[1].toUtf8());
+        cppToId.insert(qPrintable(qmlType), qPrintable(newQmlType));
+        qmlType = newQmlType;
+    }
     // Strip internal _QMLTYPE_xy suffix
     qmlType = qmlType.split("_")[0];
-    // List type
-    if (qmlType.startsWith("QQmlListProperty<")) {
-        QString subType(qmlType.mid(17, qmlType.size() - 18));
-        qmlType = "list<" + convertToId(subType) + ">";
-    }
-    else if (qmlType.startsWith("QList<")) {
-        QString subType(qmlType.mid(6, qmlType.size() - 7));
-        qmlType = "list<" + convertToId(subType) + ">";
-    }
-    return qPrintable(qmlType.replace("QTestRootObject", "QtObject"));
+    return qPrintable(typeFormat.arg(qmlType));
 }
 
 QByteArray convertToId(const QMetaObject *mo)
@@ -626,7 +634,7 @@ private:
         // Two leading underscores: internal API
         if (name.startsWith("__"))
             return;
-        const QString typeName = meth.typeName();
+        QString typeName = meth.typeName();
 
         if (implicitSignals.contains(name)
                 && !meth.revision()
@@ -652,6 +660,8 @@ private:
         if (revision && object->contains("#version"))
             method["version"] = object->value("#version").toString();
 
+        if (typeName.endsWith("*"))
+            typeName.truncate(typeName.size() - 1);
         if (typeName != QLatin1String("void"))
             method["returns"] = typeName;
 
@@ -850,6 +860,7 @@ int main(int argc, char *argv[])
     cppToId.insert("QPoint", "Qt.point");
     cppToId.insert("QColor", "color");
     cppToId.insert("QQmlEasingValueType::Type", "Type");
+    cppToId.insert("QTestRootObject", "QtObject");
 
     // find a valid QtQuick import
     QByteArray importCode;

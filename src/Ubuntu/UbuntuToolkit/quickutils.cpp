@@ -15,7 +15,7 @@
  *
  */
 
-#include "quickutils.h"
+#include "quickutils_p.h"
 
 #include <QGuiApplication>
 #include <QtQuick/QQuickView>

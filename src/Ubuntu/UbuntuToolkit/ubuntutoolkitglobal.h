@@ -29,7 +29,7 @@
 #define MAJOR_VERSION(version)          ((version) >> 8)
 #define MINOR_VERSION(version)          ((version) & 0x00FF)
 
-#if defined(UBUNTUTOOLKIT_NAMESPACE)
+#if !defined(UBUNTUTOOLKIT_NO_NAMESPACE)
 
 #define UT_NAMESPACE_BEGIN          namespace UbuntuToolkit {
 #define UT_NAMESPACE_END            }

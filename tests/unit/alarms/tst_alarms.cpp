@@ -16,10 +16,10 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucalarm.h"
-#include "private/ucalarm_p.h"
-#include "private/alarmmanager_p.h"
-#include "ucalarmmodel.h"
+#include <UbuntuToolkit/private/ucalarm_p.h>
+#include "private/ucalarm_p_p.h"
+#include "private/alarmmanager_p_p.h"
+#include <UbuntuToolkit/private/ucalarmmodel_p.h>
 #include "private/alarmsadapter_p.h"
 
 #include "uctestcase.h"

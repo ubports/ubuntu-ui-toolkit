@@ -17,9 +17,9 @@
 #ifndef LABEL_P
 #define LABEL_P
 
-#include "uclabel.h"
+#include "uclabel_p.h"
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class UCLabelPrivate
 {
