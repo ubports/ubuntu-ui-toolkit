@@ -20,11 +20,13 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
-#include "ucdeprecatedtheme.h"
-#include "uctheme.h"
+#include <UbuntuToolkit/private/ucdeprecatedtheme_p.h>
+#include <UbuntuToolkit/private/uctheme_p.h>
 #include "uctestcase.h"
 #include <private/qquicktext_p.h>
-#include "plugin.h"
+#include <ubuntutoolkitmodule.h>
+
+UT_USE_NAMESPACE
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -76,7 +78,7 @@ private:
     }
     void initDeprecatedTheme(QQmlEngine &engine)
     {
-        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        UbuntuToolkitModule::initializeContextProperties(&engine);
     }
 
 private Q_SLOTS:

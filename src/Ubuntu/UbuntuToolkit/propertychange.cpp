@@ -14,14 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "propertychange.h"
+#include "propertychange_p.h"
 
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH //workaround to fix private includes
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 /*
  * The class is used to save properties and their bindings while the property is
  * altered temporarily.
@@ -124,4 +124,4 @@ void PropertyChange::restore(PropertyChange *change)
     }
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END

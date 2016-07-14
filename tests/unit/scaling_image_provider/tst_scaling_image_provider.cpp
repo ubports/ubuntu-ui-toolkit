@@ -17,7 +17,9 @@
  */
 
 #include <QtTest/QtTest>
-#include "ucscalingimageprovider.h"
+#include <UbuntuToolkit/private/ucscalingimageprovider_p.h>
+
+UT_USE_NAMESPACE
 
 class tst_UCScalingImageProvider: public QObject
 {

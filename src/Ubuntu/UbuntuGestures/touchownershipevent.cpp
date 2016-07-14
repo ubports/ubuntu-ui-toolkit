@@ -14,7 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "touchownershipevent.h"
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+
+UG_NAMESPACE_BEGIN
 
 QEvent::Type TouchOwnershipEvent::m_touchOwnershipType = (QEvent::Type)-1;
 
@@ -33,3 +35,5 @@ QEvent::Type TouchOwnershipEvent::touchOwnershipEventType()
 
     return m_touchOwnershipType;
 }
+
+UG_NAMESPACE_END

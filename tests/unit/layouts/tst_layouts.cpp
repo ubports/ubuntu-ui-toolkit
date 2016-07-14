@@ -27,11 +27,13 @@
 #include <QtCore/QDir>
 
 #include "ullayouts.h"
-#include "ucunits.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
 #include "uctestcase.h"
-#include "uctheme.h"
+#include <UbuntuToolkit/private/uctheme_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
+
+UT_USE_NAMESPACE
 
 #define QCOMPARE_RET(actual, expected) \
 do {\

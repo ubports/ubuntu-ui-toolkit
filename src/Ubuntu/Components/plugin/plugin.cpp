@@ -15,316 +15,32 @@
  *
  */
 
-#include <QtQuick/private/qquickimagebase_p.h>
-#include <QDBusConnection>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QScreen>
-
+#include <QtQml/QQmlEngine>
 #include "plugin.h"
-#include "uctheme.h"
-#include "ucdeprecatedtheme.h"
-#include "ucthemingextension.h"
-
-#include <QtQml/QQmlContext>
-#include "i18n.h"
-#include "listener.h"
-#include "livetimer.h"
-#include "ucunits.h"
-#include "ucscalingimageprovider.h"
-#include "ucqquickimageextension.h"
-#include "quickutils.h"
-#include "ucubuntushape.h"
-#include "ucubuntushapeoverlay.h"
-#include "ucproportionalshape.h"
-#include "inversemouseareatype.h"
-#include "qquickclipboard.h"
-#include "qquickmimedata.h"
-#include "ucubuntuanimation.h"
-#include "ucfontutils.h"
-#include "ucarguments.h"
-#include "ucargument.h"
-#include "ucapplication.h"
-#include "ucalarm.h"
-#include "ucalarmmodel.h"
-#include "unitythemeiconprovider.h"
-#include "ucstatesaver.h"
-#include "ucurihandler.h"
-#include "ucmouse.h"
-#include "ucinversemouse.h"
-#include "sortfiltermodel.h"
-#include "ucstyleditembase.h"
-#include "ucstylehints.h"
-#include "ucaction.h"
-#include "ucactioncontext.h"
-#include "ucactionmanager.h"
-#include "uclistitem.h"
-#include "uclistitem_p.h"
-#include "uclistitemactions.h"
-#include "uclistitemstyle.h"
-#include "ucserviceproperties.h"
 #include "ucnamespace.h"
-#include "ucslotslayout.h"
-#include "ucactionitem.h"
-#include "uchaptics.h"
-#include "ucabstractbutton.h"
-#include "ucheader.h"
-#include "uclabel.h"
-#include "uclistitemlayout.h"
-#include "ucbottomedgehint.h"
-#include "ucmathutils.h"
-#include "ucbottomedge.h"
-#include "ucbottomedgeregion.h"
-#include "ucbottomedgestyle.h"
-#include "ucpagetreenode.h"
-#include "ucmainviewbase.h"
-#include "ucperformancemonitor.h"
-#include "privates/frame.h"
-#include "privates/ucpagewrapper.h"
-#include "privates/appheaderbase.h"
+#include <ubuntutoolkitmodule.h>
+#include <ubuntugesturesmodule.h>
 
-// From UbuntuGestures
-#include "private/ucswipearea_p.h"
-
-//From UbuntuToolkit
-#include <ColorUtils>
-#include <Tree>
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdexcept>
-
-QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
-
-/*
- * Type registration functions.
- */
-
-template<typename T> static QObject *qmlRegisterSimpleSingletonTypeCallback(QQmlEngine *, QJSEngine *)
+UbuntuComponentsPlugin::~UbuntuComponentsPlugin()
 {
-    return (new T);
-}
-
-template<typename T> static int qmlRegisterSimpleSingletonType(const char *uri, int major, int minor, const char *typeName)
-{
-    return qmlRegisterSingletonType<T>(uri, major, minor, typeName, qmlRegisterSimpleSingletonTypeCallback<T>);
-}
-
-void UbuntuComponentsPlugin::initializeBaseUrl()
-{
-    if (!m_baseUrl.isValid()) {
-        m_baseUrl = QUrl(baseUrl().toString() + '/');
-    }
-}
-
-void UbuntuComponentsPlugin::registerWindowContextProperty()
-{
-    setWindowContextProperty(QGuiApplication::focusWindow());
-
-    // listen to QGuiApplication::focusWindowChanged
-    /* Ensure that setWindowContextProperty is called in the same thread (the
-       main thread) otherwise it segfaults. Reference:
-       https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205556
-    */
-    QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
-    QObject::connect(application, SIGNAL(focusWindowChanged(QWindow*)),
-                     this, SLOT(setWindowContextProperty(QWindow*)),
-                     Qt::ConnectionType(Qt::DirectConnection | Qt::UniqueConnection));
-
-}
-
-void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
-{
-    QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
-
-    if (view != NULL) {
-        view->rootContext()->setContextProperty("window", view);
-    }
-}
-
-void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
-{
-    qmlRegisterType<UCAction>(uri, major, minor, "Action");
-    qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
-    qmlRegisterUncreatableType<UCApplication>(uri, major, minor, "UCApplication", "Not instantiable");
-    qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", "Not instantiable");
-    qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
-    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
-    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
-    qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
-    // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
-    qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
-    qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
-    qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
-    qmlRegisterSimpleSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard");
-    qmlRegisterSimpleSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation");
-    qmlRegisterType<UCArguments>(uri, major, minor, "Arguments");
-    qmlRegisterType<UCArgument>(uri, major, minor, "Argument");
-    qmlRegisterType<QQmlPropertyMap>();
-    qmlRegisterType<UCAlarm>(uri, major, minor, "Alarm");
-    qmlRegisterType<UCAlarmModel>(uri, major, minor, "AlarmModel");
-    qmlRegisterType<UCStateSaver>(uri, major, minor, "StateSaver");
-    qmlRegisterType<UCStateSaverAttached>();
-    qmlRegisterSimpleSingletonType<UCUriHandler>(uri, major, minor, "UriHandler");
-    qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
-    qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
-    qmlRegisterType<UCActionItem>(uri, major, minor, "ActionItem");
-    qmlRegisterSimpleSingletonType<UCHaptics>(uri, major, minor, "Haptics");
-    qmlRegisterSimpleSingletonType<UCMathUtils>(uri, major, minor, "MathUtils");
-    qmlRegisterSimpleSingletonType<UbuntuToolkit::ColorUtils>(uri, major, minor, "ColorUtils");
+    UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::undefineModule();
+    UG_PREPEND_NAMESPACE(UbuntuGesturesModule)::undefineModule();
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
-    initializeBaseUrl();
+    Q_UNUSED(uri);
 
-    // register 0.1 for backward compatibility
-    registerTypesToVersion(uri, 0, 1);
-    registerTypesToVersion(uri, 1, 0);
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::UCNamespace>(uri, 1, 2, "Ubuntu");
+    qmlRegisterSimpleSingletonType<UbuntuToolkit::UCNamespaceV13>(uri, 1, 3, "Ubuntu");
 
-    // register custom event
-    ForwardedEvent::registerForwardedEvent();
-
-    // register parent type so that properties can get/ set it
-    qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
-
-    // register 1.1 only API
-    qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItem");
-    qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
-    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
-    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
-    qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
-
-    // register 1.2 only API
-    qmlRegisterType<UCListItem>(uri, 1, 2, "ListItem");
-    qmlRegisterType<UCListItemDivider>();
-    qmlRegisterUncreatableType<UCSwipeEvent>(uri, 1, 2, "SwipeEvent", "This is an event object.");
-    qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
-    qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
-    qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
-    qmlRegisterSimpleSingletonType<UCNamespace>(uri, 1, 2, "Ubuntu");
-    qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
-    qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
-
-    // register 1.3 API
-    qmlRegisterType<UCListItem, 1>(uri, 1, 3, "ListItem");
-    qmlRegisterType<UCListItemExpansion>();
-    qmlRegisterType<UCTheme>(uri, 1, 3, "ThemeSettings");
-    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
-    qmlRegisterSimpleSingletonType<UCNamespaceV13>(uri, 1, 3, "Ubuntu");
-    qmlRegisterType<UCStyledItemBase, 2>(uri, 1, 3, "StyledItem");
-    qmlRegisterCustomType<UCStyleHints>(uri, 1, 3, "StyleHints", new UCStyleHintsParser);
-    qmlRegisterType<UCAction, 1>(uri, 1, 3, "Action");
-    qmlRegisterType<UCSlotsLayout>(uri, 1, 3, "SlotsLayout");
-    qmlRegisterType<UCUbuntuShape, 2>(uri, 1, 3, "UbuntuShape");
-    qmlRegisterType<UCProportionalShape>(uri, 1, 3, "ProportionalShape");
-    qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
-    qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
-    qmlRegisterType<UCMargins>();
-    qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", "Not instantiable");
-    qmlRegisterUncreatableType<UCSlotsLayoutPadding>(uri, 1, 3, "SlotsLayoutPadding", "Not instantiable");
-    qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
-    qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
-    qmlRegisterType<UCLabel>(uri, 1, 3, "Label");
-    qmlRegisterType<UCBottomEdgeHint>(uri, 1, 3, "BottomEdgeHint");
-    qmlRegisterType<UCSwipeArea>(uri, 1, 3, "SwipeArea");
-    qmlRegisterType<UCBottomEdge>(uri, 1, 3, "BottomEdge");
-    qmlRegisterType<UCBottomEdgeRegion>(uri, 1, 3, "BottomEdgeRegion");
-    qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
-    qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
-    qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
-}
-
-void UbuntuComponentsPlugin::initializeContextProperties(QQmlEngine *engine)
-{
-    UCUnits::instance(engine);
-    QuickUtils::instance(engine);
-    UbuntuI18n::instance(engine);
-    UCApplication::instance(engine);
-    UCFontUtils::instance(engine);
-    UCTheme::defaultTheme(engine);
-
-    QQmlContext* context = engine->rootContext();
-
-    // register root object watcher that sets a global property with the root object
-    // that can be accessed from any object
-    context->setContextProperty("QuickUtils", QuickUtils::instance());
-
-    UCDeprecatedTheme::registerToContext(context);
-
-    context->setContextProperty("i18n", UbuntuI18n::instance());
-    ContextPropertyChangeListener *i18nChangeListener =
-        new ContextPropertyChangeListener(context, "i18n");
-    QObject::connect(UbuntuI18n::instance(), SIGNAL(domainChanged()),
-                     i18nChangeListener, SLOT(updateContextProperty()));
-    QObject::connect(UbuntuI18n::instance(), SIGNAL(languageChanged()),
-                     i18nChangeListener, SLOT(updateContextProperty()));
-
-    // We can't use 'Application' because it exists (undocumented)
-    context->setContextProperty("UbuntuApplication", UCApplication::instance());
-    ContextPropertyChangeListener *applicationChangeListener =
-        new ContextPropertyChangeListener(context, "UbuntuApplication");
-    QObject::connect(UCApplication::instance(), SIGNAL(applicationNameChanged()),
-                     applicationChangeListener, SLOT(updateContextProperty()));
-    // Give the application object access to the engine
-    UCApplication::instance()->setContext(context);
-
-    context->setContextProperty("units", UCUnits::instance());
-    ContextPropertyChangeListener *unitsChangeListener =
-        new ContextPropertyChangeListener(context, "units");
-    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     unitsChangeListener, SLOT(updateContextProperty()));
-
-    // register FontUtils
-    context->setContextProperty("FontUtils", UCFontUtils::instance());
-    ContextPropertyChangeListener *fontUtilsListener =
-        new ContextPropertyChangeListener(context, "FontUtils");
-    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
-                     fontUtilsListener, SLOT(updateContextProperty()));
-
+    UG_PREPEND_NAMESPACE(UbuntuGesturesModule)::defineModule(uri);
+    UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::defineModule();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
-    // initialize baseURL
-    initializeBaseUrl();
-
-    // register internal styles
-    const char *styleUri = "Ubuntu.Components.Styles";
-    qmlRegisterType<UCListItemStyle>(styleUri, 1, 2, "ListItemStyle");
-    qmlRegisterType<UCListItemStyle, 1>(styleUri, 1, 3, "ListItemStyle");
-    qmlRegisterType<UCBottomEdgeStyle>(styleUri, 1, 3, "BottomEdgeStyle");
-
-    // Register private types.
-    const char *privateUri = "Ubuntu.Components.Private";
-    qmlRegisterType<UCFrame>(privateUri, 1, 3, "Frame");
-    qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
-    qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
-    qmlRegisterType<UbuntuToolkit::Tree>(privateUri, 1, 3, "Tree");
-
+    UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::initializeModule(engine, baseUrl());
     QQmlExtensionPlugin::initializeEngine(engine, uri);
-
-    // allocate all context property objects prior we register them
-    initializeContextProperties(engine);
-
-    HapticsProxy::instance(engine);
-
-    engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
-
-    // register icon provider
-    engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
-
-    // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
-    QGuiApplication::primaryScreen()->setOrientationUpdateMask(
-            Qt::PortraitOrientation |
-            Qt::LandscapeOrientation |
-            Qt::InvertedPortraitOrientation |
-            Qt::InvertedLandscapeOrientation);
-
-    registerWindowContextProperty();
-
-    // register performance monitor
-    engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
 }

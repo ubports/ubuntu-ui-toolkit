@@ -25,11 +25,11 @@
 #include <private/qquickwindow_p.h>
 
 // local
-#include <UbuntuGestures/TouchOwnershipEvent>
-#include <UbuntuGestures/TouchRegistry>
-#include <UbuntuGestures/UnownedTouchEvent>
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+#include <UbuntuGestures/private/touchregistry_p.h>
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea", QtMsgType::QtWarningMsg)
 Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo", QtMsgType::QtWarningMsg)
@@ -1055,3 +1055,5 @@ void UCSwipeAreaPrivate::removeStatusChangeListener(UCSwipeAreaStatusListener *l
 {
     statusChangeListeners.removeAll(listener);
 }
+
+UG_NAMESPACE_END

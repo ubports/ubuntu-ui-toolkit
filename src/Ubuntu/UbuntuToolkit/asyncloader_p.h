@@ -16,39 +16,48 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ASYNCLOADER_P_H
-#define ASYNCLOADER_P_H
+#ifndef ASYNCLOADER_H
+#define ASYNCLOADER_H
 
-#include <QtCore/private/qobject_p.h>
-#include <QtQml/QQmlIncubator>
-#include <AsyncLoader>
+#include <QtQml/QQmlComponent>
+#include <ubuntutoolkitglobal.h>
 
-namespace UbuntuToolkit {
+class QQuickItem;
+class QQmlContext;
 
-class AsyncLoaderPrivate : public QObjectPrivate, public QQmlIncubator
+UT_NAMESPACE_BEGIN
+
+class AsyncLoaderPrivate;
+class UBUNTUTOOLKIT_EXPORT AsyncLoader : public QObject
 {
-    Q_DECLARE_PUBLIC(AsyncLoader)
+    Q_OBJECT
 public:
-    AsyncLoaderPrivate()
-        : QObjectPrivate()
-        , QQmlIncubator(Asynchronous)
-    {}
+    enum LoadingStatus {
+        Null,
+        Compiling,
+        Loading,
+        Initializing,
+        Ready,
+        Error,
+        Reset
+    };
 
-    QSharedPointer<QMetaObject::Connection> componentHandler;
-    QQmlComponent *component = nullptr;
-    QQmlContext *context = nullptr;
-    AsyncLoader::LoadingStatus status = AsyncLoader::Ready;
-    bool ownComponent = false;
+    explicit AsyncLoader(QObject *parent = 0);
+    ~AsyncLoader();
 
-    void setInitialState(QObject *object) override;
-    void statusChanged(Status status) override;
+    bool load(const QUrl &url, QQmlContext *context);
+    bool load(QQmlComponent *component, QQmlContext *context);
+    bool reset();
+    LoadingStatus status();
+    void forceCompletion();
 
-    void emitStatus(AsyncLoader::LoadingStatus status, QObject *object = 0);
-    void onComponentStatusChanged(QQmlComponent::Status status);
-    void detachComponent();
+Q_SIGNALS:
+    void loadingStatus(AsyncLoader::LoadingStatus status, QObject *object);
+
+protected:
+    Q_DECLARE_PRIVATE(AsyncLoader)
 };
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
-#endif // ASYNCLOADER_P_H
-
+#endif // ASYNCLOADER_H
