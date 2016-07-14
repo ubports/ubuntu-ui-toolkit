@@ -39,7 +39,7 @@ Item {
      */
     property color backgroundColor
 
-    readonly property IconButtonProperties buttons: IconButtonProperties { }
+    readonly property ButtonProperties buttons: ButtonProperties { }
 
     /*!
       The color of the background of a pressed button in the action bar.
