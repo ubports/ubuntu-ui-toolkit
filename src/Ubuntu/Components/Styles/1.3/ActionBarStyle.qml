@@ -17,7 +17,7 @@ import QtQuick 2.4
 
 /*!
     \qmltype ActionBarStyle
-    \inqmlmodule Ubuntu.Components.Styles 1.1
+    \inqmlmodule Ubuntu.Components.Styles 1.3
     \ingroup style-api
     \brief Style API for action bar.
 
@@ -25,26 +25,14 @@ import QtQuick 2.4
   */
 Item {
     /*!
-      The color of the action buttons in the action bar.
-     */
-//    property color foregroundColor
-
-    /*!
-      The color of disabled action buttons in the action bar.
-     */
-//    property color disabledForegroundColor
-
-    /*!
       The color of the background of the action bar.
      */
     property color backgroundColor
 
-    readonly property ButtonProperties buttons: ButtonProperties { }
-
     /*!
-      The color of the background of a pressed button in the action bar.
+      Configuration of the colors of the action buttons in the action bar.
      */
-//    property color pressedButtonBackgroundColor
+    readonly property ButtonProperties buttons: ButtonProperties { }
 
     /*!
       The default action delegate if the styled item does
