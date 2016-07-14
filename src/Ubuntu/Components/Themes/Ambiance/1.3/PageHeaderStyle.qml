@@ -25,8 +25,15 @@ Style.PageHeaderStyle {
     disabledForegroundColor: theme.palette.disabled.backgroundText
     subtitleColor: theme.palette.normal.backgroundTertiaryText
     backgroundColor: theme.palette.normal.background
-    pressedButtonBackgroundColor: theme.palette.highlighted.background
     dividerColor: theme.palette.normal.base
+    buttons {
+        foregroundColor: pageHeaderStyle.foregroundColor
+        disabledForegroundColor: pageHeaderStyle.disabledForegroundColor
+        pressedForegroundColor: buttons.foregroundColor
+        backgroundColor: "transparent"
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
 
     // Font weight for the title and subtitle
     property int fontWeight: Font.Light
@@ -91,13 +98,16 @@ Style.PageHeaderStyle {
         height: internal.titleAreaHeight
         action: modelData
         StyleHints {
-            foregroundColor: button.enabled
-                             ? pageHeaderStyle.foregroundColor
-                             : pageHeaderStyle.disabledForegroundColor
-            backgroundColor: button.pressed
-                             ? pageHeaderStyle.pressedButtonBackgroundColor
-                             : "transparent" // background is already colored
-
+            foregroundColor: button.pressed ?
+                                 pageHeaderStyle.buttons.pressedForegroundColor :
+                                 button.enabled ?
+                                     pageHeaderStyle.buttons.foregroundColor :
+                                     pageHeaderStyle.buttons.disabledForegroundColor
+            backgroundColor: button.pressed ?
+                                 pageHeaderStyle.buttons.pressedBackgroundColor :
+                                 button.enabled ?
+                                     pageHeaderStyle.buttons.backgroundColor :
+                                     pageHeaderStyle.buttons.disabledBackgroundColor
         }
     }
 

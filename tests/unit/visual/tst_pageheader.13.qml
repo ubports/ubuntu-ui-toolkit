@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Canonical Ltd.
+ * Copyright (C) 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -141,21 +141,22 @@ Rectangle {
             extension: extensionSwitch.checked ? appendix : null
 
             StyleHints {
+                ignoreUnknownProperties: false
                 foregroundColor: customColorsSwitch.checked
                                  ? "white"
                                  : theme.palette.normal.backgroundText
-                disabledForegroundColor: customColorsSwitch.checked
-                                         ? "black"
-                                         : theme.palette.disabled.backgroundText
+                buttons.disabledForegroundColor: customColorsSwitch.checked
+                                                 ? "black"
+                                                 : theme.palette.disabled.backgroundText
                 subtitleColor: customColorsSwitch.checked
                                ? UbuntuColors.red
                                : theme.palette.normal.backgroundTertiaryText
                 backgroundColor: customColorsSwitch.checked
                                  ? UbuntuColors.blue
                                  : theme.palette.normal.background
-                pressedButtonBackgroundColor: customColorsSwitch.checked
-                                              ? UbuntuColors.green
-                                              : theme.palette.highlighted.background
+                buttons.pressedBackgroundColor: customColorsSwitch.checked
+                                                ? UbuntuColors.green
+                                                : theme.palette.highlighted.background
                 dividerColor: customColorsSwitch.checked
                               ? UbuntuColors.red
                               : theme.palette.normal.base

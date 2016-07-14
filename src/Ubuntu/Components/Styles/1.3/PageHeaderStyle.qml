@@ -30,7 +30,9 @@ Item {
     property color foregroundColor
 
     /*!
+      \deprecated
       The color of disabled action buttons in the header.
+      Replaced by buttons.disabledForegroundColor.
      */
     property color disabledForegroundColor
 
@@ -45,9 +47,9 @@ Item {
     property color backgroundColor
 
     /*!
-      The color of the background of a pressed button header.
+      Configuration of the colors of the action buttons in the header.
      */
-    property color pressedButtonBackgroundColor
+    readonly property ButtonProperties buttons: ButtonProperties { }
 
     /*!
       The color of the divider at the bottom of the header.
