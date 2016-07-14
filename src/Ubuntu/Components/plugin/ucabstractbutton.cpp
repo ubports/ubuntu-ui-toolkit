@@ -34,6 +34,7 @@ UCAbstractButtonPrivate::UCAbstractButtonPrivate()
     , acceptEvents(true)
     , pressAndHoldConnected(false)
 {
+    isFocusScope = false;
 }
 void UCAbstractButtonPrivate::init()
 {
