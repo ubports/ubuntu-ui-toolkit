@@ -32,7 +32,7 @@ Item {
     /*!
       Configuration of the colors of the action buttons in the action bar.
      */
-    readonly property ButtonProperties buttons: ButtonProperties { }
+    readonly property ActionItemProperties buttons: ActionItemProperties { }
 
     /*!
       The default action delegate if the styled item does

@@ -49,7 +49,7 @@ Item {
     /*!
       Configuration of the colors of the action buttons in the header.
      */
-    readonly property ButtonProperties buttons: ButtonProperties { }
+    readonly property ActionItemProperties buttons: ActionItemProperties { }
 
     /*!
       The color of the divider at the bottom of the header.
