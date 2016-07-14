@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,22 +27,24 @@ Item {
     /*!
       The color of the action buttons in the action bar.
      */
-    property color foregroundColor
+//    property color foregroundColor
 
     /*!
       The color of disabled action buttons in the action bar.
      */
-    property color disabledForegroundColor
+//    property color disabledForegroundColor
 
     /*!
       The color of the background of the action bar.
      */
     property color backgroundColor
 
+    readonly property IconButtonProperties buttons: IconButtonProperties { }
+
     /*!
       The color of the background of a pressed button in the action bar.
      */
-    property color pressedButtonBackgroundColor
+//    property color pressedButtonBackgroundColor
 
     /*!
       The default action delegate if the styled item does

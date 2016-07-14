@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,14 +28,14 @@ Style.ActionBarStyle {
     // Unused with the standard action icon buttons, but may be used with a custom delegate.
     overflowText: "More"
 
-    foregroundColor: theme.palette.normal.backgroundText
-    disabledForegroundColor: theme.palette.disabled.backgroundText
     backgroundColor: theme.palette.normal.background
-    pressedButtonBackgroundColor: theme.palette.highlighted.background
-
-    property QtObject buttons: QtObject {
-        property color backgroundColor: "transparent" // background is already colored
-        property color pressedBackgroundColor: theme.palette.highlighted.background
+    buttons {
+        foregroundColor: theme.palette.normal.backgroundText
+        pressedForegroundColor: buttons.foregroundColor
+        disabledForegroundColor: theme.palette.disabled.backgroundText
+        backgroundColor: "transparent" // background is already colored
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
     }
 
     /*!
@@ -45,13 +45,16 @@ Style.ActionBarStyle {
     defaultDelegate: AbstractButton {
         id: button
         style: IconButtonStyle {
-            foregroundColor: button.enabled
-                             ? actionBarStyle.foregroundColor
-                             : actionBarStyle.disabledForegroundColor
-            backgroundColor: button.pressed
-                             ? actionBarStyle.buttons.pressedBackgroundColor
-                             : actionBarStyle.buttons.backgroundColor
-//            backgroundColor: actionBarStyle.buttons.backgroundColor
+            foregroundColor: button.pressed ?
+                                 actionBarStyle.buttons.pressedForegroundColor :
+                                 button.enabled ?
+                                     actionBarStyle.buttons.foregroundColor :
+                                     actionBarStyle.buttons.disabledForegroundColor
+            backgroundColor: button.pressed ?
+                                 actionBarStyle.buttons.pressedBackgroundColor :
+                                 button.enabled ?
+                                     actionBarStyle.buttons.backgroundColor :
+                                     actionBarStyle.buttons.disabledBackgroundColor
         }
         objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -159,7 +159,7 @@ Item {
                 actions: root.actionList
                 StyleHints {
                     ignoreUnknownProperties: false
-                    foregroundColor: "white"
+//                    foregroundColor: "white"
                     backgroundColor: UbuntuColors.blue
 //                    defaultButton.backgroundColor: "yellow"
                     buttons.pressedBackgroundColor: "black"
