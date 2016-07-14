@@ -39,6 +39,7 @@ Style.ActionBarStyle {
     defaultDelegate: ListItem {
         width: units.gu(4)
         height: actionBarStyle.height
+        enabled: modelData.enabled
         onClicked: button.trigger()
         AbstractButton {
             id: button
@@ -47,7 +48,7 @@ Style.ActionBarStyle {
             objectName: action.objectName + "_button"
             height: parent ? parent.height : undefined
             action: modelData
-                    activeFocusOnTab: false
+            activeFocusOnTab: false
         }
         divider.visible: false
     }
