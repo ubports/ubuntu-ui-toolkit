@@ -41,6 +41,7 @@ public:
     qreal preferredWidth{0.0};
     int column{-1};
     bool fillWidth{false};
+    bool resized{false};
 };
 
 class SplitViewLayoutPrivate : public QObjectPrivate
@@ -75,6 +76,7 @@ public:
     {
         return q->d_func();
     }
+    static ViewColumn *getConfig(QQuickItem *attachee);
 
     UT_PREPEND_NAMESPACE(SplitView*) view() const
     {
@@ -111,16 +113,23 @@ public:
         return q->d_func();
     }
 
+    QQmlListProperty<QObject> data();
     QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts();
 
-    void relayout(RelayoutOperation operation);
-
-    QList<SplitViewLayout*> columnLatouts;
-    SplitViewLayout* activeLayout{nullptr};
+    void updateLayout();
+    void recalculateWidths(RelayoutOperation operation);
 
     // private slots
     void changeLayout();
+
+    // members
+    QList<SplitViewLayout*> columnLatouts;
+    SplitViewLayout* activeLayout{nullptr};
+    bool dirty{false};
+
 private:
+    static void data_Append(QQmlListProperty<QObject> *, QObject*);
+
     static void layout_Append(QQmlListProperty<SplitViewLayout> *, SplitViewLayout*);
     static int layout_Count(QQmlListProperty<SplitViewLayout> *);
     static SplitViewLayout *layout_At(QQmlListProperty<SplitViewLayout> *, int);

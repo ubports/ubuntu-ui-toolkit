@@ -46,7 +46,8 @@ HEADERS += \
     propertychange_p.h \
     ubuntutoolkitmodule.h \
     splitview_p.h \
-    splitview_p_p.h
+    splitview_p_p.h \
+    privates/splitviewhandler_p_p.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -55,7 +56,8 @@ SOURCES += \
     mousetouchadaptor.cpp \
     propertychange.cpp \
     ubuntutoolkitmodule.cpp \
-    splitview.cpp
+    splitview.cpp \
+    privates/splitviewhandler.cpp
 
 HEADERS += \
     uctheme_p.h \

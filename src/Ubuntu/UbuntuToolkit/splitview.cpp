@@ -16,10 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "splitview_p.h"
-#include "splitview_p_p.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
+
+#include "splitview_p.h"
+#include "splitview_p_p.h"
+
+#include "privates/splitviewhandler_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -29,6 +32,19 @@ UT_NAMESPACE_BEGIN
 ViewColumn::ViewColumn(QObject *parent)
     : QObject(*(new ViewColumnPrivate), parent)
 {
+}
+
+bool ViewColumn::resize(qreal delta)
+{
+    Q_D(ViewColumn);
+    d->resized = true;
+    // todo: apply limits
+    qreal newWidth = d->preferredWidth + delta;
+    if ((newWidth < d->minimumWidth) || (newWidth > d->maximumWidth)) {
+        return false;
+    }
+    d->preferredWidth += delta;
+    return true;
 }
 
 /******************************************************************************
@@ -83,11 +99,36 @@ SplitViewAttached::SplitViewAttached(QObject *parent)
 {
 }
 
+SplitViewAttached *SplitViewAttached::get(QQuickItem *item)
+{
+    SplitViewAttached *attached = static_cast<SplitViewAttached*>(
+                qmlAttachedPropertiesObject<SplitView>(item, false));
+    return attached;
+}
+
+ViewColumn *SplitViewAttachedPrivate::getConfig(QQuickItem *attachee)
+{
+    SplitViewAttached *attached = SplitViewAttached::get(attachee);
+    if (!attached) {
+        return nullptr;
+    }
+    return get(attached)->config();
+}
+
 void SplitViewAttachedPrivate::configure(SplitView *view, int column)
 {
     this->column = column;
     splitView = view;
     Q_EMIT q_func()->columnChanged();
+}
+
+void SplitViewAttached::resize(qreal delta)
+{
+    Q_D(SplitViewAttached);
+    ViewColumn *config = d->config();
+    if (config->resize(delta)) {
+        SplitViewPrivate::get(d->splitView)->recalculateWidths(SplitViewPrivate::RecalculateAll);
+    }
 }
 
 UT_PREPEND_NAMESPACE(ViewColumn*) SplitViewAttachedPrivate::config()
@@ -123,6 +164,36 @@ UT_PREPEND_NAMESPACE(SplitViewAttached) *SplitView::qmlAttachedProperties(QObjec
     return new SplitViewAttached(owner);
 }
 
+// data property
+void SplitViewPrivate::data_Append(QQmlListProperty<QObject> *list, QObject* object)
+{
+    QQuickItemPrivate::data_append(list, object);
+
+    SplitView *view = static_cast<SplitView*>(list->object);
+    // if the object is an item, we attache the SplitView properties and hide it
+    QQuickItem *item = qobject_cast<QQuickItem*>(object);
+    if (item) {
+        // attach properties and configure
+        SplitViewAttached *attached = static_cast<SplitViewAttached*>(
+                    qmlAttachedPropertiesObject<SplitView>(item, true));
+
+        SplitViewAttachedPrivate::get(attached)->configure(view, view->childItems().size() - 1);
+
+        // attach the split handler to it
+        SplitViewHandler *handler = new SplitViewHandler(item);
+        handler->bindSpacing(view);
+    }
+}
+QQmlListProperty<QObject> SplitViewPrivate::data()
+{
+    return QQmlListProperty<QObject>(q_func(), 0,
+                                     SplitViewPrivate::data_Append,
+                                     QQuickItemPrivate::data_count,
+                                     QQuickItemPrivate::data_at,
+                                     QQuickItemPrivate::data_clear);
+}
+
+// layouts property
 void SplitViewPrivate::layout_Append(QQmlListProperty<SplitViewLayout> *list, SplitViewLayout* layout)
 {
     SplitView *view = static_cast<SplitView*>(list->object);
@@ -130,9 +201,6 @@ void SplitViewPrivate::layout_Append(QQmlListProperty<SplitViewLayout> *list, Sp
     d->columnLatouts.append(layout);
     // capture layout activation
     QObject::connect(layout, SIGNAL(whenChanged()), view, SLOT(changeLayout()), Qt::DirectConnection);
-    if (SplitViewLayoutPrivate::get(layout)->when) {
-        d->activeLayout = layout;
-    }
 }
 int SplitViewPrivate::layout_Count(QQmlListProperty<SplitViewLayout> *list)
 {
@@ -171,50 +239,78 @@ QQmlListProperty<SplitViewLayout> SplitViewPrivate::layouts()
 // invoked when one of the SplitViewLayouts emits whenChanged()
 void SplitViewPrivate::changeLayout()
 {
-    // TODO: implement
-    relayout(RecalculateAll);
+    // go through layouts and check who's the active one
+    SplitViewLayout *newActive = nullptr;
+    for (SplitViewLayout *layout : columnLatouts) {
+        if (SplitViewLayoutPrivate::get(layout)->when) {
+            newActive = layout;
+            break;
+        }
+    }
+    if (newActive == activeLayout) {
+        return;
+    }
+
+    // Q: should we reset the sizes of the previous layout?
+    // at least it feels  right to preserve the last state of the layout...
+    activeLayout = newActive;
+
+    updateLayout();
+    if (q_func()->sender()) {
+        // was called by a whenChanged() signal invocation
+        recalculateWidths(RecalculateAll);
+    }
 }
 
-void SplitViewPrivate::relayout(RelayoutOperation operation)
+void SplitViewPrivate::updateLayout()
 {
-    if (!activeLayout || !QQuickItemPrivate::get(q_func())->componentComplete) {
+    Q_Q(SplitView);
+    for (QQuickItem *child : q->childItems()) {
+        bool visible = true;
+        ViewColumn *columnConfig = SplitViewAttachedPrivate::getConfig(child);
+        if (!columnConfig) {
+            // no configuration for the column, hide it
+            visible = false;
+        } else {
+            ViewColumnPrivate *config = ViewColumnPrivate::get(columnConfig);
+            visible = activeLayout
+                    && (config->column < SplitViewLayoutPrivate::get(activeLayout)->columnData.size());
+        }
+        dirty = dirty | (child->isVisible() != visible);
+        child->setVisible(visible);
+    }
+}
+
+void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
+{
+    if (!activeLayout || (!QQuickItemPrivate::get(q_func())->componentComplete && !dirty)) {
         return;
     }
     Q_Q(SplitView);
-    qDebug() << "relayouting";
 
     // remove the spacing from the width
-    qreal fillWidth = q->width() - q->spacing() * (q->childItems().size() - 1);
+    qreal fillWidth = q->width() - q->spacing() * (SplitViewLayoutPrivate::get(activeLayout)->columnData.size() - 1);
     // stack of columns with fillWidth true
     QList<QQuickItem*> fillStack;
 
     for (QQuickItem *child : q->childItems()) {
-        SplitViewAttached *attached = static_cast<SplitViewAttached*>(
-                    qmlAttachedPropertiesObject<SplitView>(child, false));
-        if (!attached) {
-            child->setVisible(false);
-            continue;
-        }
-
-        SplitViewAttachedPrivate *dAttached = SplitViewAttachedPrivate::get(attached);
-        // set the item's implicit width to the column's width
-        ViewColumnPrivate *columnConfig = ViewColumnPrivate::get(dAttached->config());
+        ViewColumn *columnConfig = SplitViewAttachedPrivate::getConfig(child);
         if (!columnConfig) {
-            // no configuration for the column, hide it
-            child->setVisible(false);
             continue;
         }
-        if (columnConfig->fillWidth) {
+        ViewColumnPrivate *config = ViewColumnPrivate::get(columnConfig);
+
+        if (config->fillWidth && !config->resized) {
             // add to the fillWidth stack
             if (operation & CalculateFillWidth) {
                 fillStack << child;
             }
         } else {
             if (operation & SetPreferredSize) {
-                child->setImplicitWidth(columnConfig->preferredWidth);
+                child->setImplicitWidth(config->preferredWidth);
             }
             if (operation & CalculateFillWidth) {
-                fillWidth -= columnConfig->preferredWidth;
+                fillWidth -= config->preferredWidth;
             }
         }
     }
@@ -223,9 +319,17 @@ void SplitViewPrivate::relayout(RelayoutOperation operation)
     if (fillStack.size() && (operation & CalculateFillWidth)) {
         fillWidth /= fillStack.size();
         for (QQuickItem *child : fillStack) {
-            child->setImplicitWidth(fillWidth);
+            // even though the column is fillWidth, it may have min and max specified;
+            // check if the size can be applied
+            ViewColumnPrivate *config = ViewColumnPrivate::get(SplitViewAttachedPrivate::getConfig(child));
+            if (fillWidth >= config->minimumWidth && fillWidth <= config->maximumWidth) {
+                child->setImplicitWidth(fillWidth);
+                // update preferredWidth so it can be used in case of resize
+                config->preferredWidth = fillWidth;
+            }
         }
     }
+    dirty = false;
 }
 
 SplitView::SplitView(QQuickItem *parent)
@@ -252,7 +356,7 @@ void SplitView::doPositioning(QSizeF *contentSize)
     // FIXME: revisit the code once we move to Qt 5.6 as there were more properties added to positioner
 
     // calculate the layout before we go into the positioning
-    d_func()->relayout(SplitViewPrivate::RecalculateAll);
+    d_func()->recalculateWidths(SplitViewPrivate::RecalculateAll);
 
     //Precondition: All items in the positioned list have a valid item pointer and should be positioned
     QQuickItemPrivate *d = QQuickItemPrivate::get(this);
@@ -323,23 +427,13 @@ void SplitView::reportConflictingAnchors()
          qmlInfo(this) << "Cannot specify left, right, horizontalCenter, fill or centerIn anchors for items inside SplitView."
              << " SplitView will not function.";
      }
- }
+}
 
 void SplitView::componentComplete()
 {
+    Q_D(SplitView);
+    d->changeLayout();
     QQuickBasePositioner::componentComplete();
-}
-
-void SplitView::itemChange(ItemChange change, const ItemChangeData &data)
-{
-    QQuickBasePositioner::itemChange(change, data);
-    if (change == ItemChildAddedChange) {
-        // attach properties and configure
-        SplitViewAttached *attached = static_cast<SplitViewAttached*>(
-                    qmlAttachedPropertiesObject<SplitView>(data.item, true));
-
-        SplitViewAttachedPrivate::get(attached)->configure(this, childItems().size() - 1);
-    }
 }
 
 void SplitView::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
@@ -349,18 +443,13 @@ void SplitView::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeom
     // call this on horizontal resize, vertical one will do its job
     if (newGeometry.width() != oldGeometry.width()) {
         Q_D(SplitView);
-        d->relayout(SplitViewPrivate::CalculateFillWidth);
+        d->recalculateWidths(SplitViewPrivate::CalculateFillWidth);
     }
 }
 
-qreal SplitView::spacing() const
-{
-    return 0;
-}
-void SplitView::setSpacing(qreal s)
-{
-    qDebug() << "spacing:" << s;
-}
+/******************************************************************
+ * properties
+ */
 
 
 UT_NAMESPACE_END

@@ -36,6 +36,8 @@ class ViewColumn : public QObject
 public:
     explicit ViewColumn(QObject *parent = 0);
 
+    bool resize(qreal delta);
+
 private:
     Q_DECLARE_PRIVATE(ViewColumn)
 };
@@ -62,11 +64,15 @@ class SplitViewAttachedPrivate;
 class SplitViewAttached : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), UT_PREPEND_NAMESPACE(SplitView*) view READ view)
     Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), int column READ getColumn NOTIFY columnChanged)
+    Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), UT_PREPEND_NAMESPACE(SplitView*) view READ view)
     Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), UT_PREPEND_NAMESPACE(ViewColumn*) columnConfig READ config NOTIFY columnChanged)
 public:
     explicit SplitViewAttached(QObject *parent = 0);
+
+    static SplitViewAttached *get(QQuickItem *item);
+
+    void resize(qreal delta);
 
 Q_SIGNALS:
     void columnChanged();
@@ -79,19 +85,13 @@ class SplitViewPrivate;
 class SplitView : public QQuickBasePositioner
 {
     Q_OBJECT
-    Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<QObject> splitViewData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts READ layouts DESIGNABLE false)
+    Q_CLASSINFO("DefaultProperty", "splitViewData")
 public:
     explicit SplitView(QQuickItem *parent = 0);
 
     static UT_PREPEND_NAMESPACE(SplitViewAttached) *qmlAttachedProperties(QObject*);
-
-    // override spacing
-    qreal spacing() const;
-    void setSpacing(qreal);
-
-Q_SIGNALS:
-    void spacingChanged();
 
 protected:
     SplitView(SplitViewPrivate &, QQuickItem *);
@@ -103,7 +103,6 @@ protected:
 
     // overrides
     void componentComplete() override;
-    void itemChange(ItemChange, const ItemChangeData &) override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 private:
     // QQuickBasePositionerPrivate is not an exported API, therefore we cannot derive from it

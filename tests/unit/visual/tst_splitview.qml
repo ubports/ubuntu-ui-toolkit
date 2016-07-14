@@ -28,14 +28,19 @@ Window {
     SplitView {
         anchors.fill: parent
         spacing: units.dp(6)
+        focus: true
+        Keys.onSpacePressed: mainLayout.when = !mainLayout.when
         layouts: SplitViewLayout {
             id: mainLayout
             when: true
             ViewColumn {
                 preferredWidth: units.gu(40)
+                maximumWidth: units.gu(100)
             }
             ViewColumn {
                 fillWidth: true
+                minimumWidth: units.gu(10)
+                maximumWidth: units.gu(150)
             }
             ViewColumn {
                 preferredWidth: units.gu(50)
@@ -47,24 +52,29 @@ Window {
         Rectangle {
             color: UbuntuColors.red
             height: parent.height
+            Label { text: parent.width }
         }
         Rectangle {
             color: UbuntuColors.green
             height: parent.height
+            Label { text: parent.width }
             Component.onCompleted: print(SplitView.column)
         }
         Rectangle {
             color: UbuntuColors.blue
             height: parent.height
+            Label { text: parent.width }
         }
         Rectangle {
             color: UbuntuColors.ash
             height: parent.height
+            Label { text: parent.width }
         }
         Rectangle {
             color: "pink"
             height: parent.height
             width: units.gu(30)
+            Label { text: parent.width }
         }
     }
 }
