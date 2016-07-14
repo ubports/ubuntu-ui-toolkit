@@ -159,10 +159,13 @@ Item {
                 actions: root.actionList
                 StyleHints {
                     ignoreUnknownProperties: false
-//                    foregroundColor: "white"
                     backgroundColor: UbuntuColors.blue
-//                    defaultButton.backgroundColor: "yellow"
-                    buttons.pressedBackgroundColor: "black"
+                    buttons {
+                        foregroundColor: "white"
+                        disabledForegroundColor: UbuntuColors.silk
+                        pressedBackgroundColor: UbuntuColors.ash
+                        disabledBackgroundColor: UbuntuColors.slate
+                    }
                 }
             }
         }

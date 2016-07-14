@@ -33,7 +33,7 @@ Style.ActionBarStyle {
         foregroundColor: theme.palette.normal.backgroundText
         pressedForegroundColor: buttons.foregroundColor
         disabledForegroundColor: theme.palette.disabled.backgroundText
-        backgroundColor: "transparent" // background is already colored
+        backgroundColor: "transparent" // action bar background is already colored
         pressedBackgroundColor: theme.palette.highlighted.background
         disabledBackgroundColor: buttons.backgroundColor
     }
@@ -42,23 +42,25 @@ Style.ActionBarStyle {
       The default action delegate if the styled item does
       not provide a delegate.
      */
-    defaultDelegate: AbstractButton {
-        id: button
-        style: IconButtonStyle {
-            foregroundColor: button.pressed ?
-                                 actionBarStyle.buttons.pressedForegroundColor :
-                                 button.enabled ?
-                                     actionBarStyle.buttons.foregroundColor :
-                                     actionBarStyle.buttons.disabledForegroundColor
-            backgroundColor: button.pressed ?
-                                 actionBarStyle.buttons.pressedBackgroundColor :
-                                 button.enabled ?
-                                     actionBarStyle.buttons.backgroundColor :
-                                     actionBarStyle.buttons.disabledBackgroundColor
+    defaultDelegate: Component {
+        AbstractButton {
+            id: button
+            style: IconButtonStyle {
+                foregroundColor: button.pressed ?
+                                     actionBarStyle.buttons.pressedForegroundColor :
+                                     button.enabled ?
+                                         actionBarStyle.buttons.foregroundColor :
+                                         actionBarStyle.buttons.disabledForegroundColor
+                backgroundColor: button.pressed ?
+                                     actionBarStyle.buttons.pressedBackgroundColor :
+                                     button.enabled ?
+                                         actionBarStyle.buttons.backgroundColor :
+                                         actionBarStyle.buttons.disabledBackgroundColor
+            }
+            objectName: action.objectName + "_button"
+            height: parent ? parent.height : undefined
+            action: modelData
         }
-        objectName: action.objectName + "_button"
-        height: parent ? parent.height : undefined
-        action: modelData
     }
 
     defaultNumberOfSlots: 3
