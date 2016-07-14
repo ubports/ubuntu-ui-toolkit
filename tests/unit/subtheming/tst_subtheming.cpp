@@ -827,6 +827,9 @@ private Q_SLOTS:
                 << "StyleHintsElsewhere.qml" << 24 << 5 << "QML StyleHints: StyleHints must be declared in a StyledItem or a derivate of it.";
         QTest::newRow("Invalid property")
                 << "StyleHintsInvalidProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'invalidProperty'.";
+        QTest::newRow("Invalid grouped property")
+                << "StyleHintsInvalidGroupedProperty.qml" << 25 << 9 << "QML StyleHints: Style 'ButtonStyle' has no property called 'gradientProxy.invalidProperty'.";
+
     }
     void test_stylehints_errors()
     {
@@ -877,8 +880,11 @@ private Q_SLOTS:
 
         QTest::newRow("Same document")
                 << "MoreStyleHints.qml" << "defaultColor" << QColor("brown") << QColor("brown") << "minimumWidth" << units.gu(20);
-        QTest::newRow("Different document")
+        QTest::newRow("Different document, binding")
                 << "GroupPropertyBindingHints.qml" << "gradientProxy.topColor" << QColor("blue") << QColor("tan") << "minimumWidth" << units.gu(20);
+        // regression test for bug #1602836.
+        QTest::newRow("Different document, value")
+                << "GroupPropertyValueHints.qml" << "gradientProxy.topColor" << QColor("orange") << QColor("orange") << "minimumWidth" << units.gu(20);
     }
     void test_stylehints_multiple()
     {
