@@ -158,10 +158,11 @@ Item {
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
                 StyleHints {
-//                    ignoreUnknownProperties: false
+                    ignoreUnknownProperties: false
                     foregroundColor: "white"
                     backgroundColor: UbuntuColors.blue
 //                    defaultButton.backgroundColor: "yellow"
+                    buttons.pressedBackgroundColor: "black"
                 }
             }
         }

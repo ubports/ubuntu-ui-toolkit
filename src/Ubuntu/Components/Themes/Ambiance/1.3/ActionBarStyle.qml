@@ -34,9 +34,8 @@ Style.ActionBarStyle {
     pressedButtonBackgroundColor: theme.palette.highlighted.background
 
     property QtObject buttons: QtObject {
-        property color backgroundColor: button.pressed ?
-                                            theme.palette.highlighted.background :
-                                            "transparent"
+        property color backgroundColor: "transparent" // background is already colored
+        property color pressedBackgroundColor: theme.palette.highlighted.background
     }
 
     /*!
@@ -49,10 +48,10 @@ Style.ActionBarStyle {
             foregroundColor: button.enabled
                              ? actionBarStyle.foregroundColor
                              : actionBarStyle.disabledForegroundColor
-//            backgroundColor: button.pressed
-//                             ? actionBarStyle.pressedButtonBackgroundColor
-//                             : "transparent" // background is already colored below
-            backgroundColor: actionBarStyle.buttons.backgroundColor
+            backgroundColor: button.pressed
+                             ? actionBarStyle.buttons.pressedBackgroundColor
+                             : actionBarStyle.buttons.backgroundColor
+//            backgroundColor: actionBarStyle.buttons.backgroundColor
         }
         objectName: action.objectName + "_button"
         height: parent ? parent.height : undefined
