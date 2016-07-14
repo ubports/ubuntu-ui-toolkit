@@ -37,14 +37,12 @@ Ubuntu.Components.ActionBar 1.3: StyledItem
     property int numberOfSlots
 Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
     property color backgroundColor
+    readonly property IconButtonProperties buttons
     property Component defaultDelegate
     property int defaultNumberOfSlots
-    property color disabledForegroundColor
-    property color foregroundColor
     property string overflowIconName
     property url overflowIconSource
     property string overflowText
-    property color pressedButtonBackgroundColor
 Ubuntu.Components.ActionContext 1.0 0.1 UbuntuToolkit::UCActionContext: QtObject
     default property list<Action> actions
     property bool active
@@ -523,6 +521,13 @@ Ubuntu.Components.Icon 1.3: Item
     property color keyColor
     property string name
     property url source
+Ubuntu.Components.Styles.IconButtonProperties 1.3: QtObject
+    property color backgroundColor
+    property color disabledBackgroundColor
+    property color disabledForegroundColor
+    property color foregroundColor
+    property color pressedBackgroundColor
+    property color pressedForegroundColor
 Ubuntu.Components.InverseMouse 1.0 0.1 UbuntuToolkit::UCInverseMouse: Mouse
 Ubuntu.Components.InverseMouseArea 1.0 0.1 UbuntuToolkit::InverseMouseAreaType: MouseArea
     function bool contains(QPointF point)
