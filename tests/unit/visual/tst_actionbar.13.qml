@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,6 +64,7 @@ Item {
             iconName: "location"
             text: "Location"
             onTriggered: print("loc")
+            enabled: false
         },
         Action {
             iconName: "message"
@@ -170,9 +171,9 @@ Item {
             height: childrenRect.height
             Label {
                 anchors {
-                    verticalCenter: bar.verticalCenter
+                    verticalCenter: coloredBar.verticalCenter
                 }
-                text: "" + coloredBar.numberOfSlots + " slot(s):"
+                text: "colored:"
             }
             ActionBar {
                 id: coloredBar
@@ -181,7 +182,14 @@ Item {
                 actions: root.actionList
                 styleName: root.actionBarStyleName
                 StyleHints {
+                    ignoreUnknownProperties: false
                     backgroundColor: UbuntuColors.blue
+                    buttons {
+                        foregroundColor: "white"
+                        disabledForegroundColor: UbuntuColors.silk
+                        pressedBackgroundColor: UbuntuColors.ash
+                        disabledBackgroundColor: UbuntuColors.slate
+                    }
                 }
             }
         }
@@ -232,9 +240,10 @@ Item {
                 text: "Custom delegate 2"
             }
             ActionBar {
+                // Note: The same result (green buttons) can be accomplished
+                //  by setting the foregroundColor in the style.
                 id: greenButtonsBar
                 Layout.fillWidth: true
-//                width: units.gu(20)
                 actions: root.actionList
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
