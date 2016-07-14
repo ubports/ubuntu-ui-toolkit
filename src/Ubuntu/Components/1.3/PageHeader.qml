@@ -181,7 +181,9 @@ Header {
         actions: header.navigationActions
         visible: leading.width > 0 // at least 1 visible action
         StyleHints {
+            ignoreUnknownProperties: false
             overflowIconName: "navigation-menu"
+            backgroundColor: header.__styleInstance.backgroundColor
         }
     }
 
@@ -228,10 +230,8 @@ Header {
         delegate: header.__styleInstance.defaultActionDelegate
         visible: trailing.width > 0 // at least 1 visible action
         StyleHints {
-            foregroundColor: header.__styleInstance.foregroundColor
-            disabledForegroundColor: header.__styleInstance.disabledForegroundColor
+            ignoreUnknownProperties: false
             backgroundColor: header.__styleInstance.backgroundColor
-            pressedBackgroundColor: header.__styleInstance.pressedBackgroundColor
         }
     }
 
