@@ -39,7 +39,6 @@ void UCAbstractButtonPrivate::init()
 {
     Q_Q(UCAbstractButton);
     q->setActiveFocusOnPress(true);
-    q->setActiveFocusOnTab(true);
 }
 
 /*!
