@@ -142,6 +142,9 @@ Style.ActionBarStyle {
                 color: "white"
             }
             Icon {
+                // FIXME TIM: Use new theme icon from
+                //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
+                //  after it lands in the theme.
                 id: leftIcon
                 objectName: "left_scroll_icon"
                 anchors.centerIn: parent
@@ -172,6 +175,9 @@ Style.ActionBarStyle {
                 color: "white"
             }
             Icon {
+                // FIXME TIM: Use new theme icon from
+                //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
+                //  after it lands in the theme.
                 id: rightIcon
                 objectName: "right_scroll_icon"
                 anchors.centerIn: parent
