@@ -1127,7 +1127,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
 
     // focus frame
     bool paintFocus = hasActiveFocus() && keyNavigationFocus();
-    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(1) : 0);
+    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(2) : 0);
     if (paintFocus) {
         QColor penColor;
         if (getTheme()) {
