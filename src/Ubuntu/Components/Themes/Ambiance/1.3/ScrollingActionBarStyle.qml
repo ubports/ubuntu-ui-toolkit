@@ -56,7 +56,7 @@ Style.ActionBarStyle {
     // FIXME TIM: remove this.
     defaultNumberOfSlots: 3
 
-    property color backgroundColor: "white"
+    backgroundColor: "white"
 
 //    Item {
     Rectangle {
