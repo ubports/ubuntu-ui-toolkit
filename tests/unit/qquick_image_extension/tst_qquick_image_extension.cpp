@@ -21,10 +21,12 @@
 
 // Make protected methods of QQuickImageExtension public in order to test them
 #define protected public
-#include "ucqquickimageextension.h"
+#include <UbuntuToolkit/private/ucqquickimageextension_p.h>
 #undef protected
+#include <QtQml/QQmlEngine>
+#include <ubuntutoolkitmodule.h>
 
-#include "plugin.h"
+UT_USE_NAMESPACE
 
 unsigned int numberOfTemporarySciFiles() {
     QStringList nameFilters;
@@ -44,7 +46,7 @@ private Q_SLOTS:
     void init()
     {
         engine = new QQmlEngine;
-        UbuntuComponentsPlugin::initializeContextProperties(engine);
+        UbuntuToolkitModule::initializeContextProperties(engine);
     }
 
     void cleanup()

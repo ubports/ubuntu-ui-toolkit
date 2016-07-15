@@ -12,18 +12,19 @@ DEFINES += UBUNTUGESTURES_LIBRARY
 load(qt_build_config)
 load(ubuntu_qt_module)
 
-HEADERS += candidateinactivitytimer.h \
-           debughelpers.h \
-           timer.h \
-           timesource.h \
-           touchownershipevent.h \
-           touchregistry.h \
-           unownedtouchevent.h \
+HEADERS += candidateinactivitytimer_p.h \
+           debughelpers_p.h \
+           timer_p.h \
+           timesource_p.h \
+           touchownershipevent_p.h \
+           touchregistry_p.h \
+           unownedtouchevent_p.h \
            ubuntugesturesglobal.h \
-           pool.h \
+           pool_p.h \
            ucswipearea_p.h \
            ucswipearea_p_p.h \
            damper_p.h \
+           ubuntugesturesmodule.h
 
 
 SOURCES += candidateinactivitytimer.cpp \
@@ -34,5 +35,6 @@ SOURCES += candidateinactivitytimer.cpp \
            touchregistry.cpp \
            unownedtouchevent.cpp \
            ucswipearea.cpp \
-           damper.cpp
+           damper.cpp \
+           ubuntugesturesmodule.cpp
 

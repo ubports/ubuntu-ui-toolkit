@@ -20,14 +20,13 @@
 
 #include <QtQuick/QQuickItem>
 #include <QtGui/QTouchEvent>
+#include <ubuntugesturesglobal.h>
 
 class UbuntuTestCase;
 class QTouchDevice;
 
-namespace UbuntuGestures {
-    class FakeTimerFactory;
-}
-class TouchRegistry;
+UG_FORWARD_DECLARE_CLASS(FakeTimerFactory)
+UG_FORWARD_DECLARE_CLASS(TouchRegistry)
 
 // C++ std lib
 #include <functional>

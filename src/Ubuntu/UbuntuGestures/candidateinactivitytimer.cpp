@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "candidateinactivitytimer.h"
+#include <UbuntuGestures/private/candidateinactivitytimer_p.h>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 CandidateInactivityTimer::CandidateInactivityTimer(int touchId, QQuickItem *candidate,
         AbstractTimer *timer, QObject *parent)
@@ -43,4 +43,4 @@ void CandidateInactivityTimer::onTimeout()
     Q_EMIT candidateDefaulted(m_touchId, m_candidate);
 }
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END

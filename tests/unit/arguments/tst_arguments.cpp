@@ -17,7 +17,7 @@
  */
 
 #define protected public
-#include "ucarguments.h"
+#include <UbuntuToolkit/private/ucarguments_p.h>
 #undef protected
 
 #include <QtCore/QString>
@@ -28,7 +28,9 @@
 
 #include "uctestcase.h"
 #include <QtQml/QQmlEngine>
-#include "i18n.h"
+#include <UbuntuToolkit/private/i18n_p.h>
+
+UT_USE_NAMESPACE
 
 class tst_UCArguments : public QObject
 {

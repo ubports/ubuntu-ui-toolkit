@@ -773,8 +773,15 @@ PageTreeNode {
                 onHeaderChanged: body.updateHeaderHeight(0)
             }
             Connections {
+                ignoreUnknownSignals: true
                 target: page ? page.header : null
-                onImplicitHeightChanged: body.updateHeaderHeight(page.header.implicitHeight)
+                onImplicitHeightChanged: {
+                    if (page.header.hasOwnProperty("automaticHeight") &&
+                            page.header.automaticHeight) {
+                        body.updateHeaderHeight(page.header.implicitHeight)
+                    }
+                }
+                onAutomaticHeightChanged: body.updateHeaderHeight(0)
             }
 
             // prevent the pages from taking the app header height into account.
@@ -977,7 +984,10 @@ PageTreeNode {
                 for (i = 0; i < children.length; i++) {
                     page = children[i].page;
                     if (page && page.hasOwnProperty("header") && page.header) {
-                        subHeight = page.header.implicitHeight;
+                        if (page.header.hasOwnProperty("automaticHeight") &&
+                                page.header.automaticHeight) {
+                            subHeight = page.header.implicitHeight;
+                        }
                     } else {
                         subHeight = children[i].head.preferredHeight;
                     }
@@ -986,10 +996,12 @@ PageTreeNode {
                 body.headerHeight = h;
             }
 
-            // Update all the Page.header heights.
+            // Update the Page.header heights.
             for (i = 0; i < body.children.length; i++) {
                 page = body.children[i].page;
-                if (page && page.hasOwnProperty("header") && page.header) {
+                if (page && page.hasOwnProperty("header") && page.header &&
+                        page.header.hasOwnProperty("automaticHeight") &&
+                        page.header.automaticHeight) {
                     page.header.height = headerHeight;
                 }
             }

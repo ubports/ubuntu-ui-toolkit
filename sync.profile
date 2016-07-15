@@ -8,11 +8,8 @@
 %classnames = (
  #add classnames that are not automatically detected
  #e.g. "someheader.h" => "SomeType"
- "debughelpers.h" => "DebugHelpers",
- "pool.h" => "Pool",
- "touchregistry.h" => "TouchRegistry",
- "touchownershipevent.h" => "TouchOwnershipEvent",
- "unownedtouchevent.h" => "UnownedTouchEvent"
+ "ubuntugesturesmodule.h" => "UbuntuGesturesModule",
+ "ubuntutoolkitmodule.h" => "UbuntuToolkitModule"
 );
 
 # Module dependencies.
@@ -22,6 +19,7 @@
 #   - any git symbolic ref resolvable from the module's repository (e.g. "refs/heads/master" to track master branch)
 #
 %dependencies = (
+
     "qtbase" => "",
     "qtdeclarative" => "",
     "qtfeedback" => "",

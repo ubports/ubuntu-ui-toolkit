@@ -16,13 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "asyncloader_p.h"
+#include "asyncloader_p_p.h"
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 AsyncLoader::AsyncLoader(QObject *parent)
     : QObject(*(new AsyncLoaderPrivate), parent)
@@ -218,4 +218,4 @@ void AsyncLoader::forceCompletion()
     d_func()->forceCompletion();
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END

@@ -14,10 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "colorutils.h"
+#include "colorutils_p.h"
 #include <QColor>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 ColorUtils::ColorUtils(QObject *parent) : QObject(parent)
 {}
@@ -27,4 +27,4 @@ qreal ColorUtils::luminance(const QColor &color)
     return color.lightnessF();
 }
 
-}
+UT_NAMESPACE_END

@@ -28,7 +28,9 @@
 #include <QEventLoop>
 
 #include "uctestcase.h"
-#include "uctheme.h"
+#include <UbuntuToolkit/private/uctheme_p.h>
+
+UT_USE_NAMESPACE
 
 class Tst_Animator : public QObject
 {

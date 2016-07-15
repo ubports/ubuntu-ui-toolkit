@@ -17,11 +17,13 @@
  */
 
 #define protected public
-#include "ucargument.h"
+#include <UbuntuToolkit/private/ucargument_p.h>
 #undef protected
 
 #include <QtCore/QString>
 #include <QtTest/QTest>
+
+UT_USE_NAMESPACE
 
 class tst_UCArgument : public QObject
 {
