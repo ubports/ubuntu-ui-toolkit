@@ -57,7 +57,8 @@ SOURCES += \
     propertychange.cpp \
     ubuntutoolkitmodule.cpp \
     splitview.cpp \
-    privates/splitviewhandler.cpp
+    privates/splitviewhandler.cpp \
+    splitviewlayout.cpp
 
 HEADERS += \
     uctheme_p.h \

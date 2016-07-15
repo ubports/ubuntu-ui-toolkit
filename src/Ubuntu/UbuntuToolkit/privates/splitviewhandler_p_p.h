@@ -26,7 +26,6 @@
 UT_NAMESPACE_BEGIN
 
 class SplitView;
-//class QQuickMouseEvent;
 class SplitViewHandler : public QQuickMouseArea
 {
     Q_OBJECT

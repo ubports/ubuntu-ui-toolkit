@@ -18,6 +18,7 @@
 
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
+#include <QtQml/QQmlInfo>
 
 #include "splitview_p.h"
 #include "splitview_p_p.h"
@@ -25,71 +26,6 @@
 #include "privates/splitviewhandler_p_p.h"
 
 UT_NAMESPACE_BEGIN
-
-/******************************************************************************
- * ViewColumn configuration object
- */
-ViewColumn::ViewColumn(QObject *parent)
-    : QObject(*(new ViewColumnPrivate), parent)
-{
-}
-
-bool ViewColumn::resize(qreal delta)
-{
-    Q_D(ViewColumn);
-    d->resized = true;
-    // todo: apply limits
-    qreal newWidth = d->preferredWidth + delta;
-    if ((newWidth < d->minimumWidth) || (newWidth > d->maximumWidth)) {
-        return false;
-    }
-    d->preferredWidth += delta;
-    return true;
-}
-
-/******************************************************************************
- * SplitViewLayout layouts configuration
- */
-SplitViewLayout::SplitViewLayout(QObject *parent)
-    : QObject(*(new SplitViewLayoutPrivate), parent)
-{
-}
-
-void SplitViewLayoutPrivate::data_Append(QQmlListProperty<ViewColumn> *list, ViewColumn* data)
-{
-    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
-    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
-    ViewColumnPrivate::get(data)->column = d->columnData.size();
-    d->columnData.append(data);
-}
-int SplitViewLayoutPrivate::data_Count(QQmlListProperty<ViewColumn> *list)
-{
-    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
-    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
-    return d->columnData.size();
-}
-ViewColumn *SplitViewLayoutPrivate::data_At(QQmlListProperty<ViewColumn> *list, int index)
-{
-    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
-    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
-    return d->columnData.at(index);
-}
-void SplitViewLayoutPrivate::data_Clear(QQmlListProperty<ViewColumn> *list)
-{
-    SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
-    SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
-    qDeleteAll(d->columnData);
-    d->columnData.clear();
-}
-QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> SplitViewLayoutPrivate::data()
-{
-    Q_Q(SplitViewLayout);
-    return QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)>(q, &columnData,
-                                        &data_Append,
-                                        &data_Count,
-                                        &data_At,
-                                        &data_Clear);
-}
 
 /******************************************************************************
  * SplitViewAttached
@@ -126,8 +62,8 @@ void SplitViewAttached::resize(qreal delta)
 {
     Q_D(SplitViewAttached);
     ViewColumn *config = d->config();
-    if (config->resize(delta)) {
-        SplitViewPrivate::get(d->splitView)->recalculateWidths(SplitViewPrivate::RecalculateAll);
+    if (config) {
+        config->resize(delta);
     }
 }
 
@@ -199,6 +135,8 @@ void SplitViewPrivate::layout_Append(QQmlListProperty<SplitViewLayout> *list, Sp
     SplitView *view = static_cast<SplitView*>(list->object);
     SplitViewPrivate *d = SplitViewPrivate::get(view);
     d->columnLatouts.append(layout);
+    // parent layout to view
+    layout->setParent(view);
     // capture layout activation
     QObject::connect(layout, SIGNAL(whenChanged()), view, SLOT(changeLayout()), Qt::DirectConnection);
 }
@@ -322,11 +260,9 @@ void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
             // even though the column is fillWidth, it may have min and max specified;
             // check if the size can be applied
             ViewColumnPrivate *config = ViewColumnPrivate::get(SplitViewAttachedPrivate::getConfig(child));
-            if (fillWidth >= config->minimumWidth && fillWidth <= config->maximumWidth) {
-                child->setImplicitWidth(fillWidth);
-                // update preferredWidth so it can be used in case of resize
-                config->preferredWidth = fillWidth;
-            }
+            config->setPreferredWidth(fillWidth, false);
+            // update preferredWidth so it can be used in case of resize
+            child->setImplicitWidth(config->preferredWidth);
         }
     }
     dirty = false;
@@ -408,25 +344,25 @@ void SplitView::reportConflictingAnchors()
     // Inspired from QtQuick QQuickColumn code
     bool anchorConflict = false;
     for (int ii = 0; ii < positionedItems.count(); ++ii) {
-         const PositionedItem &child = positionedItems.at(ii);
-         if (child.item) {
-             QQuickAnchors *anchors = QQuickItemPrivate::get(static_cast<QQuickItem *>(child.item))->_anchors;
-             if (anchors) {
-                 QQuickAnchors::Anchors usedAnchors = anchors->usedAnchors();
-                 if (usedAnchors & QQuickAnchors::LeftAnchor ||
-                     usedAnchors & QQuickAnchors::RightAnchor ||
-                     usedAnchors & QQuickAnchors::HCenterAnchor ||
-                     anchors->fill() || anchors->centerIn()) {
-                     anchorConflict = true;
-                     break;
-                 }
-             }
-         }
-     }
-     if (anchorConflict) {
-         qmlInfo(this) << "Cannot specify left, right, horizontalCenter, fill or centerIn anchors for items inside SplitView."
-             << " SplitView will not function.";
-     }
+        const PositionedItem &child = positionedItems.at(ii);
+        if (child.item) {
+            QQuickAnchors *anchors = QQuickItemPrivate::get(static_cast<QQuickItem *>(child.item))->_anchors;
+            if (anchors) {
+                QQuickAnchors::Anchors usedAnchors = anchors->usedAnchors();
+                if (usedAnchors & QQuickAnchors::LeftAnchor ||
+                        usedAnchors & QQuickAnchors::RightAnchor ||
+                        usedAnchors & QQuickAnchors::HCenterAnchor ||
+                        anchors->fill() || anchors->centerIn()) {
+                    anchorConflict = true;
+                    break;
+                }
+            }
+        }
+    }
+    if (anchorConflict) {
+        qmlInfo(this) << "Cannot specify left, right, horizontalCenter, fill or centerIn anchors for items inside SplitView."
+                      << " SplitView will not function.";
+    }
 }
 
 void SplitView::componentComplete()

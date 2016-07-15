@@ -26,18 +26,28 @@
 UT_NAMESPACE_BEGIN
 
 class ViewColumnPrivate;
-class ViewColumn : public QObject
+class ViewColumn : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), bool fillWidth MEMBER fillWidth)
-    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal minimumWidth MEMBER minimumWidth)
-    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal maximumWidth MEMBER maximumWidth)
-    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal preferredWidth MEMBER preferredWidth)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), bool fillWidth MEMBER fillWidth WRITE setFillWidth NOTIFY fillWidthChanged)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal minimumWidth MEMBER minimumWidth WRITE setMinimumWidth NOTIFY minimumWidthChanged)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal maximumWidth MEMBER maximumWidth WRITE setMaximumWidth NOTIFY maximumWidthChanged)
+    Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal preferredWidth MEMBER preferredWidth WRITE setPreferredWidth NOTIFY preferredWidthChanged)
 public:
     explicit ViewColumn(QObject *parent = 0);
 
     bool resize(qreal delta);
 
+Q_SIGNALS:
+    void minimumWidthChanged();
+    void maximumWidthChanged();
+    void preferredWidthChanged();
+    void fillWidthChanged();
+
+protected:
+    // from QQmlParserStatus
+    void classBegin() override {}
+    void componentComplete() override;
 private:
     Q_DECLARE_PRIVATE(ViewColumn)
 };

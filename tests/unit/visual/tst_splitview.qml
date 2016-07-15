@@ -30,25 +30,40 @@ Window {
         spacing: units.dp(6)
         focus: true
         Keys.onSpacePressed: mainLayout.when = !mainLayout.when
-        layouts: SplitViewLayout {
-            id: mainLayout
-            when: true
-            ViewColumn {
-                preferredWidth: units.gu(40)
-                maximumWidth: units.gu(100)
+        layouts: [
+            SplitViewLayout {
+                id: mainLayout
+                when: true
+                ViewColumn {
+                    preferredWidth: units.gu(40)
+                    maximumWidth: units.gu(100)
+                }
+                ViewColumn {
+                    fillWidth: true
+                    minimumWidth: units.gu(10)
+                    maximumWidth: units.gu(150)
+                }
+                ViewColumn {
+                    preferredWidth: units.gu(50)
+                }
+                ViewColumn {
+                    fillWidth: true
+                    minimumWidth: units.gu(15)
+                }
+            },
+            SplitViewLayout {
+                when: !mainLayout.when
+                ViewColumn {
+                    preferredWidth: units.gu(10)
+                    minimumWidth: units.gu(30)
+                }
+                ViewColumn {
+                    fillWidth: true
+                    minimumWidth: units.gu(40)
+                }
             }
-            ViewColumn {
-                fillWidth: true
-                minimumWidth: units.gu(10)
-                maximumWidth: units.gu(150)
-            }
-            ViewColumn {
-                preferredWidth: units.gu(50)
-            }
-            ViewColumn {
-                fillWidth: true
-            }
-        }
+
+        ]
         Rectangle {
             color: UbuntuColors.red
             height: parent.height

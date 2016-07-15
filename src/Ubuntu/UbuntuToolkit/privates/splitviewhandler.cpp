@@ -85,5 +85,4 @@ void SplitViewHandler::onPositionChanged(QQuickMouseEvent *event)
     }
 }
 
-
 UT_NAMESPACE_END

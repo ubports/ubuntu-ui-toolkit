@@ -36,12 +36,20 @@ public:
         return q ? q->d_func() : nullptr;
     }
 
+    void setMinimumWidth(qreal width);
+    void setMaximumWidth(qreal width);
+    void setPreferredWidth(qreal width, bool notify = true);
+    void setFillWidth(bool fill);
+
+    void recalculateLayoutContent();
+
     qreal minimumWidth{0.0};
     qreal maximumWidth{0xFFFFFFFF};
     qreal preferredWidth{0.0};
     int column{-1};
     bool fillWidth{false};
     bool resized{false};
+    bool completed{false};
 };
 
 class SplitViewLayoutPrivate : public QObjectPrivate
@@ -56,8 +64,8 @@ public:
 
     QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> data();
 
-    bool when{false};
     QList<ViewColumn*> columnData;
+    bool when{false};
 
 private:
     static void data_Append(QQmlListProperty<ViewColumn> *, ViewColumn*);
