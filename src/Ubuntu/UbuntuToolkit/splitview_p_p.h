@@ -126,6 +126,7 @@ public:
 
     void updateLayout();
     void recalculateWidths(RelayoutOperation operation);
+    void setHandle(QQmlComponent *delegate);
 
     // private slots
     void changeLayout();
@@ -133,6 +134,7 @@ public:
     // members
     QList<SplitViewLayout*> columnLatouts;
     SplitViewLayout* activeLayout{nullptr};
+    QQmlComponent *handleDelegate{nullptr};
     bool dirty{false};
 
 private:

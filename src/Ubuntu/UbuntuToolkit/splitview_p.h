@@ -97,11 +97,15 @@ class SplitView : public QQuickBasePositioner
     Q_OBJECT
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<QObject> splitViewData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts READ layouts DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlComponent *handleDelegate MEMBER handleDelegate WRITE setHandle NOTIFY handleDelegateChanged)
     Q_CLASSINFO("DefaultProperty", "splitViewData")
 public:
     explicit SplitView(QQuickItem *parent = 0);
 
     static UT_PREPEND_NAMESPACE(SplitViewAttached) *qmlAttachedProperties(QObject*);
+
+Q_SIGNALS:
+    void handleDelegateChanged();
 
 protected:
     SplitView(SplitViewPrivate &, QQuickItem *);

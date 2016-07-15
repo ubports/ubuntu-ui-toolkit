@@ -32,16 +32,18 @@ class SplitViewHandler : public QQuickMouseArea
 public:
     explicit SplitViewHandler(QQuickItem *parent = 0);
     ~SplitViewHandler();
-    void bindSpacing(SplitView *view);
+    void configureHandler(SplitView *view);
 
 protected:
-    QMetaObject::Connection *spacing{nullptr};
     QPointF prevPos;
+    QPointer<SplitView> view;
+    QMetaObject::Connection *spacing{nullptr};
 
 private Q_SLOTS:
     void onPressed(QQuickMouseEvent *event);
     void onReleased(QQuickMouseEvent *event);
     void onPositionChanged(QQuickMouseEvent *event);
+    void onDelegateChanged();
 };
 
 UT_NAMESPACE_END

@@ -117,7 +117,7 @@ void SplitViewPrivate::data_Append(QQmlListProperty<QObject> *list, QObject* obj
 
         // attach the split handler to it
         SplitViewHandler *handler = new SplitViewHandler(item);
-        handler->bindSpacing(view);
+        handler->configureHandler(view);
     }
 }
 QQmlListProperty<QObject> SplitViewPrivate::data()
@@ -387,6 +387,14 @@ void SplitView::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeom
  * properties
  */
 
+void SplitViewPrivate::setHandle(QQmlComponent *delegate)
+{
+    if (handleDelegate == delegate) {
+        return;
+    }
+    handleDelegate = delegate;
+    Q_EMIT q_func()->handleDelegateChanged();
+}
 
 UT_NAMESPACE_END
 

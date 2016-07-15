@@ -27,9 +27,25 @@ Window {
 
     SplitView {
         anchors.fill: parent
-        spacing: units.dp(6)
+        spacing: units.dp(8)
         focus: true
         Keys.onSpacePressed: mainLayout.when = !mainLayout.when
+        handleDelegate: Rectangle {
+            radius: units.gu(1)
+            anchors {
+                fill: parent
+                leftMargin: units.dp(2)
+                rightMargin: units.dp(2)
+                topMargin: parent.height / 2 - units.gu(3)
+                bottomMargin: parent.height / 2 - units.gu(3)
+            }
+            color: UbuntuColors.graphite
+            scale: handle.containsMouse || handle.pressed ? 1.6 : 1.0
+            Behavior on scale {
+                UbuntuNumberAnimation { }
+            }
+        }
+
         layouts: [
             SplitViewLayout {
                 id: mainLayout

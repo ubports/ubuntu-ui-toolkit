@@ -20,6 +20,7 @@
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickevents_p_p.h>
+#include <QtQml/QQmlEngine>
 #include <splitview_p_p.h>
 
 UT_NAMESPACE_BEGIN
@@ -52,14 +53,25 @@ SplitViewHandler::~SplitViewHandler()
     delete spacing;
 }
 
-void SplitViewHandler::bindSpacing(SplitView *view)
+void SplitViewHandler::configureHandler(SplitView *view)
 {
+    this->view = view;
+    // grab the context of the parent
+    QQmlEngine::setContextForObject(this, qmlContext(view));
+
+    // bind SplitView spacing, use it to specify the resize handle
     auto resizer = [view, this]() {
         setWidth(view->spacing());
     };
     spacing = new QMetaObject::Connection;
     *spacing = connect(view, &SplitView::spacingChanged, resizer);
     setWidth(view->spacing());
+
+    // connect to receive handle delegate
+    connect(view, &SplitView::handleDelegateChanged,
+            this, &SplitViewHandler::onDelegateChanged);
+
+    onDelegateChanged();
 }
 
 void SplitViewHandler::onPressed(QQuickMouseEvent *event)
@@ -82,6 +94,31 @@ void SplitViewHandler::onPositionChanged(QQuickMouseEvent *event)
     SplitViewAttached *attached = SplitViewAttached::get(parentItem());
     if (attached) {
         attached->resize(dx);
+    }
+}
+
+void SplitViewHandler::onDelegateChanged()
+{
+    // the child is an instance of the delegate
+    QList<QQuickItem*> children = childItems();
+    qDeleteAll(children);
+
+    // and set the new delegate - if any
+    if (SplitViewPrivate::get(view)->handleDelegate) {
+        QQmlContext *context = new QQmlContext(qmlContext(this), this);
+        context->setContextProperty("handle", QVariant::fromValue(this));
+        QObject *object = SplitViewPrivate::get(view)->handleDelegate->beginCreate(context);
+        if (object) {
+            QQuickItem *item = qobject_cast<QQuickItem*>(object);
+            if (!item) {
+                qmlInfo(view) << "handle delegate not an Item";
+                delete object;
+            } else {
+                QQml_setParent_noEvent(item, this);
+                item->setParentItem(this);
+                SplitViewPrivate::get(view)->handleDelegate->completeCreate();
+            }
+        }
     }
 }
 
