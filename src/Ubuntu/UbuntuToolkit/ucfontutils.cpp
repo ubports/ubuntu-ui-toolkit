@@ -15,8 +15,8 @@
  *
  */
 
-#include "ucfontutils.h"
-#include "ucunits.h"
+#include "ucfontutils_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -24,7 +24,7 @@ UCFontUtils *UCFontUtils::m_instance = nullptr;
 
 /*!
  * \qmltype FontUtils
- * \instantiates UbuntuToolkit::UCFontUtils
+ * \instantiates UCFontUtils
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief FontUtils is a \l {http://qt-project.org/doc/qt-5.0/qtqml/qqmlcontext.html#details} {context property},

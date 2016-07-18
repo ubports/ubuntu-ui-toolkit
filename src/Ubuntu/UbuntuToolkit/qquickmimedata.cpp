@@ -21,7 +21,7 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QMimeDatabase>
 #include <QtCore/QMimeType>
-#include "qquickmimedata.h"
+#include "qquickmimedata_p.h"
 
 #include <QDebug>
 

@@ -16,8 +16,8 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "frame.h"
-#include "textures.h"
+#include "frame_p.h"
+#include "textures_p.h"
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 

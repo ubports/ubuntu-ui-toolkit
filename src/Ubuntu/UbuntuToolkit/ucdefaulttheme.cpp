@@ -17,8 +17,8 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucdefaulttheme.h"
-#include "uctheme.h"
+#include "ucdefaulttheme_p.h"
+#include "uctheme_p.h"
 
 #include <QDebug>
 #include <QtCore/QDir>

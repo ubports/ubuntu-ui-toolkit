@@ -16,7 +16,7 @@
  * Authors: Lars Uebernickel <lars.uebernickel@canonical.com>
  */
 
-#include "unitythemeiconprovider.h"
+#include "unitythemeiconprovider_p.h"
 
 #include <QDir>
 #include <QFileInfo>

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "timer.h"
+#include <UbuntuGestures/private/timer_p.h>
 
 UG_NAMESPACE_BEGIN
 

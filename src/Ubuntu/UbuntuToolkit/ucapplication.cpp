@@ -16,7 +16,7 @@
  * Author: Christian Dywan <christian.dywan@canonical.om>
  */
 
-#include "ucapplication.h"
+#include "ucapplication_p.h"
 
 #include <QtCore/QCoreApplication>
 #include <QDebug>

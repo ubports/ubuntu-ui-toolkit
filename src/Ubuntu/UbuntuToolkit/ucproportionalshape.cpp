@@ -16,7 +16,7 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "ucproportionalshape.h"
+#include "ucproportionalshape_p.h"
 
 UT_NAMESPACE_BEGIN
 

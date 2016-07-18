@@ -14,68 +14,105 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCPAGEWRAPPER_P_H
-#define UCPAGEWRAPPER_P_H
+#ifndef UCPAGEWRAPPER_H
+#define UCPAGEWRAPPER_H
 
+#include <ubuntutoolkitglobal.h>
 #include "ucpagetreenode_p.h"
 
 UT_NAMESPACE_BEGIN
 
-class UCPageWrapper;
-class UCPageWrapperIncubator;
-class UCPageWrapperPrivate : public UCPageTreeNodePrivate
+class UCPageWrapperPrivate;
+class UBUNTUTOOLKIT_EXPORT UCPageWrapper : public UCPageTreeNode
 {
-    Q_DECLARE_PUBLIC(UCPageWrapper)
+    Q_OBJECT
+    Q_PROPERTY(QVariant reference READ reference WRITE setReference NOTIFY referenceChanged)
+    Q_PROPERTY(QQuickItem* object READ object WRITE setObject NOTIFY objectChanged)
+    Q_PROPERTY(bool canDestroy READ canDestroy NOTIFY canDestroyChanged)
+    Q_PROPERTY(int column READ column WRITE setColumn NOTIFY columnChanged)
+    Q_PROPERTY(QQuickItem* parentPage READ parentPage WRITE setParentPage NOTIFY parentPageChanged)
+    Q_PROPERTY(QQuickItem* parentWrapper READ parentWrapper WRITE setParentWrapper NOTIFY parentWrapperChanged)
+    Q_PROPERTY(QQuickItem* pageHolder READ pageHolder WRITE setPageHolder NOTIFY pageHolderChanged)
+    Q_PROPERTY(QObject* incubator READ incubator NOTIFY incubatorChanged)
+    Q_PROPERTY(bool synchronous READ synchronous WRITE setSynchronous NOTIFY synchronousChanged)
+    Q_PROPERTY(QVariant properties READ properties WRITE setProperties NOTIFY propertiesChanged)
 
+    //overrides
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible2 NOTIFY visibleChanged2 FINAL)
+
+    // FIXME Re-expose property that would be inaccessible due to a QML bug
+    // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
+    Q_PROPERTY(UCTheme *theme READ getTheme2 WRITE setTheme2 RESET resetTheme2 NOTIFY themeChanged2 FINAL)
 public:
-    UCPageWrapperPrivate ();
-    ~UCPageWrapperPrivate ();
-    void init();
+    explicit UCPageWrapper(QQuickItem *parent = 0);
+    virtual ~UCPageWrapper();
 
-    enum PropertyFlags {
-        CustomVisible = LastPageTreeNodeFlag
-    };
+    QVariant reference() const;
+    void setReference(const QVariant &reference);
 
-    enum State {
-        Waiting, LoadingComponent, CreatingObject, NotifyPageLoaded, Ready, Error
-    };
+    QQuickItem *object() const;
+    void setObject(QQuickItem *object);
 
-    void initPage();
-    void reset ();
-    void activate   ();
-    void deactivate ();
-    QQuickItem *toItem (QObject *theObject, bool canDelete = true);
-    void initItem (QQuickItem *theItem);
-    void copyProperties (QObject *target);
+    bool canDestroy() const;
 
-    void createIncubator  ();
-    void destroyIncubator ();
-    void onActiveChanged();
+    int column() const;
+    void setColumn(int column);
 
-    void setCanDestroy(bool canDestroy);
+    QQuickItem *parentWrapper() const;
+    void setParentWrapper(QQuickItem* parentWrapper);
 
-    //state machine functions
-    void nextStep ();
-    void loadComponentState ();
-    void createObjectState ();
-    void finalizeObjectIfReady ();
+    QQuickItem *pageHolder() const;
+    void setPageHolder(QQuickItem* pageHolder);
 
-    QVariant m_reference;
-    QVariant m_properties;
-    QQuickItem* m_object;
-    QQuickItem* m_parentPage;
-    QQuickItem* m_parentWrapper;
-    QQuickItem* m_pageHolder;
-    UCPageWrapperIncubator* m_incubator;
-    QQmlComponent *m_component;
-    QQmlContext *m_itemContext;
-    State m_state;
-    int m_column;
-    bool m_canDestroy:1;
-    bool m_synchronous:1;
-    bool m_ownsComponent:1;
+    bool synchronous() const;
+    void setSynchronous(bool synchronous);
+
+    Q_INVOKABLE bool childOf (QQuickItem *page);
+
+    QVariant properties() const;
+    void setProperties(const QVariant &properties);
+
+    QQuickItem *parentPage() const;
+    void setParentPage(QQuickItem* parentPage);
+
+    QObject *incubator() const;
+
+    Q_INVOKABLE void destroyObject ();
+
+    // QQuickItem interface
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
+
+    //override QQuickItem properties
+    void setVisible2(bool visible);
+
+    UCTheme *getTheme2();
+    void setTheme2(UCTheme * theme);
+    void resetTheme2();
+
+Q_SIGNALS:
+    void referenceChanged(const QVariant &reference);
+    void objectChanged(QObject* object);
+    void canDestroyChanged(bool canDestroy);
+    void columnChanged(int column);
+    void parentWrapperChanged(QQuickItem* parentWrapper);
+    void pageHolderChanged(QQuickItem* pageHolder);
+    void synchronousChanged(bool synchronous);
+    void propertiesChanged(const QVariant &properties);
+    void pageLoaded();
+    void parentPageChanged(QQuickItem* parentPage);
+    void incubatorChanged(QObject* incubator);
+    void visibleChanged2();
+    void themeChanged2();
+
+protected:
+    UCPageWrapper(UCPageWrapperPrivate &dd, QQuickItem *parent);
+
+private:
+    Q_DECLARE_PRIVATE(UCPageWrapper)
+    Q_PRIVATE_SLOT(d_func(), void nextStep())
+    Q_PRIVATE_SLOT(d_func(), void onActiveChanged())
 };
 
 UT_NAMESPACE_END
 
-#endif // UCPAGEWRAPPER_P_H
+#endif // UCPAGEWRAPPER_H

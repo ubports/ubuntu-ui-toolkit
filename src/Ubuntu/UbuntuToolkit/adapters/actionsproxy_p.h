@@ -20,7 +20,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QSet>
 #include <QtCore/QPointer>
-#include "ucaction.h"
+#include "ucaction_p.h"
 
 UT_NAMESPACE_BEGIN
 

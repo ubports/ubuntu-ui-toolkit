@@ -14,19 +14,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucheader.h"
+#include "ucheader_p.h"
 #include <QDebug>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
-#include "ucubuntuanimation.h"
-#include "ucunits.h"
+#include "ucubuntuanimation_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 
 /*!
     \qmltype Header
-    \instantiates UbuntuToolkit::UCHeader
+    \instantiates UCHeader
     \inherits StyledItem
     \inqmlmodule Ubuntu.Components
     \ingroup ubuntu

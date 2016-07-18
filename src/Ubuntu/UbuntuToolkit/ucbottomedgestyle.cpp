@@ -16,14 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedgestyle.h"
-#include "ucbottomedge_p.h"
+#include "ucbottomedgestyle_p.h"
+#include "ucbottomedge_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype BottomEdgeStyle
- * \instantiates UbuntuToolkit::UCBottomEdgeStyle
+ * \instantiates UCBottomEdgeStyle
  * \inqmlmodule Ubuntu.Components.Styles 1.3
  * \since Ubuntu.Components.Styles 1.3
  * \ingroup style-api

@@ -16,7 +16,7 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "ucurihandler.h"
+#include "ucurihandler_p.h"
 #include <QtDBus/QtDBus>
 #include <libnih.h>
 #include <libnih-dbus.h>
@@ -37,7 +37,7 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
 
 /*!
  * \qmltype UriHandler
- * \instantiates UbuntuToolkit::UCUriHandler
+ * \instantiates UCUriHandler
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief Singleton signalling for opened URIs.

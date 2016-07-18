@@ -14,16 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucunits.h"
-#include "uctheme.h"
-#include "uclistitem.h"
-#include "uclistitem_p.h"
-#include <propertychange.h>
-#include "quickutils.h"
-#include "i18n.h"
-#include "uclistitemstyle.h"
-#include "privates/listitemdragarea.h"
-#include "privates/listviewextensions.h"
+#include "ucunits_p.h"
+#include "uctheme_p.h"
+#include "uclistitem_p_p.h"
+#include <propertychange_p.h>
+#include "quickutils_p.h"
+#include "i18n_p.h"
+#include "uclistitemstyle_p.h"
+#include "privates/listitemdragarea_p.h"
+#include "privates/listviewextensions_p.h"
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtQml/QQmlInfo>
@@ -174,7 +173,7 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 
 /*!
  * \qmltype ViewItems
- * \instantiates UbuntuToolkit::UCViewItemsAttached
+ * \instantiates UCViewItemsAttached
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2

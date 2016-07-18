@@ -16,138 +16,158 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#ifndef UCSLOTSLAYOUTPRIVATE_H
-#define UCSLOTSLAYOUTPRIVATE_H
+#ifndef UCSLOTSLAYOUT_H
+#define UCSLOTSLAYOUT_H
 
-#include <private/qquickitem_p.h>
+#include <QtQuick/QQuickItem>
+#include <ubuntutoolkitglobal.h>
 
-#include "ucslotslayout.h"
+UT_NAMESPACE_BEGIN
 
-#define IMPLICIT_SLOTSLAYOUT_WIDTH_GU                40
-#define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU               7
-#define SLOTSLAYOUT_SLOTS_SIDEMARGINS_GU             1
-#define SLOTSLAYOUT_SLOTS_TOPBOTTOMMARGINS_GU        0
-#define SLOTSLAYOUT_LEFTMARGIN_GU                    1
-#define SLOTSLAYOUT_RIGHTMARGIN_GU                   1
-
-//we want a different top/bottom margin if any of the slot is taller than this
-#define SLOTSLAYOUT_TOPBOTTOMMARGIN_SIZETHRESHOLD_GU 4
-#define SLOTSLAYOUT_TOPMARGIN1_GU                    1
-#define SLOTSLAYOUT_TOPMARGIN2_GU                    2
-#define SLOTSLAYOUT_BOTTOMMARGIN1_GU                 1
-#define SLOTSLAYOUT_BOTTOMMARGIN2_GU                 2
-
-namespace UbuntuToolkit {
-
-class UCSlotsLayoutPrivate : public QQuickItemPrivate
+class UCSlotsAttached;
+class UCSlotsLayoutPadding;
+class UCSlotsLayoutPrivate;
+class UBUNTUTOOLKIT_EXPORT UCSlotsLayout : public QQuickItem
 {
-    Q_DECLARE_PUBLIC(UCSlotsLayout)
+    Q_OBJECT
+
+    Q_PROPERTY(QQuickItem *mainSlot READ mainSlot WRITE setMainSlot NOTIFY mainSlotChanged)
+#ifdef Q_QDOC
+    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
+#else
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayoutPadding) *padding READ padding CONSTANT FINAL)
+#endif
+
+    Q_ENUMS(UCSlotPosition)
+
 public:
-    UCSlotsLayoutPrivate();
-    virtual ~UCSlotsLayoutPrivate();
-    void init();
-    void updateTopBottomPaddingIfNeeded();
+    explicit UCSlotsLayout(QQuickItem *parent = 0);
 
-    //returns true if we want to ignore "slot" during the layout process
-    bool skipSlot(QQuickItem *slot);
+    virtual QQuickItem *mainSlot();
+    virtual QQuickItem *mainSlot() const;
+    virtual void setMainSlot(QQuickItem *item, bool fireSignal = true);
 
-    //utility method that scans a list and adds the slot after all the slots which
-    //have same position
-    void insertSlotIntoSortedList(QQuickItem *slot,
-                                  UCSlotsLayout::UCSlotPosition desiredSlotPosition,
-                                  QList<QQuickItem *> &slotsList);
+    UCSlotsLayoutPadding *padding();
 
-    //add or remove a slot from the internal data structures
-    void addSlot(QQuickItem *slot);
-    void removeSlot(QQuickItem *slot);
+    enum UCSlotPosition {
+        First = INT_MIN/2,
+        Leading = INT_MIN/4,
+        Trailing = INT_MAX/4,
+        Last = INT_MAX/2
+    };
 
-    //layout "items" in a row, optionally anchoring the row to a sibling with margin siblingAnchorMargin
-    //The optional anchoring behaviour can be disable by passing QQuickAnchorLine()
-    void layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLine siblingAnchor, QList<QQuickItem *> &items);
+    static UCSlotsAttached *qmlAttachedProperties(QObject *object);
 
-    //this method sets up vertical anchors and paddings for a slot ("item").
-    //Attached properties are taken from "attached", if not null, otherwise
-    //qml engine is queried.
-    void setupSlotsVerticalPositioning(QQuickItem *item, UCSlotsAttached* attached = Q_NULLPTR);
+Q_SIGNALS:
+    void mainSlotChanged();
 
-    //We have two vertical positioning modes according to the visual design rules:
-    //- RETURN VALUE CenterVertically --> All items have to be vertically centered
-    //- RETURN VALUE AlignToTop --> All items have to anchor to the top of the listitem (using a top margin as well)
-    //This is mainly used by the layout method
-    enum UCSlotPositioningMode { AlignToTop, CenterVertically };
-    UCSlotsLayoutPrivate::UCSlotPositioningMode getVerticalPositioningMode() const;
+protected:
+    Q_DECLARE_PRIVATE(UCSlotsLayout)
+    void componentComplete() override;
+    void itemChange(ItemChange change, const ItemChangeData &data) override;
 
-    //connect/disconnect item's UCSlotsAttached properties changes to/from the right slot
-    void handleAttachedPropertySignals(QQuickItem *item, bool connect);
+private:
+    Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateCachedHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateGuValues())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateCachedMainSlotHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSlotsBBoxHeight())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
+    Q_PRIVATE_SLOT(d_func(), void _q_onSlotWidthChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_onSlotOverrideVerticalPositioningChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_onSlotPositionChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_relayout())
+};
+UT_NAMESPACE_END
 
-    static inline UCSlotsLayoutPrivate *get(UCSlotsLayout *that)
-    {
-        Q_ASSERT(that);
-        return that->d_func();
-    }
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCSlotsLayout), QML_HAS_ATTACHED_PROPERTIES)
 
-    void _q_onGuValueChanged();
-    void _q_updateCachedHeight();
-    void _q_updateProgressionStatus();
-    void _q_updateGuValues();
-    void _q_updateCachedMainSlotHeight();
-    void _q_updateSlotsBBoxHeight();
-    void _q_updateSize();
-    void _q_onSlotWidthChanged();
-    void _q_onSlotOverrideVerticalPositioningChanged();
-    void _q_onSlotPositionChanged();
-    void _q_relayout();
+UT_NAMESPACE_BEGIN
 
-    UCSlotsLayoutPadding padding;
+class UCSlotsAttachedPrivate;
+class UBUNTUTOOLKIT_EXPORT UCSlotsAttached : public QObject
+{
+    Q_OBJECT
+#ifdef Q_QDOC
+    Q_PROPERTY(UCSlotsLayout::UCSlotPosition position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(UCSlotsLayoutPadding *padding READ padding CONSTANT FINAL)
+#else
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayout::UCSlotPosition) position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(UCSlotsLayoutPadding) *padding READ padding CONSTANT FINAL)
+#endif
+    Q_PROPERTY(bool overrideVerticalPositioning READ overrideVerticalPositioning WRITE setOverrideVerticalPositioning NOTIFY overrideVerticalPositioningChanged)
 
-    //These lists are just to split the children() between leading
-    //and trailing slots. Some of the slots in this lists may be
-    //ignored during relayout, for example if they're not visible or
-    //similar conditions. (see relayout implementation to make sure
-    //what conditions we check before ignoring a slot)
-    QList<QQuickItem *> leadingSlots;
-    QList<QQuickItem *> trailingSlots;
+public:
+    UCSlotsAttached(QObject *object = 0);
 
-    QQuickItem* mainSlot;
+    UCSlotsLayout::UCSlotPosition position() const;
+    void setPosition(UCSlotsLayout::UCSlotPosition pos);
 
-    //We cache the current parent so that we can disconnect from the signals when the
-    //parent changes. We need this because itemChange(..) only provides the new parent
-    QQuickItem *m_parentItem;
+    UCSlotsLayoutPadding *padding();
 
-    qreal mainSlotHeight;
-    //max slots height ignoring the main slot
-    qreal maxSlotsHeight;
-    //we cache the height so that we only relayout when it goes
-    //from 0 to non-0 and not viceversa
-    qreal _q_cachedHeight;
+    bool overrideVerticalPositioning() const;
+    void setOverrideVerticalPositioning(bool val);
 
-    //currently fixed, but we may allow changing this in the future
-    qint32 maxNumberOfLeadingSlots;
-    qint32 maxNumberOfTrailingSlots;
+Q_SIGNALS:
+    void positionChanged();
+    void overrideVerticalPositioningChanged();
 
-    //Show the chevron, name taken from old ListItem API to minimize changes
-    bool progression : 1;
+protected:
+    Q_DECLARE_PRIVATE(UCSlotsAttached)
+
+private:
+    Q_PRIVATE_SLOT(d_func(), void _q_onGuValueChanged())
 };
 
-class UCSlotsAttachedPrivate : public QObjectPrivate
+class UBUNTUTOOLKIT_EXPORT UCSlotsLayoutPadding : public QObject
 {
-    Q_DECLARE_PUBLIC(UCSlotsAttached)
+    Q_OBJECT
+    Q_PROPERTY(qreal leading READ leading WRITE setLeadingQml NOTIFY leadingChanged FINAL)
+    Q_PROPERTY(qreal trailing READ trailing WRITE setTrailingQml NOTIFY trailingChanged FINAL)
+    Q_PROPERTY(qreal top READ top WRITE setTopQml NOTIFY topChanged FINAL)
+    Q_PROPERTY(qreal bottom READ bottom WRITE setBottomQml NOTIFY bottomChanged FINAL)
+
 public:
-    UCSlotsAttachedPrivate();
+    explicit UCSlotsLayoutPadding(QObject *parent = 0);
 
-    static inline UCSlotsAttachedPrivate *get(UCSlotsAttached *that)
-    {
-        Q_ASSERT(that);
-        return that->d_func();
-    }
+    qreal leading() const;
+    void setLeading(qreal val);
+    void setLeadingQml(qreal val);
 
-    void _q_onGuValueChanged();
+    qreal trailing() const;
+    void setTrailing(qreal val);
+    void setTrailingQml(qreal val);
 
-    UCSlotsLayoutPadding padding;
-    UCSlotsLayout::UCSlotPosition position;
-    bool overrideVerticalPositioning : 1;
+    qreal top() const;
+    void setTop(qreal val);
+    void setTopQml(qreal val);
+
+    qreal bottom() const;
+    void setBottom(qreal val);
+    void setBottomQml(qreal val);
+
+    //once the dev tries to change the offsets (and he does so via QML) we'll stop
+    //updating offset's value, for instance when gu value changes or when the
+    //positioning mode changes
+    bool leadingWasSetFromQml : 1;
+    bool trailingWasSetFromQml : 1;
+    bool topWasSetFromQml : 1;
+    bool bottomWasSetFromQml : 1;
+
+Q_SIGNALS:
+    void leadingChanged();
+    void trailingChanged();
+    void topChanged();
+    void bottomChanged();
+
+private:
+    //similar to anchors.margins, but we don't use a contentItem so we handle this ourselves
+    qreal m_leading;
+    qreal m_trailing;
+    qreal m_top;
+    qreal m_bottom;
 };
 
 UT_NAMESPACE_END
 
-#endif // UCSLOTSLAYOUTPRIVATE_H
+#endif // UCSLOTSLAYOUT_H

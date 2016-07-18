@@ -14,19 +14,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucunits.h"
-#include "uctheme.h"
-#include "uclistitem.h"
-#include "uclistitem_p.h"
-#include "uclistitemactions.h"
-#include "uclistitemactions_p.h"
-#include "privates/listitemselection.h"
-#include "ucubuntuanimation.h"
-#include <propertychange.h>
-#include "i18n.h"
-#include "quickutils.h"
-#include "ucaction.h"
-#include "privates/listviewextensions.h"
+#include "ucunits_p.h"
+#include "uctheme_p.h"
+#include "uclistitem_p_p.h"
+#include "uclistitemactions_p_p.h"
+#include "privates/listitemselection_p.h"
+#include "ucubuntuanimation_p.h"
+#include <propertychange_p.h>
+#include "i18n_p.h"
+#include "quickutils_p.h"
+#include "ucaction_p.h"
+#include "privates/listviewextensions_p.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -35,7 +33,7 @@
 #include <QtGui/QStyleHints>
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
-#include "uclistitemstyle.h"
+#include "uclistitemstyle_p.h"
 #include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
 #include <QFileInfo>
@@ -518,7 +516,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
 
 /*!
  * \qmltype ListItem
- * \instantiates UbuntuToolkit::UCListItem
+ * \instantiates UCListItem
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu-listitem
  * \since Ubuntu.Components 1.2
@@ -1129,7 +1127,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
 
     // focus frame
     bool paintFocus = hasActiveFocus() && keyNavigationFocus();
-    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(1) : 0);
+    rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(2) : 0);
     if (paintFocus) {
         QColor penColor;
         if (getTheme()) {
@@ -1999,4 +1997,4 @@ bool UCListItem::isSwiped()
 
 UT_NAMESPACE_END
 
-#include "moc_uclistitem.cpp"
+#include "moc_uclistitem_p.cpp"
