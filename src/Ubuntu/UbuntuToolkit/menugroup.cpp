@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucmenugroup.h"
-#include "ucaction.h"
-#include "ucactionlist.h"
+#include "menugroup_p.h"
+#include "actionlist_p.h"
+#include "ucaction_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -66,7 +66,7 @@ UT_NAMESPACE_BEGIN
  * Signal called when the contents of the group change,
  * including child content changes (eg. \l ActionList child add/remove)
  */
-UCMenuGroup::UCMenuGroup(QObject *parent)
+MenuGroup::MenuGroup(QObject *parent)
     : QObject(parent)
 {
 }
@@ -75,18 +75,18 @@ UCMenuGroup::UCMenuGroup(QObject *parent)
  * \qmlmethod MenuGroup::addObject(Object object)
  * Adds an Object to the list programatically.
  */
-void UCMenuGroup::addObject(QObject *object)
+void MenuGroup::addObject(QObject *object)
 {
     if (m_data.contains(object)) {
         return;
     }
     m_data.push_back(object);
 
-    if (auto childGroup = qobject_cast<UCMenuGroup*>(object)) {
-        connect(childGroup, &UCMenuGroup::changed, this, &UCMenuGroup::changed);
-    } else if (auto actionList = qobject_cast<UCActionList*>(object)) {
-        connect(actionList, &UCActionList::added, this, &UCMenuGroup::changed);
-        connect(actionList, &UCActionList::removed, this, &UCMenuGroup::changed);
+    if (auto childGroup = qobject_cast<MenuGroup*>(object)) {
+        connect(childGroup, &MenuGroup::changed, this, &MenuGroup::changed);
+    } else if (auto actionList = qobject_cast<ActionList*>(object)) {
+        connect(actionList, &ActionList::added, this, &MenuGroup::changed);
+        connect(actionList, &ActionList::removed, this, &MenuGroup::changed);
     }
 
     Q_EMIT added(object);
@@ -97,7 +97,7 @@ void UCMenuGroup::addObject(QObject *object)
  * \qmlmethod MenuGroup::removeObject(Object object)
  * Removes an object from the list programatically.
  */
-void UCMenuGroup::removeObject(QObject *object)
+void MenuGroup::removeObject(QObject *object)
 {
     if (!object) {
         return;
@@ -117,45 +117,45 @@ void UCMenuGroup::removeObject(QObject *object)
  * Note that when you set this property, the children of the MenuGroup will be ignored,
  * so do not set the list and define children.
  */
-QQmlListProperty<QObject> UCMenuGroup::data()
+QQmlListProperty<QObject> MenuGroup::data()
 {
-    return QQmlListProperty<QObject>(this, 0, UCMenuGroup::append, UCMenuGroup::count, UCMenuGroup::at, UCMenuGroup::clear);
+    return QQmlListProperty<QObject>(this, 0, MenuGroup::append, MenuGroup::count, MenuGroup::at, MenuGroup::clear);
 }
 
-const QVector<QObject*> &UCMenuGroup::list() const
+const QVector<QObject*> &MenuGroup::list() const
 {
     return m_data;
 }
 
-void UCMenuGroup::append(QQmlListProperty<QObject> *list, QObject *object)
+void MenuGroup::append(QQmlListProperty<QObject> *list, QObject *object)
 {
-    UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
+    MenuGroup *menuGroup = qobject_cast<MenuGroup*>(list->object);
     if (menuGroup) {
         menuGroup->addObject(object);
     }
 }
 
-int UCMenuGroup::count(QQmlListProperty<QObject> *list)
+int MenuGroup::count(QQmlListProperty<QObject> *list)
 {
-    UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
+    MenuGroup *menuGroup = qobject_cast<MenuGroup*>(list->object);
     if (menuGroup) {
         return menuGroup->m_data.count();
     }
     return 0;
 }
 
-QObject* UCMenuGroup::at(QQmlListProperty<QObject> *list, int index)
+QObject* MenuGroup::at(QQmlListProperty<QObject> *list, int index)
 {
-    UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
+    MenuGroup *menuGroup = qobject_cast<MenuGroup*>(list->object);
     if (menuGroup && index >=0 && menuGroup->m_data.count() > index) {
         return menuGroup->m_data[index];
     }
     return Q_NULLPTR;
 }
 
-void UCMenuGroup::clear(QQmlListProperty<QObject> *list)
+void MenuGroup::clear(QQmlListProperty<QObject> *list)
 {
-    UCMenuGroup *menuGroup = qobject_cast<UCMenuGroup*>(list->object);
+    MenuGroup *menuGroup = qobject_cast<MenuGroup*>(list->object);
     if (menuGroup) {
         menuGroup->m_data.clear();
     }

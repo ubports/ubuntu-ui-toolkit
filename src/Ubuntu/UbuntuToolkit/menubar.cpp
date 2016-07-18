@@ -15,8 +15,8 @@
  *
  */
 
-#include "ucmenubar.h"
-#include "ucmenubar_p.h"
+#include "menubar_p.h"
+#include "menubar_p_p.h"
 
 // Qt
 #include <QQuickItem>
@@ -27,13 +27,13 @@
 
 UT_NAMESPACE_BEGIN
 
-UCMenuBarPrivate::UCMenuBarPrivate(UCMenuBar *qq)
+MenuBarPrivate::MenuBarPrivate(MenuBar *qq)
     : q_ptr(qq)
 {
     m_platformBar = QGuiApplicationPrivate::platformTheme()->createPlatformMenuBar();
 }
 
-UCMenuBarPrivate::~UCMenuBarPrivate()
+MenuBarPrivate::~MenuBarPrivate()
 {
     qDeleteAll(m_platformMenus);
     m_platformMenus.clear();
@@ -42,10 +42,10 @@ UCMenuBarPrivate::~UCMenuBarPrivate()
     m_platformBar = Q_NULLPTR;
 }
 
-void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
+void MenuBarPrivate::insertMenu(int index, Menu* menu)
 {
-    Q_Q(UCMenuBar);
-    UCMenu* prevMenu = m_menus.count() > index ? m_menus[index] : Q_NULLPTR;
+    Q_Q(MenuBar);
+    Menu* prevMenu = m_menus.count() > index ? m_menus[index] : Q_NULLPTR;
 
     m_menus.insert(index, menu);
 
@@ -65,7 +65,7 @@ void UCMenuBarPrivate::insertMenu(int index, UCMenu* menu)
     }
 }
 
-void UCMenuBarPrivate::removeMenu(UCMenu *menu)
+void MenuBarPrivate::removeMenu(Menu *menu)
 {
     m_menus.removeOne(menu);
 
@@ -78,35 +78,34 @@ void UCMenuBarPrivate::removeMenu(UCMenu *menu)
     }
 }
 
-void UCMenuBarPrivate::menu_append(QQmlListProperty<UCMenu> *prop, UCMenu *o)
+void MenuBarPrivate::menu_append(QQmlListProperty<Menu> *prop, Menu *o)
 {
-    UCMenuBarPrivate *q = static_cast<UCMenuBarPrivate *>(prop->data);
+    MenuBarPrivate *q = static_cast<MenuBarPrivate *>(prop->data);
     // menubar is the menus parent
     o->setParent(prop->object);
     q->insertMenu(q->m_menus.count(), o);
 }
 
-int UCMenuBarPrivate::menu_count(QQmlListProperty<UCMenu> *prop)
+int MenuBarPrivate::menu_count(QQmlListProperty<Menu> *prop)
 {
-    UCMenuBarPrivate *p = static_cast<UCMenuBarPrivate *>(prop->data);
+    MenuBarPrivate *p = static_cast<MenuBarPrivate *>(prop->data);
     return p->m_menus.count();
 }
 
-UCMenu *UCMenuBarPrivate::menu_at(QQmlListProperty<UCMenu> *prop, int index)
+Menu *MenuBarPrivate::menu_at(QQmlListProperty<Menu> *prop, int index)
 {
-    UCMenuBarPrivate *p = static_cast<UCMenuBarPrivate *>(prop->data);
+    MenuBarPrivate *p = static_cast<MenuBarPrivate *>(prop->data);
     return p->m_menus.value(index);
 }
 
-void UCMenuBarPrivate::menu_clear(QQmlListProperty<UCMenu> *prop)
+void MenuBarPrivate::menu_clear(QQmlListProperty<Menu> *prop)
 {
-    UCMenuBarPrivate *p = static_cast<UCMenuBarPrivate *>(prop->data);
+    MenuBarPrivate *p = static_cast<MenuBarPrivate *>(prop->data);
     p->m_menus.clear();
 }
 
 /*!
  * \qmltype MenuBar
- * \instantiates UCMenuBar
  * \inqmlmodule Ubuntu.Components 1.3
  * \ingroup ubuntu
  * \brief MenuBar defines an application menu bar structure
@@ -165,13 +164,13 @@ void UCMenuBarPrivate::menu_clear(QQmlListProperty<UCMenu> *prop)
  * }
  * \endqml
  */
-UCMenuBar::UCMenuBar(QObject *parent)
+MenuBar::MenuBar(QObject *parent)
     : QObject(parent)
-    , d_ptr(new UCMenuBarPrivate(this))
+    , d_ptr(new MenuBarPrivate(this))
 {
 }
 
-UCMenuBar::~UCMenuBar()
+MenuBar::~MenuBar()
 {
 }
 
@@ -179,9 +178,9 @@ UCMenuBar::~UCMenuBar()
   * \qmlmethod void MenuBar::appendMenu(Menu menu)
   * Append a Menu to the MenuBar
  */
-void UCMenuBar::appendMenu(UCMenu *menu)
+void MenuBar::appendMenu(Menu *menu)
 {
-    Q_D(UCMenuBar);
+    Q_D(MenuBar);
     insertMenu(d->m_menus.count(), menu);
 }
 
@@ -189,9 +188,9 @@ void UCMenuBar::appendMenu(UCMenu *menu)
   * \qmlmethod void MenuBar::insertMenu(int index, Menu menu)
   * Insert a Menu to the MenuBar at the specified position
  */
-void UCMenuBar::insertMenu(int index, UCMenu *menu)
+void MenuBar::insertMenu(int index, Menu *menu)
 {
-    Q_D(UCMenuBar);
+    Q_D(MenuBar);
     if (!menu) return;
 
     d->insertMenu(index, menu);
@@ -202,9 +201,9 @@ void UCMenuBar::insertMenu(int index, UCMenu *menu)
   * \qmlmethod void MenuBar::removeMenu(Menu menu)
   * Remove a Menu from the MenuBar
  */
-void UCMenuBar::removeMenu(UCMenu *menu)
+void MenuBar::removeMenu(Menu *menu)
 {
-    Q_D(UCMenuBar);
+    Q_D(MenuBar);
     if (!menu) return;
 
     d->removeMenu(menu);
@@ -215,29 +214,29 @@ void UCMenuBar::removeMenu(UCMenu *menu)
  * \default
  * List of Menus in this MenuBar.
  */
-QQmlListProperty<UCMenu> UCMenuBar::menus()
+QQmlListProperty<Menu> MenuBar::menus()
 {
-    Q_D(UCMenuBar);
-    return QQmlListProperty<UCMenu>(this, d,
-                                     &UCMenuBarPrivate::menu_append,
-                                     &UCMenuBarPrivate::menu_count,
-                                     &UCMenuBarPrivate::menu_at,
-                                    &UCMenuBarPrivate::menu_clear);
+    Q_D(MenuBar);
+    return QQmlListProperty<Menu>(this, d,
+                                     &MenuBarPrivate::menu_append,
+                                     &MenuBarPrivate::menu_count,
+                                     &MenuBarPrivate::menu_at,
+                                    &MenuBarPrivate::menu_clear);
 }
 
-QPlatformMenuBar *UCMenuBar::platformMenuBar() const
+QPlatformMenuBar *MenuBar::platformMenuBar() const
 {
-    Q_D(const UCMenuBar);
+    Q_D(const MenuBar);
     return d->m_platformBar;
 }
 
-void UCMenuBar::classBegin()
+void MenuBar::classBegin()
 {
 }
 
-void UCMenuBar::componentComplete()
+void MenuBar::componentComplete()
 {
-    Q_D(UCMenuBar);
+    Q_D(MenuBar);
 
     auto parentItem = qobject_cast<QQuickItem*>(parent());
     if (parentItem && d->m_platformBar) {
@@ -246,17 +245,17 @@ void UCMenuBar::componentComplete()
 }
 
 
-PlatformMenuWrapper::PlatformMenuWrapper(UCMenu *target, UCMenuBar* bar)
+PlatformMenuWrapper::PlatformMenuWrapper(Menu *target, MenuBar* bar)
     : QObject(bar)
     , m_bar(bar)
     , m_target(target)
     , m_inserted(false)
 {
-    connect(m_target, &UCMenu::visibleChanged, this, &PlatformMenuWrapper::updateVisible);
-    connect(m_target, &UCMenu::textChanged, this, &PlatformMenuWrapper::updateText);
-    connect(m_target, &UCMenu::enabledChanged, this, &PlatformMenuWrapper::updateEnabled);
-    connect(m_target, &UCMenu::iconSourceChanged, this, &PlatformMenuWrapper::updateIcon);
-    connect(m_target, &UCMenu::iconNameChanged, this, &PlatformMenuWrapper::updateIcon);
+    connect(m_target, &Menu::visibleChanged, this, &PlatformMenuWrapper::updateVisible);
+    connect(m_target, &Menu::textChanged, this, &PlatformMenuWrapper::updateText);
+    connect(m_target, &Menu::enabledChanged, this, &PlatformMenuWrapper::updateEnabled);
+    connect(m_target, &Menu::iconSourceChanged, this, &PlatformMenuWrapper::updateIcon);
+    connect(m_target, &Menu::iconNameChanged, this, &PlatformMenuWrapper::updateIcon);
 
     syncPlatformMenu();
 }
@@ -337,4 +336,4 @@ void PlatformMenuWrapper::syncPlatformMenu()
 
 UT_NAMESPACE_END
 
-#include "moc_ucmenubar.cpp"
+#include "moc_menubar_p.cpp"

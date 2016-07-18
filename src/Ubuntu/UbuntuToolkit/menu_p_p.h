@@ -15,10 +15,10 @@
  *
  */
 
-#ifndef UCMENU_P
-#define UCMENU_P
+#ifndef MENU_P_P_H
+#define MENU_P_P_H
 
-#include "ucmenu.h"
+#include "menu_p.h"
 #include <ubuntutoolkitglobal.h>
 
 class QObject;
@@ -27,15 +27,15 @@ class QQmlComponent;
 UT_NAMESPACE_BEGIN
 
 class UCAction;
-class UCMenu;
+class Menu;
 class PlatformItemWrapper;
 
-class UCMenuPrivate
+class MenuPrivate
 {
-    Q_DECLARE_PUBLIC(UCMenu)
+    Q_DECLARE_PUBLIC(Menu)
 public:
-    UCMenuPrivate(UCMenu *qq);
-    virtual ~UCMenuPrivate();
+    MenuPrivate(Menu *qq);
+    virtual ~MenuPrivate();
 
     void insertObject(int index, QObject *obj);
     void removeObject(QObject *obj);
@@ -50,7 +50,7 @@ public:
     static QObject *data_at(QQmlListProperty<QObject> *prop, int index);
     static void data_clear(QQmlListProperty<QObject> *prop);
 
-    UCMenu* q_ptr;
+    Menu* q_ptr;
     QPlatformMenu* m_platformMenu;
     UCAction* m_action;
 
@@ -63,7 +63,7 @@ class PlatformItemWrapper : public QObject
 {
     Q_OBJECT
 public:
-    PlatformItemWrapper(QObject *target, UCMenu* menu);
+    PlatformItemWrapper(QObject *target, Menu* menu);
     ~PlatformItemWrapper();
 
     void insert(int index, bool withSeparator);
@@ -84,7 +84,7 @@ private:
     void syncPlatformItem();
 
     QObject* m_target;
-    QPointer<UCMenu> m_menu;
+    QPointer<Menu> m_menu;
     QPlatformMenuItem* m_platformItem;
     QPlatformMenuItem* m_platformItemSeparator;
     bool m_inserted;
@@ -92,4 +92,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCMENU_P
+#endif // MENU_P_P_H

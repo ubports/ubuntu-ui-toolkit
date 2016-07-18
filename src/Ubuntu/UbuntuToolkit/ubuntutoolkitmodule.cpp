@@ -90,6 +90,9 @@
 #include <privates/appheaderbase_p.h>
 #include <actionlist_p.h>
 #include <exclusivegroup_p.h>
+#include <menu_p.h>
+#include <menubar_p.h>
+#include <menugroup_p.h>
 
 // styles
 #include <ucbottomedgestyle_p.h>
@@ -327,9 +330,9 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
     qmlRegisterType<ActionList>(uri, 1, 3, "ActionList");
     qmlRegisterType<ExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
-    qmlRegisterType<UCMenu>(uri, 1, 3, "Menu");
-    qmlRegisterType<UCMenuBar>(uri, 1, 3, "MenuBar");
-    qmlRegisterType<UCMenuGroup>(uri, 1, 3, "MenuGroup");
+    qmlRegisterType<Menu>(uri, 1, 3, "Menu");
+    qmlRegisterType<MenuBar>(uri, 1, 3, "MenuBar");
+    qmlRegisterType<MenuGroup>(uri, 1, 3, "MenuGroup");
 }
 
 void UbuntuToolkitModule::undefineModule()

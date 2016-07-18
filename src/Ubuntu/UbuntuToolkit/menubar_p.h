@@ -15,10 +15,10 @@
  *
  */
 
-#ifndef UCMENUBAR_H
-#define UCMENUBAR_H
+#ifndef MENUBAR_P_H
+#define MENUBAR_P_H
 
-#include "ucmenu.h"
+#include "menu_p.h"
 #include <ubuntutoolkitglobal.h>
 
 #include <QQmlParserStatus>
@@ -27,24 +27,24 @@ class QPlatformMenuBar;
 
 UT_NAMESPACE_BEGIN
 
-class UCMenuBarPrivate;
-class UBUNTUTOOLKIT_EXPORT UCMenuBar : public QObject, public QQmlParserStatus
+class MenuBarPrivate;
+class UBUNTUTOOLKIT_EXPORT MenuBar : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCMenu)> menus READ menus NOTIFY menusChanged FINAL)
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(Menu)> menus READ menus NOTIFY menusChanged FINAL)
     Q_CLASSINFO("DefaultProperty", "menus")
 
 public:
-    explicit UCMenuBar(QObject *parent = 0);
-    ~UCMenuBar();
+    explicit MenuBar(QObject *parent = 0);
+    ~MenuBar();
 
-    Q_INVOKABLE void appendMenu(UCMenu *menu);
-    Q_INVOKABLE void insertMenu(int index, UCMenu *menu);
-    Q_INVOKABLE void removeMenu(UCMenu *menu);
+    Q_INVOKABLE void appendMenu(Menu *menu);
+    Q_INVOKABLE void insertMenu(int index, Menu *menu);
+    Q_INVOKABLE void removeMenu(Menu *menu);
 
-    QQmlListProperty<UCMenu> menus();
+    QQmlListProperty<Menu> menus();
 
     QPlatformMenuBar *platformMenuBar() const;
 
@@ -55,11 +55,11 @@ Q_SIGNALS:
     void menusChanged();
 
 private:
-    Q_DISABLE_COPY(UCMenuBar)
-    Q_DECLARE_PRIVATE(UCMenuBar)
-    QScopedPointer<UCMenuBarPrivate> d_ptr;
+    Q_DISABLE_COPY(MenuBar)
+    Q_DECLARE_PRIVATE(MenuBar)
+    QScopedPointer<MenuBarPrivate> d_ptr;
 };
 
 UT_NAMESPACE_END
 
-#endif // UCMENUBAR_H
+#endif // MENUBAR_P_H

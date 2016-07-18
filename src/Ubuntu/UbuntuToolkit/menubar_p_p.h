@@ -15,10 +15,10 @@
  *
  */
 
-#ifndef UCMENUBAR_P
-#define UCMENUBAR_P
+#ifndef MENUBAR_P_P_H
+#define MENUBAR_P_P_H
 
-#include "ucmenubar.h"
+#include "menubar_p.h"
 #include <ubuntutoolkitglobal.h>
 
 class QPlatformMenuBar;
@@ -27,24 +27,24 @@ UT_NAMESPACE_BEGIN
 
 class PlatformMenuWrapper;
 
-class UCMenuBarPrivate
+class MenuBarPrivate
 {
-    Q_DECLARE_PUBLIC(UCMenuBar)
+    Q_DECLARE_PUBLIC(MenuBar)
 public:
-    UCMenuBarPrivate(UCMenuBar *qq);
-    ~UCMenuBarPrivate();
+    MenuBarPrivate(MenuBar *qq);
+    ~MenuBarPrivate();
 
-    void insertMenu(int index, UCMenu *menu);
-    void removeMenu(UCMenu *menu);
+    void insertMenu(int index, Menu *menu);
+    void removeMenu(Menu *menu);
 
-    static void menu_append(QQmlListProperty<UCMenu> *prop, UCMenu *o);
-    static int menu_count(QQmlListProperty<UCMenu> *prop);
-    static UCMenu *menu_at(QQmlListProperty<UCMenu> *prop, int index);
-    static void menu_clear(QQmlListProperty<UCMenu> *prop);
+    static void menu_append(QQmlListProperty<Menu> *prop, Menu *o);
+    static int menu_count(QQmlListProperty<Menu> *prop);
+    static Menu *menu_at(QQmlListProperty<Menu> *prop, int index);
+    static void menu_clear(QQmlListProperty<Menu> *prop);
 
-    UCMenuBar* q_ptr;
+    MenuBar* q_ptr;
     QPlatformMenuBar* m_platformBar;
-    QVector<UCMenu*> m_menus;
+    QVector<Menu*> m_menus;
     QHash<QObject*, PlatformMenuWrapper*> m_platformMenus;
 };
 
@@ -52,7 +52,7 @@ class PlatformMenuWrapper : public QObject
 {
     Q_OBJECT
 public:
-    PlatformMenuWrapper(UCMenu *target, UCMenuBar *bar);
+    PlatformMenuWrapper(Menu *target, MenuBar *bar);
     ~PlatformMenuWrapper();
 
     void insert(QPlatformMenu *before);
@@ -67,12 +67,12 @@ public Q_SLOTS:
 private:
     void syncPlatformMenu();
 
-    QPointer<UCMenuBar> m_bar;
-    QPointer<UCMenu> m_target;
+    QPointer<MenuBar> m_bar;
+    QPointer<Menu> m_target;
     bool m_inserted;
 };
 
 UT_NAMESPACE_END
 
-#endif // UCMENUBAR_P
+#endif // MENUBAR_P_P_H
 

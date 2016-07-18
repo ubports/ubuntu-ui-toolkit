@@ -15,15 +15,15 @@
  *
  */
 
-#ifndef UCMENU_H
-#define UCMENU_H
+#ifndef MENU_P_H
+#define MENU_P_H
 
 #include <QQmlListProperty>
 #include <QLoggingCategory>
 #include <QPointer>
 #include <ubuntutoolkitglobal.h>
 
-#include "ucaction.h"
+#include "ucaction_p.h"
 
 Q_DECLARE_LOGGING_CATEGORY(ucMenu);
 
@@ -33,10 +33,10 @@ class QQuickItem;
 
 UT_NAMESPACE_BEGIN
 
-class UCMenuPrivate;
-class UCMenuBar;
+class MenuPrivate;
+class MenuBar;
 class UCAction;
-class UBUNTUTOOLKIT_EXPORT UCMenu : public UCAction
+class UBUNTUTOOLKIT_EXPORT Menu : public UCAction
 {
     Q_OBJECT
 
@@ -44,8 +44,8 @@ class UBUNTUTOOLKIT_EXPORT UCMenu : public UCAction
     Q_CLASSINFO("DefaultProperty", "data")
 
 public:
-    explicit UCMenu(QObject *parent = 0);
-    ~UCMenu();
+    explicit Menu(QObject *parent = 0);
+    ~Menu();
 
     QQmlListProperty<QObject> data();
 
@@ -60,9 +60,9 @@ public Q_SLOTS:
     void dismiss();
 
 private:
-    Q_DISABLE_COPY(UCMenu)
-    Q_DECLARE_PRIVATE(UCMenu)
-    QScopedPointer<UCMenuPrivate> d_ptr;
+    Q_DISABLE_COPY(Menu)
+    Q_DECLARE_PRIVATE(Menu)
+    QScopedPointer<MenuPrivate> d_ptr;
 
     Q_PRIVATE_SLOT(d_func(), void _q_updateEnabled())
     Q_PRIVATE_SLOT(d_func(), void _q_updateText())
@@ -72,4 +72,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCMENU_H
+#endif // MENU_P_H

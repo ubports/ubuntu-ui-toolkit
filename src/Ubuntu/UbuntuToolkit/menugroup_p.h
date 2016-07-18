@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMENUGROUP_H
-#define UCMENUGROUP_H
+#ifndef MENUGROUP_P_H
+#define MENUGROUP_P_H
 
 #include <ubuntutoolkitglobal.h>
 
@@ -25,13 +25,13 @@
 
 UT_NAMESPACE_BEGIN
 
-class UCMenuGroup : public QObject
+class MenuGroup : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
-    explicit UCMenuGroup(QObject *parent = 0);
+    explicit MenuGroup(QObject *parent = 0);
 
     QQmlListProperty<QObject> data();
 
@@ -57,4 +57,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // UCMENUGROUP_H
+#endif // MENUGROUP_P_H

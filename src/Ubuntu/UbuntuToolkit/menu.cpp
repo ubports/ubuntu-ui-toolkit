@@ -14,12 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucmenu.h"
-#include "ucmenu_p.h"
-#include "ucmenubar.h"
-#include "ucaction.h"
-#include "ucactionlist.h"
-#include "ucmenugroup.h"
+#include "menu_p.h"
+#include "menu_p_p.h"
+#include "menubar_p.h"
+#include "actionlist_p.h"
+#include "menugroup_p.h"
 
 // Qt
 #include <QtGui/qpa/qplatformtheme.h>
@@ -49,17 +48,17 @@ QWindow* findWindowForObject(QObject* object)
 }
 
 // recursively get the all the object from the menu group which are not lists or groups.
-QObjectList getActionsFromMenuGroup(UCMenuGroup* menuGroup) {
+QObjectList getActionsFromMenuGroup(MenuGroup* menuGroup) {
 
     QObjectList objectList;
 
     Q_FOREACH(QObject* data, menuGroup->list()) {
 
-        if (auto actionList = qobject_cast<UCActionList*>(data)) {
+        if (auto actionList = qobject_cast<ActionList*>(data)) {
             Q_FOREACH(UCAction* action, actionList->list()) {
                 objectList << action;
             }
-        } else if (auto subMenuGroup = qobject_cast<UCMenuGroup*>(data)) {
+        } else if (auto subMenuGroup = qobject_cast<MenuGroup*>(data)) {
             objectList << getActionsFromMenuGroup(subMenuGroup);
         } else {
             objectList << data;
@@ -69,14 +68,14 @@ QObjectList getActionsFromMenuGroup(UCMenuGroup* menuGroup) {
 }
 
 // recursively get the first object from the menu group which is not a list or a group.
-QObject* getFirstObject(UCMenuGroup* menuGroup) {
+QObject* getFirstObject(MenuGroup* menuGroup) {
 
     Q_FOREACH(QObject* data, menuGroup->list()) {
 
-        if (auto subMenuGroup = qobject_cast<UCMenuGroup*>(data)) {
+        if (auto subMenuGroup = qobject_cast<MenuGroup*>(data)) {
             QObject* object = getFirstObject(subMenuGroup);
             if (object) { return object; }
-        } else if (auto actionList = qobject_cast<UCActionList*>(data)) {
+        } else if (auto actionList = qobject_cast<ActionList*>(data)) {
             return actionList->list().count() > 0 ? actionList->list()[0] : 0;
         } else {
             return data;
@@ -87,13 +86,13 @@ QObject* getFirstObject(UCMenuGroup* menuGroup) {
 
 }
 
-UCMenuPrivate::UCMenuPrivate(UCMenu *qq)
+MenuPrivate::MenuPrivate(Menu *qq)
     : q_ptr(qq)
     , m_platformMenu(QGuiApplicationPrivate::platformTheme()->createPlatformMenu())
 {
 }
 
-UCMenuPrivate::~UCMenuPrivate()
+MenuPrivate::~MenuPrivate()
 {
     qDeleteAll(m_platformItems);
     m_platformItems.clear();
@@ -102,11 +101,11 @@ UCMenuPrivate::~UCMenuPrivate()
     m_platformMenu = Q_NULLPTR;
 }
 
-void UCMenuPrivate::insertObject(int index, QObject *o)
+void MenuPrivate::insertObject(int index, QObject *o)
 {
-    Q_Q(UCMenu);
+    Q_Q(Menu);
     if (!o) return;
-    qCInfo(ucMenu).nospace() << "UCMenu::insertObject(index="<< index << ", object=" << o << ")";
+    qCInfo(ucMenu).nospace() << "Menu::insertObject(index="<< index << ", object=" << o << ")";
 
     if (!m_platformMenu) {
         m_data.insert(m_data.count() > index ? index : m_data.count(), o);
@@ -120,9 +119,9 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
         QObject* data = m_data[i];
 
         int dataObjectCount = 0;
-        if (auto menuGroup = qobject_cast<UCMenuGroup*>(data)) {
+        if (auto menuGroup = qobject_cast<MenuGroup*>(data)) {
             dataObjectCount = getActionsFromMenuGroup(menuGroup).count();
-        } else if (auto list = qobject_cast<UCActionList*>(data)) {
+        } else if (auto list = qobject_cast<ActionList*>(data)) {
             dataObjectCount = list->list().count();
         } else {
             dataObjectCount = 1;
@@ -140,9 +139,9 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
         QObject* data = m_data.at(index);
         QObject* objectToSeparate(Q_NULLPTR);
 
-        if (auto menuGroup = qobject_cast<UCMenuGroup*>(data)) {
+        if (auto menuGroup = qobject_cast<MenuGroup*>(data)) {
             objectToSeparate = getFirstObject(menuGroup);
-        } else if (auto actionList = qobject_cast<UCActionList*>(data)) {
+        } else if (auto actionList = qobject_cast<ActionList*>(data)) {
             objectToSeparate = actionList->list().count() > 0 ? actionList->list()[0] : 0;
         } else {
             objectToSeparate = data;
@@ -166,19 +165,19 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
 
     // Get All the menu item objects
     QObjectList objects;
-    if (auto menuGroup = qobject_cast<UCMenuGroup*>(o)) {
+    if (auto menuGroup = qobject_cast<MenuGroup*>(o)) {
         Q_FOREACH(QObject* menuGroupObject, getActionsFromMenuGroup(menuGroup)) {
             objects << menuGroupObject;
         }
         // connect to content changes
-        QObject::connect(menuGroup, &UCMenuGroup::changed, q, refreshObject);
-    } else if (auto actionList = qobject_cast<UCActionList*>(o)) {
+        QObject::connect(menuGroup, &MenuGroup::changed, q, refreshObject);
+    } else if (auto actionList = qobject_cast<ActionList*>(o)) {
         Q_FOREACH(UCAction* action, actionList->list()) {
             objects << action;
         }
         // connect to content changes
-        QObject::connect(actionList, &UCActionList::added, q, refreshObject);
-        QObject::connect(actionList, &UCActionList::removed, q, refreshObject);
+        QObject::connect(actionList, &ActionList::added, q, refreshObject);
+        QObject::connect(actionList, &ActionList::removed, q, refreshObject);
     } else {
         objects << o;
     }
@@ -209,20 +208,20 @@ void UCMenuPrivate::insertObject(int index, QObject *o)
     }
 }
 
-void UCMenuPrivate::removeObject(QObject *o)
+void MenuPrivate::removeObject(QObject *o)
 {
-    Q_Q(UCMenu);
+    Q_Q(Menu);
     m_data.removeOne(o);
-    qCInfo(ucMenu).nospace() << "UCMenu::removeObject(" << o << ")";
+    qCInfo(ucMenu).nospace() << "Menu::removeObject(" << o << ")";
 
     if (m_platformMenu) {
-        if (auto menuGroup = qobject_cast<UCMenuGroup*>(o)) {
+        if (auto menuGroup = qobject_cast<MenuGroup*>(o)) {
             // disconnect from content changes
-            QObject::disconnect(menuGroup, &UCMenuGroup::changed, q, 0);
-        }  else if (UCActionList* actionList = qobject_cast<UCActionList*>(o)) {
+            QObject::disconnect(menuGroup, &MenuGroup::changed, q, 0);
+        }  else if (ActionList* actionList = qobject_cast<ActionList*>(o)) {
             // disconnect from content changes
-            QObject::disconnect(actionList, &UCActionList::added, q, 0);
-            QObject::disconnect(actionList, &UCActionList::removed, q, 0);
+            QObject::disconnect(actionList, &ActionList::added, q, 0);
+            QObject::disconnect(actionList, &ActionList::removed, q, 0);
         }
 
         QList<QObject*> platformObjects = m_dataPlatformObjectMap.values(o);
@@ -239,25 +238,25 @@ void UCMenuPrivate::removeObject(QObject *o)
     }
 }
 
-void UCMenuPrivate::_q_updateEnabled()
+void MenuPrivate::_q_updateEnabled()
 {
-    Q_Q(UCMenu);
+    Q_Q(Menu);
 
     bool isEnabled = q->isEnabled();
     if (m_platformMenu) { m_platformMenu->setEnabled(isEnabled); }
 }
 
-void UCMenuPrivate::_q_updateText()
+void MenuPrivate::_q_updateText()
 {
-    Q_Q(UCMenu);
+    Q_Q(Menu);
 
     QString text = q->text();
     if (m_platformMenu) { m_platformMenu->setText(text); }
 }
 
-void UCMenuPrivate::_q_updateIcon()
+void MenuPrivate::_q_updateIcon()
 {
-    Q_Q(UCMenu);
+    Q_Q(Menu);
 
     QIcon icon;
     if (!q->iconSource().isEmpty()) {
@@ -269,41 +268,40 @@ void UCMenuPrivate::_q_updateIcon()
     if (m_platformMenu) { m_platformMenu->setIcon(icon); }
 }
 
-void UCMenuPrivate::_q_updateVisible()
+void MenuPrivate::_q_updateVisible()
 {
-    Q_Q(UCMenu);
+    Q_Q(Menu);
 
     bool visible = q->visible();
     if (m_platformMenu) { m_platformMenu->setVisible(visible); }
 }
 
-void UCMenuPrivate::data_append(QQmlListProperty<QObject> *prop, QObject *o)
+void MenuPrivate::data_append(QQmlListProperty<QObject> *prop, QObject *o)
 {
-    UCMenu *q = qobject_cast<UCMenu *>(prop->object);
+    Menu *q = qobject_cast<Menu *>(prop->object);
     q->appendObject(o);
 }
 
-int UCMenuPrivate::data_count(QQmlListProperty<QObject> *prop)
+int MenuPrivate::data_count(QQmlListProperty<QObject> *prop)
 {
-    UCMenuPrivate *p = static_cast<UCMenuPrivate *>(prop->data);
+    MenuPrivate *p = static_cast<MenuPrivate *>(prop->data);
     return p->m_data.count();
 }
 
-QObject *UCMenuPrivate::data_at(QQmlListProperty<QObject> *prop, int index)
+QObject *MenuPrivate::data_at(QQmlListProperty<QObject> *prop, int index)
 {
-    UCMenuPrivate *p = static_cast<UCMenuPrivate *>(prop->data);
+    MenuPrivate *p = static_cast<MenuPrivate *>(prop->data);
     return p->m_data.value(index, Q_NULLPTR);
 }
 
-void UCMenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
+void MenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
 {
-    UCMenuPrivate *p = static_cast<UCMenuPrivate *>(prop->data);
+    MenuPrivate *p = static_cast<MenuPrivate *>(prop->data);
     p->m_data.clear();
 }
 
 /*!
  * \qmltype Menu
- * \instantiates UCMenu
  * \inqmlmodule Ubuntu.Components
  * \ingroup ubuntu
  * \brief Menu defines a context menu or submenu structure of a MenuBar
@@ -346,11 +344,11 @@ void UCMenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
  * }
  * \endqml
  */
-UCMenu::UCMenu(QObject *parent)
+Menu::Menu(QObject *parent)
     : UCAction(parent)
-    , d_ptr(new UCMenuPrivate(this))
+    , d_ptr(new MenuPrivate(this))
 {
-    Q_D(UCMenu);
+    Q_D(Menu);
 
     connect(this, SIGNAL(enabledChanged()), this, SLOT(_q_updateEnabled()));
     connect(this, SIGNAL(textChanged()), this, SLOT(_q_updateText()));
@@ -359,7 +357,7 @@ UCMenu::UCMenu(QObject *parent)
     connect(this, SIGNAL(visibleChanged()), this, SLOT(_q_updateVisible()));
 }
 
-UCMenu::~UCMenu()
+Menu::~Menu()
 {
 }
 
@@ -371,23 +369,23 @@ UCMenu::~UCMenu()
  * Currently supports Menu, Action, AcionList & MenuGroup objects.
  * \note Item object which do not support platformItem will not be exported for native menus.
  */
-QQmlListProperty<QObject> UCMenu::data()
+QQmlListProperty<QObject> Menu::data()
 {
-    Q_D(UCMenu);
+    Q_D(Menu);
     return QQmlListProperty<QObject>(this, d,
-                                     &UCMenuPrivate::data_append,
-                                     &UCMenuPrivate::data_count,
-                                     &UCMenuPrivate::data_at,
-                                     &UCMenuPrivate::data_clear);
+                                     &MenuPrivate::data_append,
+                                     &MenuPrivate::data_count,
+                                     &MenuPrivate::data_at,
+                                     &MenuPrivate::data_clear);
 }
 
 /*!
  * \qmlmethod Menu::appendObject(object o)
  * Add a object tto the menu
  */
-void UCMenu::appendObject(QObject *o)
+void Menu::appendObject(QObject *o)
 {
-    Q_D(UCMenu);
+    Q_D(Menu);
 
     insertObject(d->m_data.count(), o);
 }
@@ -399,9 +397,9 @@ void UCMenu::appendObject(QObject *o)
  * Currently supports Menu, Action, AcionList & MenuGroup objects.
  * \note Item object which do not support platformItem will not be exported for native menus.
  */
-void UCMenu::insertObject(int index, QObject *o)
+void Menu::insertObject(int index, QObject *o)
 {
-    Q_D(UCMenu);
+    Q_D(Menu);
     d->insertObject(index, o);
 }
 
@@ -409,17 +407,17 @@ void UCMenu::insertObject(int index, QObject *o)
  * \qmlmethod Menu::removeObject(object o)
  * Removes the item from the menu.
  */
-void UCMenu::removeObject(QObject *o)
+void Menu::removeObject(QObject *o)
 {
-    Q_D(UCMenu);
-    qCInfo(ucMenu) << "UCMenu::removeObject" << o;
+    Q_D(Menu);
+    qCInfo(ucMenu) << "Menu::removeObject" << o;
 
     d->removeObject(o);
 }
 
-QPlatformMenu* UCMenu::platformMenu() const
+QPlatformMenu* Menu::platformMenu() const
 {
-    Q_D(const UCMenu);
+    Q_D(const Menu);
     return d->m_platformMenu;
 }
 
@@ -427,10 +425,10 @@ QPlatformMenu* UCMenu::platformMenu() const
  * \qmlmethod Menu::show(point point)
  * Show the menu popup at the given point
  */
-void UCMenu::show(const QPoint &point)
+void Menu::show(const QPoint &point)
 {
-    Q_D(UCMenu);
-    qCInfo(ucMenu, "UCMenu::popup(%s, point(%d,%d))", qPrintable(text()), point.x(), point.y());
+    Q_D(Menu);
+    qCInfo(ucMenu, "Menu::popup(%s, point(%d,%d))", qPrintable(text()), point.x(), point.y());
 
     if (d->m_platformMenu) {
         d->m_platformMenu->showPopup(findWindowForObject(this), QRect(point, QSize()), Q_NULLPTR);
@@ -441,10 +439,10 @@ void UCMenu::show(const QPoint &point)
  * \qmlmethod Menu::dismiss()
  * Dismiss and destroy the menu popup.
  */
-void UCMenu::dismiss()
+void Menu::dismiss()
 {
-    Q_D(UCMenu);
-    qCInfo(ucMenu, "UCMenu::dismiss(%s)", qPrintable(text()));
+    Q_D(Menu);
+    qCInfo(ucMenu, "Menu::dismiss(%s)", qPrintable(text()));
 
     if (d->m_platformMenu) {
         d->m_platformMenu->dismiss();
@@ -452,7 +450,7 @@ void UCMenu::dismiss()
 }
 
 
-PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
+PlatformItemWrapper::PlatformItemWrapper(QObject *target, Menu* menu)
     : QObject(menu)
     , m_target(target)
     , m_menu(menu)
@@ -460,16 +458,16 @@ PlatformItemWrapper::PlatformItemWrapper(QObject *target, UCMenu* menu)
     , m_platformItemSeparator(Q_NULLPTR)
     , m_inserted(false)
 {
-    if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
+    if (Menu* menu = qobject_cast<Menu*>(m_target)) {
         if (m_platformItem) {
             m_platformItem->setMenu(menu->platformMenu());
         }
 
-        connect(menu, &UCMenu::visibleChanged, this, &PlatformItemWrapper::updateVisible);
-        connect(menu, &UCMenu::textChanged, this, &PlatformItemWrapper::updateText);
-        connect(menu, &UCMenu::enabledChanged, this, &PlatformItemWrapper::updateEnabled);
-        connect(menu, &UCMenu::iconSourceChanged, this, &PlatformItemWrapper::updateIcon);
-        connect(menu, &UCMenu::iconNameChanged, this, &PlatformItemWrapper::updateIcon);
+        connect(menu, &Menu::visibleChanged, this, &PlatformItemWrapper::updateVisible);
+        connect(menu, &Menu::textChanged, this, &PlatformItemWrapper::updateText);
+        connect(menu, &Menu::enabledChanged, this, &PlatformItemWrapper::updateEnabled);
+        connect(menu, &Menu::iconSourceChanged, this, &PlatformItemWrapper::updateIcon);
+        connect(menu, &Menu::iconNameChanged, this, &PlatformItemWrapper::updateIcon);
 
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
 
@@ -568,7 +566,7 @@ void PlatformItemWrapper::setSeparator()
 
 void PlatformItemWrapper::updateVisible()
 {
-    if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
+    if (Menu* menu = qobject_cast<Menu*>(m_target)) {
         if (m_platformItem) m_platformItem->setVisible(menu->visible());
         if (menu->platformMenu()) menu->platformMenu()->setVisible(menu->visible());
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
@@ -578,7 +576,7 @@ void PlatformItemWrapper::updateVisible()
 
 void PlatformItemWrapper::updateEnabled()
 {
-    if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
+    if (Menu* menu = qobject_cast<Menu*>(m_target)) {
         if (m_platformItem) m_platformItem->setEnabled(menu->isEnabled());
         if (menu->platformMenu()) menu->platformMenu()->setEnabled(menu->isEnabled());
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
@@ -588,7 +586,7 @@ void PlatformItemWrapper::updateEnabled()
 
 void PlatformItemWrapper::updateText()
 {
-    if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
+    if (Menu* menu = qobject_cast<Menu*>(m_target)) {
         if (m_platformItem) m_platformItem->setText(menu->text());
         if (menu->platformMenu()) menu->platformMenu()->setText(menu->text());
     } else if (UCAction* action = qobject_cast<UCAction*>(m_target)) {
@@ -599,7 +597,7 @@ void PlatformItemWrapper::updateText()
 void PlatformItemWrapper::updateIcon()
 {
     QIcon icon;
-    if (UCMenu* menu = qobject_cast<UCMenu*>(m_target)) {
+    if (Menu* menu = qobject_cast<Menu*>(m_target)) {
 
         if (!menu->iconSource().isEmpty()) {
             icon = QIcon(menu->iconSource().path());
@@ -668,4 +666,4 @@ void PlatformItemWrapper::syncPlatformItem()
 
 UT_NAMESPACE_END
 
-#include "moc_ucmenu.cpp"
+#include "moc_menu_p.cpp"
