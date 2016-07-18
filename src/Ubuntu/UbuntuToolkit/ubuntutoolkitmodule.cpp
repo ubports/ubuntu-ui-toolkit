@@ -330,9 +330,6 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
     qmlRegisterType<ActionList>(uri, 1, 3, "ActionList");
     qmlRegisterType<ExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
-    qmlRegisterType<Menu>(uri, 1, 3, "Menu");
-    qmlRegisterType<MenuBar>(uri, 1, 3, "MenuBar");
-    qmlRegisterType<MenuGroup>(uri, 1, 3, "MenuGroup");
 }
 
 void UbuntuToolkitModule::undefineModule()
@@ -369,9 +366,9 @@ void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin 
 
 void UbuntuLabsModule::defineModule(const char *uri)
 {
-    Q_UNUSED(uri);
-    // a fake component so we can have the module types file created
-    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+    qmlRegisterType<Menu>(uri, 1, 0, "Menu");
+    qmlRegisterType<MenuBar>(uri, 1, 0, "MenuBar");
+    qmlRegisterType<MenuGroup>(uri, 1, 0, "MenuGroup");
 }
 
 void UbuntuLabsModule::undefineModule()
