@@ -12,7 +12,7 @@ TST_PERFORMANCE_RESULT=$BENCH_PATH/results/$ID.tst_performance
 
 #../qmlbench/qmlbench ./qmlbench_benchmarks --json --fps-override 63 --id $ID > $QMLBENCH_RESULT
 
-cd ../tests/unit/tst_performance && ../../../build_native/tests/unit/tst_performance/tst_performance -o $TST_PERFORMANCE_RESULT,csv -minimumtotal 5000
+cd ../tests/unit/performance && ../../../build_native/tests/unit/performance/performance -o $TST_PERFORMANCE_RESULT,csv -minimumtotal 5000
 
 #Also works if you have multiple Scrollbar or ScrollbarCpp benchmarks (takes the avg in that case)
 function parseResults {
