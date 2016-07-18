@@ -225,15 +225,18 @@ void UCStyleHints::_q_applyStyleHints()
     m_propertyBackup.clear();
 
     QQuickItem *item = UCStyledItemBasePrivate::get(m_styledItem)->styleItem;
-    const QMetaObject *mo = item->metaObject();
     const QString styleName = UCStyledItemBasePrivate::get(m_styledItem)->styleName();
     // apply values first
     for (int i = 0; i < m_values.size(); i++) {
-        if (mo->indexOfProperty(m_values[i].first.toUtf8()) < 0) {
+        // Checking the validity of the property using the index of m_values[i].first in
+        //  item->metaObject is not sufficient in case of a grouped property, so we use
+        //  PropertyChange to detect all properties that are not valid.
+        PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
+        if (!change->property().isValid()) {
             propertyNotFound(styleName, m_values[i].first);
+            delete change;
             continue;
         }
-        PropertyChange *change = new PropertyChange(item, m_values[i].first.toUtf8());
         PropertyChange::setValue(change, m_values[i].second);
         m_propertyBackup << change;
     }
