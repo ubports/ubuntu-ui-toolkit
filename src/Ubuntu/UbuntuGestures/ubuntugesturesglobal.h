@@ -22,7 +22,7 @@
 #  define UBUNTUGESTURES_EXPORT Q_DECL_IMPORT
 #endif
 
-#if defined(UBUNTUGESTURES_NAMESPACE)
+#if !defined(UBUNTUGESTURES_NO_NAMESPACE)
 
 #define UG_NAMESPACE_BEGIN          namespace UbuntuGestures {
 #define UG_NAMESPACE_END            }

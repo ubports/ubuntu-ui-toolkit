@@ -16,10 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucalarmmodel.h"
-#include "ucalarm.h"
-#include "ucalarm_p.h"
-#include "alarmmanager_p.h"
+#include "ucalarmmodel_p.h"
+#include "ucalarm_p_p.h"
+#include "alarmmanager_p_p.h"
 #include <QtQml/QQmlPropertyMap>
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlEngine>

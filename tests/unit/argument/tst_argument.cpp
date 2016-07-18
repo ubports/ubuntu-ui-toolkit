@@ -17,7 +17,7 @@
  */
 
 #define protected public
-#include "ucargument.h"
+#include <UbuntuToolkit/private/ucargument_p.h>
 #undef protected
 
 #include <QtCore/QString>

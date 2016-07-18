@@ -16,7 +16,7 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "ucurihandler.h"
+#include "ucurihandler_p.h"
 #include <QtDBus/QtDBus>
 #include <libnih.h>
 #include <libnih-dbus.h>

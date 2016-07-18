@@ -16,9 +16,9 @@
  * Author Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "listviewextensions.h"
-#include "uclistitem_p.h"
-#include "quickutils.h"
+#include "listviewextensions_p.h"
+#include "uclistitem_p_p.h"
+#include "quickutils_p.h"
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquickflickable_p.h>
 

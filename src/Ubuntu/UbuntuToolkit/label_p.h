@@ -17,7 +17,7 @@
 #ifndef LABEL_P
 #define LABEL_P
 
-#include "uclabel.h"
+#include "uclabel_p.h"
 
 UT_NAMESPACE_BEGIN
 

@@ -37,6 +37,18 @@ class LauncherTouchTestCase(tests.QMLFileAppTestCase):
         self.assertThat(textfield.text, Eventually(Equals("Yes")))
 
 
+class LauncherWindowTestCase(tests.QMLFileAppTestCase):
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_launcher.window.qml')
+
+    def test_window_root_item(self):
+        label = self.main_view.select_single(objectName="label")
+        self.assertThat(label.text,
+                        Eventually(Equals("Lorem ipsum dolor sit amet")))
+
+
 class LauncherQtTestTestCase(tests.QMLFileAppTestCase):
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)

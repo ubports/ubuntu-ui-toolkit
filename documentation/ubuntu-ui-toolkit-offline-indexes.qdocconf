@@ -1,0 +1,2 @@
+include(ubuntu-ui-toolkit-offline.qdocconf)
+include(ubuntu-ui-toolkit-indexes.qdocconf)

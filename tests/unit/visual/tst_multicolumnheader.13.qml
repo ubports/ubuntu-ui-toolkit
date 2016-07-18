@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,47 +35,63 @@ MainView {
         Page {
             id: rootPage
             title: "Root"
+            flickable: null
 
-            Column {
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                }
-                height: childrenRect.height
+            Flickable {
+                anchors.fill: parent
+                contentWidth: parent.width
+                contentHeight: pagesColumn.height
 
-                ListItemWithLabel13 {
-                    text: "Add page left"
-                    onClicked: layout.addPageToCurrentColumn(rootPage, leftPage)
-                }
-                ListItemWithLabel13 {
-                    text: "Add page right"
-                    onClicked: layout.addPageToNextColumn(rootPage, rightPage)
-                }
-                ListItemWithLabel13 {
-                    text: "Add sections page right"
-                    onClicked: layout.addPageToNextColumn(rootPage, sectionsPage)
-                }
-                ListItemWithLabel13 {
-                    text: "Add external page right"
-                    onClicked: layout.addPageToNextColumn(
-                                   rootPage, Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"))
-                }
-                ListItemWithLabel13 {
-                    text: "Add page with head contents left"
-                    onClicked: layout.addPageToCurrentColumn(rootPage, headContentsPage)
-                }
-                ListItemWithLabel13 {
-                    text: "Add page with head contents right"
-                    onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
-                }
-                ListItemWithLabel13 {
-                    text: "Add page with header left"
-                    onClicked: layout.addPageToCurrentColumn(rootPage, pageWithHeader)
-                }
-                ListItemWithLabel13 {
-                    text: "Add page with header right"
-                    onClicked: layout.addPageToNextColumn(rootPage, pageWithHeader)
+                Column {
+                    id: pagesColumn
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                    }
+                    height: childrenRect.height
+
+                    ListItemWithLabel13 {
+                        text: "Add page left"
+                        onClicked: layout.addPageToCurrentColumn(rootPage, leftPage)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page right"
+                        onClicked: layout.addPageToNextColumn(rootPage, rightPage)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add sections page right"
+                        onClicked: layout.addPageToNextColumn(rootPage, sectionsPage)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add external page right"
+                        onClicked: layout.addPageToNextColumn(
+                                       rootPage, Qt.resolvedUrl("MyExternalPage.DEPRECATED_APPHEADER.qml"))
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page with head contents left"
+                        onClicked: layout.addPageToCurrentColumn(rootPage, headContentsPage)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page with head contents right"
+                        onClicked: layout.addPageToNextColumn(rootPage, headContentsPage)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page with header left"
+                        onClicked: layout.addPageToCurrentColumn(rootPage, pageWithHeader)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page with header right"
+                        onClicked: layout.addPageToNextColumn(rootPage, pageWithHeader)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page with no automatic header height left"
+                        onClicked: layout.addPageToCurrentColumn(rootPage, pageNoAutomaticHeaderHeight)
+                    }
+                    ListItemWithLabel13 {
+                        text: "Add page with no automatic header height right"
+                        onClicked: layout.addPageToNextColumn(rootPage, pageNoAutomaticHeaderHeight)
+                    }
                 }
             }
         }
@@ -154,6 +170,33 @@ MainView {
                     anchors.centerIn: parent
                     text: "Add sections to next column."
                     onTriggered: layout.addPageToNextColumn(pageWithHeader, sectionsPage)
+                }
+            }
+        }
+        Page {
+            id: pageNoAutomaticHeaderHeight
+            header: PageHeader {
+                title: "Page with no automatic header height"
+                StyleHints {
+                    backgroundColor: UbuntuColors.green
+                    foregroundColor: "white"
+                    contentHeight: units.gu(7) // 1 GU more than the default
+                }
+                automaticHeight: false
+            }
+            Rectangle {
+                anchors {
+                    top: pageNoAutomaticHeaderHeight.header.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    margins: units.gu(2)
+                }
+                color: UbuntuColors.warmGrey
+                Button {
+                    anchors.centerIn: parent
+                    text: "Add sections to next column."
+                    onTriggered: layout.addPageToNextColumn(pageNoAutomaticHeaderHeight, sectionsPage)
                 }
             }
         }
@@ -345,7 +388,7 @@ MainView {
             }
         }
 
-        function test_pageheader_height() {
+        function test_pageheader_automatic_height() {
             if (root.columns !== 2) {
                 skip("Only for wide view.");
             }
@@ -369,6 +412,39 @@ MainView {
             layout.removePages(sectionsPage);
             compare(pageWithHeader.header.height, baseHeight,
                     "Page header height is not reverted when header with sections is removed from next column.");
+        }
+
+        function test_pageheader_no_automatic_height_bug1540240() {
+            if (root.columns !== 2) {
+                skip("Only for wide view.");
+            }
+
+            // baseHeight was checked in test_subheader_height().
+            var baseHeight = get_header(0).height;
+
+            layout.addPageToNextColumn(rootPage, pageNoAutomaticHeaderHeight);
+            compare(baseHeight === pageNoAutomaticHeaderHeight.header.height, false,
+                    "This test makes no sense if pageNoAutomaticHeaderHeight.header.height is the default height.");
+            compare(get_header(0).height, baseHeight,
+                    "Page header with no automatic height affects header height in other column.");
+            layout.removePages(pageNoAutomaticHeaderHeight);
+            compare(get_header(0).height, baseHeight,
+                    "Removing page with no automatic header height changes header height in other column.");
+
+            layout.addPageToCurrentColumn(rootPage, pageNoAutomaticHeaderHeight);
+            baseHeight = get_header(0).height;
+            layout.addPageToNextColumn(rootPage, sectionsPage);
+
+            // withSectionsHeight was checked in test_subheader_height().
+            var withSectionsHeight = get_header(1).height;
+            compare(withSectionsHeight > baseHeight, true,
+                    "Header with sections is not more than 1 GU higher than header without sections.");
+            compare(pageNoAutomaticHeaderHeight.header.height, baseHeight,
+                    "Page header with no automatic height adapts its height to header with sections in other column.");
+
+            layout.removePages(sectionsPage);
+            compare(pageNoAutomaticHeaderHeight.header.height, baseHeight,
+                    "Page header with no automatic height is changed when header with sections is removed from next column.");
         }
 
         function test_back_button_wide() {

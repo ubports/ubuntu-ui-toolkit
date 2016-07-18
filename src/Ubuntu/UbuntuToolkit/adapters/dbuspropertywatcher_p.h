@@ -22,7 +22,7 @@
 #include <QtDBus/QDBusServiceWatcher>
 #include <QtDBus/QDBusInterface>
 
-#include "ucserviceproperties_p.h"
+#include "ucserviceproperties_p_p.h"
 
 class QDBusPendingCallWatcher;
 

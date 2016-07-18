@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "appheaderbase.h"
-#include "ucstyleditembase_p.h"
+#include "appheaderbase_p.h"
+#include "ucstyleditembase_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

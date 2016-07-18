@@ -400,9 +400,9 @@ Ubuntu.StyledItem {
 
     /*!
       Whether the TextArea should keep the selection visible when it loses active
-      focus to another item in the scene. By default this is set to true;
+      focus to another item in the scene. By default this is set to true.
 
-      \qmlproperty enumeration persistentSelection
+      \qmlproperty bool persistentSelection
       */
     property alias persistentSelection: editor.persistentSelection
 
@@ -849,6 +849,7 @@ Ubuntu.StyledItem {
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
+            persistentSelection: true
             selectByMouse: true
             cursorDelegate: TextCursor {
                 handler: inputHandler

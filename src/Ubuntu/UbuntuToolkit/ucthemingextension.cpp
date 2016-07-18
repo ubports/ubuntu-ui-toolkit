@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucthemingextension.h"
-#include "uctheme.h"
+#include "ucthemingextension_p.h"
+#include "uctheme_p.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtGui/QGuiApplication>

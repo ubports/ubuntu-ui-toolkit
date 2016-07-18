@@ -14,11 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucabstractbutton.h"
-#include "ucabstractbutton_p.h"
-#include "uchaptics.h"
-#include "ucunits.h"
-#include "ucaction.h"
+#include "ucabstractbutton_p_p.h"
+#include "uchaptics_p.h"
+#include "ucunits_p.h"
+#include "ucaction_p.h"
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQml/private/qqmlglobal_p.h>
@@ -405,4 +404,4 @@ bool UCAbstractButton::contains(const QPointF &point) const
 
 UT_NAMESPACE_END
 
-#include "moc_ucabstractbutton.cpp"
+#include "moc_ucabstractbutton_p.cpp"

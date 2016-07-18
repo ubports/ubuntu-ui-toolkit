@@ -15,8 +15,8 @@
  *
  */
 
-#include "ucfontutils.h"
-#include "ucunits.h"
+#include "ucfontutils_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 

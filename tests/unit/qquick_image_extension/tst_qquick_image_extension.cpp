@@ -21,7 +21,7 @@
 
 // Make protected methods of QQuickImageExtension public in order to test them
 #define protected public
-#include "ucqquickimageextension.h"
+#include <UbuntuToolkit/private/ucqquickimageextension_p.h>
 #undef protected
 #include <QtQml/QQmlEngine>
 #include <ubuntutoolkitmodule.h>

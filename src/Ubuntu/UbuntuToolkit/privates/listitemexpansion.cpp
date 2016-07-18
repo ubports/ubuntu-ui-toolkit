@@ -14,8 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "uclistitem.h"
-#include "uclistitem_p.h"
+#include "uclistitem_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

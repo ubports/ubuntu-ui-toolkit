@@ -1,4 +1,0 @@
-== How to execute a single qml test ==
-
-When current path is tests/unit/tst_components:
-QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules qmltestrunner -input tst_yourtest.qml -import "../../../modules"
