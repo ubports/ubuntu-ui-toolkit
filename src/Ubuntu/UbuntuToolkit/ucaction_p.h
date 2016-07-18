@@ -53,7 +53,7 @@ inline void invokeTrigger(T *object, const QVariant &value)
     }
 }
 
-class UCExclusiveGroup;
+class ExclusiveGroup;
 class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
 {
     Q_OBJECT
@@ -70,7 +70,7 @@ class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
 
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable NOTIFY checkableChanged REVISION 1)
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled REVISION 1)
-    Q_PROPERTY(UCExclusiveGroup* exclusiveGroup READ exclusiveGroup WRITE setExclusiveGroup NOTIFY exclusiveGroupChanged REVISION 1)
+    Q_PROPERTY(ExclusiveGroup* exclusiveGroup READ exclusiveGroup WRITE setExclusiveGroup NOTIFY exclusiveGroupChanged REVISION 1)
 
     // Toolkit Actions API
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource WRITE setIconSource NOTIFY iconSourceChanged)
@@ -122,8 +122,8 @@ public:
     void setChecked(bool checked);
     bool isChecked() const { return m_checkable && m_checked; }
 
-    UCExclusiveGroup *exclusiveGroup() const { return m_exclusiveGroup; }
-    void setExclusiveGroup(UCExclusiveGroup *exclusiveGroup);
+    ExclusiveGroup *exclusiveGroup() const { return m_exclusiveGroup; }
+    void setExclusiveGroup(ExclusiveGroup *exclusiveGroup);
 
 Q_SIGNALS:
     void nameChanged();
@@ -147,7 +147,7 @@ public Q_SLOTS:
 
 private:
     QPODVector<QQuickItem*, 4> m_owningItems;
-    UCExclusiveGroup *m_exclusiveGroup;
+    ExclusiveGroup *m_exclusiveGroup;
     QString m_name;
     QString m_text;
     QString m_iconName;

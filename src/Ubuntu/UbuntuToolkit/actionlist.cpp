@@ -46,7 +46,7 @@ UT_NAMESPACE_BEGIN
  * \since Ubuntu.Components 1.3
  * Signal called when an action is removed from the list
  */
-UCActionList::UCActionList(QObject *parent)
+ActionList::ActionList(QObject *parent)
     : QObject(parent)
 {
 }
@@ -72,7 +72,7 @@ UCActionList::UCActionList(QObject *parent)
  * \endqml
  * \sa ActionList::removeAction
  */
-void UCActionList::addAction(UCAction *action)
+void ActionList::addAction(UCAction *action)
 {
     if (m_actions.contains(action)) {
         return;
@@ -87,7 +87,7 @@ void UCActionList::addAction(UCAction *action)
  * Removes an action from the list programatically.
  * \sa ActionList::addAction
  */
-void UCActionList::removeAction(UCAction *action)
+void ActionList::removeAction(UCAction *action)
 {
     if (!action) {
         return;
@@ -107,48 +107,48 @@ void UCActionList::removeAction(UCAction *action)
  * The advantage of setting actions over using the children is that the same
  * \l Action items can be used in several sets of actions.
  */
-QQmlListProperty<UCAction> UCActionList::actions()
+QQmlListProperty<UCAction> ActionList::actions()
 {
     return QQmlListProperty<UCAction>(this, 0,
-                                      UCActionList::append,
-                                      UCActionList::count,
-                                      UCActionList::at,
-                                      UCActionList::clear);
+                                      ActionList::append,
+                                      ActionList::count,
+                                      ActionList::at,
+                                      ActionList::clear);
 }
 
-const QList<UCAction*> &UCActionList::list() const
+const QList<UCAction*> &ActionList::list() const
 {
     return m_actions;
 }
 
-void UCActionList::append(QQmlListProperty<UCAction> *list, UCAction *action)
+void ActionList::append(QQmlListProperty<UCAction> *list, UCAction *action)
 {
-    UCActionList *actionList = qobject_cast<UCActionList*>(list->object);
+    ActionList *actionList = qobject_cast<ActionList*>(list->object);
     if (actionList) {
         actionList->addAction(action);
     }
 }
 
-void UCActionList::clear(QQmlListProperty<UCAction> *list)
+void ActionList::clear(QQmlListProperty<UCAction> *list)
 {
-    UCActionList *actionList = qobject_cast<UCActionList*>(list->object);
+    ActionList *actionList = qobject_cast<ActionList*>(list->object);
     if (actionList) {
         actionList->m_actions.clear();
     }
 }
 
-UCAction* UCActionList::at(QQmlListProperty<UCAction> *list, int index)
+UCAction* ActionList::at(QQmlListProperty<UCAction> *list, int index)
 {
-    UCActionList *actionList = qobject_cast<UCActionList*>(list->object);
+    ActionList *actionList = qobject_cast<ActionList*>(list->object);
     if (actionList) {
         return actionList->m_actions.value(index, nullptr);
     }
     return Q_NULLPTR;
 }
 
-int UCActionList::count(QQmlListProperty<UCAction> *list)
+int ActionList::count(QQmlListProperty<UCAction> *list)
 {
-    UCActionList *actionList = qobject_cast<UCActionList*>(list->object);
+    ActionList *actionList = qobject_cast<ActionList*>(list->object);
     if (actionList) {
         return actionList->m_actions.count();
     }

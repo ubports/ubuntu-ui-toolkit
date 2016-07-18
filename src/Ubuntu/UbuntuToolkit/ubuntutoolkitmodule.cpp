@@ -88,6 +88,8 @@
 #include <privates/frame_p.h>
 #include <privates/ucpagewrapper_p.h>
 #include <privates/appheaderbase_p.h>
+#include <actionlist_p.h>
+#include <exclusivegroup_p.h>
 
 // styles
 #include <ucbottomedgestyle_p.h>
@@ -323,8 +325,8 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
-    qmlRegisterType<UCActionList>(uri, 1, 3, "ActionList");
-    qmlRegisterType<UCExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
+    qmlRegisterType<ActionList>(uri, 1, 3, "ActionList");
+    qmlRegisterType<ExclusiveGroup>(uri, 1, 3, "ExclusiveGroup");
 }
 
 void UbuntuToolkitModule::undefineModule()

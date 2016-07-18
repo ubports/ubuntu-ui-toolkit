@@ -15,23 +15,23 @@
  *
  */
 
-#ifndef UCEXCLUSIVEGROUP_H
-#define UCEXCLUSIVEGROUP_H
+#ifndef EXCLUSIVEGROUP_H
+#define EXCLUSIVEGROUP_H
 
-#include "ucactionlist.h"
+#include "actionlist_p.h"
 #include "ubuntutoolkitglobal.h"
 
 class QSignalMapper;
 
 UT_NAMESPACE_BEGIN
 
-class UBUNTUTOOLKIT_EXPORT UCExclusiveGroup : public UCActionList
+class UBUNTUTOOLKIT_EXPORT ExclusiveGroup : public ActionList
 {
     Q_OBJECT
     Q_PROPERTY(QObject* current READ current NOTIFY currentChanged)
 
 public:
-    explicit UCExclusiveGroup(QObject *parent = 0);
+    explicit ExclusiveGroup(QObject *parent = 0);
 
     QObject* current() const;
 
@@ -56,4 +56,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCEXCLUSIVEGROUP_H
+#endif // EXCLUSIVEGROUP_H

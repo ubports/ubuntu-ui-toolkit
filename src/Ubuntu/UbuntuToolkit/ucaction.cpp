@@ -537,7 +537,7 @@ void UCAction::setChecked(bool checked)
  * }
  * \endqml
  */
-void UCAction::setExclusiveGroup(UCExclusiveGroup *exclusiveGroup)
+void UCAction::setExclusiveGroup(ExclusiveGroup *exclusiveGroup)
 {
     if (m_exclusiveGroup == exclusiveGroup) {
         return;

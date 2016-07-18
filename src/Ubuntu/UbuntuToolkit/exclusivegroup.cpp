@@ -61,13 +61,13 @@ static bool isChecked(const QObject *o)
  * }
  * \endqml
  */
-UCExclusiveGroup::UCExclusiveGroup(QObject *parent)
-    : UCActionList(parent)
+ExclusiveGroup::ExclusiveGroup(QObject *parent)
+    : ActionList(parent)
     , m_signalMapper(new QSignalMapper(this))
     , m_entranceGuard(false)
 {
-    connect(this, &UCActionList::added, this, &UCExclusiveGroup::onActionAdded);
-    connect(this, &UCActionList::removed, this, &UCExclusiveGroup::onActionRemoved);
+    connect(this, &ActionList::added, this, &ExclusiveGroup::onActionAdded);
+    connect(this, &ActionList::removed, this, &ExclusiveGroup::onActionRemoved);
 
     int index = m_signalMapper->metaObject()->indexOfMethod("map()");
     m_updateCurrentMethod = m_signalMapper->metaObject()->method(index);
@@ -78,12 +78,12 @@ UCExclusiveGroup::UCExclusiveGroup(QObject *parent)
     });
 }
 
-void UCExclusiveGroup::onActionAdded(UCAction *action)
+void ExclusiveGroup::onActionAdded(UCAction *action)
 {
     action->setExclusiveGroup(this);
 }
 
-void UCExclusiveGroup::onActionRemoved(UCAction *action)
+void ExclusiveGroup::onActionRemoved(UCAction *action)
 {
     action->setExclusiveGroup(nullptr);
 }
@@ -92,7 +92,7 @@ void UCExclusiveGroup::onActionRemoved(UCAction *action)
  * \qmlproperty Action ExclusiveGroup::current
  * Returns the currently checked action
  */
-void UCExclusiveGroup::setCurrent(QObject *object)
+void ExclusiveGroup::setCurrent(QObject *object)
 {
     if (m_current == object)
         return;
@@ -105,7 +105,7 @@ void UCExclusiveGroup::setCurrent(QObject *object)
     Q_EMIT currentChanged();
 }
 
-QObject *UCExclusiveGroup::current() const
+QObject *ExclusiveGroup::current() const
 {
     return m_current.data();
 }
@@ -135,7 +135,7 @@ QObject *UCExclusiveGroup::current() const
  * \endqml
  * \sa ExclusiveGroup::unbindCheckable
  */
-void UCExclusiveGroup::bindCheckable(QObject *object)
+void ExclusiveGroup::bindCheckable(QObject *object)
 {
     for (const char **signalName = checkableSignals; *signalName; signalName++) {
         int signalIndex = object->metaObject()->indexOfSignal(*signalName);
@@ -156,7 +156,7 @@ void UCExclusiveGroup::bindCheckable(QObject *object)
  * Explicitly unbind an objects checkability from this exclusive group.
  * \sa ExclusiveGroup::bindCheckable
  */
-void UCExclusiveGroup::unbindCheckable(QObject *object)
+void ExclusiveGroup::unbindCheckable(QObject *object)
 {
     if (m_current == object)
         setCurrent(0);

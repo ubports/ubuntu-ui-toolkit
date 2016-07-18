@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCACTIONLIST_H
-#define UCACTIONLIST_H
+#ifndef ACTIONLIST_H
+#define ACTIONLIST_H
 
 #include <QObject>
 #include <QtQml/QQmlListProperty>
@@ -24,13 +24,13 @@
 UT_NAMESPACE_BEGIN
 
 class UCAction;
-class UBUNTUTOOLKIT_EXPORT UCActionList : public QObject
+class UBUNTUTOOLKIT_EXPORT ActionList : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
     Q_CLASSINFO("DefaultProperty", "actions")
 public:
-    explicit UCActionList(QObject *parent = 0);
+    explicit ActionList(QObject *parent = 0);
 
     QQmlListProperty<UCAction> actions();
 
@@ -55,4 +55,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // UCACTIONLIST_H
+#endif // ACTIONLIST_H
