@@ -44,9 +44,7 @@ HEADERS += \
     mousetouchadaptor_p.h \
     mousetouchadaptor_p_p.h \
     propertychange_p.h \
-    ubuntutoolkitmodule.h \
-    exclusivegroup_p.h \
-    actionlist_p.h
+    ubuntutoolkitmodule.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -54,9 +52,7 @@ SOURCES += \
     asyncloader.cpp \
     mousetouchadaptor.cpp \
     propertychange.cpp \
-    ubuntutoolkitmodule.cpp \
-    actionlist.cpp \
-    exclusivegroup.cpp
+    ubuntutoolkitmodule.cpp
 
 HEADERS += \
     uctheme_p.h \
@@ -152,7 +148,9 @@ HEADERS += \
     privates/ucpagewrapperincubator_p.h \
     privates/appheaderbase_p.h \
     label_p.h \
-    ucbottomedgeregion_p_p.h
+    ucbottomedgeregion_p_p.h \
+    exclusivegroup_p.h \
+    actionlist_p.h
 
 SOURCES += \
     uctheme.cpp \
@@ -228,7 +226,9 @@ SOURCES += \
     privates/frame.cpp \
     privates/ucpagewrapper.cpp \
     privates/ucpagewrapperincubator.cpp \
-    privates/appheaderbase.cpp
+    privates/appheaderbase.cpp \
+    actionlist.cpp \
+    exclusivegroup.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
