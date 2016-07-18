@@ -16,7 +16,7 @@
  * Author: Tim Peeters <tim.peeters@canonical.om>
  */
 
-#include "i18n.h"
+#include "i18n_p.h"
 #include "timeutils_p.h"
 #include <QtCore/QDir>
 

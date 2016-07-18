@@ -20,8 +20,8 @@
 #include <QtQml/QQmlEngine>
 
 #include "privates/threelabelsslot_p.h"
-#include "uclistitemlayout.h"
-#include "uclabel.h"
+#include "uclistitemlayout_p.h"
+#include "uclabel_p.h"
 
 UT_NAMESPACE_BEGIN
 

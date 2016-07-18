@@ -16,8 +16,8 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucarguments.h"
-#include "i18n.h"
+#include "ucarguments_p.h"
+#include "i18n_p.h"
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 #include <QtCore/QTextStream>

@@ -15,7 +15,7 @@
  */
 
 #include <QtTest/QtTest>
-#include "ucunits.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
 
 UT_USE_NAMESPACE
 

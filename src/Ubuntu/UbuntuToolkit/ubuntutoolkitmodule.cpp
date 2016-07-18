@@ -19,6 +19,7 @@
 #include "ubuntutoolkitmodule.h"
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlExtensionPlugin>
 #include <QtQuick/private/qquickimagebase_p.h>
 #include <QDBusConnection>
 #include <QtGui/QGuiApplication>
@@ -28,7 +29,68 @@
 #include <unistd.h>
 #include <stdexcept>
 
-#include <UbuntuToolkit>
+#include <ucunits_p.h>
+#include <quickutils_p.h>
+#include <i18n_p.h>
+#include <ucapplication_p.h>
+#include <ucfontutils_p.h>
+#include <uctheme_p.h>
+#include <ucdeprecatedtheme_p.h>
+#include <listener_p.h>
+#include <ucfontutils_p.h>
+#include <ucmathutils_p.h>
+#include <ucmargins_p.h>
+#include <ucmainviewbase_p.h>
+#include <ucabstractbutton_p.h>
+#include <ucaction_p.h>
+#include <ucactioncontext_p.h>
+#include <ucactionitem_p.h>
+#include <ucactionmanager_p.h>
+#include <ucalarm_p.h>
+#include <ucalarmmodel_p.h>
+#include <ucarguments_p.h>
+#include <ucargument_p.h>
+#include <ucbottomedgehint_p.h>
+#include <ucbottomedgeregion_p.h>
+#include <ucbottomedge_p.h>
+#include <uchaptics_p.h>
+#include <ucheader_p.h>
+#include <ucinversemouse_p.h>
+#include <ucmouse_p.h>
+#include <uclistitem_p.h>
+#include <uclistitemactions_p.h>
+#include <uclistitemlayout_p.h>
+#include <uclabel_p.h>
+#include <ucpagetreenode_p.h>
+#include <ucperformancemonitor_p.h>
+#include <ucproportionalshape_p.h>
+#include <ucscalingimageprovider_p.h>
+#include <ucserviceproperties_p.h>
+#include <ucslotslayout_p.h>
+#include <ucstatesaver_p.h>
+#include <ucstyleditembase_p.h>
+#include <ucstylehints_p.h>
+#include <uctheme_p.h>
+#include <ucubuntuanimation_p.h>
+#include <ucubuntushapeoverlay_p.h>
+#include <ucubuntushape_p.h>
+#include <ucurihandler_p.h>
+#include <ucqquickimageextension_p.h>
+#include <inversemouseareatype_p.h>
+#include <qquickclipboard_p.h>
+#include <qquickmimedata_p.h>
+#include <colorutils_p.h>
+#include <tree_p.h>
+#include <unitythemeiconprovider_p.h>
+#include <sortbehavior_p.h>
+#include <sortfiltermodel_p.h>
+#include <livetimer_p.h>
+#include <privates/frame_p.h>
+#include <privates/ucpagewrapper_p.h>
+#include <privates/appheaderbase_p.h>
+
+// styles
+#include <ucbottomedgestyle_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -288,6 +350,25 @@ void UbuntuStylesModule::undefineModule()
     // nothing yet
 }
 
+/******************************************************************************
+ * Labs module
+ */
+void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin *plugin)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(plugin);
+}
 
+void UbuntuLabsModule::defineModule(const char *uri)
+{
+    Q_UNUSED(uri);
+    // a fake component so we can have the module types file created
+    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+}
+
+void UbuntuLabsModule::undefineModule()
+{
+    // nothing yet
+}
 
 UT_NAMESPACE_END

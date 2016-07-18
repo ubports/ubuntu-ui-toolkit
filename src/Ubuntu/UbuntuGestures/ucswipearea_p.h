@@ -22,8 +22,8 @@
 #include "ubuntugesturesglobal.h"
 
 // lib UbuntuGestures
-#include <UbuntuGestures/Pool>
-#include <UbuntuGestures/Timer>
+#include <UbuntuGestures/private/pool_p.h>
+#include <UbuntuGestures/private/timer_p.h>
 
 // logging
 #include <QtCore/QLoggingCategory>

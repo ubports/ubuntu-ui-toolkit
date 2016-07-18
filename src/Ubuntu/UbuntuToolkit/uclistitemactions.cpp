@@ -14,15 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "uclistitemactions.h"
-#include "uclistitemactions_p.h"
-#include "uclistitem_p.h"
-#include "quickutils.h"
-#include "i18n.h"
+#include "uclistitemactions_p_p.h"
+#include "uclistitem_p_p.h"
+#include "quickutils_p.h"
+#include "i18n_p.h"
 #include <QtQml/QQmlInfo>
-#include "ucaction.h"
-#include "ucunits.h"
-#include "uclistitemstyle.h"
+#include "ucaction_p.h"
+#include "ucunits_p.h"
+#include "uclistitemstyle_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -295,5 +294,3 @@ QQmlListProperty<QObject> UCListItemActions::data()
 }
 
 UT_NAMESPACE_END
-
-#include "moc_uclistitemactions.cpp"

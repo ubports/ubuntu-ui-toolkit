@@ -16,37 +16,54 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTATESAVER_P_H
-#define UCSTATESAVER_P_H
+#ifndef UCSTATESAVER_H
+#define UCSTATESAVER_H
 
-#include "ucstatesaver.h"
-
-#include <QStringList>
+#include <QtCore/QObject>
+#include <QtQml/qqml.h>
+#include <ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
-class UCStateSaverAttachedPrivate
+class UCStateSaverAttachedPrivate;
+class UBUNTUTOOLKIT_EXPORT UCStateSaverAttached : public QObject
 {
-    Q_DECLARE_PUBLIC(UCStateSaverAttached)
+    Q_OBJECT
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(QString properties READ properties WRITE setProperties NOTIFY propertiesChanged)
 public:
-    UCStateSaverAttachedPrivate(UCStateSaverAttached *qq, QObject *attachee);
+    UCStateSaverAttached(QObject *attachee);
+    ~UCStateSaverAttached();
 
-    UCStateSaverAttached *q_ptr;
-    QObject *m_attachee;
-    bool m_enabled:1;
-    QString m_id;
-    QString m_absoluteId;
-    QStringList m_properties;
+    // getter/setter
+    bool enabled() const;
+    void setEnabled(bool v);
+    QString properties() const;
+    void setProperties(const QString &list);
 
-    QString absoluteId(const QString &id);
-    void restore();
-    void watchComponent(bool watch);
+Q_SIGNALS:
+    void enabledChanged();
+    void propertiesChanged();
 
-    void _q_init();
-    void _q_save();
-    void _q_globalEnableChanged(bool);
+private:
+    Q_DECLARE_PRIVATE(UCStateSaverAttached)
+    Q_PRIVATE_SLOT(d_func(), void _q_init())
+    Q_PRIVATE_SLOT(d_func(), void _q_save())
+    Q_PRIVATE_SLOT(d_func(), void _q_globalEnableChanged(bool))
+};
+
+class UBUNTUTOOLKIT_EXPORT UCStateSaver : public QObject
+{
+    Q_OBJECT
+public:
+    static UCStateSaverAttached *qmlAttachedProperties(QObject *attachee)
+    {
+        return new UCStateSaverAttached(attachee);
+    }
 };
 
 UT_NAMESPACE_END
 
-#endif // UCSTATESAVER_P_H
+QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCStateSaver), QML_HAS_ATTACHED_PROPERTIES)
+
+#endif // UCSTATESAVER_H

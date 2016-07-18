@@ -1,11 +1,2 @@
 include(ubuntu-ui-toolkit-online.qdocconf)
-
-indexes = \
-    /usr/share/qt5/doc/qtqml/qtqml.index \
-    /usr/share/qt5/doc/qtquick/qtquick.index \
-    /usr/share/qt5/doc/qtwebkit/qtwebkit.index \
-    /usr/share/qt5/doc/qtsvg/qtsvg.index \
-    /usr/share/qt5/doc/qtscript/qtscript.index \
-    /usr/share/qt5/doc/qtmultimedia/qtmultimedia.index \
-    /usr/share/doc/unity-action/qml/unity-action-qml-api.index \
-
+include(ubuntu-ui-toolkit-indexes.qdocconf)

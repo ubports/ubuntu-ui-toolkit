@@ -16,10 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "alarmmanager_p.h"
 #include "alarmmanager_p_p.h"
-#include "ucalarm.h"
-#include "ucalarm_p.h"
+#include "ucalarm_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -91,5 +89,3 @@ UCAlarmPrivate *AlarmManager::createAlarmData(UCAlarm *alarm)
 }
 
 UT_NAMESPACE_END
-
-#include "moc_alarmmanager_p.cpp"

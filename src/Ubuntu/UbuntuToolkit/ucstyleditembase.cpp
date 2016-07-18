@@ -16,11 +16,10 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucstyleditembase.h"
-#include "ucstyleditembase_p.h"
-#include "uctheme.h"
-#include "ucstylehints.h"
-#include "ucthemingextension.h"
+#include "ucstyleditembase_p_p.h"
+#include "uctheme_p.h"
+#include "ucstylehints_p.h"
+#include "ucthemingextension_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
 
@@ -621,4 +620,4 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 
 UT_NAMESPACE_END
 
-#include "moc_ucstyleditembase.cpp"
+#include "moc_ucstyleditembase_p.cpp"

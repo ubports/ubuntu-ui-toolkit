@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucactioncontext.h"
-#include "ucaction.h"
+#include "ucactioncontext_p.h"
+#include "ucaction_p.h"
 #include "adapters/actionsproxy_p.h"
 #include <QtQuick/QQuickItem>
 

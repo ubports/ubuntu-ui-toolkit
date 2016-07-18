@@ -16,10 +16,9 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucalarm.h"
-#include "ucalarm_p.h"
-#include "alarmmanager_p.h"
-#include "i18n.h"
+#include "ucalarm_p_p.h"
+#include "alarmmanager_p_p.h"
+#include "i18n_p.h"
 #include <QtQml/QQmlInfo>
 
 UT_NAMESPACE_BEGIN
@@ -704,4 +703,4 @@ QVariant UCAlarm::cookie() const
 
 UT_NAMESPACE_END
 
-#include "moc_ucalarm.cpp"
+#include "moc_ucalarm_p.cpp"

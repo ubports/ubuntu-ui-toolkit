@@ -17,7 +17,7 @@
 #ifndef TIMEUTILS_P_H
 #define TIMEUTILS_P_H
 
-#include "livetimer.h"
+#include "livetimer_p.h"
 
 #include <QDateTime>
 #include <QLocale>

@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedgestyle.h"
-#include "ucbottomedge_p.h"
+#include "ucbottomedgestyle_p.h"
+#include "ucbottomedge_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

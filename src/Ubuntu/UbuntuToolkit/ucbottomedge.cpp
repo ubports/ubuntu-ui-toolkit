@@ -16,12 +16,11 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedge_p.h"
-#include "ucbottomedgestyle.h"
-#include "ucbottomedgeregion.h"
-#include "ucbottomedgeregion_p.h"
-#include "ucbottomedgehint_p.h"
-#include "ucstyleditembase_p.h"
+#include "ucbottomedge_p_p.h"
+#include "ucbottomedgestyle_p.h"
+#include "ucbottomedgeregion_p_p.h"
+#include "ucbottomedgehint_p_p.h"
+#include "ucstyleditembase_p_p.h"
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
 #include <QtQml/QQmlProperty>
@@ -30,10 +29,10 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 
-#include "ucheader.h"
-#include "ucaction.h"
-#include "quickutils.h"
-#include "private/ucswipearea_p.h"
+#include "ucheader_p.h"
+#include "ucaction_p.h"
+#include "quickutils_p.h"
+#include "private/ucswipearea_p_p.h"
 #include <QtQuick/private/qquickanimation_p.h>
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
@@ -1184,4 +1183,4 @@ void UCBottomEdgePrivate::resetCurrentContent(QQuickItem *newContent)
 
 UT_NAMESPACE_END
 
-#include "moc_ucbottomedge.cpp"
+#include "moc_ucbottomedge_p.cpp"
