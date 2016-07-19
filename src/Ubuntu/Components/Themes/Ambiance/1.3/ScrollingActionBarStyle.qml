@@ -40,6 +40,16 @@ Style.ActionBarStyle {
         disabledBackgroundColor: buttons.backgroundColor
     }
 
+    property QtObject scrollButtons: Style.ActionItemProperties {
+        foregroundColor: theme.palette.normal.backgroundText
+        pressedForegroundColor: buttons.foregroundColor
+        disabledForegroundColor: theme.palette.disabled.backgroundText
+        backgroundColor: "transparent" // action bar background is already colored
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
+
+
 
     /*!
       The default action delegate if the styled item does
