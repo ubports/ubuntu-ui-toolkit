@@ -941,6 +941,16 @@ private Q_SLOTS:
         QCOMPARE(regionObjects[i++], QString("default"));
     }
 
+    void test_preload_content_url()
+    {
+        QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("PreloadContentUrl.qml"));
+        UCBottomEdge *bottomEdge = test->testItem();
+
+        // commit so the contentItem is set
+        bottomEdge->commit();
+        QTRY_VERIFY(bottomEdge->contentItem());
+    }
+
     void test_reset_preload_content()
     {
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("PreloadedContent.qml"));
