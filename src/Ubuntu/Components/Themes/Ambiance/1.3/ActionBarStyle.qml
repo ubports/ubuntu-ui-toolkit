@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,18 +28,48 @@ Style.ActionBarStyle {
     // Unused with the standard action icon buttons, but may be used with a custom delegate.
     overflowText: "More"
 
+    backgroundColor: theme.palette.normal.background
+    buttons {
+        foregroundColor: theme.palette.normal.backgroundText
+        pressedForegroundColor: buttons.foregroundColor
+        disabledForegroundColor: theme.palette.disabled.backgroundText
+        backgroundColor: "transparent" // action bar background is already colored
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
+
     /*!
       The default action delegate if the styled item does
       not provide a delegate.
      */
-    defaultDelegate: AbstractButton {
-        style: IconButtonStyle { }
-        objectName: action.objectName + "_button"
-        height: parent ? parent.height : undefined
-        action: modelData
+    defaultDelegate: Component {
+        AbstractButton {
+            id: button
+            style: IconButtonStyle {
+                foregroundColor: button.pressed ?
+                                     actionBarStyle.buttons.pressedForegroundColor :
+                                     button.enabled ?
+                                         actionBarStyle.buttons.foregroundColor :
+                                         actionBarStyle.buttons.disabledForegroundColor
+                backgroundColor: button.pressed ?
+                                     actionBarStyle.buttons.pressedBackgroundColor :
+                                     button.enabled ?
+                                         actionBarStyle.buttons.backgroundColor :
+                                         actionBarStyle.buttons.disabledBackgroundColor
+            }
+            objectName: action.objectName + "_button"
+            height: parent ? parent.height : undefined
+            action: modelData
+        }
     }
 
     defaultNumberOfSlots: 3
+
+    Rectangle {
+        id: background
+        anchors.fill: parent
+        color: actionBarStyle.backgroundColor
+    }
 
     Component {
         id: fadeInComponent

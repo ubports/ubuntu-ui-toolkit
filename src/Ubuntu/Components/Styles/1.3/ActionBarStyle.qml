@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,13 +17,23 @@ import QtQuick 2.4
 
 /*!
     \qmltype ActionBarStyle
-    \inqmlmodule Ubuntu.Components.Styles 1.1
+    \inqmlmodule Ubuntu.Components.Styles 1.3
     \ingroup style-api
     \brief Style API for action bar.
 
     The component defines the style API for the \l ActionBar component.
   */
 Item {
+    /*!
+      The color of the background of the action bar.
+     */
+    property color backgroundColor
+
+    /*!
+      Configuration of the colors of the action buttons in the action bar.
+     */
+    readonly property ActionItemProperties buttons: ActionItemProperties { }
+
     /*!
       The default action delegate if the styled item does
       not provide a different delegate.
