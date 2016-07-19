@@ -25,10 +25,21 @@ Style.ActionBarStyle {
     //        implicitWidth: units.gu(4) * styledItem.numberOfItems
     implicitWidth: units.gu(36) // 9 * defaultDelegate.width
 
-    overflowIconName: "contextual-menu"
+    // FIXME: These 3 properties are not used in this style.
+//    overflowIconName: "contextual-menu" // FIXME: unused
+//    overflowText: "More" // FIXME: unused
+//    defaultNumberOfSlots: 3
 
-    // Unused with the standard action icon buttons, but may be used with a custom delegate.
-    overflowText: "More"
+    backgroundColor: theme.palette.normal.background
+    buttons {
+        foregroundColor: theme.palette.normal.backgroundText
+        pressedForegroundColor: buttons.foregroundColor
+        disabledForegroundColor: theme.palette.disabled.backgroundText
+        backgroundColor: "transparent" // action bar background is already colored
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
+
 
     /*!
       The default action delegate if the styled item does
@@ -44,7 +55,18 @@ Style.ActionBarStyle {
         AbstractButton {
             id: button
             anchors.fill: parent
-            style: IconButtonStyle { }
+            style: IconButtonStyle {
+                foregroundColor: button.pressed ?
+                                     actionBarStyle.buttons.pressedForegroundColor :
+                                     button.enabled ?
+                                         actionBarStyle.buttons.foregroundColor :
+                                         actionBarStyle.buttons.disabledForegroundColor
+                backgroundColor: button.pressed ?
+                                     actionBarStyle.buttons.pressedBackgroundColor :
+                                     button.enabled ?
+                                         actionBarStyle.buttons.backgroundColor :
+                                         actionBarStyle.buttons.disabledBackgroundColor
+            }
             objectName: action.objectName + "_button"
             height: parent ? parent.height : undefined
             action: modelData
@@ -53,10 +75,8 @@ Style.ActionBarStyle {
         divider.visible: false
     }
 
-    // FIXME TIM: remove this.
-    defaultNumberOfSlots: 3
-
-    backgroundColor: "white"
+    // The duration of the fade-in/out of the scroll buttons.
+    property int scrollButtonFadeDuration: UbuntuAnimation.FastDuration
 
 //    Item {
     Rectangle {
@@ -101,9 +121,9 @@ Style.ActionBarStyle {
                 id: contentXAnim
                 target: actionsListView
                 property: "contentX"
-//                duration: UbuntuAnimation.FastDuration
-                velocity: units.gu(20)
-                onRunningChanged: print("running = "+running)
+                duration: UbuntuAnimation.FastDuration
+//                velocity: units.gu(20)
+//                onRunningChanged: print("running = "+running)
             }
 
             // direction == 1 to show more icons on the left
@@ -134,13 +154,13 @@ Style.ActionBarStyle {
             opacity: actionsListView.atXBeginning ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
-                    duration: 1000//UbuntuAnimation.FastDuration
+//                    duration: 1000//UbuntuAnimation.FastDuration
+                    duration: actionBarStyle.scrollButtonFadeDuration
                 }
             }
             Rectangle {
-                // FIXME TIM: Use the background color of the actionbar.
                 anchors.fill: parent
-                color: "white"
+                color: actionBarStyle.backgroundColor
             }
             Icon {
                 // FIXME TIM: Use new theme icon from
@@ -168,12 +188,12 @@ Style.ActionBarStyle {
             opacity: actionsListView.atXEnd ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
-                    duration: 1000//UbuntuAnimation.FastDuration
+                    duration: actionBarStyle.scrollButtonFadeDuration
                 }
             }
             Rectangle {
                 anchors.fill: parent
-                color: "white"
+                color: actionBarStyle.backgroundColor
             }
             Icon {
                 // FIXME TIM: Use new theme icon from
