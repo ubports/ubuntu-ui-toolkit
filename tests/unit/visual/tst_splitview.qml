@@ -78,11 +78,22 @@ Window {
                     minimumWidth: units.gu(40)
                 }
             }
-
         ]
+
+        // TODO:!!!!
+//        Repeater {
+//            model: parent.activeLayout.columns.length
+//            Rectangle {
+//                color: UbuntuColors.red
+//                height: parent.height
+//                Label { text: parent.width }
+//            }
+//        }
+
         Rectangle {
             color: UbuntuColors.red
             height: parent.height
+            width: units.gu(90)
             Label { text: parent.width }
         }
         Rectangle {

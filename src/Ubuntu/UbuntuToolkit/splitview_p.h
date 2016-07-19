@@ -29,6 +29,7 @@ class ViewColumnPrivate;
 class ViewColumn : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     Q_PRIVATE_PROPERTY(ViewColumn::d_func(), bool fillWidth MEMBER fillWidth WRITE setFillWidth NOTIFY fillWidthChanged)
     Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal minimumWidth MEMBER minimumWidth WRITE setMinimumWidth NOTIFY minimumWidthChanged)
     Q_PRIVATE_PROPERTY(ViewColumn::d_func(), qreal maximumWidth MEMBER maximumWidth WRITE setMaximumWidth NOTIFY maximumWidthChanged)
@@ -58,12 +59,18 @@ class SplitViewLayout : public QObject
     Q_OBJECT
 
     Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), bool when MEMBER when NOTIFY whenChanged)
-    Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> data READ data DESIGNABLE false)
-    Q_CLASSINFO("DefaultProperty", "data")
+#ifdef Q_QDOC
+    Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), QQmlListProperty<ViewColumn> columns READ columns NOTIFY columnsChanged DESIGNABLE false)
+#else
+    Q_PRIVATE_PROPERTY(SplitViewLayout::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> columns READ columns NOTIFY columnsChanged DESIGNABLE false)
+#endif
+    Q_CLASSINFO("DefaultProperty", "columns")
 public:
     explicit SplitViewLayout(QObject *parent = 0);
+
 Q_SIGNALS:
     void whenChanged();
+    void columnsChanged();
 
 private:
     Q_DECLARE_PRIVATE(SplitViewLayout)
@@ -75,8 +82,13 @@ class SplitViewAttached : public QObject
 {
     Q_OBJECT
     Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), int column READ getColumn NOTIFY columnChanged)
+#ifdef Q_QDOC
+    Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), SplitView* view READ view)
+    Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), ViewColumn* columnConfig READ config NOTIFY columnChanged)
+#else
     Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), UT_PREPEND_NAMESPACE(SplitView*) view READ view)
     Q_PRIVATE_PROPERTY(SplitViewAttached::d_func(), UT_PREPEND_NAMESPACE(ViewColumn*) columnConfig READ config NOTIFY columnChanged)
+#endif
 public:
     explicit SplitViewAttached(QObject *parent = 0);
 
@@ -96,7 +108,13 @@ class SplitView : public QQuickBasePositioner
 {
     Q_OBJECT
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<QObject> splitViewData READ data DESIGNABLE false)
-    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts READ layouts DESIGNABLE false)
+#ifdef Q_QDOC
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<SplitViewLayout> layouts READ layouts NOTIFY layoutsChanged DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), SplitViewLayout *activeLayout READ getActiveLayout NOTIFY activeLayoutChanged)
+#else
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts READ layouts NOTIFY layoutsChanged DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(SplitView::d_func(), UT_PREPEND_NAMESPACE(SplitViewLayout) *activeLayout READ getActiveLayout NOTIFY activeLayoutChanged)
+#endif
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlComponent *handleDelegate MEMBER handleDelegate WRITE setHandle NOTIFY handleDelegateChanged)
     Q_CLASSINFO("DefaultProperty", "splitViewData")
 public:
@@ -105,6 +123,8 @@ public:
     static UT_PREPEND_NAMESPACE(SplitViewAttached) *qmlAttachedProperties(QObject*);
 
 Q_SIGNALS:
+    void layoutsChanged();
+    void activeLayoutChanged();
     void handleDelegateChanged();
 
 protected:

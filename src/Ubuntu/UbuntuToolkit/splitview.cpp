@@ -67,6 +67,10 @@ void SplitViewAttached::resize(qreal delta)
     }
 }
 
+/*!
+ * \qmlattachedproperty ViewColumn SplitView::columnConfig
+ * The attached property holds the active layout's column configuration data.
+ */
 UT_PREPEND_NAMESPACE(ViewColumn*) SplitViewAttachedPrivate::config()
 {
     if (!splitView || column < 0) {
@@ -82,6 +86,13 @@ UT_PREPEND_NAMESPACE(ViewColumn*) SplitViewAttachedPrivate::config()
     return SplitViewLayoutPrivate::get(d->activeLayout)->columnData[column];
 }
 
+/*!
+ * \qmlattachedproperty SplitView SplitView::view
+ */
+
+/*!
+ * \qmlattachedproperty int SplitView::column
+ */
 
 /******************************************************************************
  * SplitView
@@ -139,6 +150,7 @@ void SplitViewPrivate::layout_Append(QQmlListProperty<SplitViewLayout> *list, Sp
     layout->setParent(view);
     // capture layout activation
     QObject::connect(layout, SIGNAL(whenChanged()), view, SLOT(changeLayout()), Qt::DirectConnection);
+    Q_EMIT view->layoutsChanged();
 }
 int SplitViewPrivate::layout_Count(QQmlListProperty<SplitViewLayout> *list)
 {
@@ -163,6 +175,7 @@ void SplitViewPrivate::layout_Clear(QQmlListProperty<SplitViewLayout> *list)
     }
     d->columnLatouts.clear();
     d->activeLayout = nullptr;
+    Q_EMIT view->layoutsChanged();
 }
 QQmlListProperty<SplitViewLayout> SplitViewPrivate::layouts()
 {
@@ -172,6 +185,17 @@ QQmlListProperty<SplitViewLayout> SplitViewPrivate::layouts()
                                              &layout_Count,
                                              &layout_At,
                                              &layout_Clear);
+}
+
+/*!
+ * \qmlproperty SplitViewLayout SplitView::activeLayout
+ * \readonly
+ * The property holds the active SplitViewLayout instance, or null is no layout
+ * is active.
+ */
+UT_PREPEND_NAMESPACE(SplitViewLayout) *SplitViewPrivate::getActiveLayout()
+{
+    return activeLayout;
 }
 
 // invoked when one of the SplitViewLayouts emits whenChanged()
@@ -192,6 +216,8 @@ void SplitViewPrivate::changeLayout()
     // Q: should we reset the sizes of the previous layout?
     // at least it feels  right to preserve the last state of the layout...
     activeLayout = newActive;
+
+    Q_EMIT q_func()->activeLayoutChanged();
 
     updateLayout();
     if (q_func()->sender()) {
@@ -267,6 +293,84 @@ void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
     }
     dirty = false;
 }
+
+/*!
+ * \qmltype SplitView
+ * \inqmlmodule Ubuntu.Components.Labs
+ * \inherits QQuickBasePositioner
+ * \ingroup ubuntu-labs
+ * \brief A view component with a flexible layout configuration setup.
+ *
+ * The component arranges the declared child elements horizontally based on an active
+ * column configuration layout. Child elements are considered to be views, and each view
+ * is identified with a column index, specified by the SplitView.column attached property.
+ * Views should not have width declared, because the (implicit) width of each view is
+ * specified by the active layout's configuration (ViewColumn) and will overrule the
+ * value specified by the view.
+ *
+ * In order a SplitView to show some content it must have at least one active layout
+ * present. All views which are not configured by the active layout will be hidden. A
+ * hidden view may get a different size, therefore its content will be resized when
+ * hidden. If the content is size sensitive (i.e. the amount shown differs on the space
+ * available), the model used should be refreshed only if the view visualizing the
+ * data is visible.
+ * \code
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
+ *
+ * MainView {
+ *     id: main
+ *     width: units.gu(300)
+ *     height: units.gu(80)
+ *     SplitView {
+ *         anchors.fill: parent
+ *         layouts: [
+ *             SplitViewLayout {
+ *                 when: main.width < units.gu(80)
+ *                 ViewColumn {
+ *                     fillWidth: true
+ *                 }
+ *             },
+ *             SplitViewLayout {
+ *                 when: main.width >= units.gu(80)
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(30)
+ *                     maximumWidth: units.gu(100)
+ *                     preferredWidth: units.gu(40)
+ *                 }
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(40)
+ *                     fillWidth: true
+ *                 }
+ *             }
+ *         ]
+ *     }
+ *
+ *     Page {
+ *         id: column1
+ *         height: parent.height
+ *     }
+ *     Page {
+ *         id: column2
+ *         height: parent.height
+ *     }
+ * }
+ * \endcode
+ */
+
+/*!
+ * \qmlproperty list<SplitViewLayout> SplitView::layouts
+ * The property holds the layout configurations declared for the given SplitView.
+ * \sa SplitViewLayout
+ */
+
+/*!
+ * \qmlproperty Component SplitView::handleDelegate
+ * The property holds the delegate to be shown for the column resizing handle.
+ * The delegate is for pure visual, mouse and touch handling should not be provided
+ * by it.
+ */
 
 SplitView::SplitView(QQuickItem *parent)
     : QQuickBasePositioner(Horizontal, parent)

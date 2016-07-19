@@ -32,6 +32,12 @@ static qreal clamp(qreal min, qreal max, qreal v)
 /******************************************************************************
  * ViewColumn configuration object
  */
+/*!
+ * \qmltype ViewColumn
+ * \inmodule Ubuntu.Components.Labs
+ * \ingroup ubuntu-labs
+ * \brief View column metrics configuration
+ */
 ViewColumn::ViewColumn(QObject *parent)
     : QObject(*(new ViewColumnPrivate), parent)
 {
@@ -62,6 +68,9 @@ void ViewColumnPrivate::recalculateLayoutContent()
     }
 }
 
+/*!
+ * \qmlproperty real ViewColumn::minimumWidth
+ */
 void ViewColumnPrivate::setMinimumWidth(qreal width)
 {
     if (qFuzzyCompare(minimumWidth, width)) {
@@ -76,6 +85,9 @@ void ViewColumnPrivate::setMinimumWidth(qreal width)
     recalculateLayoutContent();
 }
 
+/*!
+ * \qmlproperty real ViewColumn::maximumWidth
+ */
 void ViewColumnPrivate::setMaximumWidth(qreal width)
 {
     if (qFuzzyCompare(maximumWidth, width)) {
@@ -89,6 +101,10 @@ void ViewColumnPrivate::setMaximumWidth(qreal width)
     Q_EMIT q_func()->maximumWidthChanged();
     recalculateLayoutContent();
 }
+
+/*!
+ * \qmlproperty real ViewColumn::preferredWidth
+ */
 void ViewColumnPrivate::setPreferredWidth(qreal width, bool notify)
 {
     if (completed && clamp(minimumWidth, maximumWidth, width) != width) {
@@ -107,6 +123,9 @@ void ViewColumnPrivate::setPreferredWidth(qreal width, bool notify)
     }
 }
 
+/*!
+ * \qmlproperty bool ViewColumn::fillWidth
+ */
 void ViewColumnPrivate::setFillWidth(bool fill)
 {
     if (fill == fillWidth) {
@@ -135,12 +154,18 @@ bool ViewColumn::resize(qreal delta)
 /******************************************************************************
  * SplitViewLayout layouts configuration
  */
+/*!
+ * \qmltype SplitViewLayout
+ * \inmodule Ubuntu.Components.Labs
+ * \ingroup ubuntu-labs
+ * \brief Layout configuration for SplitView.
+ */
 SplitViewLayout::SplitViewLayout(QObject *parent)
     : QObject(*(new SplitViewLayoutPrivate), parent)
 {
 }
 
-void SplitViewLayoutPrivate::data_Append(QQmlListProperty<ViewColumn> *list, ViewColumn* data)
+void SplitViewLayoutPrivate::columns_Append(QQmlListProperty<ViewColumn> *list, ViewColumn* data)
 {
     SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
     SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
@@ -148,34 +173,46 @@ void SplitViewLayoutPrivate::data_Append(QQmlListProperty<ViewColumn> *list, Vie
     // make sure ViewColumn is parented to the layout definition
     data->setParent(layout);
     d->columnData.append(data);
+    Q_EMIT layout->columnsChanged();
 }
-int SplitViewLayoutPrivate::data_Count(QQmlListProperty<ViewColumn> *list)
+int SplitViewLayoutPrivate::columns_Count(QQmlListProperty<ViewColumn> *list)
 {
     SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
     SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
     return d->columnData.size();
 }
-ViewColumn *SplitViewLayoutPrivate::data_At(QQmlListProperty<ViewColumn> *list, int index)
+ViewColumn *SplitViewLayoutPrivate::columns_At(QQmlListProperty<ViewColumn> *list, int index)
 {
     SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
     SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
     return d->columnData.at(index);
 }
-void SplitViewLayoutPrivate::data_Clear(QQmlListProperty<ViewColumn> *list)
+void SplitViewLayoutPrivate::columns_Clear(QQmlListProperty<ViewColumn> *list)
 {
     SplitViewLayout *layout = static_cast<SplitViewLayout*>(list->object);
     SplitViewLayoutPrivate *d = SplitViewLayoutPrivate::get(layout);
     qDeleteAll(d->columnData);
     d->columnData.clear();
+    Q_EMIT layout->columnsChanged();
 }
-QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> SplitViewLayoutPrivate::data()
+
+/*!
+ * \qmlproperty list<ViewColumn> SplitViewLayout::columns
+ * \default
+ */
+QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> SplitViewLayoutPrivate::columns()
 {
     Q_Q(SplitViewLayout);
     return QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)>(q, &columnData,
-                                                              &data_Append,
-                                                              &data_Count,
-                                                              &data_At,
-                                                              &data_Clear);
+                                                              &columns_Append,
+                                                              &columns_Count,
+                                                              &columns_At,
+                                                              &columns_Clear);
 }
+
+/*!
+ * \qmlproperty bool SplitViewLayout::when
+ * Specifies the condition when to apply the layout.
+ */
 
 UT_NAMESPACE_END

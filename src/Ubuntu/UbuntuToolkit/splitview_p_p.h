@@ -62,16 +62,16 @@ public:
         return q->d_func();
     }
 
-    QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> data();
+    QQmlListProperty<UT_PREPEND_NAMESPACE(ViewColumn)> columns();
 
     QList<ViewColumn*> columnData;
     bool when{false};
 
 private:
-    static void data_Append(QQmlListProperty<ViewColumn> *, ViewColumn*);
-    static int data_Count(QQmlListProperty<ViewColumn> *);
-    static ViewColumn *data_At(QQmlListProperty<ViewColumn> *, int);
-    static void data_Clear(QQmlListProperty<ViewColumn> *);
+    static void columns_Append(QQmlListProperty<ViewColumn> *, ViewColumn*);
+    static int columns_Count(QQmlListProperty<ViewColumn> *);
+    static ViewColumn *columns_At(QQmlListProperty<ViewColumn> *, int);
+    static void columns_Clear(QQmlListProperty<ViewColumn> *);
 };
 
 class SplitViewAttachedPrivate : public QObjectPrivate
@@ -123,6 +123,7 @@ public:
 
     QQmlListProperty<QObject> data();
     QQmlListProperty<UT_PREPEND_NAMESPACE(SplitViewLayout)> layouts();
+    UT_PREPEND_NAMESPACE(SplitViewLayout) *getActiveLayout();
 
     void updateLayout();
     void recalculateWidths(RelayoutOperation operation);
