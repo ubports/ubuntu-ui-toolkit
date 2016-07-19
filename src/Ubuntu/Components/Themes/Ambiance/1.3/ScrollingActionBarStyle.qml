@@ -163,7 +163,8 @@ Style.ActionBarStyle {
                 }
                 Rectangle {
                     anchors.fill: parent
-                    color: actionBarStyle.backgroundColor
+                    color: scrollButton.pressed ? actionBarStyle.scrollButtons.pressedBackgroundColor
+                                                : actionBarStyle.scrollButtons.backgroundColor
                 }
                 Icon {
                     // FIXME TIM: Use new theme icon from
@@ -174,6 +175,8 @@ Style.ActionBarStyle {
                     height: units.gu(1)
                     rotation: iconRotation
                     name: "chevron"
+                    color: scrollButton.pressed ? actionBarStyle.scrollButtons.pressedForegroundColor
+                                                : actionBarStyle.scrollButtons.foregroundColor
                 }
             }
         }
