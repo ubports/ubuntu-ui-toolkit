@@ -41,15 +41,11 @@ Style.ActionBarStyle {
     }
 
     property QtObject scrollButtons: Style.ActionItemProperties {
-        foregroundColor: theme.palette.normal.backgroundText
-        pressedForegroundColor: buttons.foregroundColor
-        disabledForegroundColor: theme.palette.disabled.backgroundText
-        backgroundColor: "transparent" // action bar background is already colored
-        pressedBackgroundColor: theme.palette.highlighted.background
-        disabledBackgroundColor: buttons.backgroundColor
+        foregroundColor: actionBarStyle.buttons.foregroundColor
+        pressedForegroundColor: actionBarStyle.buttons.pressedForegroundColor
+        backgroundColor: actionBarStyle.backgroundColor // must be opaque to hide the icon buttons
+        pressedBackgroundColor: actionBarStyle.buttons.pressedBackgroundColor
     }
-
-
 
     /*!
       The default action delegate if the styled item does
@@ -151,71 +147,57 @@ Style.ActionBarStyle {
                 contentXAnim.start();
             }
         }
-        AbstractButton {
-            id: leftButton
+
+        Component {
+            id: scrollButtonComponent
+            AbstractButton {
+                id: scrollButton
+                width: units.gu(4)
+                enabled: opacity === 1.0
+                onClicked: actionsListView.scroll(scrollDirection);
+                opacity: buttonOpacity
+                Behavior on opacity {
+                    UbuntuNumberAnimation {
+                        duration: actionBarStyle.scrollButtonFadeDuration
+                    }
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    color: actionBarStyle.backgroundColor
+                }
+                Icon {
+                    // FIXME TIM: Use new theme icon from
+                    //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
+                    //  after it lands in the theme.
+                    anchors.centerIn: parent
+                    width: units.gu(1)
+                    height: units.gu(1)
+                    rotation: iconRotation
+                    name: "chevron"
+                }
+            }
+        }
+        Loader {
             anchors {
                 left: parent.left
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: units.gu(4)
-            enabled: opacity === 1.0
-            onClicked: actionsListView.scroll(1);
-            opacity: actionsListView.atXBeginning ? 0.0 : 1.0
-            Behavior on opacity {
-                UbuntuNumberAnimation {
-//                    duration: 1000//UbuntuAnimation.FastDuration
-                    duration: actionBarStyle.scrollButtonFadeDuration
-                }
-            }
-            Rectangle {
-                anchors.fill: parent
-                color: actionBarStyle.backgroundColor
-            }
-            Icon {
-                // FIXME TIM: Use new theme icon from
-                //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
-                //  after it lands in the theme.
-                id: leftIcon
-                objectName: "left_scroll_icon"
-                anchors.centerIn: parent
-                width: units.gu(1)
-                height: units.gu(1)
-                rotation: 180
-                name: "chevron"
-            }
+            sourceComponent: scrollButtonComponent
+            property int iconRotation: 180
+            property real buttonOpacity: actionsListView.atXBeginning ? 0.0 : 1.0
+            property int scrollDirection: 1
         }
-        AbstractButton {
-            id: rightButton
+        Loader {
             anchors {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: units.gu(4)
-            enabled: opacity === 1.0
-            onClicked: actionsListView.scroll(-1);
-            opacity: actionsListView.atXEnd ? 0.0 : 1.0
-            Behavior on opacity {
-                UbuntuNumberAnimation {
-                    duration: actionBarStyle.scrollButtonFadeDuration
-                }
-            }
-            Rectangle {
-                anchors.fill: parent
-                color: actionBarStyle.backgroundColor
-            }
-            Icon {
-                // FIXME TIM: Use new theme icon from
-                //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
-                //  after it lands in the theme.
-                id: rightIcon
-                objectName: "right_scroll_icon"
-                anchors.centerIn: parent
-                width: units.gu(1)
-                height: units.gu(1)
-                name: "chevron"
-            }
+            sourceComponent: scrollButtonComponent
+            property int iconRotation: 0
+            property real buttonOpacity: actionsListView.atXEnd ? 0.0 : 1.0
+            property int scrollDirection: -1
         }
     }
 }
