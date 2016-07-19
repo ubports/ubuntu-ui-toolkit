@@ -241,11 +241,6 @@ QString UCUnits::resolveResource(const QUrl& url)
         return QString::number(scaleFactor) + "/" + path;
     }
 
-    path = prefix + suffix;
-    if (QFile::exists(path)) {
-        return QString("1") + "/" + path;
-    }
-
     return QString();
 }
 
