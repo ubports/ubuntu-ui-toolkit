@@ -187,7 +187,7 @@ QString UCUnits::resolveResource(const QUrl& url)
     const QFileInfo fileInfo(path);
     if (fileInfo.exists()) {
         if (fileInfo.isFile()) {
-            return QString("1") + "/" + path;
+            return QStringLiteral("1/") + path;
         } else {
             return QString();
         }
@@ -202,7 +202,7 @@ QString UCUnits::resolveResource(const QUrl& url)
 
     path = prefix + suffixForGridUnit(m_gridUnit) + suffix;
     if (QFile::exists(path)) {
-        return QString("1") + "/" + path;
+        return QStringLiteral("1/") + path;
     }
 
     /* No file with expected grid unit suffix exists.
