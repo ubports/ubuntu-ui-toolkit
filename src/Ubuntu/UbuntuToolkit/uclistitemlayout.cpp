@@ -64,6 +64,27 @@ UT_NAMESPACE_BEGIN
     we made it possible to tweak the position of each slot by modifying
     its attached properties (see \l {Advanced layout tweaks}).
 
+    \b Note that if you're wrapping the ListItemLayout in a container such
+    as \l {ListItem}, \b {you will have to specify the height of the container so that
+    it follows ListItemLayout's height}, otherwise the layout content may appear clipped or
+    not vertically centered. See \l {SlotsLayout::Resizing the layout} {here}
+    for more details and a code example.
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Component 1.3
+    ListItem {
+        //CORRECT, ListItem will be tall enough to accomodate all the content
+        height: layout.height + (divider.visible ? divider.height : 0)
+
+        ListItemLayout {
+            id: layout
+            title.text: "Hello developers!"
+            subtitle.text: "I am a ListItemLayout"
+            summary.text: "I resize automatically to accomodate all the elements I hold. My parents should track my height property!"
+        }
+    }
+    \endqml
+
     If you need a progression symbol in your list item,
     just add \l ProgressionSlot as a child of your ListItemLayout.
     No manual positioning is needed, the layout will handle it for you.
