@@ -279,7 +279,7 @@ Item {
                 {tag: "ActionBar", from: 'actionBarShare_button', to: picker, key: Qt.Key_Tab},
                 {tag: "ActionBar(back)", from: picker, to: 'actionBarShare_button', key: Qt.Key_Backtab},
                 */
-                {tag: "ComboButton", from: pickerPanel, to: comboButton, key: Qt.Key_Tab, keyFocusItem: "combobutton_dropdown"},
+                {tag: "ComboButton", from: pickerPanel, to: comboButton, key: Qt.Key_Tab},
                 {tag: "ComboButton(back)", from: comboButton, to: pickerPanel, key: Qt.Key_Backtab},
                 // Left click/ tap
                 {tag: "TextField(click)", from: dummy, to: textField, key: Qt.LeftButton},
@@ -372,10 +372,11 @@ Item {
 
             var center = centerOf(dropdownButton);
             mouseClick(dropdownButton, center.x, center.y);
+            waitForRendering(dropdownButton);
             waitForRendering(comboButton);
             // FIXME: lp#1368390: Buttons shouldn't grab input focus on click
-            compare(dropdownButton.focus, true, "Dropdown button hasn't got focused!");
-            compare(comboButton.focus, true, "ComboButton hasn't been focused!");
+            compare(dropdownButton.activeFocus, false, "Dropdown button hasn't got focused!");
+            compare(comboButton.activeFocus, true, "ComboButton hasn't been focused!");
             comboButton.expanded = false;
             waitForRendering(comboButton);
         }

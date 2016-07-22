@@ -331,6 +331,7 @@ AbstractButton {
         onClicked: {
             // toggle expanded
             combo.expanded = !combo.expanded;
+            combo.forceActiveFocus()
         }
     }
 
