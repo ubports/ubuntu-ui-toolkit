@@ -67,8 +67,9 @@ UT_NAMESPACE_BEGIN
     \b Note that if you're wrapping the ListItemLayout in a container such
     as \l {ListItem}, \b {you will have to specify the height of the container so that
     it follows ListItemLayout's height}, otherwise the layout content may appear clipped or
-    not vertically centered. See \l {SlotsLayout::Resizing the layout} {here}
-    for more details and a code example.
+    not vertically centered.
+
+    See \b {\l {Resizing the layout} {here}} for more details. Here's an example:
     \qml
     import QtQuick 2.4
     import Ubuntu.Component 1.3
