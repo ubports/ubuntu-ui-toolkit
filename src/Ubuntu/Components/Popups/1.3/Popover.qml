@@ -57,15 +57,19 @@ import Ubuntu.Components 1.3
 
                         ListItem {
                             // shall specify the height when Using ListItemLayout inside ListItem
-                            height: popoverComponent.height;
+                            height: somethingLabel.height;
                             ListItemLayout {
+                                id:somethingLabel
                                 title.text: "Do somethings"
                             }
+                            onClicked: console.log("clicked on ListItem with onClicked implemented")
+
                         }
                         ListItem {
                             // shall specify the height when Using ListItemLayout inside ListItem
-                            height: popoverComponent.height;
+                            height: somethingElseLabel.height;
                             ListItemLayout {
+                                id:somethingElseLabel
                                 title.text: "Do somethings"
                                 subtitle.text: "else"
                             }
