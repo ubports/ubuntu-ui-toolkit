@@ -56,11 +56,15 @@ import Ubuntu.Components 1.3
                         Old_ListItem.Header { text: "Standard list items" }
 
                         ListItem {
+                            // shall specify the height when Using ListItemLayout inside ListItem
+                            height: popoverComponent.height;
                             ListItemLayout {
                                 title.text: "Do somethings"
                             }
                         }
                         ListItem {
+                            // shall specify the height when Using ListItemLayout inside ListItem
+                            height: popoverComponent.height;
                             ListItemLayout {
                                 title.text: "Do somethings"
                                 subtitle.text: "else"
