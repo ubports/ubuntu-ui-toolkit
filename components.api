@@ -36,6 +36,8 @@ Ubuntu.Components.ActionBar 1.3: StyledItem
     property Component delegate
     property int numberOfSlots
 Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
+    property color backgroundColor
+    readonly property ActionItemProperties buttons
     property Component defaultDelegate
     property int defaultNumberOfSlots
     property string overflowIconName
@@ -54,6 +56,13 @@ Ubuntu.Components.ActionItem 1.0 0.1 UbuntuToolkit::UCActionItem: StyledItem
     function trigger(var value)
     function trigger()
     property string text
+Ubuntu.Components.Styles.ActionItemProperties 1.3: QtObject
+    property color backgroundColor
+    property color disabledBackgroundColor
+    property color disabledForegroundColor
+    property color foregroundColor
+    property color pressedBackgroundColor
+    property color pressedForegroundColor
 Ubuntu.Components.ActionList 1.0 0.1: QtObject
     property list<Action> actions
     default property list<Action> children
@@ -832,6 +841,7 @@ Ubuntu.Components.PageHeader 1.3: Header
     readonly property ActionBar trailingActionBar
 Ubuntu.Components.Styles.PageHeaderStyle 1.3: Item
     property color backgroundColor
+    readonly property ActionItemProperties buttons
     property double contentHeight
     property Component defaultActionDelegate
     property color disabledForegroundColor
