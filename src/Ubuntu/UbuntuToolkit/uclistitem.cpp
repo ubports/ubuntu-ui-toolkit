@@ -537,11 +537,11 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * there will be no highlight happening if the click happens on the active component.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * MainView {
  *    width: units.gu(40)
- *    height: units.gu(71)
+ *    height: units.gu(68)
  *
  *    Column {
  *        anchors.fill: parent
@@ -572,20 +572,20 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *            onClicked: console.log("clicked on ListItem with trailingActions set")
  *        }
  *        ListItem {
- *            Label {
- *                text: "onClicked implemented"
+ *            ListItemLayout {
+ *                title.text: "onClicked implemented"
  *            }
  *            onClicked: console.log("clicked on ListItem with onClicked implemented")
  *        }
  *        ListItem {
- *            Label {
- *                text: "onPressAndHold implemented"
+ *            ListItemLayout {
+ *                title.text: "onPressAndHold implemented"
  *            }
  *            onPressAndHold: console.log("long-pressed on ListItem with onPressAndHold implemented")
  *        }
  *        ListItem {
- *            Label {
- *                text: "No highlight"
+ *            ListItemLayout {
+ *                title.text: "No highlight"
  *            }
  *        }
  *    }
@@ -671,11 +671,11 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * to the view itself.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * Flickable {
  *    width: units.gu(40)
- *    height: units.gu(50)
+ *    height: units.gu(68)
  *
  *    // this will not have any effect
  *    ViewItems.selectMode: true
@@ -735,7 +735,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * Example of live drag implementation:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: ListModel {
@@ -746,8 +746,8 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         }
  *     }
  *     delegate: ListItem {
- *         Label {
- *             text: modelData
+ *         ListItemLayout {
+ *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
@@ -769,7 +769,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * Example of drag'n'drop implementation:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: ListModel {
@@ -780,8 +780,8 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         }
  *     }
  *     delegate: ListItem {
- *         Label {
- *             text: modelData
+ *         ListItemLayout {
+ *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
@@ -815,13 +815,13 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * can still be implemented with these kind of lists as well.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: ["plum", "peach", "pomegrenade", "pear", "banana"]
  *     delegate: ListItem {
- *         Label {
- *             text: modelData
+ *         ListItemLayout {
+ *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
@@ -849,14 +849,14 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * \l ViewItems::dragUpdated signal handler.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: DelegateModel {
  *         model: ["apple", "pear", "plum", "peach", "nuts", "dates"]
  *         delegate: ListItem {
- *             Label {
- *                 text: modelData
+ *             ListItemLayout {
+ *                 title.text: modelData
  *             }
  *             onPressAndHold: dragMode = !dragMode;
  *         }
@@ -914,8 +914,8 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     }
  *     ViewItems.expansionFlags: ViewItems.CollapseOnOutsidePress
  *     delegate: ListItem {
- *         Label {
- *             text: "Model item #" + modelData
+ *         ListItemLayout {
+ *             title.text: "Model item #" + modelData
  *         }
  *         trailingActions: ListItemActions {
  *             actions: [
