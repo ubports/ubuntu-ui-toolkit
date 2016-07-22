@@ -572,19 +572,28 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *            onClicked: console.log("clicked on ListItem with trailingActions set")
  *        }
  *        ListItem {
+ *            // shall specify the height when Using ListItemLayout inside ListItem
+ *            height: clickImplementedLayout.height + (divider.visible ? divider.height : 0);
  *            ListItemLayout {
+ *                id: clickImplementedLayout
  *                title.text: "onClicked implemented"
  *            }
  *            onClicked: console.log("clicked on ListItem with onClicked implemented")
  *        }
  *        ListItem {
+ *            // shall specify the height when Using ListItemLayout inside ListItem
+ *            height: pressHoldLayout.height + (divider.visible ? divider.height : 0);
  *            ListItemLayout {
+ *                id: pressHoldLayout
  *                title.text: "onPressAndHold implemented"
  *            }
  *            onPressAndHold: console.log("long-pressed on ListItem with onPressAndHold implemented")
  *        }
  *        ListItem {
+ *            // shall specify the height when Using ListItemLayout inside ListItem
+ *            height: noHighlightLayout.height + (divider.visible ? divider.height : 0);
  *            ListItemLayout {
+ *                id: noHighlightLayout
  *                title.text: "No highlight"
  *            }
  *        }
@@ -746,7 +755,10 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         }
  *     }
  *     delegate: ListItem {
+ *         // shall specify the height when Using ListItemLayout inside ListItem
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0);
  *         ListItemLayout {
+ *             id: modelLayout
  *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
@@ -780,7 +792,10 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         }
  *     }
  *     delegate: ListItem {
+ *         // shall specify the height when Using ListItemLayout inside ListItem
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0);
  *         ListItemLayout {
+ *             id: modelLayout
  *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
@@ -820,7 +835,10 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * ListView {
  *     model: ["plum", "peach", "pomegrenade", "pear", "banana"]
  *     delegate: ListItem {
+ *         // shall specify the height when Using ListItemLayout inside ListItem
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0);
  *         ListItemLayout {
+ *             id: modelLayout
  *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
@@ -855,7 +873,10 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     model: DelegateModel {
  *         model: ["apple", "pear", "plum", "peach", "nuts", "dates"]
  *         delegate: ListItem {
+ *             // shall specify the height when Using ListItemLayout inside ListItem
+ *             height: modelLayout.height + (divider.visible ? divider.height : 0);
  *             ListItemLayout {
+ *                 id: modelLayout
  *                 title.text: modelData
  *             }
  *             onPressAndHold: dragMode = !dragMode;
@@ -903,8 +924,8 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * import Ubuntu.Components 1.3
  *
  * ListView {
- *     width: units.gu(40)
- *     height: units.gu(71)
+ *     width: units.gu(100)
+ *     height: units.gu(60)
  *     model: ListModel {
  *         Component.onCompleted: {
  *             for (var i = 0; i < 50; i++) {
@@ -915,6 +936,9 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     ViewItems.expansionFlags: ViewItems.CollapseOnOutsidePress
  *     delegate: ListItem {
  *         ListItemLayout {
+ *             // shall specify the height when Using ListItemLayout inside ListItem
+ *             height: modelLayout.height + (divider.visible ? divider.height : 0);
+ *             id: modelLayout
  *             title.text: "Model item #" + modelData
  *         }
  *         trailingActions: ListItemActions {
