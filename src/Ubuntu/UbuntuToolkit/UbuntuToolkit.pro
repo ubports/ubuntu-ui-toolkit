@@ -7,7 +7,7 @@ unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
 }
-QT *= dbus svg UbuntuGestures UbuntuGestures_private
+QT *= dbus svg UbuntuGestures UbuntuGestures_private UbuntuMetrics
 
 # QOrganizer for Alarm API
 QT *= organizer

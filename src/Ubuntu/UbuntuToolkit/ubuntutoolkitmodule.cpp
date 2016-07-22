@@ -92,6 +92,8 @@
 // styles
 #include <ucbottomedgestyle_p.h>
 
+#include <UbuntuMetrics/applicationmonitor.h>
+
 UT_NAMESPACE_BEGIN
 
 const char *EngineProperty("__ubuntu_toolkit_plugin_data");
@@ -263,6 +265,30 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
             Qt::InvertedLandscapeOrientation));
 
     module->registerWindowContextProperty();
+
+    // Application monitoring.
+    const bool metricsOverlay = qEnvironmentVariableIsSet("UC_METRICS_OVERLAY");
+    const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
+    if (metricsOverlay || !metricsLogging.isNull()) {
+        UMApplicationMonitor::MonitorFlags flags = 0;
+        if (!metricsLogging.isNull()) {
+            UMLogger* logger = (metricsLogging.isEmpty() || metricsLogging == "stdout")
+                ? new UMFileLogger(stdout) : new UMFileLogger(metricsLogging);
+            if (logger->isOpen()) {
+                flags |= UMApplicationMonitor::Logging;
+                UMApplicationMonitor::installLogger(logger);
+            } else {
+                delete logger;
+            }
+        }
+        if (metricsOverlay) {
+            flags |= UMApplicationMonitor::Overlay;
+        }
+        UMApplicationMonitor::setFlags(flags);
+        if (!UMApplicationMonitor::isActive()) {
+            UMApplicationMonitor::start();
+        }
+    }
 
     // register performance monitor
     engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));

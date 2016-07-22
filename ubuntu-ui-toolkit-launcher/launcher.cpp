@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,6 +35,7 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
 #include <UbuntuToolkit/private/mousetouchadaptor_p.h>
+#include <UbuntuMetrics/applicationmonitor.h>
 #include <QtGui/QTouchDevice>
 #include <QtQml/qqml.h>
 
@@ -74,6 +75,10 @@ int main(int argc, const char *argv[])
     QCommandLineOption _frameless("frameless", "Run without borders");
     QCommandLineOption _engine("engine", "Use quick engine from quick view");
     QCommandLineOption _desktop_file_hint("desktop_file_hint", "Desktop file - ignored", "desktop_file");
+    QCommandLineOption _metrics_overlay("metrics-overlay", "Enable the metrics overlay");
+    QCommandLineOption _metrics_logging(
+        "metrics-logging", "Enable metrics logging, <device> can be 'stdout' or a local or "
+        "absolute filename", "device");
 
     args.addOption(_import);
     args.addOption(_enableTouch);
@@ -81,6 +86,8 @@ int main(int argc, const char *argv[])
     args.addOption(_frameless);
     args.addOption(_engine);
     args.addOption(_desktop_file_hint);
+    args.addOption(_metrics_overlay);
+    args.addOption(_metrics_logging);
     args.addPositionalArgument("filename", "Document to be viewed");
     args.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
     args.addHelpOption();
@@ -197,6 +204,31 @@ int main(int argc, const char *argv[])
                 view->setResizeMode(QQuickView::SizeRootObjectToView);
                 view->setContent(source, component, rootItem);
             }
+        }
+    }
+
+    // Application monitoring.
+    const bool metricsOverlay = args.isSet(_metrics_overlay);
+    const bool metricsLogging = args.isSet(_metrics_logging);
+    if (metricsOverlay || metricsLogging) {
+        UMApplicationMonitor::MonitorFlags flags = 0;
+        if (metricsLogging) {
+            QString device = args.value(_metrics_logging);
+            UMLogger* logger = (device.isEmpty() || device == "stdout")
+                ? new UMFileLogger(stdout) : new UMFileLogger(device);
+            if (logger->isOpen()) {
+                flags |= UMApplicationMonitor::Logging;
+                UMApplicationMonitor::installLogger(logger);
+            } else {
+                delete logger;
+            }
+        }
+        if (metricsOverlay) {
+            flags |= UMApplicationMonitor::Overlay;
+        }
+        UMApplicationMonitor::setFlags(flags);
+        if (!UMApplicationMonitor::isActive()) {
+            UMApplicationMonitor::start();
         }
     }
 
