@@ -57,7 +57,7 @@ import Ubuntu.Components 1.3
 
                         ListItem {
                             // shall specify the height when Using ListItemLayout inside ListItem
-                            height: somethingLabel.height;
+                            height: somethingLabel.height + (divider.visible ? divider.height : 0);
                             ListItemLayout {
                                 id:somethingLabel
                                 title.text: "Do somethings"
@@ -67,7 +67,7 @@ import Ubuntu.Components 1.3
                         }
                         ListItem {
                             // shall specify the height when Using ListItemLayout inside ListItem
-                            height: somethingElseLabel.height;
+                            height: somethingElseLabel.height + (divider.visible ? divider.height : 0);
                             ListItemLayout {
                                 id:somethingElseLabel
                                 title.text: "Do somethings"
