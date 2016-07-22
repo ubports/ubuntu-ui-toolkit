@@ -31,62 +31,51 @@ import Ubuntu.Components 1.3
 
     Example:
     \qml
-        import QtQuick 2.4
-        import Ubuntu.Components 1.3
-        import Ubuntu.Components.ListItems 1.3 as ListItem
-        import Ubuntu.Components.Popups 1.3
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+    import Ubuntu.Components.Popups 1.3
 
-        Rectangle {
-            color: theme.palette.normal.background
-            width: units.gu(80)
-            height: units.gu(80)
-            Component {
-                id: popoverComponent
+    Rectangle {
+        color: theme.palette.normal.background
+        width: units.gu(80)
+        height: units.gu(80)
+        Component {
+            id: popoverComponent
 
-                Popover {
-                    id: popover
-                    Column {
-                        id: containerLayout
-                        anchors {
-                            left: parent.left
-                            top: parent.top
-                            right: parent.right
-                        }
-                        ListItem.Header { text: "Standard list items" }
-                        ListItem.Standard { text: "Do something" }
-                        ListItem.Standard { text: "Do something else" }
-                        ListItem.Header { text: "Buttons" }
-                        ListItem.SingleControl {
-                            highlightWhenPressed: false
-                            control: Button {
-                                text: "Do nothing"
-                                anchors {
-                                    fill: parent
-                                    margins: units.gu(1)
-                                }
-                            }
-                        }
-                        ListItem.SingleControl {
-                            highlightWhenPressed: false
-                            control: Button {
-                                text: "Close"
-                                anchors {
-                                    fill: parent
-                                    margins: units.gu(1)
-                                }
-                                onClicked: PopupUtils.close(popover)
-                            }
+            Popover {
+                id: popover
+                Column {
+                    id: containerLayout
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+                    ListItem {
+                        PageHeader { title: "Standard list items" }
+                    }
+                    ListItem {
+                        Label { text: "Do somethings" }
+                    }
+                    ListItem {
+                        Label { text: "Do somethings else" }
+                    }
+                    ListItem {
+                        Button {
+                            text: "Close button"
+                            onClicked: PopupUtils.close(popover);
                         }
                     }
                 }
             }
-            Button {
-                id: popoverButton
-                anchors.centerIn: parent
-                text: "open"
-                onClicked: PopupUtils.open(popoverComponent, popoverButton)
-            }
         }
+        Button {
+            id: popoverButton
+            anchors.centerIn: parent
+            text: "open"
+            onClicked: PopupUtils.open(popoverComponent, popoverButton)
+        }
+    }
     \endqml
 */
 PopupBase {
