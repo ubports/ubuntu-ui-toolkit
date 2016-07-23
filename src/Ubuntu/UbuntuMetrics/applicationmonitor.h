@@ -46,6 +46,18 @@ public:
     };
     Q_DECLARE_FLAGS(MonitorFlags, MonitorFlag)
 
+    enum LoggingFilter {
+        // Allow process events logging.
+        ProcessEvent = (1 << 0),
+        // Allow window events logging.
+        WindowEvent  = (1 << 1),
+        // Allow frame events logging.
+        FrameEvent   = (1 << 2),
+        // Allow all events logging.
+        AllEvents    = (ProcessEvent | WindowEvent | FrameEvent)
+    };
+    Q_DECLARE_FLAGS(LoggingFilters, LoggingFilter)
+
     // Start/Stop tracking of QtQuick windows and process metrics. start()
     // returns false in case there's no QCoreApplication instance running or if
     // the monitor has already been started. stop() is automatically called when
@@ -71,6 +83,10 @@ public:
     static bool removeLogger(UMLogger* logger, bool free = true);
     static void clearLoggers(bool free = true);
 
+    // Set the logging filter. All events are logged by default.
+    static void setLoggingFilters(LoggingFilters filters);
+    static LoggingFilters loggingFilters();
+
     static const int maxMonitors = 16;
     static const int maxLoggers = 8;
 
@@ -94,6 +110,7 @@ private:
     static int m_loggerCount;
     static int m_updateInterval;
     static quint16 m_flags;
+    static quint8 m_filters;
     static UMEvent m_processEvent;
 
     // Prevent instantiation, copy and assign.
@@ -105,6 +122,7 @@ private:
     friend class WindowMonitor;
     friend class WindowMonitorDeleter;
     friend class WindowMonitorFlagSetter;
+    friend class WindowMonitorFilterSetter;
     friend class ShowFilter;
 };
 

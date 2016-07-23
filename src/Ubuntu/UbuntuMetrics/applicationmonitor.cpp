@@ -170,6 +170,7 @@ int UMApplicationMonitor::m_loggerCount = 0;
 int UMApplicationMonitor::m_updateInterval = 1000;
 quint16 UMApplicationMonitor::m_flags =
     UMApplicationMonitor::Overlay | UMApplicationMonitor::Logging;
+quint8 UMApplicationMonitor::m_filters = UMApplicationMonitor::AllEvents;
 alignas(64) UMEvent UMApplicationMonitor::m_processEvent;
 
 // static.
@@ -181,8 +182,9 @@ void UMApplicationMonitor::startMonitoring(QQuickWindow* window)
     if (m_monitorCount < maxMonitors) {
         DASSERT(m_monitors[m_monitorCount] == nullptr);
         static quint32 id = 0;
+        // flags() used here instead of m_flags to clean up extended flags.
         m_monitors[m_monitorCount] =
-            new WindowMonitor(window, m_loggingThread->ref(), flags(), ++id);
+            new WindowMonitor(window, m_loggingThread->ref(), flags(), m_filters, ++id);
         m_monitors[m_monitorCount]->setProcessEvent(m_processEvent);
         m_monitorCount++;
     } else {
@@ -520,18 +522,60 @@ void UMApplicationMonitor::clearLoggers(bool free)
     m_loggerCount = 0;
 }
 
+WindowMonitorFilterSetter::~WindowMonitorFilterSetter()
+{
+    // Make sure it's not been removed (window going hidden) after this runnable
+    // was scheduled.
+    if (UMApplicationMonitor::hasMonitor(m_monitor)) {
+        m_monitor->setFilters(m_filters);
+    }
+}
+
+// static.
+void UMApplicationMonitor::setLoggingFilters(UMApplicationMonitor::LoggingFilters filters)
+{
+    m_filters = filters;
+    if (!(m_flags & Started)) {
+        return;
+    }
+
+    m_monitorsMutex.lock();
+    for (int i = 0; i < m_monitorCount; ++i) {
+        DASSERT(m_monitors[i]);
+        DASSERT(m_monitors[i]->window());
+        m_monitors[i]->window()->scheduleRenderJob(
+            new WindowMonitorFilterSetter(m_monitors[i], filters),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQuickWindow::NoStage);
+#else
+            QQuickWindow::BeforeSynchronizingStage);
+        m_monitors[i]->window()->update();  // Wake up the render loop.
+#endif
+    }
+    m_monitorsMutex.unlock();
+}
+
+// static.
+UMApplicationMonitor::LoggingFilters UMApplicationMonitor::loggingFilters()
+{
+    return static_cast<LoggingFilters>(m_filters);
+}
+
 // static.
 void UMApplicationMonitor::update()
 {
     DASSERT(m_eventUtils);
     DASSERT(m_loggingThread);
 
-    if (m_flags & (Logging | Overlay)) {
+    const bool processLogging = (m_flags & Logging) && (m_filters & ProcessEvent);
+    const bool overlay = m_flags & Overlay;
+
+    if (processLogging || overlay) {
         m_eventUtils->updateProcessEvent(&m_processEvent);
-        if (m_flags & Logging) {
+        if (processLogging) {
             m_loggingThread->push(&m_processEvent);
         }
-        if (m_flags & Overlay) {
+        if (overlay) {
             m_monitorsMutex.lock();
             for (int i = 0; i < m_monitorCount; ++i) {
                 DASSERT(m_monitors[i]);
@@ -561,12 +605,13 @@ static const char* const defaultOverlayText =
     " CPU usage : %9cpuUsage %% ";
 
 WindowMonitor::WindowMonitor(
-    QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint32 id)
+    QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filters, quint32 id)
     : m_loggingThread(loggingThread)
     , m_window(window)
     , m_overlay(defaultOverlayText, id)
     , m_id(id)
     , m_flags(flags)
+    , m_filters(filters)
     , m_frameSize(window->width(), window->height())
 {
     DASSERT(window);
@@ -595,7 +640,8 @@ WindowMonitor::WindowMonitor(
     m_frameEvent.type = UMEvent::Frame;
     m_frameEvent.frame.window = id;
 
-    if (flags & UMApplicationMonitor::Logging) {
+    if ((flags & UMApplicationMonitor::Logging) &&
+        (filters & UMApplicationMonitor::WindowEvent)) {
         UMEvent event;
         event.type = UMEvent::Window;
         event.timeStamp = UMEventUtils::timeStamp();
@@ -611,7 +657,8 @@ WindowMonitor::~WindowMonitor()
 {
     DASSERT(!(m_flags & GpuResourcesInitialised));
 
-    if (m_flags & UMApplicationMonitor::Logging) {
+    if ((m_flags & UMApplicationMonitor::Logging) &&
+        (m_filters & UMApplicationMonitor::WindowEvent)) {
         UMEvent event;
         event.type = UMEvent::Window;
         event.timeStamp = UMEventUtils::timeStamp();
@@ -685,7 +732,8 @@ void WindowMonitor::windowBeforeRendering()
     const QSize frameSize = m_window->size();
     if (frameSize != m_frameSize) {
         m_frameSize = frameSize;
-        if (m_flags & UMApplicationMonitor::Logging) {
+        if ((m_flags & UMApplicationMonitor::Logging) &&
+            (m_filters & UMApplicationMonitor::WindowEvent)) {
             UMEvent event;
             event.type = UMEvent::Window;
             event.timeStamp = UMEventUtils::timeStamp();
@@ -725,7 +773,8 @@ void WindowMonitor::windowFrameSwapped()
     if (m_flags & GpuResourcesInitialised) {
         m_frameEvent.frame.deltaTime = m_deltaTimer.isValid() ? m_deltaTimer.nsecsElapsed() : 0;
         m_deltaTimer.start();
-        if (m_flags & UMApplicationMonitor::Logging) {
+        if ((m_flags & UMApplicationMonitor::Logging) &&
+            (m_filters & UMApplicationMonitor::FrameEvent)) {
             m_frameEvent.frame.swapTime = m_sceneGraphTimer.nsecsElapsed();
             m_frameEvent.timeStamp = UMEventUtils::timeStamp();
             m_loggingThread->push(&m_frameEvent);

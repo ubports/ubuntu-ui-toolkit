@@ -269,6 +269,7 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     // Application monitoring.
     const bool metricsOverlay = qEnvironmentVariableIsSet("UC_METRICS_OVERLAY");
     const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
+    const QByteArray metricsLoggingFilter = qgetenv("UC_METRICS_LOGGING_FILTER");
     if (metricsOverlay || !metricsLogging.isNull()) {
         UMApplicationMonitor::MonitorFlags flags = 0;
         if (!metricsLogging.isNull()) {
@@ -280,6 +281,25 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
             } else {
                 delete logger;
             }
+        }
+        if (!metricsLoggingFilter.isNull()) {
+            QStringList filtersList = QString(metricsLoggingFilter).split(
+                QChar(','), QString::SkipEmptyParts);
+            UMApplicationMonitor::LoggingFilters filters = 0;
+            const int size = filtersList.size();
+            for (int i = 0; i < size; ++i) {
+                if (filtersList[i] == "*") {
+                    filters |= UMApplicationMonitor::AllEvents;
+                    break;
+                } else if (filtersList[i] == "window") {
+                    filters |= UMApplicationMonitor::WindowEvent;
+                } else if (filtersList[i] == "process") {
+                    filters |= UMApplicationMonitor::ProcessEvent;
+                } else if (filtersList[i] == "frame") {
+                    filters |= UMApplicationMonitor::FrameEvent;
+                }
+            }
+            UMApplicationMonitor::setLoggingFilters(filters);
         }
         if (metricsOverlay) {
             flags |= UMApplicationMonitor::Overlay;

@@ -102,12 +102,28 @@ private:
     quint8 m_flags;
 };
 
+class WindowMonitorFilterSetter : public QRunnable
+{
+public:
+    WindowMonitorFilterSetter(WindowMonitor* monitor, quint8 filters)
+        : m_monitor(monitor), m_filters(filters) { DASSERT(monitor); }
+    ~WindowMonitorFilterSetter();
+
+    void run() override {}
+
+private:
+    WindowMonitor* m_monitor;
+    quint8 m_filters;
+};
+
 class WindowMonitor : public QObject
 {
     Q_OBJECT
 
 public:
-    WindowMonitor(QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint32 id);
+    WindowMonitor(
+        QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filters,
+        quint32 id);
     ~WindowMonitor();
 
     QQuickWindow* window() const { return m_window; }
@@ -132,6 +148,7 @@ private:
 
     bool gpuResourcesInitialised() const { return m_flags & GpuResourcesInitialised; }
     void setFlags(quint16 flags) { m_flags = flags | (m_flags & ~0xff); }
+    void setFilters(quint8 filters) { m_filters = filters; }
     void initialiseGpuResources();
     void finaliseGpuResources();
 
@@ -144,11 +161,13 @@ private:
     QElapsedTimer m_deltaTimer;
     quint32 m_id;
     quint16 m_flags;
+    quint8 m_filters;
     QSize m_frameSize;
     UMEvent m_frameEvent;
 
     friend class WindowMonitorDeleter;
     friend class WindowMonitorFlagSetter;
+    friend class WindowMonitorFilterSetter;
 };
 
 #endif  // APPLICATIONMONITOR_P_H

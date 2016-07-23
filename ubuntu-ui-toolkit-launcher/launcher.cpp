@@ -75,10 +75,14 @@ int main(int argc, const char *argv[])
     QCommandLineOption _frameless("frameless", "Run without borders");
     QCommandLineOption _engine("engine", "Use quick engine from quick view");
     QCommandLineOption _desktop_file_hint("desktop_file_hint", "Desktop file - ignored", "desktop_file");
-    QCommandLineOption _metrics_overlay("metrics-overlay", "Enable the metrics overlay");
-    QCommandLineOption _metrics_logging(
+    QCommandLineOption _metricsOverlay("metrics-overlay", "Enable the metrics overlay");
+    QCommandLineOption _metricsLogging(
         "metrics-logging", "Enable metrics logging, <device> can be 'stdout' or a local or "
         "absolute filename", "device");
+    QCommandLineOption _metricsLoggingFilter(
+        "metrics-logging-filter", "Filter metrics logging, <filter> is a list of events separated "
+        "by a comma ('window', 'process', 'frame' or '*'), unfiltered events are discarded",
+        "filter");
 
     args.addOption(_import);
     args.addOption(_enableTouch);
@@ -86,8 +90,9 @@ int main(int argc, const char *argv[])
     args.addOption(_frameless);
     args.addOption(_engine);
     args.addOption(_desktop_file_hint);
-    args.addOption(_metrics_overlay);
-    args.addOption(_metrics_logging);
+    args.addOption(_metricsOverlay);
+    args.addOption(_metricsLogging);
+    args.addOption(_metricsLoggingFilter);
     args.addPositionalArgument("filename", "Document to be viewed");
     args.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
     args.addHelpOption();
@@ -208,12 +213,12 @@ int main(int argc, const char *argv[])
     }
 
     // Application monitoring.
-    const bool metricsOverlay = args.isSet(_metrics_overlay);
-    const bool metricsLogging = args.isSet(_metrics_logging);
+    const bool metricsOverlay = args.isSet(_metricsOverlay);
+    const bool metricsLogging = args.isSet(_metricsLogging);
     if (metricsOverlay || metricsLogging) {
         UMApplicationMonitor::MonitorFlags flags = 0;
         if (metricsLogging) {
-            QString device = args.value(_metrics_logging);
+            QString device = args.value(_metricsLogging);
             UMLogger* logger = (device.isEmpty() || device == "stdout")
                 ? new UMFileLogger(stdout) : new UMFileLogger(device);
             if (logger->isOpen()) {
@@ -222,6 +227,25 @@ int main(int argc, const char *argv[])
             } else {
                 delete logger;
             }
+        }
+        if (args.isSet(_metricsLoggingFilter)) {
+            QStringList filtersList = QString(args.value(_metricsLoggingFilter)).split(
+                QChar(','), QString::SkipEmptyParts);
+            UMApplicationMonitor::LoggingFilters filters = 0;
+            const int size = filtersList.size();
+            for (int i = 0; i < size; ++i) {
+                if (filtersList[i] == "*") {
+                    filters |= UMApplicationMonitor::AllEvents;
+                    break;
+                } else if (filtersList[i] == "window") {
+                    filters |= UMApplicationMonitor::WindowEvent;
+                } else if (filtersList[i] == "process") {
+                    filters |= UMApplicationMonitor::ProcessEvent;
+                } else if (filtersList[i] == "frame") {
+                    filters |= UMApplicationMonitor::FrameEvent;
+                }
+            }
+            UMApplicationMonitor::setLoggingFilters(filters);
         }
         if (metricsOverlay) {
             flags |= UMApplicationMonitor::Overlay;
