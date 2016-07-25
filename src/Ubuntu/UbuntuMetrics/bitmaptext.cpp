@@ -97,8 +97,7 @@ static GLuint createProgram(QOpenGLFunctions* functions, const char* vertexShade
     vertexShader = functions->glCreateShader(GL_VERTEX_SHADER);
     fragmentShader = functions->glCreateShader(GL_FRAGMENT_SHADER);
     if (vertexShader == 0 || fragmentShader == 0) {
-        DWARN("ApplicationMonitor: glCreateShader() failed (OpenGL error: %d).",
-              glGetError());
+        WARN("ApplicationMonitor: glCreateShader() failed (OpenGL error: %d).", glGetError());
         return 0;
     }
 
