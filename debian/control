@@ -225,7 +225,8 @@ Description: Ubuntu gestures library private development files
 Package: libubuntumetrics5
 Architecture: any
 Multi-Arch: same
-Pre-Depends: dpkg (>= 1.15.6~),
+Pre-Depends: liblttng-ust0,
+             dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: ${misc:Depends},
          ${shlibs:Depends},
