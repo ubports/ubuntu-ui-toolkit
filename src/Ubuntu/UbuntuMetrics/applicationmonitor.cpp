@@ -262,8 +262,8 @@ WindowMonitorDeleter::~WindowMonitorDeleter()
 void WindowMonitorDeleter::run()
 {
     // run() guarantees a valid context.
-    if (m_monitor->gpuResourcesInitialised()) {
-        m_monitor->finaliseGpuResources();
+    if (m_monitor->gpuResourcesInitialized()) {
+        m_monitor->finalizeGpuResources();
     }
 }
 
@@ -620,13 +620,13 @@ WindowMonitor::WindowMonitor(
     moveToThread(nullptr);
 
     QObject::connect(window, SIGNAL(sceneGraphInitialized()), this,
-                     SLOT(windowSceneGraphInitialised()), Qt::DirectConnection);
+                     SLOT(windowSceneGraphInitialized()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(sceneGraphInvalidated()), this,
                      SLOT(windowSceneGraphInvalidated()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(beforeSynchronizing()), this,
-                     SLOT(windowBeforeSynchronising()), Qt::DirectConnection);
+                     SLOT(windowBeforeSynchronizing()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(afterSynchronizing()), this,
-                     SLOT(windowAfterSynchronising()), Qt::DirectConnection);
+                     SLOT(windowAfterSynchronizing()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(beforeRendering()), this, SLOT(windowBeforeRendering()),
                      Qt::DirectConnection);
     QObject::connect(window, SIGNAL(afterRendering()), this, SLOT(windowAfterRendering()),
@@ -655,7 +655,7 @@ WindowMonitor::WindowMonitor(
 
 WindowMonitor::~WindowMonitor()
 {
-    DASSERT(!(m_flags & GpuResourcesInitialised));
+    DASSERT(!(m_flags & GpuResourcesInitialized));
 
     if ((m_flags & UMApplicationMonitor::Logging) &&
         (m_filters & UMApplicationMonitor::WindowEvent)) {
@@ -672,57 +672,57 @@ WindowMonitor::~WindowMonitor()
     m_loggingThread->deref();
 }
 
-void WindowMonitor::initialiseGpuResources()
+void WindowMonitor::initializeGpuResources()
 {
-    DASSERT(!(m_flags & GpuResourcesInitialised));
+    DASSERT(!(m_flags & GpuResourcesInitialized));
 
     // FIXME(loicm) We should actually provide an API call to let the user set
-    //     that behaviour programmatically.
+    //     that behavior programmatically.
     static bool noGpuTimer = qEnvironmentVariableIsSet("UM_NO_GPU_TIMER");
 
-    m_overlay.initialise();
-    m_gpuTimer.initialise();
+    m_overlay.initialize();
+    m_gpuTimer.initialize();
     m_frameEvent.frame.number = 0;
-    m_flags |= GpuResourcesInitialised | (!noGpuTimer ? GpuTimerAvailable : 0);
+    m_flags |= GpuResourcesInitialized | (!noGpuTimer ? GpuTimerAvailable : 0);
 }
 
-void WindowMonitor::windowSceneGraphInitialised()
+void WindowMonitor::windowSceneGraphInitialized()
 {
-    if (!(m_flags & GpuResourcesInitialised)) {
-        initialiseGpuResources();
+    if (!(m_flags & GpuResourcesInitialized)) {
+        initializeGpuResources();
     }
 }
 
-void WindowMonitor::finaliseGpuResources()
+void WindowMonitor::finalizeGpuResources()
 {
-    DASSERT(m_flags & GpuResourcesInitialised);
+    DASSERT(m_flags & GpuResourcesInitialized);
 
     if (m_flags & GpuTimerAvailable) {
-        m_gpuTimer.finalise();
+        m_gpuTimer.finalize();
     }
-    m_overlay.finalise();
+    m_overlay.finalize();
 
     m_frameEvent.frame.number = 0;
-    m_flags &= ~(GpuResourcesInitialised | GpuTimerAvailable);
+    m_flags &= ~(GpuResourcesInitialized | GpuTimerAvailable);
 }
 
 void WindowMonitor::windowSceneGraphInvalidated()
 {
-    if (m_flags & GpuResourcesInitialised) {
-        finaliseGpuResources();
+    if (m_flags & GpuResourcesInitialized) {
+        finalizeGpuResources();
     }
 }
 
-void WindowMonitor::windowBeforeSynchronising()
+void WindowMonitor::windowBeforeSynchronizing()
 {
-    if (m_flags & GpuResourcesInitialised) {
+    if (m_flags & GpuResourcesInitialized) {
         m_sceneGraphTimer.start();
     }
 }
 
-void WindowMonitor::windowAfterSynchronising()
+void WindowMonitor::windowAfterSynchronizing()
 {
-    if (m_flags & GpuResourcesInitialised) {
+    if (m_flags & GpuResourcesInitialized) {
         m_frameEvent.frame.syncTime = m_sceneGraphTimer.nsecsElapsed();
     }
 }
@@ -745,7 +745,7 @@ void WindowMonitor::windowBeforeRendering()
         }
     }
 
-    if (m_flags & GpuResourcesInitialised) {
+    if (m_flags & GpuResourcesInitialized) {
         m_sceneGraphTimer.start();
         if (m_flags & GpuTimerAvailable) {
             m_gpuTimer.start();
@@ -755,7 +755,7 @@ void WindowMonitor::windowBeforeRendering()
 
 void WindowMonitor::windowAfterRendering()
 {
-    if (m_flags & GpuResourcesInitialised) {
+    if (m_flags & GpuResourcesInitialized) {
         m_frameEvent.frame.renderTime = m_sceneGraphTimer.nsecsElapsed();
         m_frameEvent.frame.gpuTime = (m_flags & GpuTimerAvailable) ? m_gpuTimer.stop() : 0;
         m_frameEvent.frame.number++;
@@ -770,7 +770,7 @@ void WindowMonitor::windowAfterRendering()
 
 void WindowMonitor::windowFrameSwapped()
 {
-    if (m_flags & GpuResourcesInitialised) {
+    if (m_flags & GpuResourcesInitialized) {
         m_frameEvent.frame.deltaTime = m_deltaTimer.isValid() ? m_deltaTimer.nsecsElapsed() : 0;
         m_deltaTimer.start();
         if ((m_flags & UMApplicationMonitor::Logging) &&
@@ -780,7 +780,7 @@ void WindowMonitor::windowFrameSwapped()
             m_loggingThread->push(&m_frameEvent);
         }
     } else {
-        initialiseGpuResources();  // Get everything ready for the next frame.
+        initializeGpuResources();  // Get everything ready for the next frame.
         if (m_flags & UMApplicationMonitor::Overlay) {
             m_window->update();
         }
@@ -799,8 +799,8 @@ void WindowMonitor::windowSceneGraphAboutToStop()
     UMApplicationMonitor::removeMonitor(this);
 #endif
 
-    if (m_flags & GpuResourcesInitialised) {
-        finaliseGpuResources();
+    if (m_flags & GpuResourcesInitialized) {
+        finalizeGpuResources();
     }
     delete this;
 }

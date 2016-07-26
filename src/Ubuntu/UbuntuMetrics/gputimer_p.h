@@ -28,7 +28,7 @@
 // complete a set of graphics commands. As opposed to a basic timer which would
 // determine the time taken by the graphics driver to push the graphics commands
 // in the command buffer from the CPU, this timer pushes dedicated
-// synchronisation commands to the command buffer, which the GPU signals
+// synchronization commands to the command buffer, which the GPU signals
 // whenever completed. That allows to get accurate GPU timings.
 class GPUTimer
 {
@@ -39,18 +39,18 @@ public:
 #endif
         m_type(Unset) {}
 
-    // Allocates/Deletes the OpenGL resources. finalise() is not called at
+    // Allocates/Deletes the OpenGL resources. finalize() is not called at
     // destruction, it must be explicitly called to free the resources at the
     // right time in a thread with the same OpenGL context bound than at
-    // initialise().
-    void initialise();
-    void finalise();
+    // initialize().
+    void initialize();
+    void finalize();
 
     // Starts/Stops the timer. stop() returns the time elapsed in nanoseconds
     // since the call to start(). Calling start()/stop() two times in a row
     // triggers an assertion in debug builds and leads to undefined results in
     // non-debug builds. Must be called in a thread with the same OpenGL context
-    // bound than at initialise().
+    // bound than at initialize().
     void start();
     quint64 stop();
 

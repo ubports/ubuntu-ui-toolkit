@@ -33,18 +33,18 @@ public:
     Overlay(const char* text, int windowId);
     ~Overlay();
 
-    // Allocates/Deletes the OpenGL resources. finalise() is not called at
+    // Allocates/Deletes the OpenGL resources. finalize() is not called at
     // destruction, it must be explicitly called to free the resources at the
     // right time in a thread with the same OpenGL context bound than at
-    // initialise().
-    bool initialise();
-    void finalise();
+    // initialize().
+    bool initialize();
+    void finalize();
 
     // Sets the process event.
     void setProcessEvent(const UMEvent& processEvent);
 
     // Renders the overlay. Must be called in a thread with the same OpenGL
-    // context bound than at initialise().
+    // context bound than at initialize().
     void render(const UMEvent& frameEvent, const QSize& frameSize);
 
 private:
@@ -55,7 +55,7 @@ private:
     void parseText();
 
     enum {
-        Initialised       = (1 << 0),
+        Initialized       = (1 << 0),
         DirtyText         = (1 << 1),
         DirtyProcessEvent = (1 << 2)
     };
