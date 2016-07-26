@@ -51,6 +51,7 @@ ubuntu-ui-toolkit (1.3.2030+16.10) UNRELEASED; urgency=medium
 
   [ Timo Jyrinki ]
   * Fix packaging sorting bzr hook to work on bzr branches that are local only.
+  * Disable documentation building for GLES builds
 
   [ Florian Boucault ]
   * ProgressionVisual: do not load the icon until the progression is made 
