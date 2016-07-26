@@ -273,8 +273,14 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     if (metricsOverlay || !metricsLogging.isNull()) {
         UMApplicationMonitor::MonitorFlags flags = 0;
         if (!metricsLogging.isNull()) {
-            UMLogger* logger = (metricsLogging.isEmpty() || metricsLogging == "stdout")
-                ? new UMFileLogger(stdout) : new UMFileLogger(metricsLogging);
+            UMLogger* logger;
+            if (metricsLogging.isEmpty() || metricsLogging == "stdout") {
+                logger = new UMFileLogger(stdout);
+            } else if (metricsLogging == "lttng") {
+                logger = new UMLTTNGLogger();
+            } else {
+                logger = new UMFileLogger(metricsLogging);
+            }
             if (logger->isOpen()) {
                 flags |= UMApplicationMonitor::Logging;
                 UMApplicationMonitor::installLogger(logger);

@@ -20,6 +20,9 @@ src_performance_metrics.target = sub-performance-metrics
 src_metrics.subdir  = Ubuntu/UbuntuMetrics
 src_metrics.target  = sub-metrics
 
+src_metrics_lttng.subdir  = Ubuntu/UbuntuMetrics/lttng
+src_metrics_lttng.target  = sub-metrics-lttng
+
 src_test.subdir  = Ubuntu/Test
 src_test.target  = sub-test
 src_test.depends = sub-components 
@@ -28,6 +31,7 @@ src_test.depends = sub-components
 SUBDIRS += \
     src_gestures \
     src_metrics \
+    src_metrics_lttng \
     src_toolkitlib \
     src_components \
     src_layouts \

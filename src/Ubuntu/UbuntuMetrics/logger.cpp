@@ -20,6 +20,10 @@
 #include "events.h"
 #include <QtCore/QDir>
 #include <QtCore/QTime>
+#include <dlfcn.h>
+#define TRACEPOINT_DEFINE
+#define TRACEPOINT_PROBE_DYNAMIC_LINKAGE
+#include "lttng/lttng_p.h"
 
 UMFileLogger::UMFileLogger(const QString& fileName, bool parsable)
     : d_ptr(new FileLoggerPrivate(fileName, parsable))
@@ -202,4 +206,86 @@ void UMFileLogger::setParsable(bool parsable)
 bool UMFileLogger::parsable()
 {
     return !!(d_func()->m_flags & FileLoggerPrivate::Parsable);
+}
+
+UMLTTNGPlugin* UMLTTNGLogger::m_plugin = nullptr;
+bool UMLTTNGLogger::m_error = false;
+
+UMLTTNGLogger::UMLTTNGLogger()
+{
+    // The LTTng tracepoints are dlopen'd so that we don't directly link to
+    // liblttng-ust which spawns two threads when the lib is loaded. That allows
+    // to avoid the cost of it at startup when the user doesn't use LTTng (as
+    // well as not showing them in the metrics).
+
+    if (!m_error && !m_plugin) {
+        // Ensure the plugin is first loaded from the build path to ease
+        // development on the toolkit from uninstalled sources.
+        // FIXME(loicm) Security concerns?
+        void* handle = dlopen(LTTNG_PLUGIN_BUILD_PATH, RTLD_LAZY);
+        if (!handle) {
+            handle = dlopen(LTTNG_PLUGIN_INSTALL_PATH, RTLD_LAZY);
+            if (!handle) {
+                WARN("ApplicationMonitor: %s", dlerror());
+                m_error = true;
+                return;
+            }
+        }
+        m_plugin = static_cast<UMLTTNGPlugin*>(dlsym(handle, "umLttngPlugin"));
+        if (!m_plugin) {
+            WARN("ApplicationMonitor: %s", dlerror());
+            m_error = true;
+            return;
+        }
+    }
+}
+
+void UMLTTNGLogger::log(const UMEvent& event)
+{
+    if (Q_LIKELY(m_plugin)) {
+        switch (event.type) {
+
+        case UMEvent::Process: {
+            UMLTTNGProcessEvent processEvent = {
+                .vszMemory = event.process.vszMemory,
+                .rssMemory = event.process.rssMemory,
+                .cpuUsage = event.process.cpuUsage,
+                .threadCount = event.process.threadCount
+            };
+            m_plugin->logProcessEvent(&processEvent);
+            break;
+        }
+
+        case UMEvent::Frame: {
+            UMLTTNGFrameEvent frameEvent = {
+                .window = event.frame.window,
+                .number = event.frame.number,
+                .deltaTime = event.frame.deltaTime * 0.000001f,
+                .syncTime = event.frame.syncTime * 0.000001f,
+                .renderTime = event.frame.renderTime * 0.000001f,
+                .gpuTime = event.frame.gpuTime * 0.000001f,
+                .swapTime = event.frame.swapTime * 0.000001f
+            };
+            m_plugin->logFrameEvent(&frameEvent);
+            break;
+        }
+
+        case UMEvent::Window: {
+            const char* stateString[] = { "Hidden", "Shown", "Resized" };
+            Q_STATIC_ASSERT(ARRAY_SIZE(stateString) == UMWindowEvent::StateCount);
+            UMLTTNGWindowEvent windowEvent = {
+                .state = stateString[event.window.state],
+                .id = event.window.id,
+                .width = event.window.width,
+                .height = event.window.height
+            };
+            m_plugin->logWindowEvent(&windowEvent);
+            break;
+        }
+
+        default:
+            DNOT_REACHED();
+            break;
+        }
+    }
 }
