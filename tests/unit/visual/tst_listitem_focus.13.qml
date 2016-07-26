@@ -27,19 +27,49 @@ Item {
 
     property Item activeFocusItem: Window.activeFocusItem
 
-    Rectangle {
-        id: topItem
-        objectName: "topItem"
-        activeFocusOnTab: true
-        width: parent.width
-        height: units.gu(2)
+    PageHeader {
+        id: header
+        title: "ListItem focus test"
     }
 
+    Rectangle {
+        id: topFocusItem
+        objectName: "topFocusItem"
+        activeFocusOnTab: true
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: header.bottom
+        }
+        height: units.gu(2)
+        border {
+            width: units.dp(3)
+            color: topFocusItem.activeFocus ? UbuntuColors.orange : UbuntuColors.silk
+        }
+    }
     Loader {
         id: testLoader
         anchors {
-            fill: parent
-            topMargin: topItem.height
+            left: parent.left
+            right: parent.right
+            top: topFocusItem.bottom
+            bottom: bottomFocusItem.top
+        }
+        clip: true
+    }
+    Rectangle {
+        id: bottomFocusItem
+        objectName: "bottomFocusItem"
+        activeFocusOnTab: true
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(2)
+        border {
+            width: units.dp(3)
+            color: bottomFocusItem.activeFocus ? UbuntuColors.orange : UbuntuColors.silk
         }
     }
 
@@ -114,7 +144,7 @@ Item {
             wait(200);
         }
         function init() {
-            topItem.forceActiveFocus(Qt.TabFocusReason);
+            topFocusItem.forceActiveFocus(Qt.TabFocusReason);
         }
 
         function initTestCase() {
@@ -124,10 +154,10 @@ Item {
         // Tab/Backtab focuses the First ListItem in a ListView
         function test_focusing_listview_focuses_first_item_data() {
             return [
-                {tag: "Tab, no content", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Tab, focusItem: "simple0"},
-                {tag: "Tab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Tab, focusItem: "withContent0"},
-                {tag: "Backtab, no content", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Backtab, focusItem: "simple0"},
-                {tag: "Backtab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Backtab, focusItem: "withContent0"},
+                {tag: "Tab, no content", preFocus: topFocusItem, delegate: simpleListItem, key: Qt.Key_Tab, focusItem: "simple0"},
+                {tag: "Tab, with content", preFocus: topFocusItem, delegate: listItemWithContent, key: Qt.Key_Tab, focusItem: "withContent0"},
+                {tag: "Backtab, no content", preFocus: bottomFocusItem, delegate: simpleListItem, key: Qt.Key_Backtab, focusItem: "simple0"},
+                {tag: "Backtab, with content", preFocus: bottomFocusItem, delegate: listItemWithContent, key: Qt.Key_Backtab, focusItem: "withContent0"},
             ];
         }
         function test_focusing_listview_focuses_first_item(data) {
@@ -296,10 +326,10 @@ Item {
         // Tab/Backtab focuses, next Tab/Backtab focuses out of ListItem in a ListView
         function test_tab_backtab_navigates_away_of_listview_data() {
             return [
-                {tag: "Tab, simple", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Tab},
-                {tag: "Tab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Tab},
-                {tag: "BackTab, simple", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Backtab},
-                {tag: "BackTab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Backtab},
+                {tag: "Tab, simple", preFocus: topFocusItem, delegate: simpleListItem, key: Qt.Key_Tab},
+                {tag: "Tab, with content", preFocus: topFocusItem, delegate: listItemWithContent, key: Qt.Key_Tab},
+                {tag: "BackTab, simple", preFocus: bottomFocusItem, delegate: simpleListItem, key: Qt.Key_Backtab},
+                {tag: "BackTab, with content", preFocus: bottomFocusItem, delegate: listItemWithContent, key: Qt.Key_Backtab},
             ];
         }
         function test_tab_backtab_navigates_away_of_listview(data) {
@@ -310,7 +340,7 @@ Item {
             verify(data.preFocus.activeFocus);
             // the first tab focuses the ListView and its first child
             keyClick(data.key);
-            tryCompare(test, "activeFocus", true, 500, "Focus hasn't been gained bythe ListItem");
+            tryCompare(test, "activeFocus", true, 500, "Focus hasn't been gained by the ListItem");
 
             // the second tab should leave the ListView
             keyClick(data.key);
@@ -320,10 +350,10 @@ Item {
         // testing Tab/Backtab navigation when in a generic item
         function test_tab_navigation_when_not_in_listview_data() {
             return [
-                {tag: "Tabs", firstFocus: topItem, key: Qt.Key_Tab,
+                {tag: "Tabs", firstFocus: topFocusItem, key: Qt.Key_Tab,
                             focusItems: ["withContent0", "checkbox0", "switch0", "button0"
                                 , "withContent1", "checkbox1", "switch1", "button1"]},
-                {tag: "Backtabs", firstFocus: topItem, key: Qt.Key_Backtab,
+                {tag: "Backtabs", firstFocus: bottomFocusItem, key: Qt.Key_Backtab,
                             focusItems: ["simple1", "simple0"
                                 , "button1", "switch1", "checkbox1", "withContent1"]},
             ];
@@ -408,7 +438,7 @@ Item {
             return [
                 {tag: "Tabs in ListView", test: listView, delegate: listItemWithContent, testPlan: [
                         {key: Qt.Key_Tab, focus: "withContent0"},
-                        {key: Qt.Key_Tab, focus: "topItem"},
+                        {key: Qt.Key_Tab, focus: "bottomFocusItem"},
                         {key: Qt.Key_Backtab, focus: "withContent0"},
                 ]},
                 {tag: "Tab and navigate in ListView", test: listView, delegate: listItemWithContent, testPlan: [
@@ -421,7 +451,7 @@ Item {
                         {key: Qt.Key_Right, focus: "switch2"},
                         {key: Qt.Key_Down, focus: "withContent3"},
                         {key: Qt.Key_Down, focus: "withContent4"},
-                        {key: Qt.Key_Backtab, focus: "topItem"},
+                        {key: Qt.Key_Backtab, focus: "topFocusItem"},
                         {key: Qt.Key_Tab, focus: "withContent4"},
                 ]},
                 {tag: "Tab and navigate in generic", test: generic, testPlan: [
@@ -434,7 +464,7 @@ Item {
                         {key: Qt.Key_Right, focus: "withContent0"},
                         {key: Qt.Key_Down, focus: "withContent0"},
                         {key: Qt.Key_Down, focus: "withContent0"},
-                        {key: Qt.Key_Backtab, focus: "topItem"},
+                        {key: Qt.Key_Backtab, focus: "topFocusItem"},
                         {key: Qt.Key_Tab, focus: "withContent0"},
                 ]},
                 {tag: "Mixed Tab and navigate keys in generic", test: generic, testPlan: [
