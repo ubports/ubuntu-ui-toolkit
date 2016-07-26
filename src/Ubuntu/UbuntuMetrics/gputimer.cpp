@@ -23,7 +23,7 @@
 #define GL_TIME_ELAPSED 0x88BF  // For GL_EXT_timer_query.
 #endif
 
-void GPUTimer::initialise()
+void GPUTimer::initialize()
 {
     DASSERT(QOpenGLContext::currentContext());
     DASSERT(m_type == Unset);
@@ -122,7 +122,7 @@ void GPUTimer::initialise()
     }
 }
 
-void GPUTimer::finalise()
+void GPUTimer::finalize()
 {
     DASSERT(m_context == QOpenGLContext::currentContext());
     DASSERT(m_type != Unset);

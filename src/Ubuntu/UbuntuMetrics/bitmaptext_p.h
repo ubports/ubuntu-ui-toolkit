@@ -29,17 +29,17 @@ public:
     BitmapText();
     ~BitmapText();
 
-    // Allocates/Deletes the OpenGL resources. finalise() is not called at
+    // Allocates/Deletes the OpenGL resources. finalize() is not called at
     // destruction, it must be explicitly called to free the resources at the
     // right time in a thread with the same OpenGL context bound than at
-    // initialise().
-    bool initialise();
-    void finalise();
+    // initialize().
+    bool initialize();
+    void finalize();
 
     // Sets the text. Characters below 32 and above 126 included are ignored
     // apart from line feeds (10). Implies a reallocation of internal data. Must
     // be called in a thread with the same OpenGL context bound than at
-    // initialise().
+    // initialize().
     void setText(const char* text);
 
     // Updates the current text at the given index. In order to avoid expensive
@@ -53,15 +53,15 @@ public:
 
     // Sets the viewport size and text position. Origin is at top/left. Must be
     // set correctly prior to rendering for correct results. Must be called in a
-    // thread with the same OpenGL context bound than at initialise().
+    // thread with the same OpenGL context bound than at initialize().
     void setTransform(const QSize& viewportSize, const QPointF& position);
 
     // Sets the text opacity. Must be called in a thread with the same OpenGL
-    // context bound than at initialise().
+    // context bound than at initialize().
     void setOpacity(float opacity);
 
     // Renders the text. Must be called in a thread with the same OpenGL context
-    // bound than at initialise().
+    // bound than at initialize().
     void render();
 
 private:
@@ -71,7 +71,7 @@ private:
     enum {
         NotEmpty    = (1 << 0),
 #if !defined(QT_NO_DEBUG)
-        Initialised = (1 << 1)
+        Initialized = (1 << 1)
 #endif
     };
 

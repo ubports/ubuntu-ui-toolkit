@@ -130,7 +130,7 @@ public:
     void setProcessEvent(const UMEvent& event);
 
 private Q_SLOTS:
-    void windowSceneGraphInitialised();
+    void windowSceneGraphInitialized();
     void windowSceneGraphInvalidated();
     void windowBeforeSynchronising();
     void windowAfterSynchronising();
@@ -141,16 +141,16 @@ private Q_SLOTS:
 
 private:
     enum {
-        GpuResourcesInitialised = (1 << 8),
+        GpuResourcesInitialized = (1 << 8),
         GpuTimerAvailable       = (1 << 9),
         SizeChanged             = (1 << 10)
     };
 
-    bool gpuResourcesInitialised() const { return m_flags & GpuResourcesInitialised; }
+    bool gpuResourcesInitialized() const { return m_flags & GpuResourcesInitialized; }
     void setFlags(quint16 flags) { m_flags = flags | (m_flags & ~0xff); }
     void setFilters(quint8 filters) { m_filters = filters; }
-    void initialiseGpuResources();
-    void finaliseGpuResources();
+    void initializeGpuResources();
+    void finalizeGpuResources();
 
     LoggingThread* m_loggingThread;
     QQuickWindow* m_window;

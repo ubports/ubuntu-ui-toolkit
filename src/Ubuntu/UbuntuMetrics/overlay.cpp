@@ -100,39 +100,39 @@ Overlay::Overlay(const char* text, int windowId)
 
 Overlay::~Overlay()
 {
-    DASSERT(!(m_flags & Initialised));
+    DASSERT(!(m_flags & Initialized));
 
     free(m_buffer);
     delete [] m_parsedText;
 }
 
-bool Overlay::initialise()
+bool Overlay::initialize()
 {
-    DASSERT(!(m_flags & Initialised));
+    DASSERT(!(m_flags & Initialized));
     DASSERT(QOpenGLContext::currentContext());
 
 #if !defined QT_NO_DEBUG
     m_context = QOpenGLContext::currentContext();
 #endif
 
-    const bool initialised = m_bitmapText.initialise();
-    if (initialised) {
+    const bool initialized = m_bitmapText.initialize();
+    if (initialized) {
         m_bitmapText.bindProgram();
         m_bitmapText.setOpacity(opacity);
-        m_flags |= Initialised;
+        m_flags |= Initialized;
         return true;
     } else {
         return false;
     }
 }
 
-void Overlay::finalise()
+void Overlay::finalize()
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     DASSERT(m_context == QOpenGLContext::currentContext());
 
-    m_bitmapText.finalise();
-    m_flags &= ~Initialised;
+    m_bitmapText.finalize();
+    m_flags &= ~Initialized;
 
 #if !defined QT_NO_DEBUG
     m_context = nullptr;
@@ -149,7 +149,7 @@ void Overlay::setProcessEvent(const UMEvent& processEvent)
 
 void Overlay::render(const UMEvent& frameEvent, const QSize& frameSize)
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     DASSERT(m_context == QOpenGLContext::currentContext());
 
     m_bitmapText.bindProgram();
@@ -232,7 +232,7 @@ static int timeMetricToText(quint64 metric, char* text, int width)
 
 void Overlay::updateFrameMetrics(const UMEvent& event)
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     Q_STATIC_ASSERT(IS_POWER_OF_TWO(maxMetricWidth));
 
     char* text = static_cast<char*>(m_buffer);
@@ -282,7 +282,7 @@ void Overlay::updateFrameMetrics(const UMEvent& event)
 
 void Overlay::updateWindowMetrics(quint32 windowId, const QSize& frameSize)
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     Q_STATIC_ASSERT(IS_POWER_OF_TWO(maxMetricWidth));
 
     char* text = static_cast<char*>(m_buffer);
@@ -318,7 +318,7 @@ void Overlay::updateWindowMetrics(quint32 windowId, const QSize& frameSize)
 
 void Overlay::updateProcessMetrics()
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     Q_STATIC_ASSERT(IS_POWER_OF_TWO(maxMetricWidth));
 
     char* text = static_cast<char*>(m_buffer);
@@ -563,7 +563,7 @@ void Overlay::parseText()
                             m_metrics[type][m_metricsSize[type]].index = j;
                             m_metrics[type][m_metricsSize[type]].textIndex = characters;
                             m_metrics[type][m_metricsSize[type]].width = width;
-                            // Must be initialised since it might contain non
+                            // Must be initialized since it might contain non
                             // printable characters and break setText otherwise.
                             memset(&m_parsedText[characters], '?', width);
                             characters += width;

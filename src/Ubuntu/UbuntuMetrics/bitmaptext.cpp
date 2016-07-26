@@ -145,9 +145,9 @@ static GLuint createProgram(QOpenGLFunctions* functions, const char* vertexShade
     return program;
 }
 
-bool BitmapText::initialise()
+bool BitmapText::initialize()
 {
-    DASSERT(!(m_flags & Initialised));
+    DASSERT(!(m_flags & Initialized));
     DASSERT(QOpenGLContext::currentContext());
 
     m_functions = QOpenGLContext::currentContext()->functions();
@@ -181,7 +181,7 @@ bool BitmapText::initialise()
 
     if (m_texture && m_program && m_indexBuffer) {
 #if !defined QT_NO_DEBUG
-        m_flags |= Initialised;
+        m_flags |= Initialized;
 #endif
         return true;
     } else {
@@ -189,9 +189,9 @@ bool BitmapText::initialise()
     }
 }
 
-void BitmapText::finalise()
+void BitmapText::finalize()
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     DASSERT(m_context == QOpenGLContext::currentContext());
 
     if (m_texture) {
@@ -216,13 +216,13 @@ void BitmapText::finalise()
     m_functions = nullptr;
 #if !defined QT_NO_DEBUG
     m_context = nullptr;
-    m_flags &= ~Initialised;
+    m_flags &= ~Initialized;
 #endif
 }
 
 void BitmapText::setText(const char* text)
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
 
     int textLength = 0;
     int characterCount = 0;
@@ -281,8 +281,8 @@ void BitmapText::setText(const char* text)
     const float fontY = static_cast<float>(g_bitmapTextFont.font[m_currentFont].y);
     const float fontWidth = static_cast<float>(g_bitmapTextFont.font[m_currentFont].width);
     const float fontHeight = static_cast<float>(g_bitmapTextFont.font[m_currentFont].height);
-    const float fontWidthNormalised = fontWidth / g_bitmapTextFont.textureWidth;
-    const float fontHeightNormalised = fontHeight / g_bitmapTextFont.textureHeight;
+    const float fontWidthNormalized = fontWidth / g_bitmapTextFont.textureWidth;
+    const float fontHeightNormalized = fontHeight / g_bitmapTextFont.textureHeight;
     const float t1 = fontY / g_bitmapTextFont.textureHeight;
     const float t2 = (fontHeight + fontY) / g_bitmapTextFont.textureHeight;
     float x = 0.0f;
@@ -294,7 +294,7 @@ void BitmapText::setText(const char* text)
             const int index = characterCount * 4;
             // The atlas stores 2 lines per font size, second line starts at
             // ASCII character 80 at position 49 in the bitmap.
-            const float s = ((character - ' ') % '0') * fontWidthNormalised;
+            const float s = ((character - ' ') % '0') * fontWidthNormalized;
             const float t = (character < 80) ? t1 : t2;
             m_vertexBuffer[index].x = x;
             m_vertexBuffer[index].y = y;
@@ -303,15 +303,15 @@ void BitmapText::setText(const char* text)
             m_vertexBuffer[index+1].x = x;
             m_vertexBuffer[index+1].y = y + 1.0f;
             m_vertexBuffer[index+1].s = s;
-            m_vertexBuffer[index+1].t = t + fontHeightNormalised;
+            m_vertexBuffer[index+1].t = t + fontHeightNormalized;
             m_vertexBuffer[index+2].x = x + 1.0f;
             m_vertexBuffer[index+2].y = y;
-            m_vertexBuffer[index+2].s = s + fontWidthNormalised;
+            m_vertexBuffer[index+2].s = s + fontWidthNormalized;
             m_vertexBuffer[index+2].t = t;
             m_vertexBuffer[index+3].x = x + 1.0f;
             m_vertexBuffer[index+3].y = y + 1.0f;
-            m_vertexBuffer[index+3].s = s + fontWidthNormalised;
-            m_vertexBuffer[index+3].t = t + fontHeightNormalised;
+            m_vertexBuffer[index+3].s = s + fontWidthNormalized;
+            m_vertexBuffer[index+3].t = t + fontHeightNormalized;
             x += 1.0f;
             m_textToVertexBuffer[i] = characterCount++;
         } else if (character == '\n') {
@@ -330,7 +330,7 @@ void BitmapText::setText(const char* text)
 
 void BitmapText::updateText(const char* text, int index, int length)
 {
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     DASSERT(text);
     DASSERT(index >= 0 && index <= m_textLength);
     DASSERT(index + length <= m_textLength);
@@ -338,8 +338,8 @@ void BitmapText::updateText(const char* text, int index, int length)
     const float fontY = static_cast<float>(g_bitmapTextFont.font[m_currentFont].y);
     const float fontWidth = static_cast<float>(g_bitmapTextFont.font[m_currentFont].width);
     const float fontHeight = static_cast<float>(g_bitmapTextFont.font[m_currentFont].height);
-    const float fontWidthNormalised = fontWidth / g_bitmapTextFont.textureWidth;
-    const float fontHeightNormalised = fontHeight / g_bitmapTextFont.textureHeight;
+    const float fontWidthNormalized = fontWidth / g_bitmapTextFont.textureWidth;
+    const float fontHeightNormalized = fontHeight / g_bitmapTextFont.textureHeight;
     const float t1 = fontY / g_bitmapTextFont.textureHeight;
     const float t2 = (fontHeight + fontY) / g_bitmapTextFont.textureHeight;
 
@@ -347,17 +347,17 @@ void BitmapText::updateText(const char* text, int index, int length)
         int vertexBufferIndex = m_textToVertexBuffer[i];
         const char character = text[j];
         if (vertexBufferIndex != -1 && character >= 32 && character <= 126) {
-            const float s = ((character - ' ') % '0') * fontWidthNormalised;
+            const float s = ((character - ' ') % '0') * fontWidthNormalized;
             const float t = (character < 80) ? t1 : t2;
             vertexBufferIndex *= 4;
             m_vertexBuffer[vertexBufferIndex].s = s;
             m_vertexBuffer[vertexBufferIndex].t = t;
             m_vertexBuffer[vertexBufferIndex+1].s = s;
-            m_vertexBuffer[vertexBufferIndex+1].t = t + fontHeightNormalised;
-            m_vertexBuffer[vertexBufferIndex+2].s = s + fontWidthNormalised;
+            m_vertexBuffer[vertexBufferIndex+1].t = t + fontHeightNormalized;
+            m_vertexBuffer[vertexBufferIndex+2].s = s + fontWidthNormalized;
             m_vertexBuffer[vertexBufferIndex+2].t = t;
-            m_vertexBuffer[vertexBufferIndex+3].s = s + fontWidthNormalised;
-            m_vertexBuffer[vertexBufferIndex+3].t = t + fontHeightNormalised;
+            m_vertexBuffer[vertexBufferIndex+3].s = s + fontWidthNormalized;
+            m_vertexBuffer[vertexBufferIndex+3].t = t + fontHeightNormalized;
         }
     }
 }
@@ -365,7 +365,7 @@ void BitmapText::updateText(const char* text, int index, int length)
 void BitmapText::bindProgram()
 {
     DASSERT(m_context == QOpenGLContext::currentContext());
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
 
     m_functions->glUseProgram(m_program);
 }
@@ -373,7 +373,7 @@ void BitmapText::bindProgram()
 void BitmapText::setTransform(const QSize& viewportSize, const QPointF& position)
 {
     DASSERT(m_context == QOpenGLContext::currentContext());
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     DASSERT(viewportSize.width() > 0.0f);
     DASSERT(viewportSize.height() > 0.0f);
     DASSERT(!qIsNaN(position.x()));
@@ -394,7 +394,7 @@ void BitmapText::setTransform(const QSize& viewportSize, const QPointF& position
 void BitmapText::setOpacity(float opacity)
 {
     DASSERT(m_context == QOpenGLContext::currentContext());
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
     DASSERT(opacity >= 0.0f && opacity <= 1.0f);
 
     m_functions->glUniform1f(m_programOpacity, opacity);
@@ -403,7 +403,7 @@ void BitmapText::setOpacity(float opacity)
 void BitmapText::render()
 {
     DASSERT(m_context == QOpenGLContext::currentContext());
-    DASSERT(m_flags & Initialised);
+    DASSERT(m_flags & Initialized);
 
     if (m_flags & NotEmpty) {
         m_functions->glVertexAttribPointer(
