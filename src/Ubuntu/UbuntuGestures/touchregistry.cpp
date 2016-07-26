@@ -14,24 +14,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "touchregistry.h"
+#include <UbuntuGestures/private/touchregistry_p.h>
 
 #include <QCoreApplication>
 #include <QDebug>
 
 #include <private/qquickitem_p.h>
 
-#include "candidateinactivitytimer.h"
-#include "timer.h"
-#include "touchownershipevent.h"
-#include "unownedtouchevent.h"
+#include <UbuntuGestures/private/candidateinactivitytimer_p.h>
+#include <UbuntuGestures/private/timer_p.h>
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
 
 Q_LOGGING_CATEGORY(ugTouchRegistry, "libubuntugestures.TouchRegistry", QtMsgType::QtWarningMsg)
 
-#include "debughelpers.h"
+#include <UbuntuGestures/private/debughelpers_p.h>
 #define UG_DEBUG qCDebug(ugTouchRegistry) << "[TouchRegistry]"
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 TouchRegistry *TouchRegistry::m_instance = nullptr;
 
@@ -524,3 +524,5 @@ void TouchRegistry::TouchInfo::notifyCandidatesOfOwnershipResolution()
         QCoreApplication::sendEvent(items[i], &lostOwnershipEvent);
     }
 }
+
+UG_NAMESPACE_END

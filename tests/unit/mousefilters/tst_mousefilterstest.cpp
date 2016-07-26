@@ -22,16 +22,18 @@
 #include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
 
-#include "ucmouse.h"
-#include "ucinversemouse.h"
+#include <UbuntuToolkit/private/ucmouse_p.h>
+#include <UbuntuToolkit/private/ucinversemouse_p.h>
 
-#include "ucunits.h"
-#include "quickutils.h"
-#include "inversemouseareatype.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
+#include <UbuntuToolkit/private/quickutils_p.h>
+#include <UbuntuToolkit/private/inversemouseareatype_p.h>
 #include "uctestcase.h"
 #include "uctestextras.h"
 #include <private/qquickevents_p_p.h>
 #include <private/qquickmousearea_p.h>
+
+UT_USE_NAMESPACE
 
 template<typename T>
 T *attachedFilter(QQuickItem *item, const QString &objectName)
@@ -69,7 +71,7 @@ private:
         return qobject_cast<QQuickView*>(testCase);
     }
 
-    void mousePressAndHold(QWindow *view, Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint &point, int delay = DefaultPressAndHoldDelay + 200)
+    void mousePressAndHold(QWindow *view, Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint &point, int delay = UCMouse::DefaultPressAndHoldDelay + 200)
     {
         QTest::mousePress(view, button, modifiers, point);
         QTest::qWait(delay);
@@ -1128,11 +1130,11 @@ private Q_SLOTS:
         // produce long press, but move mouse while in delay
         // FIXME move this under UbuntuTestCase
         QTest::mousePress(test.data(), Qt::LeftButton, 0, guPoint(20, 30));
-        QTest::qWait(DefaultPressAndHoldDelay / 2);
+        QTest::qWait(UCMouse::DefaultPressAndHoldDelay / 2);
         for (int i = 1; i <= 4; i++) {
             QTest::mouseMove(test.data(), guPoint(20 + i, 30 + i));
         }
-        QTest::qWait(DefaultPressAndHoldDelay / 2 + 200);
+        QTest::qWait(UCMouse::DefaultPressAndHoldDelay / 2 + 200);
         QTest::waitForEvents();
         QCOMPARE(hostHoldSpy.count(), 0);
         QCOMPARE(proxyHoldSpy.count(), 0);

@@ -14,12 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tree.h"
+#include "tree_p.h"
 
 #include <private/qobject_p.h>
 #include <QQmlEngine>
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 class TreePrivate : public QObjectPrivate
 {
@@ -228,5 +228,4 @@ QObject *Tree::parent(QObject *node) const
     return d->m_parents.at(i);
 }
 
-}
-
+UT_NAMESPACE_END

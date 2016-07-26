@@ -16,21 +16,19 @@
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#include "timesource.h"
+#include <UbuntuGestures/private/timesource_p.h>
 
 #include <QElapsedTimer>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
+
 class RealTimeSourcePrivate {
 public:
     QElapsedTimer timer;
 };
-}
-
-using namespace UbuntuGestures;
 
 RealTimeSource::RealTimeSource()
-    : UbuntuGestures::TimeSource()
+    : UG_PREPEND_NAMESPACE(TimeSource())
     , d(new RealTimeSourcePrivate)
 {
     d->timer.start();
@@ -45,3 +43,5 @@ qint64 RealTimeSource::msecsSinceReference()
 {
     return d->timer.elapsed();
 }
+
+UG_NAMESPACE_END

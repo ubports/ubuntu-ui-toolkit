@@ -22,16 +22,18 @@
 #include <QtQml/QQmlComponent>
 #define private public
 #define protected public
-#include "uctheme.h"
+#include <UbuntuToolkit/private/uctheme_p.h>
 #undef protected
 #undef private
-#include "quickutils.h"
+#include <UbuntuToolkit/private/quickutils_p.h>
 #include "uctestcase.h"
-#include "ucstyleditembase_p.h"
+#include "private/ucstyleditembase_p_p.h"
 #include "ucnamespace.h"
-#include "ucunits.h"
-#include "uclabel.h"
-#include "plugin.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
+#include <UbuntuToolkit/private/uclabel_p.h>
+#include <ubuntutoolkitmodule.h>
+
+UT_USE_NAMESPACE
 
 class ThemeTestCase : public UbuntuTestCase
 {
@@ -107,7 +109,7 @@ private Q_SLOTS:
     void test_default_theme()
     {
         QQmlEngine engine;
-        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        UbuntuToolkitModule::initializeContextProperties(&engine);
         UCTheme::defaultTheme(&engine);
     }
 
@@ -138,7 +140,11 @@ private Q_SLOTS:
 
     void test_create_without_engine()
     {
+#if !defined(UBUNTUTOOLKIT_NO_NAMESPACE)
+        QTest::ignoreMessage(QtCriticalMsg, "The item UbuntuToolkit::UCLabel was created without a valid QML Engine. Styling will not be possible.");
+#else
         QTest::ignoreMessage(QtCriticalMsg, "The item UCLabel was created without a valid QML Engine. Styling will not be possible.");
+#endif
         QScopedPointer<UCLabel> item(new UCLabel);
         QVERIFY(!item->getTheme());
     }
@@ -177,7 +183,7 @@ private Q_SLOTS:
         qputenv("QV4_MM_AGGRESSIVE_GC", "1");
 
         QQmlEngine engine;
-        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        UbuntuToolkitModule::initializeContextProperties(&engine);
         UCTheme *theme0 = UCTheme::defaultTheme(&engine);
 
         UCTheme *theme1 = new UCTheme(&engine);
@@ -908,7 +914,7 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", "./themes:./themes/TestModule");
 
         QQmlEngine engine;
-        UbuntuComponentsPlugin::initializeContextProperties(&engine);
+        UbuntuToolkitModule::initializeContextProperties(&engine);
         QScopedPointer<UCTheme> theme(new UCTheme);
         theme->setName("DerivedTheme");
 

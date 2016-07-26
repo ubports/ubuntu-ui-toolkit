@@ -18,12 +18,12 @@
 #include <QSet>
 #include <QTouchEvent>
 
-#include <UbuntuGestures/Timer>
-#include <UbuntuGestures/TouchOwnershipEvent>
-#include <UbuntuGestures/TouchRegistry>
-#include <UbuntuGestures/UnownedTouchEvent>
+#include <UbuntuGestures/private/timer_p.h>
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+#include <UbuntuGestures/private/touchregistry_p.h>
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 class TouchMemento {
 public:
@@ -968,6 +968,8 @@ bool DummyCandidate::event(QEvent *e)
     }
 }
 
-QTEST_GUILESS_MAIN(tst_TouchRegistry)
+UG_NAMESPACE_END
+
+QTEST_GUILESS_MAIN(UG_PREPEND_NAMESPACE(tst_TouchRegistry))
 
 #include "tst_TouchRegistry.moc"

@@ -15,9 +15,11 @@
  */
 
 #include <QtTest/QtTest>
-#include "ucunits.h"
+#include <UbuntuToolkit/private/ucunits_p.h>
 
 #include <qpa/qplatformnativeinterface.h>
+
+UT_USE_NAMESPACE
 
 class tst_UCUnitsScale : public QObject
 {

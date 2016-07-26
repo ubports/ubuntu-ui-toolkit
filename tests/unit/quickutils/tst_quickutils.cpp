@@ -16,8 +16,10 @@
  */
 
 #include "uctestcase.h"
-#include "quickutils.h"
+#include "private/quickutils_p.h"
 #include <QtQml/QQmlEngine>
+
+UT_USE_NAMESPACE
 
 class tst_QuickUtils : public QObject
 {

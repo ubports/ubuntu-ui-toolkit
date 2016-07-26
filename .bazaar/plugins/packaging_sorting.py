@@ -25,6 +25,8 @@ def pre_commit_hook(local, master, old_revno, old_revid, future_revno,
                     future_revid, tree_delta, future_tree):
     """Ensure packaging has gone through wrap-and-sort command"""
 
+    if (master.get_parent() is None):
+        return
     if (master.get_parent().find("ubuntu-ui-toolkit") == -1):
         return
 

@@ -23,6 +23,8 @@
 
 #include "damper_p.h"
 
+UG_NAMESPACE_BEGIN
+
 // Information about an active touch point
 struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {
     ActiveTouchInfo() : id(-1), startTime(-1) {}
@@ -33,12 +35,12 @@ struct UBUNTUGESTURES_EXPORT ActiveTouchInfo {
 };
 class UBUNTUGESTURES_EXPORT ActiveTouchesInfo {
 public:
-    ActiveTouchesInfo(const UbuntuGestures::SharedTimeSource &timeSource);
+    ActiveTouchesInfo(const UG_PREPEND_NAMESPACE(SharedTimeSource) &timeSource);
     void update(QTouchEvent *event);
     qint64 touchStartTime(int id);
     bool isEmpty() const { return m_touchInfoPool.isEmpty(); }
     qint64 mostRecentStartTime();
-    UbuntuGestures::SharedTimeSource m_timeSource;
+    UG_PREPEND_NAMESPACE(SharedTimeSource) m_timeSource;
 private:
     void addTouchPoint(int touchId);
     void removeTouchPoint(int touchId);
@@ -68,10 +70,10 @@ public:
     // Replaces the existing Timer with the given one.
     //
     // Useful for providing a fake timer when testing.
-    void setRecognitionTimer(UbuntuGestures::AbstractTimer *timer);
+    void setRecognitionTimer(UG_PREPEND_NAMESPACE(AbstractTimer) *timer);
 
     // Useful for testing, where a fake time source can be supplied
-    void setTimeSource(const UbuntuGestures::SharedTimeSource &timeSource);
+    void setTimeSource(const UG_PREPEND_NAMESPACE(SharedTimeSource) &timeSource);
 
     // Describes the state of the directional drag gesture.
     enum Status {
@@ -133,13 +135,13 @@ public:
     QPointF previousDampedScenePos;
     // Unit vector in scene coordinates describing the direction of the gesture recognition
     QPointF sceneDirectionVector;
-    UbuntuGestures::SharedTimeSource timeSource;
+    UG_PREPEND_NAMESPACE(SharedTimeSource) timeSource;
     ActiveTouchesInfo activeTouches;
 
     // status change listeners
     QList<UCSwipeAreaStatusListener*> statusChangeListeners;
 
-    UbuntuGestures::AbstractTimer *recognitionTimer;
+    UG_PREPEND_NAMESPACE(AbstractTimer) *recognitionTimer;
 
     // How far a touch point has to move from its initial position along the gesture axis in order
     // for it to be recognized as a directional drag.
@@ -170,5 +172,7 @@ class UBUNTUGESTURES_EXPORT UCSwipeAreaStatusListener
 public:
     virtual void swipeStatusChanged(UCSwipeAreaPrivate::Status /*old*/, UCSwipeAreaPrivate::Status /*new*/) {}
 };
+
+UG_NAMESPACE_END
 
 #endif // UCSWIPEAREAPRIVATE_H

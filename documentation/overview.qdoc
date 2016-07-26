@@ -33,7 +33,7 @@
      \part Basic QML Types
      Available through:
      \code
-         import Ubuntu.Components 1.2
+         import Ubuntu.Components 1.3
      \endcode
      \annotatedlist ubuntu
 
@@ -51,7 +51,7 @@
 
      Available through:
      \code
-         import Ubuntu.Components 1.2
+         import Ubuntu.Components 1.3
      \endcode
      \annotatedlist ubuntu-listitem
 
@@ -60,21 +60,21 @@
 
      Available through:
      \code
-         import Ubuntu.Components.ListItems 1.0
+         import Ubuntu.Components.ListItems 1.3
      \endcode
      \annotatedlist ubuntu-listitems
 
      \part Pickers
      Available through:
      \code
-         import Ubuntu.Components.Pickers 1.0
+         import Ubuntu.Components.Pickers 1.3
      \endcode
      \annotatedlist ubuntu-pickers
 
      \part Popovers, Sheets and Dialogs
      Available through:
      \code
-         import Ubuntu.Components.Popups 1.0
+         import Ubuntu.Components.Popups 1.3
      \endcode
      \annotatedlist ubuntu-popups
 
@@ -88,14 +88,14 @@
      \part Theming Elements
      Available through:
      \code
-         import Ubuntu.Components 1.2
+         import Ubuntu.Components 1.3
      \endcode
      \annotatedlist theming
 
      \part Theme module
      Available through:
      \code
-         import Ubuntu.Components.Themes 1.0
+         import Ubuntu.Components.Themes 1.3
      \endcode
      \annotatedlist theme-module
 
@@ -104,28 +104,28 @@
      Themes must make sure that these interfaces are all implemented.
      Available through:
      \code
-         import Ubuntu.Components.Styles 1.2
+         import Ubuntu.Components.Styles 1.3
      \endcode
      \annotatedlist style-api
 
      \part Resolution Independence Items
      Available through:
      \code
-         import Ubuntu.Components 1.2
+         import Ubuntu.Components 1.3
      \endcode
      \annotatedlist resolution-independence
 
      \part Parsing Command-Line Arguments
      Available through:
      \code
-         import Ubuntu.Components 1.2
+         import Ubuntu.Components 1.3
      \endcode
      \annotatedlist ubuntu-commandline
 
      \part Services
      Available through:
      \code
-         import Ubuntu.Components 1.2
+         import Ubuntu.Components 1.3
      \endcode
      \annotatedlist ubuntu-services
 
@@ -139,7 +139,7 @@
      \part Test extensions
      Available through:
      \code
-         import Ubuntu Test 1.0
+         import Ubuntu Test 1.3
      \endcode
      \annotatedlist ubuntu-test
  */
