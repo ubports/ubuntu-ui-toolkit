@@ -235,7 +235,6 @@ UMLTTNGLogger::UMLTTNGLogger()
         if (!m_plugin) {
             WARN("ApplicationMonitor: %s", dlerror());
             m_error = true;
-            return;
         }
     }
 }
