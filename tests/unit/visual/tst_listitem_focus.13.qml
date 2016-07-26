@@ -30,6 +30,65 @@ Item {
     PageHeader {
         id: header
         title: "ListItem focus test"
+        extension: Sections {
+            id: directionSections
+            width: parent.width
+            selectedIndex: -1
+            function setupListView(showContent, orientation, reverseDirection) {
+                testCase.cleanup();
+                var test = testCase.loadTest(listView);
+                test.orientation = orientation;
+                if (reverseDirection) {
+                    if (orientation === ListView.Horizontal) {
+                        test.layoutDirection = Qt.RightToLeft;
+                    } else {
+                        test.verticalLayoutDirection = ListView.BottomToTop;
+                    }
+                }
+                if (showContent) {
+                    test.delegate = listItemWithContent;
+                } else {
+                    test.delegate = simpleListItem;
+                }
+            }
+
+            actions: [
+                Action {
+                    text: "TopToBottom"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Vertical, false);
+                },
+                Action {
+                    text: "LeftToRight"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Horizontal, false);
+                },
+                Action {
+                    text: "BottomToTop"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Vertical, true);
+                },
+                Action {
+                    text: "RightToLeft"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Horizontal, true);
+                }
+
+            ]
+        }
+        trailingActionBar.actions: [
+            Action {
+                id: switchContentAction
+                property bool showContent: false
+                iconName: showContent ? "select" : "select-none"
+                onTriggered: {
+                    showContent = !showContent;
+                    if (directionSections.selectedIndex >= 0) {
+                        directionSections.actions[directionSections.selectedIndex].trigger();
+                    }
+                }
+            }
+        ]
     }
 
     Rectangle {
@@ -76,8 +135,17 @@ Item {
     Component {
         id: simpleListItem
         ListItem {
+            id: listItem
             objectName: "simple" + index
             property int itemIndex: index
+            Label {
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(2)
+                    verticalCenter: parent.verticalCenter
+                }
+                text: listItem.objectName
+            }
         }
     }
 
@@ -91,7 +159,7 @@ Item {
                 spacing: units.gu(1)
                 CheckBox { objectName: "checkbox" + listItem.itemIndex }
                 Switch { objectName: "switch" + listItem.itemIndex }
-                Button { objectName: "button" + listItem.itemIndex; text: "test" }
+                Button { objectName: "button" + listItem.itemIndex; text: "test " + itemIndex }
             }
             leadingActions: ListItemActions {
                 actions: Action {
@@ -130,6 +198,7 @@ Item {
     }
 
     ListItemTestCase13 {
+        id: testCase
         name: "ListItemFocus"
         when: windowShown
 
