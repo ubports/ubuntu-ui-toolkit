@@ -79,7 +79,7 @@ struct UBUNTU_METRICS_EXPORT UMFrameEvent
     // Time in nanoseconds since the last frame swap.
     quint64 deltaTime;
 
-    // Time in nanoseconds taken by the QtQuick scene graph synchronisation
+    // Time in nanoseconds taken by the QtQuick scene graph synchronization
     // pass.
     quint64 syncTime;
 

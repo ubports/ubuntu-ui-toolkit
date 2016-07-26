@@ -132,8 +132,8 @@ public:
 private Q_SLOTS:
     void windowSceneGraphInitialized();
     void windowSceneGraphInvalidated();
-    void windowBeforeSynchronising();
-    void windowAfterSynchronising();
+    void windowBeforeSynchronizing();
+    void windowAfterSynchronizing();
     void windowBeforeRendering();
     void windowAfterRendering();
     void windowFrameSwapped();

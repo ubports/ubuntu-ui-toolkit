@@ -624,9 +624,9 @@ WindowMonitor::WindowMonitor(
     QObject::connect(window, SIGNAL(sceneGraphInvalidated()), this,
                      SLOT(windowSceneGraphInvalidated()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(beforeSynchronizing()), this,
-                     SLOT(windowBeforeSynchronising()), Qt::DirectConnection);
+                     SLOT(windowBeforeSynchronizing()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(afterSynchronizing()), this,
-                     SLOT(windowAfterSynchronising()), Qt::DirectConnection);
+                     SLOT(windowAfterSynchronizing()), Qt::DirectConnection);
     QObject::connect(window, SIGNAL(beforeRendering()), this, SLOT(windowBeforeRendering()),
                      Qt::DirectConnection);
     QObject::connect(window, SIGNAL(afterRendering()), this, SLOT(windowAfterRendering()),
@@ -713,14 +713,14 @@ void WindowMonitor::windowSceneGraphInvalidated()
     }
 }
 
-void WindowMonitor::windowBeforeSynchronising()
+void WindowMonitor::windowBeforeSynchronizing()
 {
     if (m_flags & GpuResourcesInitialized) {
         m_sceneGraphTimer.start();
     }
 }
 
-void WindowMonitor::windowAfterSynchronising()
+void WindowMonitor::windowAfterSynchronizing()
 {
     if (m_flags & GpuResourcesInitialized) {
         m_frameEvent.frame.syncTime = m_sceneGraphTimer.nsecsElapsed();

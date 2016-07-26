@@ -28,7 +28,7 @@
 // complete a set of graphics commands. As opposed to a basic timer which would
 // determine the time taken by the graphics driver to push the graphics commands
 // in the command buffer from the CPU, this timer pushes dedicated
-// synchronisation commands to the command buffer, which the GPU signals
+// synchronization commands to the command buffer, which the GPU signals
 // whenever completed. That allows to get accurate GPU timings.
 class GPUTimer
 {
