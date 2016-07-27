@@ -259,6 +259,8 @@ int main(int argc, const char *argv[])
         UMApplicationMonitor::setFlags(flags);
         if (!UMApplicationMonitor::isActive()) {
             UMApplicationMonitor::start();
+            quint32 foo = UMApplicationMonitor::registerGenericEvent();
+            UMApplicationMonitor::logGenericEvent(foo, "hola", 5);
         }
     }
 

@@ -173,13 +173,31 @@ void FileLoggerPrivate::log(const UMEvent& event)
                     << event.window.height << '\n' << flush;
             } else {
                 const char* const stateString[] = { "Hidden", "Shown", "Resized" };
-                Q_STATIC_ASSERT(ARRAY_SIZE(stateString) == UMEvent::TypeCount);
+                Q_STATIC_ASSERT(ARRAY_SIZE(stateString) == UMWindowEvent::StateCount);
                 m_textStream
                     << (m_flags & Colored ? "\033[35mW\033[00m " : "W ")
                     << dim << timeString << reset << ' '
                     << "Id" << dimColon << event.window.id << ' '
                     << "State" << dimColon << stateString[event.window.state] << ' '
                     << "Size" << dimColon << event.window.width << 'x' << event.window.height
+                    << '\n' << flush;
+            }
+            break;
+        }
+
+        case UMEvent::Generic: {
+            if (m_flags & Parsable) {
+                m_textStream
+                    << "G "
+                    << event.timeStamp << ' '
+                    << event.generic.id << ' '
+                    << event.generic.string << '\n' << flush;
+            } else {
+                m_textStream
+                    << (m_flags & Colored ? "\033[32mG\033[00m " : "G ")
+                    << dim << timeString << reset << ' '
+                    << "Id" << dimColon << event.generic.id << ' '
+                    << "String" << dimColon << '"' << event.generic.string << '"'
                     << '\n' << flush;
             }
             break;
@@ -279,6 +297,15 @@ void UMLTTNGLogger::log(const UMEvent& event)
                 .height = event.window.height
             };
             m_plugin->logWindowEvent(&windowEvent);
+            break;
+        }
+
+        case UMEvent::Generic: {
+            UMLTTNGGenericEvent genericEvent;
+            genericEvent.id = event.generic.id;
+            DASSERT(event.generic.stringSize < UMGenericEvent::maxStringSize);
+            memcpy(genericEvent.string, event.generic.string, event.generic.stringSize);
+            m_plugin->logGenericEvent(&genericEvent);
             break;
         }
 

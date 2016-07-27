@@ -68,5 +68,16 @@ TRACEPOINT_EVENT(
     )
 )
 
+TRACEPOINT_EVENT(
+    UbuntuMetrics, generic,
+    TP_ARGS(
+        UMLTTNGGenericEvent*, genericEvent
+    ),
+    TP_FIELDS(
+        ctf_integer(uint32_t, id, genericEvent->id)
+        ctf_string(string, genericEvent->string)
+    )
+)
+
 #endif  // TRACEPOINTS_P_H
 #include <lttng/tracepoint-event.h>

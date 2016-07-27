@@ -33,8 +33,14 @@ static void logWindowEvent(UMLTTNGWindowEvent* event)
     tracepoint(UbuntuMetrics, window, event);
 }
 
+static void logGenericEvent(UMLTTNGGenericEvent* event)
+{
+    tracepoint(UbuntuMetrics, generic, event);
+}
+
 const struct UMLTTNGPlugin umLttngPlugin = {
     &logProcessEvent,
     &logFrameEvent,
-    &logWindowEvent
+    &logWindowEvent,
+    &logGenericEvent,
 };
