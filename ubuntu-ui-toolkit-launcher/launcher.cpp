@@ -81,7 +81,7 @@ int main(int argc, const char *argv[])
         "absolute filename", "device");
     QCommandLineOption _metricsLoggingFilter(
         "metrics-logging-filter", "Filter metrics logging, <filter> is a list of events separated "
-        "by a comma ('window', 'process', 'frame' or '*'), unfiltered events are discarded",
+        "by a comma ('window', 'process', 'frame' or '*'), events not filtered are discarded",
         "filter");
 
     args.addOption(_import);
