@@ -41,6 +41,7 @@
 #include <ucmathutils_p.h>
 #include <ucmargins_p.h>
 #include <ucmainviewbase_p.h>
+#include <ucmainwindow_p.h>
 #include <ucabstractbutton_p.h>
 #include <ucaction_p.h>
 #include <ucactioncontext_p.h>
@@ -362,6 +363,7 @@ void UbuntuLabsModule::defineModule(const char *uri)
     Q_UNUSED(uri);
     // a fake component so we can have the module types file created
     qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+    qmlRegisterType<UCMainWindow>(uri, 1, 3, "MainWindow");
 }
 
 void UbuntuLabsModule::undefineModule()

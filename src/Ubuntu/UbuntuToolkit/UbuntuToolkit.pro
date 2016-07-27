@@ -140,6 +140,8 @@ HEADERS += \
     ucpagetreenode_p_p.h \
     ucmainviewbase_p.h \
     ucmainviewbase_p_p.h \
+    ucmainwindow_p.h \
+    ucmainwindow_p_p.h \
     ucperformancemonitor_p.h \
     privates/listviewextensions_p.h \
     privates/frame_p.h \
@@ -219,6 +221,7 @@ SOURCES += \
     ucbottomedgeregion.cpp \
     ucpagetreenode.cpp \
     ucmainviewbase.cpp \
+    ucmainwindow.cpp \
     ucperformancemonitor.cpp \
     privates/listviewextensions.cpp \
     privates/frame.cpp \
