@@ -92,6 +92,7 @@ public:
 
 private:
     static void startMonitoring(QQuickWindow* window);
+    static void startMonitoringLocked(QQuickWindow* window);
     static void stopMonitoring(WindowMonitor* monitor);
     static bool hasMonitor(WindowMonitor* monitor);
     static bool removeMonitor(WindowMonitor* monitor);

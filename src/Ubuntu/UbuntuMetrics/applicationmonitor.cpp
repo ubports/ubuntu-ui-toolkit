@@ -150,7 +150,7 @@ bool ShowFilter::eventFilter(QObject* object, QEvent* event)
 {
     if (event->type() == QEvent::Show) {
         if (QQuickWindow* window = qobject_cast<QQuickWindow*>(object)) {
-            UMApplicationMonitor::startMonitoring(window);
+            UMApplicationMonitor::startMonitoringLocked(window);
         }
     }
     return QObject::eventFilter(object, event);
@@ -190,6 +190,14 @@ void UMApplicationMonitor::startMonitoring(QQuickWindow* window)
     } else {
         WARN("ApplicationMonitor: Can't monitor more than %d QQuickWindows.", maxMonitors);
     }
+}
+
+// static.
+void UMApplicationMonitor::startMonitoringLocked(QQuickWindow* window)
+{
+    m_monitorsMutex.lock();
+    startMonitoring(window);
+    m_monitorsMutex.unlock();
 }
 
 // static.
