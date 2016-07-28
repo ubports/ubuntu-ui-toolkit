@@ -1,0 +1,11 @@
+--- a/ubuntu-sdk.pro.old	2016-07-25 15:39:16.754519000 +0300
++++ b/ubuntu-sdk.pro	2016-07-25 15:41:39.527828931 +0300
+@@ -11,7 +11,7 @@
+ src_uitk_launcher.subdir = ubuntu-ui-toolkit-launcher
+ src_uitk_launcher.depends = sub-src
+ 
+-SUBDIRS += po documentation app-launch-profiler src_uitk_launcher apicheck
++SUBDIRS += po app-launch-profiler src_uitk_launcher apicheck
+ 
+ sub_tests.CONFIG -= no_default_target
+ sub_tests.CONFIG -= no_default_install
