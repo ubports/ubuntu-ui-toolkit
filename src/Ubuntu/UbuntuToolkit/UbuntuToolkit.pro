@@ -149,8 +149,6 @@ HEADERS += \
     privates/appheaderbase_p.h \
     label_p.h \
     ucbottomedgeregion_p_p.h \
-    ucscrollbar.h \
-    ucscrollbar_p.h \
     privates/ucscrollbarutils.h
 
 SOURCES += \
@@ -228,7 +226,6 @@ SOURCES += \
     privates/ucpagewrapper.cpp \
     privates/ucpagewrapperincubator.cpp \
     privates/appheaderbase.cpp \
-    ucscrollbar.cpp \
     privates/ucscrollbarutils.cpp
 
 # adapters
