@@ -36,6 +36,10 @@ Item {
         source: shapeSource
     }
 
+    FocusShape {
+        visible: styledItem.activeFocus // keyNavigationFocus // FIXME
+    }
+
     ShaderEffectSource {
         id: shapeSource
         sourceItem: backgroundFrame

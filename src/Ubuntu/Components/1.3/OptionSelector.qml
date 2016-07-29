@@ -193,6 +193,39 @@ ListItem.Empty {
     __height: column.height
     showDivider: false
 
+    Keys.onPressed: {
+        var increment;
+        switch (event.key) {
+        case Qt.Key_Up:
+            increment = -1;
+            break;
+        case Qt.Key_Down:
+            increment = 1;
+            break;
+        case Qt.Key_Space:
+            if (!list.expanded && !list.multiSelection) {
+                event.accepted = true;
+                listContainer.currentlyExpanded = !listContainer.currentlyExpanded;
+            }
+        default:
+            return;
+        }
+        if (!listContainer.currentlyExpanded)
+            listContainer.currentlyExpanded = true;
+        var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
+        if (newIndex != list.currentIndex) {
+            event.accepted = true;
+            list.delegateClicked(newIndex);
+            var shifted = (event.modifiers & Qt.ShiftModifier);
+            if (list.multiSelection && !shifted)
+                list.currentItem.selected = false;
+            list.previousIndex = list.currentIndex;
+            list.currentIndex = newIndex;
+            if (list.multiSelection)
+                list.currentItem.selected = shifted ? !list.currentItem.selected : true;
+        }
+    }
+
     Column {
         id: column
 
