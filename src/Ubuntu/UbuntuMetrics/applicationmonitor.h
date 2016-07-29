@@ -20,6 +20,7 @@
 
 #include <UbuntuMetrics/ubuntumetricsglobal.h>
 #include <UbuntuMetrics/logger.h>
+#include <UbuntuMetrics/events.h>
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 
@@ -40,9 +41,7 @@ public:
         // Render an overlay of real-time metrics on top of each QtQuick frame.
         Overlay = (1 << 0),
         // Pass all the events to the loggers.
-        Logging = (1 << 1),
-        // Continuously update QtQuick windows.
-        ContinuousUpdates = (1 << 2)
+        Logging = (1 << 1)
     };
     Q_DECLARE_FLAGS(MonitoringFlags, MonitoringFlag)
 
@@ -71,11 +70,12 @@ public:
     static void setFlags(MonitoringFlags flags);
     static MonitoringFlags flags();
 
-    // Set the time in milliseconds between two process event updates. -1 to
-    // disable automatic updates. Default is 1000, lower value 100, higher value
-    // 10000.
-    static void setUpdateInterval(int interval);
-    static int updateInterval();
+    // Set the time in milliseconds between two updates of events of a given
+    // type. -1 to disable updates. Only UMEvent::Process is accepted so far as
+    // event type with a default value of 1000. Note that when the overlay is
+    // enabled, a process update triggers a frame update.
+    static void setUpdateInterval(UMEvent::Type type, int interval);
+    static int updateInterval(UMEvent::Type type);
 
     // Set the loggers. Empty by default, max number of loggers is 8.
     static QList<UMLogger*> loggers();
@@ -100,7 +100,7 @@ private:
 
     static LoggingThread* m_loggingThread;
     static UMEventUtils* m_eventUtils;
-    static QTimer* m_updateTimer;
+    static QTimer* m_processTimer;
     static ShowFilter* m_showFilter;
     static WindowMonitor* m_monitors[maxMonitors];
     static UMLogger* m_loggers[maxLoggers];
@@ -109,7 +109,7 @@ private:
     static QMetaObject::Connection m_lastWindowClosedConnection;
     static int m_monitorCount;
     static int m_loggerCount;
-    static int m_updateInterval;
+    static int m_updateInterval[UMEvent::TypeCount];
     static quint16 m_flags;
     static quint8 m_filter;
     static UMEvent m_processEvent;

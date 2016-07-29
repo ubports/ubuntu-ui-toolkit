@@ -158,7 +158,7 @@ bool ShowFilter::eventFilter(QObject* object, QEvent* event)
 
 LoggingThread* UMApplicationMonitor::m_loggingThread = nullptr;
 UMEventUtils* UMApplicationMonitor::m_eventUtils = nullptr;
-QTimer* UMApplicationMonitor::m_updateTimer = nullptr;
+QTimer* UMApplicationMonitor::m_processTimer = nullptr;
 ShowFilter* UMApplicationMonitor::m_showFilter = nullptr;
 WindowMonitor* UMApplicationMonitor::m_monitors[UMApplicationMonitor::maxMonitors];
 UMLogger* UMApplicationMonitor::m_loggers[UMApplicationMonitor::maxLoggers];
@@ -167,7 +167,7 @@ QMetaObject::Connection UMApplicationMonitor::m_lastWindowClosedConnection;
 QMutex UMApplicationMonitor::m_monitorsMutex;
 int UMApplicationMonitor::m_monitorCount = 0;
 int UMApplicationMonitor::m_loggerCount = 0;
-int UMApplicationMonitor::m_updateInterval = 1000;
+int UMApplicationMonitor::m_updateInterval[UMEvent::TypeCount] = { 1000, -1, -1 };
 quint16 UMApplicationMonitor::m_flags =
     UMApplicationMonitor::Overlay | UMApplicationMonitor::Logging;
 quint8 UMApplicationMonitor::m_filter = UMApplicationMonitor::AllEvents;
@@ -244,12 +244,12 @@ bool UMApplicationMonitor::start()
     DASSERT(!m_eventUtils);
     m_eventUtils = new UMEventUtils;
 
-    DASSERT(!m_updateTimer);
-    m_updateTimer = new QTimer;
-    QObject::connect(m_updateTimer, &QTimer::timeout, &update);
-    m_updateTimer->setInterval(m_updateInterval);
+    DASSERT(!m_processTimer);
+    m_processTimer = new QTimer;
+    QObject::connect(m_processTimer, &QTimer::timeout, &update);
+    m_processTimer->setInterval(m_updateInterval[UMEvent::Process]);
     if (m_flags & (Logging | Overlay)) {
-        m_updateTimer->start();
+        m_processTimer->start();
     }
     memset(&m_processEvent, 0, sizeof(UMEvent));
     update();
@@ -359,9 +359,9 @@ void UMApplicationMonitor::stop()
     QObject::disconnect(m_aboutToQuitConnection);
     QObject::disconnect(m_lastWindowClosedConnection);
 
-    DASSERT(m_updateTimer);
-    delete m_updateTimer;
-    m_updateTimer = nullptr;
+    DASSERT(m_processTimer);
+    delete m_processTimer;
+    m_processTimer = nullptr;
 
     DASSERT(m_eventUtils);
     delete m_eventUtils;
@@ -413,10 +413,10 @@ void UMApplicationMonitor::setFlags(MonitoringFlags flags)
         return;
     }
 
-    if (m_updateInterval >= 0 && flags & (Overlay | Logging)) {
-        m_updateTimer->start();
+    if (m_updateInterval[UMEvent::Process] >= 0 && flags & (Overlay | Logging)) {
+        m_processTimer->start();
     } else {
-        m_updateTimer->stop();
+        m_processTimer->stop();
     }
 
     m_monitorsMutex.lock();
@@ -427,9 +427,6 @@ void UMApplicationMonitor::setFlags(MonitoringFlags flags)
             new WindowMonitorFlagSetter(m_monitors[i], flags),
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QQuickWindow::NoStage);
-        if (m_flags & ContinuousUpdates) {
-            m_monitors[i]->window()->update();
-        }
 #else
             QQuickWindow::BeforeSynchronizingStage);
         m_monitors[i]->window()->update();  // Wake up the render loop.
@@ -445,28 +442,31 @@ UMApplicationMonitor::MonitoringFlags UMApplicationMonitor::flags()
 }
 
 // static.
-void UMApplicationMonitor::setUpdateInterval(int interval)
+void UMApplicationMonitor::setUpdateInterval(UMEvent::Type type, int interval)
 {
-    interval = qBound(100, interval, 10000);
-    if (interval != m_updateInterval) {
-        if (interval >= 0) {
-            if (m_flags & Started && m_flags & (Overlay | Logging)) {
-                m_updateTimer->setInterval(interval);
-                if (m_updateInterval < 0) {
-                    m_updateTimer->start();
+    if (type == UMEvent::Process) {
+        // Other legit types (UMEvent::Frame makes sense) are ignored for now.
+        if (interval != m_updateInterval[UMEvent::Process]) {
+            if (interval >= 0) {
+                if (m_flags & Started && m_flags & (Overlay | Logging)) {
+                    m_processTimer->setInterval(interval);
+                    if (m_updateInterval[UMEvent::Process] < 0) {
+                        m_processTimer->start();
+                    }
                 }
+            } else if (m_updateInterval[UMEvent::Process] >= 0 && m_flags & Started
+                       && m_flags & (Overlay | Logging)) {
+                m_processTimer->stop();
             }
-        } else if (m_updateInterval >= 0 && m_flags & Started && m_flags & (Overlay | Logging)) {
-            m_updateTimer->stop();
+            m_updateInterval[UMEvent::Process] = interval;
         }
-        m_updateInterval = interval;
     }
 }
 
 // static.
-int UMApplicationMonitor::updateInterval()
+int UMApplicationMonitor::updateInterval(UMEvent::Type type)
 {
-    return m_updateInterval;
+    return m_updateInterval[type];
 }
 
 // static.
@@ -584,6 +584,13 @@ void UMApplicationMonitor::update()
             m_loggingThread->push(&m_processEvent);
         }
         if (overlay) {
+            // FIXME(loicm) We've got two choices here, locking all the monitors
+            //     and pushing the new process event or using scheduleRenderJob.
+            //     We're using direct pushing for now but it would be nice to
+            //     measure the cost of both methods at high update freqs. The
+            //     former one implying locks and the second one dynamic memory
+            //     allocations (placement new to the rescue?) and copies, and
+            //     also I guess locks at the QtQuick level.
             m_monitorsMutex.lock();
             for (int i = 0; i < m_monitorCount; ++i) {
                 DASSERT(m_monitors[i]);
@@ -791,10 +798,6 @@ void WindowMonitor::windowFrameSwapped()
         if (m_flags & UMApplicationMonitor::Overlay) {
             m_window->update();
         }
-    }
-
-    if (m_flags & UMApplicationMonitor::ContinuousUpdates) {
-        m_window->update();
     }
 }
 

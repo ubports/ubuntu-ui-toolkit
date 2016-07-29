@@ -19,7 +19,6 @@
 #define APPLICATIONMONITOR_P_H
 
 #include "applicationmonitor.h"
-#include "events.h"
 #include "overlay_p.h"
 #include "gputimer_p.h"
 #include "ubuntumetricsglobal_p.h"
