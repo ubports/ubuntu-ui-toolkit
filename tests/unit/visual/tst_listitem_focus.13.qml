@@ -463,6 +463,8 @@ Item {
             var test = loadTest(listView);
             test.orientation = data.orientation;
             test.delegate = data.delegate;
+            // The cases where data.direction is set to ListView.BottomtoTop or Qt.RightToLeft
+            //  are regression tests for bug #1605634.
             if (data.direction) {
                 if (data.orientation === ListView.Horizontal) {
                     test.layoutDirection = data.direction;
