@@ -4,7 +4,7 @@
 #include <QObject>
 #include <ubuntutoolkitglobal.h>
 
-class QQuickFlickable;
+class QQuickItem;
 
 UT_NAMESPACE_BEGIN
 
@@ -14,7 +14,7 @@ class UBUNTUTOOLKIT_EXPORT UCScrollbarUtils : public QObject
 public:
     explicit UCScrollbarUtils(QObject *parent = 0);
 
-    Q_INVOKABLE static bool isFlickableComplete(QQuickFlickable *flickable);
+    Q_INVOKABLE static bool isComponentComplete(QQuickItem *item);
 
 };
 

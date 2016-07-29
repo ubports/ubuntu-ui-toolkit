@@ -326,7 +326,6 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
     qmlRegisterType<UCScrollbar>(uri, 1, 3, "ScrollbarBase");
-    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(uri, 1, 3, "ScrollbarUtils");
 }
 
 void UbuntuToolkitModule::undefineModule()
@@ -366,6 +365,9 @@ void UbuntuLabsModule::defineModule(const char *uri)
     Q_UNUSED(uri);
     // a fake component so we can have the module types file created
     qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+
+    //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
+    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(uri, 1, 3, "PrivateScrollbarUtils");
 }
 
 void UbuntuLabsModule::undefineModule()

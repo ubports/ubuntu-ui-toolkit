@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components.Labs 1.3 as Labs
 
 /*!
     \qmltype Scrollbar
@@ -201,7 +202,7 @@ Toolkit.StyledItem {
             //not esposed to QML, QML just gets Component.onCompleted when a component is
             //completed, but you won't get that if we're assigned a Flickable which is
             //already "complete"
-            if (Toolkit.ScrollbarUtils.isFlickableComplete(flickableItem)) {
+            if (Labs.PrivateScrollbarUtils.isComponentComplete(flickableItem)) {
                 __initializedFlickable = flickableItem
             }
         }
