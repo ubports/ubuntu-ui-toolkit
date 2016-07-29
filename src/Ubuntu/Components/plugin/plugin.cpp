@@ -32,8 +32,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
     Q_UNUSED(uri);
 
-    qmlRegisterSimpleSingletonType<UbuntuToolkit::UCNamespace>(uri, 1, 2, "Ubuntu");
-    qmlRegisterSimpleSingletonType<UbuntuToolkit::UCNamespaceV13>(uri, 1, 3, "Ubuntu");
+    qmlRegisterSimpleSingletonType<UT_PREPEND_NAMESPACE(UCNamespace)>(uri, 1, 2, "Ubuntu");
+    qmlRegisterSimpleSingletonType<UT_PREPEND_NAMESPACE(UCNamespaceV13)>(uri, 1, 3, "Ubuntu");
 
     UG_PREPEND_NAMESPACE(UbuntuGesturesModule)::defineModule(uri);
     UT_PREPEND_NAMESPACE(UbuntuToolkitModule)::defineModule();
