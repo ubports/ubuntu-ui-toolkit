@@ -84,8 +84,8 @@ public:
     static void clearLoggers(bool free = true);
 
     // Set the logging filter. All events are logged by default.
-    static void setLoggingFilters(LoggingFilters filters);
-    static LoggingFilters loggingFilters();
+    static void setLoggingFilter(LoggingFilters filter);
+    static LoggingFilters loggingFilter();
 
     static const int maxMonitors = 16;
     static const int maxLoggers = 8;
@@ -111,7 +111,7 @@ private:
     static int m_loggerCount;
     static int m_updateInterval;
     static quint16 m_flags;
-    static quint8 m_filters;
+    static quint8 m_filter;
     static UMEvent m_processEvent;
 
     // Prevent instantiation, copy and assign.

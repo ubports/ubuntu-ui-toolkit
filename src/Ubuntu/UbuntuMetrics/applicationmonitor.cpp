@@ -170,7 +170,7 @@ int UMApplicationMonitor::m_loggerCount = 0;
 int UMApplicationMonitor::m_updateInterval = 1000;
 quint16 UMApplicationMonitor::m_flags =
     UMApplicationMonitor::Overlay | UMApplicationMonitor::Logging;
-quint8 UMApplicationMonitor::m_filters = UMApplicationMonitor::AllEvents;
+quint8 UMApplicationMonitor::m_filter = UMApplicationMonitor::AllEvents;
 alignas(64) UMEvent UMApplicationMonitor::m_processEvent;
 
 // static.
@@ -184,7 +184,7 @@ void UMApplicationMonitor::startMonitoring(QQuickWindow* window)
         static quint32 id = 0;
         // flags() used here instead of m_flags to clean up extended flags.
         m_monitors[m_monitorCount] =
-            new WindowMonitor(window, m_loggingThread->ref(), flags(), m_filters, ++id);
+            new WindowMonitor(window, m_loggingThread->ref(), flags(), m_filter, ++id);
         m_monitors[m_monitorCount]->setProcessEvent(m_processEvent);
         m_monitorCount++;
     } else {
@@ -535,14 +535,14 @@ WindowMonitorFilterSetter::~WindowMonitorFilterSetter()
     // Make sure it's not been removed (window going hidden) after this runnable
     // was scheduled.
     if (UMApplicationMonitor::hasMonitor(m_monitor)) {
-        m_monitor->setFilters(m_filters);
+        m_monitor->setFilter(m_filter);
     }
 }
 
 // static.
-void UMApplicationMonitor::setLoggingFilters(UMApplicationMonitor::LoggingFilters filters)
+void UMApplicationMonitor::setLoggingFilter(UMApplicationMonitor::LoggingFilters filter)
 {
-    m_filters = filters;
+    m_filter = filter;
     if (!(m_flags & Started)) {
         return;
     }
@@ -552,7 +552,7 @@ void UMApplicationMonitor::setLoggingFilters(UMApplicationMonitor::LoggingFilter
         DASSERT(m_monitors[i]);
         DASSERT(m_monitors[i]->window());
         m_monitors[i]->window()->scheduleRenderJob(
-            new WindowMonitorFilterSetter(m_monitors[i], filters),
+            new WindowMonitorFilterSetter(m_monitors[i], filter),
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QQuickWindow::NoStage);
 #else
@@ -564,9 +564,9 @@ void UMApplicationMonitor::setLoggingFilters(UMApplicationMonitor::LoggingFilter
 }
 
 // static.
-UMApplicationMonitor::LoggingFilters UMApplicationMonitor::loggingFilters()
+UMApplicationMonitor::LoggingFilters UMApplicationMonitor::loggingFilter()
 {
-    return static_cast<LoggingFilters>(m_filters);
+    return static_cast<LoggingFilters>(m_filter);
 }
 
 // static.
@@ -575,7 +575,7 @@ void UMApplicationMonitor::update()
     DASSERT(m_eventUtils);
     DASSERT(m_loggingThread);
 
-    const bool processLogging = (m_flags & Logging) && (m_filters & ProcessEvent);
+    const bool processLogging = (m_flags & Logging) && (m_filter & ProcessEvent);
     const bool overlay = m_flags & Overlay;
 
     if (processLogging || overlay) {
@@ -613,13 +613,13 @@ static const char* const defaultOverlayText =
     " CPU usage : %9cpuUsage %% ";
 
 WindowMonitor::WindowMonitor(
-    QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filters, quint32 id)
+    QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filter, quint32 id)
     : m_loggingThread(loggingThread)
     , m_window(window)
     , m_overlay(defaultOverlayText, id)
     , m_id(id)
     , m_flags(flags)
-    , m_filters(filters)
+    , m_filter(filter)
     , m_frameSize(window->width(), window->height())
 {
     DASSERT(window);
@@ -648,8 +648,7 @@ WindowMonitor::WindowMonitor(
     m_frameEvent.type = UMEvent::Frame;
     m_frameEvent.frame.window = id;
 
-    if ((flags & UMApplicationMonitor::Logging) &&
-        (filters & UMApplicationMonitor::WindowEvent)) {
+    if ((flags & UMApplicationMonitor::Logging) && (filter & UMApplicationMonitor::WindowEvent)) {
         UMEvent event;
         event.type = UMEvent::Window;
         event.timeStamp = UMEventUtils::timeStamp();
@@ -666,7 +665,7 @@ WindowMonitor::~WindowMonitor()
     DASSERT(!(m_flags & GpuResourcesInitialized));
 
     if ((m_flags & UMApplicationMonitor::Logging) &&
-        (m_filters & UMApplicationMonitor::WindowEvent)) {
+        (m_filter & UMApplicationMonitor::WindowEvent)) {
         UMEvent event;
         event.type = UMEvent::Window;
         event.timeStamp = UMEventUtils::timeStamp();
@@ -741,7 +740,7 @@ void WindowMonitor::windowBeforeRendering()
     if (frameSize != m_frameSize) {
         m_frameSize = frameSize;
         if ((m_flags & UMApplicationMonitor::Logging) &&
-            (m_filters & UMApplicationMonitor::WindowEvent)) {
+            (m_filter & UMApplicationMonitor::WindowEvent)) {
             UMEvent event;
             event.type = UMEvent::Window;
             event.timeStamp = UMEventUtils::timeStamp();
@@ -782,7 +781,7 @@ void WindowMonitor::windowFrameSwapped()
         m_frameEvent.frame.deltaTime = m_deltaTimer.isValid() ? m_deltaTimer.nsecsElapsed() : 0;
         m_deltaTimer.start();
         if ((m_flags & UMApplicationMonitor::Logging) &&
-            (m_filters & UMApplicationMonitor::FrameEvent)) {
+            (m_filter & UMApplicationMonitor::FrameEvent)) {
             m_frameEvent.frame.swapTime = m_sceneGraphTimer.nsecsElapsed();
             m_frameEvent.timeStamp = UMEventUtils::timeStamp();
             m_loggingThread->push(&m_frameEvent);

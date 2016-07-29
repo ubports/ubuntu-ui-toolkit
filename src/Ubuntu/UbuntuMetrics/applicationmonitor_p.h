@@ -105,15 +105,15 @@ private:
 class WindowMonitorFilterSetter : public QRunnable
 {
 public:
-    WindowMonitorFilterSetter(WindowMonitor* monitor, quint8 filters)
-        : m_monitor(monitor), m_filters(filters) { DASSERT(monitor); }
+    WindowMonitorFilterSetter(WindowMonitor* monitor, quint8 filter)
+        : m_monitor(monitor), m_filter(filter) { DASSERT(monitor); }
     ~WindowMonitorFilterSetter();
 
     void run() override {}
 
 private:
     WindowMonitor* m_monitor;
-    quint8 m_filters;
+    quint8 m_filter;
 };
 
 class WindowMonitor : public QObject
@@ -122,7 +122,7 @@ class WindowMonitor : public QObject
 
 public:
     WindowMonitor(
-        QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filters,
+        QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filter,
         quint32 id);
     ~WindowMonitor();
 
@@ -148,7 +148,7 @@ private:
 
     bool gpuResourcesInitialized() const { return m_flags & GpuResourcesInitialized; }
     void setFlags(quint16 flags) { m_flags = flags | (m_flags & ~0xff); }
-    void setFilters(quint8 filters) { m_filters = filters; }
+    void setFilter(quint8 filter) { m_filter = filter; }
     void initializeGpuResources();
     void finalizeGpuResources();
 
@@ -161,7 +161,7 @@ private:
     QElapsedTimer m_deltaTimer;
     quint32 m_id;
     quint16 m_flags;
-    quint8 m_filters;
+    quint8 m_filter;
     QSize m_frameSize;
     UMEvent m_frameEvent;
 
