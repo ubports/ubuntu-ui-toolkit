@@ -234,6 +234,24 @@ Item {
             verify(style.__stepperBgOpacityOnHover < style.__stepperBgOpacityOnPressed, "Sanity check: check that stepper background is darker on pressed than on hover state.")
         }
 
+        function test_visibility(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var scrollbar = freshTestItem.scrollbar
+            compare(scrollbar.visible, true, "Wrong Scrollbar visible property value")
+            
+            scrollbar.flickableItem = null
+            compare(scrollbar.visible, false, "Wrong Scrollbar visible property value")
+
+            //check that the same apply to a scrollbar that was born without Flickable
+            var nullFlickableScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(nullFlickableScrollbar !== null, "Error: dynamic item creation failed.")
+            compare(nullFlickableScrollbar.visible, false, "Scrollbar is visible before an initialized flickable is assigned to it")
+
+            nullFlickableScrollbar.destroy()
+        }
+
+        //no need to test the anchors values when flickable is not set because we already 
+        //test that the scrollbar is hidden when there's no flickable set
         function test_bottomAlign_anchors() {
             compare(scrollbar_bottomAlign_anchors.flickableItem,
                     flickable_bottomAlign_anchors, "wrong flickableItem")
@@ -1138,7 +1156,22 @@ Item {
             var scrollbar = freshTestItem.scrollbar
 
             verify(scrollbar.flickableItem !== null, "Check that Scrollbar is linked to a Flickable.")
+            //try triggering warnings (they will be marked as failures by the SDK test runner)
             scrollbar.flickableItem = null
+
+            var secondScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(secondScrollbar !== null, "Error: dynamic item creation failed.")
+
+            var style = secondScrollbar.__styleInstance
+
+            //check that the default value is correct
+            compare(style.flickableItem, null, "Wrong style flickableItem")
+            compare(scrollbar.flickableItem, null, "Wrong scrollbar's flickableItem")
+            compare(scrollbar.__initializedFlickable, null, "Wrong scrollbar's initialized flickable var")
+
+            //check that calling functions that rely on flickableItem doesn't output errors
+            style.scrollToBeginning()
+            style.scrollToEnd()
 
             //This test will always pass if run with qmltestrunner, unfortunately there's no way
             //using TestCase to do "if (testOutputsWarnings) --> fail", but the SDK test script

@@ -160,6 +160,7 @@ Toolkit.StyledItem {
     //Disable the input handling to let the events pass through in case we have an
     //interactive scrollbar right below us (can happen with nested views)
     enabled: __interactive//&& __alwaysOnScrollbars
+    visible: __initializedFlickable !== null
 
     implicitWidth: internals.vertical ? units.gu(3) : (__initializedFlickable ? __initializedFlickable.width : 0)
     implicitHeight: !internals.vertical ? units.gu(3) : (__initializedFlickable ? __initializedFlickable.height : 0)
