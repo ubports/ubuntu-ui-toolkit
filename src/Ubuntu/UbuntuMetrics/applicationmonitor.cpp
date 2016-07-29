@@ -406,7 +406,7 @@ WindowMonitorFlagSetter::~WindowMonitorFlagSetter()
 }
 
 // static.
-void UMApplicationMonitor::setFlags(MonitorFlags flags)
+void UMApplicationMonitor::setFlags(MonitoringFlags flags)
 {
     m_flags = flags | (m_flags & ~0xff);  // Keep extended flags.
     if (!(m_flags & Started)) {
@@ -439,9 +439,9 @@ void UMApplicationMonitor::setFlags(MonitorFlags flags)
 }
 
 // static.
-UMApplicationMonitor::MonitorFlags UMApplicationMonitor::flags()
+UMApplicationMonitor::MonitoringFlags UMApplicationMonitor::flags()
 {
-    return static_cast<MonitorFlags>(m_flags & 0xff);  // Reset extended flags.
+    return static_cast<MonitoringFlags>(m_flags & 0xff);  // Reset extended flags.
 }
 
 // static.

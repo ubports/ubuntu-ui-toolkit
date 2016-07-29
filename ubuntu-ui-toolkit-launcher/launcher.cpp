@@ -216,7 +216,7 @@ int main(int argc, const char *argv[])
     const bool metricsOverlay = args.isSet(_metricsOverlay);
     const bool metricsLogging = args.isSet(_metricsLogging);
     if (metricsOverlay || metricsLogging) {
-        UMApplicationMonitor::MonitorFlags flags = 0;
+        UMApplicationMonitor::MonitoringFlags flags = 0;
         if (metricsLogging) {
             QString device = args.value(_metricsLogging);
             UMLogger* logger = (device.isEmpty() || device == "stdout")

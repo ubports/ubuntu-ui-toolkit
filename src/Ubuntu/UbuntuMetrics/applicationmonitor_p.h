@@ -33,7 +33,7 @@
 #include <QtCore/QAtomicInteger>
 
 // Extension to UMApplicationMonitor flags.
-enum MonitorFlagEx {
+enum MonitoringFlagEx {
     Started = (1 << 8)
 };
 

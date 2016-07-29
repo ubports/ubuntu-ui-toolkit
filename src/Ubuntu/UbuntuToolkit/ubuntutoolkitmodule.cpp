@@ -271,7 +271,7 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
     const QByteArray metricsLoggingFilter = qgetenv("UC_METRICS_LOGGING_FILTER");
     if (metricsOverlay || !metricsLogging.isNull()) {
-        UMApplicationMonitor::MonitorFlags flags = 0;
+        UMApplicationMonitor::MonitoringFlags flags = 0;
         if (!metricsLogging.isNull()) {
             UMLogger* logger = (metricsLogging.isEmpty() || metricsLogging == "stdout")
                 ? new UMFileLogger(stdout) : new UMFileLogger(metricsLogging);

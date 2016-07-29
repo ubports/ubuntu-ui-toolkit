@@ -36,7 +36,7 @@ class WindowMonitor;
 class UBUNTU_METRICS_EXPORT UMApplicationMonitor
 {
 public:
-    enum MonitorFlag {
+    enum MonitoringFlag {
         // Render an overlay of real-time metrics on top of each QtQuick frame.
         Overlay = (1 << 0),
         // Pass all the events to the loggers.
@@ -44,7 +44,7 @@ public:
         // Continuously update QtQuick windows.
         ContinuousUpdates = (1 << 2)
     };
-    Q_DECLARE_FLAGS(MonitorFlags, MonitorFlag)
+    Q_DECLARE_FLAGS(MonitoringFlags, MonitoringFlag)
 
     enum LoggingFilter {
         // Allow process events logging.
@@ -68,8 +68,8 @@ public:
     static bool isActive();
 
     // Set flags. Default is Overlay.
-    static void setFlags(MonitorFlags flags);
-    static MonitorFlags flags();
+    static void setFlags(MonitoringFlags flags);
+    static MonitoringFlags flags();
 
     // Set the time in milliseconds between two process event updates. -1 to
     // disable automatic updates. Default is 1000, lower value 100, higher value
