@@ -952,6 +952,8 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and 
+                        //the QML profiler showed it's relatively expensive
                         source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
                         asynchronous: true
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
@@ -996,6 +998,8 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and     
+                        //the QML profiler showed it's relatively expensive
                         source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
                         asynchronous: true
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
