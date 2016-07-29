@@ -361,8 +361,6 @@ void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin 
 void UbuntuLabsModule::defineModule(const char *uri)
 {
     Q_UNUSED(uri);
-    // a fake component so we can have the module types file created
-    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
 
     //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
     qmlRegisterSimpleSingletonType<UCScrollbarUtils>(uri, 1, 3, "PrivateScrollbarUtils");
