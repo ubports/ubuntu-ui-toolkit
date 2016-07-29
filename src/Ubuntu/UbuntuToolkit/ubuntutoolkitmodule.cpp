@@ -88,7 +88,6 @@
 #include <privates/frame_p.h>
 #include <privates/ucpagewrapper_p.h>
 #include <privates/appheaderbase_p.h>
-#include <ucscrollbar.h>
 #include <privates/ucscrollbarutils.h>
 
 // styles
@@ -325,7 +324,6 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<UCPageTreeNode>(uri, 1, 3, "PageTreeNode");
     qmlRegisterType<UCPopupContext>(uri, 1, 3, "PopupContext");
     qmlRegisterType<UCMainViewBase>(uri, 1, 3, "MainViewBase");
-    qmlRegisterType<UCScrollbar>(uri, 1, 3, "ScrollbarBase");
 }
 
 void UbuntuToolkitModule::undefineModule()

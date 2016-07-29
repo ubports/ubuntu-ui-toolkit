@@ -133,7 +133,7 @@ private Q_SLOTS:
         QTest::newRow("list of ScrollView 1.3 with both Scrollbars") << "ListOfScrollView_bothScrollbars_1_3.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
         //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
-//        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
+        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()
@@ -160,13 +160,13 @@ private Q_SLOTS:
         QTest::newRow("importing Ubuntu.Components.Popups") << "TextWithImportGrid.qml";
     }
 
-    /*void benchmark_import()
+    void benchmark_import()
     {
         QFETCH(QString, document);
         QBENCHMARK {
             loadDocument(document);
         }
-    }*/
+    }
 };
 
 QTEST_MAIN(tst_Performance)
