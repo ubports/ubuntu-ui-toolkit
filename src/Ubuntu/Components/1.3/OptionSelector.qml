@@ -195,6 +195,20 @@ ListItem.Empty {
 
     activeFocusOnTab: true
 
+    // Prevent scrolling on pressed when released changes the index
+    Keys.onPressed: {
+        var increment;
+        switch (event.key) {
+        case Qt.Key_Up:
+            increment = -1;
+        case Qt.Key_Down:
+            increment = 1;
+            var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
+            if (newIndex != list.currentIndex) {
+                event.accepted = true;
+            }
+        }
+    }
     Keys.onReleased: {
         var increment;
         switch (event.key) {
