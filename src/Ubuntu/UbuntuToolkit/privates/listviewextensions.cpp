@@ -21,6 +21,7 @@
 #include "quickutils_p.h"
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquickflickable_p.h>
+#include <QtQuick/private/qquickitemview_p.h> // for QQuickItemView::BottomToTop
 
 UT_NAMESPACE_BEGIN
 
@@ -138,10 +139,10 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
         || (orientation == Qt::Horizontal && key != Qt::Key_Left && key != Qt::Key_Right)) {
         return false;
     }
-    // for horizontal moves take into account the effective layout direction.
     // effectiveLayoutDirection takes into account effectiveLayoutMirror and layoutDirection.
-    bool isRtl = listView->property("effectiveLayoutDirection").toBool();
-    bool forwards = (key == Qt::Key_Down || (isRtl ? key == Qt::Key_Left : key == Qt::Key_Right));
+    bool isRtl = (Qt::RightToLeft == listView->property("effectiveLayoutDirection").toInt());
+    bool isBtt = (QQuickItemView::BottomToTop == listView->property("verticalLayoutDirection").toInt());
+    bool forwards = (isBtt ? key == Qt::Key_Up : key == Qt::Key_Down) || (isRtl ? key == Qt::Key_Left : key == Qt::Key_Right);
     int oldIndex = this->currentIndex();
     int currentIndex = this->currentIndex();
     int count = this->count();
