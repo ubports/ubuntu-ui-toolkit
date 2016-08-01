@@ -37,7 +37,6 @@ Item {
     }
 
     FocusShape {
-        visible: styledItem.activeFocus // keyNavigationFocus // FIXME
     }
 
     ShaderEffectSource {

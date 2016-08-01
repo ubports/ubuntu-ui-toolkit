@@ -151,6 +151,11 @@ Item {
                 color: "blue"
             }
         }
+        OptionSelector {
+            id: optionSelector
+            text: 'Pick your poison'
+            model: ['Gin and Tonic', 'White Russian', 'Sex on the Beach', 'Strawberry Mojito']
+        }
         Button {
             id: popoverTest
             text: "Popovers"
@@ -281,6 +286,8 @@ Item {
                 */
                 {tag: "ComboButton", from: pickerPanel, to: comboButton, key: Qt.Key_Tab},
                 {tag: "ComboButton(back)", from: comboButton, to: pickerPanel, key: Qt.Key_Backtab},
+                {tag: "OptionSelector", from: comboButton, to: optionSelector, key: Qt.Key_Tab},
+                {tag: "OptionSelector(back)", from: optionSelector, to: comboButton, key: Qt.Key_Backtab},
                 // Left click/ tap
                 {tag: "TextField(click)", from: dummy, to: textField, key: Qt.LeftButton},
                 {tag: "TextArea(click)", from: dummy, to: textArea, key: Qt.LeftButton},
@@ -451,9 +458,12 @@ Item {
                 {tag: "ListItem/Enter", key: Qt.Key_Enter, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Return", key: Qt.Key_Return, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Space", key: Qt.Key_Space, item: listItem, signalName: 'onClicked'},
+                // FIXME: item: button!?
                 {tag: "ComboButton/Enter", key: Qt.Key_Enter, item: button , signalName: 'onTriggered'},
                 {tag: "ComboButton/Return", key: Qt.Key_Return, item: button, signalName: 'onTriggered'},
                 {tag: "ComboButton/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
+                // FIXME: item: button!?
+                {tag: "OptionSelector/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
             ];
         }
         function test_trigger_via_keyboard(data) {

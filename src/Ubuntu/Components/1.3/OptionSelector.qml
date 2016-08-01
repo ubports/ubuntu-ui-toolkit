@@ -193,7 +193,9 @@ ListItem.Empty {
     __height: column.height
     showDivider: false
 
-    Keys.onPressed: {
+    activeFocusOnTab: true
+
+    Keys.onReleased: {
         var increment;
         switch (event.key) {
         case Qt.Key_Up:
@@ -202,6 +204,8 @@ ListItem.Empty {
         case Qt.Key_Down:
             increment = 1;
             break;
+        case Qt.Key_Enter:
+        case Qt.Key_Return:
         case Qt.Key_Space:
             if (!list.expanded && !list.multiSelection) {
                 event.accepted = true;
@@ -245,7 +249,6 @@ ListItem.Empty {
         Toolkit.StyledItem {
             id: listContainer
             objectName: "listContainer"
-            activeFocusOnPress: true
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
