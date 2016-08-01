@@ -16,7 +16,7 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#include "ucscrollbarutils.h"
+#include "ucscrollbarutils_p.h"
 #include <QtQuick/private/qquickitem_p.h>
 
 UT_NAMESPACE_BEGIN

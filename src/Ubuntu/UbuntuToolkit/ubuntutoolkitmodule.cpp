@@ -88,7 +88,7 @@
 #include <privates/frame_p.h>
 #include <privates/ucpagewrapper_p.h>
 #include <privates/appheaderbase_p.h>
-#include <privates/ucscrollbarutils.h>
+#include <privates/ucscrollbarutils_p.h>
 
 // styles
 #include <ucbottomedgestyle_p.h>
