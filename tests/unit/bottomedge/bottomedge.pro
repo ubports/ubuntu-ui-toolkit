@@ -24,4 +24,6 @@ DISTFILES += \
     UncoveredByRegion.qml \
     OverriddenHintTrigger.qml \
     PreloadedContent.qml \
-    BottomEdgeWithAction.qml
+    BottomEdgeWithAction.qml \
+    PreloadContentUrl.qml \
+    ExternalContent.qml
