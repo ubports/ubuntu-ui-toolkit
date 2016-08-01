@@ -150,11 +150,15 @@ Item {
                 height: comboButton.comboListHeight
                 color: "blue"
             }
+            /* FIXME: property bool override: false
+            Keys.onReleased: event.accepted = override */
         }
         OptionSelector {
             id: optionSelector
             text: 'Pick your poison'
             model: ['Gin and Tonic', 'White Russian', 'Sex on the Beach', 'Strawberry Mojito']
+            property bool override: false
+            Keys.onReleased: event.accepted = override
         }
         Button {
             id: popoverTest
@@ -458,12 +462,13 @@ Item {
                 {tag: "ListItem/Enter", key: Qt.Key_Enter, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Return", key: Qt.Key_Return, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Space", key: Qt.Key_Space, item: listItem, signalName: 'onClicked'},
-                // FIXME: item: button!?
+                // FIXME: Use item: comboButton
                 {tag: "ComboButton/Enter", key: Qt.Key_Enter, item: button , signalName: 'onTriggered'},
                 {tag: "ComboButton/Return", key: Qt.Key_Return, item: button, signalName: 'onTriggered'},
                 {tag: "ComboButton/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
-                // FIXME: item: button!?
-                {tag: "OptionSelector/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
+                {tag: "OptionSelector/Enter", key: Qt.Key_Enter, item: optionSelector, signalName: 'onTriggered'},
+                {tag: "OptionSelector/Return", key: Qt.Key_Return, item: optionSelector, signalName: 'onTriggered'},
+                {tag: "OptionSelector/Space", key: Qt.Key_Space, item: optionSelector, signalName: 'onTriggered'},
             ];
         }
         function test_trigger_via_keyboard(data) {
