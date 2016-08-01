@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.2044+16.10) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.2045+16.10) UNRELEASED; urgency=medium
 
   [ Timo Jyrinki ]
   * Disable documentation building for GLES builds. Fixes LP: #1606222.
@@ -8,6 +8,7 @@ ubuntu-ui-toolkit (1.3.2044+16.10) UNRELEASED; urgency=medium
     labels default properties values. Fixes LP: #1603450.
   * ListItemLayout doc: add explicit note about the need to bind ListItem's
     height to layout's height.
+  * More Scrollbar optimizations: 20% faster creation time. Fixes LP: #1606451
 
   [ Zsombor Egri ]
   * Fix null pointer property initializer used with 1.3 PageWrapper. 
