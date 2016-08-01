@@ -65,6 +65,11 @@ Item {
         }
     }
 
+    Component {
+        id: freshScrollbar
+        Scrollbar { }
+    }
+
     SignalSpy {
         id: signalSpy
     }
@@ -229,6 +234,24 @@ Item {
             verify(style.__stepperBgOpacityOnHover < style.__stepperBgOpacityOnPressed, "Sanity check: check that stepper background is darker on pressed than on hover state.")
         }
 
+        function test_visibility(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var scrollbar = freshTestItem.scrollbar
+            compare(scrollbar.visible, true, "Wrong Scrollbar visible property value")
+            
+            scrollbar.flickableItem = null
+            compare(scrollbar.visible, false, "Wrong Scrollbar visible property value")
+
+            //check that the same apply to a scrollbar that was born without Flickable
+            var nullFlickableScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(nullFlickableScrollbar !== null, "Error: dynamic item creation failed.")
+            compare(nullFlickableScrollbar.visible, false, "Scrollbar is visible before an initialized flickable is assigned to it")
+
+            nullFlickableScrollbar.destroy()
+        }
+
+        //no need to test the anchors values when flickable is not set because we already 
+        //test that the scrollbar is hidden when there's no flickable set
         function test_bottomAlign_anchors() {
             compare(scrollbar_bottomAlign_anchors.flickableItem,
                     flickable_bottomAlign_anchors, "wrong flickableItem")
@@ -1133,11 +1156,60 @@ Item {
             var scrollbar = freshTestItem.scrollbar
 
             verify(scrollbar.flickableItem !== null, "Check that Scrollbar is linked to a Flickable.")
+            //try triggering warnings (they will be marked as failures by the SDK test runner)
             scrollbar.flickableItem = null
+
+            var secondScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(secondScrollbar !== null, "Error: dynamic item creation failed.")
+
+            var style = secondScrollbar.__styleInstance
+
+            //check that the default value is correct
+            compare(style.flickableItem, null, "Wrong style flickableItem")
+            compare(scrollbar.flickableItem, null, "Wrong scrollbar's flickableItem")
+            compare(scrollbar.__initializedFlickable, null, "Wrong scrollbar's initialized flickable var")
+
+            //check that calling functions that rely on flickableItem doesn't output errors
+            style.scrollToBeginning()
+            style.scrollToEnd()
 
             //This test will always pass if run with qmltestrunner, unfortunately there's no way
             //using TestCase to do "if (testOutputsWarnings) --> fail", but the SDK test script
             //will fail if this test outputs warnings, which is what we want
+        }
+
+        //test that __initializedFlickable has the right value even when
+        //the Scrollbar is assigned to one Flickable, then to another one (this could
+        //be useful to reuse the same instance of Scrollbar for multiple Flickables
+        //if they're only visible one at a time)
+        function test_initializedFlickableVariableChange() {
+            var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+
+            //check that the variables are correct when the Scrollbar is initialized with a set Flickable
+            compare(scrollbar.flickableItem, flickable, "Wrong value of flickableItem")
+            compare(scrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")
+
+            var secondScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(secondScrollbar !== null, "Error: dynamic item creation failed.")
+
+            //check that the variables are correct when the Scrollbar is assigned a new Flickable
+            secondScrollbar.flickableItem = flickable
+            compare(secondScrollbar.flickableItem, flickable, "Wrong value of flickableItem")
+            compare(secondScrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")
+
+            //set to null and check that both change
+            secondScrollbar.flickableItem = null
+            compare(secondScrollbar.flickableItem, null, "Wrong value of flickableItem")
+            compare(secondScrollbar.__initializedFlickable, null, "Wrong value of __initializedFlickable")
+
+            //set to a valid flickable again and check that both the variables are correctly updated
+            secondScrollbar.flickableItem = flickable
+            compare(secondScrollbar.flickableItem, flickable, "Wrong value of flickableItem")
+            compare(secondScrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")
+
+            secondScrollbar.destroy()
         }
     }
 }
