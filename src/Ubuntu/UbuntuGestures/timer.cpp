@@ -59,7 +59,7 @@ void Timer::setSingleShot(bool value)
 /////////////////////////////////// FakeTimer //////////////////////////////////
 
 FakeTimer::FakeTimer(const SharedTimeSource &timeSource, QObject *parent)
-    : UbuntuGestures::AbstractTimer(parent)
+    : UG_PREPEND_NAMESPACE(AbstractTimer(parent))
     , m_interval(0)
     , m_singleShot(false)
     , m_timeSource(timeSource)

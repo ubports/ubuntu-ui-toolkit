@@ -34,7 +34,7 @@
 #include "GestureTest.h"
 #include "uctestcase.h"
 
-using namespace UbuntuGestures;
+UG_USE_NAMESPACE
 
 // Because QSignalSpy(UCSwipeArea, SIGNAL(UCSwipeArea::Status)) simply
 // doesn't work
