@@ -246,6 +246,9 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
     qmlRegisterType<Tree>(privateUri, 1, 3, "Tree");
 
+    //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
+    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(privateUri, 1, 3, "PrivateScrollbarUtils");
+
     // allocate all context property objects prior we register them
     initializeContextProperties(engine);
 
@@ -361,9 +364,8 @@ void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin 
 void UbuntuLabsModule::defineModule(const char *uri)
 {
     Q_UNUSED(uri);
-
-    //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
-    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(uri, 1, 3, "PrivateScrollbarUtils");
+    // a fake component so we can have the module types file created
+    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
 }
 
 void UbuntuLabsModule::undefineModule()
