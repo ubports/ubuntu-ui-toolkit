@@ -89,6 +89,7 @@
 #include <privates/frame_p.h>
 #include <privates/ucpagewrapper_p.h>
 #include <privates/appheaderbase_p.h>
+#include <privates/ucscrollbarutils_p.h>
 
 // styles
 #include <ucbottomedgestyle_p.h>
@@ -361,9 +362,10 @@ void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin 
 void UbuntuLabsModule::defineModule(const char *uri)
 {
     Q_UNUSED(uri);
-    // a fake component so we can have the module types file created
-    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+
     qmlRegisterType<UCMainWindow>(uri, 1, 3, "MainWindow");
+    //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
+    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(uri, 1, 3, "PrivateScrollbarUtils");
 }
 
 void UbuntuLabsModule::undefineModule()

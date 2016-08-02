@@ -703,7 +703,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     \qml
     ListItem {
         //CORRECT
-        height: layout.height + divider.height
+        height: layout.height + (divider.visible ? divider.height : 0)
 
         SlotsLayout {
             id: layout
@@ -765,7 +765,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
 
     \qml
     ListItem {
-        height: layout.height + divider.height
+        height: layout.height + (divider.visible ? divider.height : 0)
         onClicked: console.log("clicked!")
 
         SlotsLayout {

@@ -84,7 +84,7 @@ protected:
     QTouchDevice *m_device;
     UbuntuTestCase *m_view;
     TouchRegistry *m_touchRegistry;
-    UbuntuGestures::FakeTimerFactory *m_fakeTimerFactory;
+    UG_PREPEND_NAMESPACE(FakeTimerFactory)  *m_fakeTimerFactory;
     QString m_qmlFilename;
 };
 
