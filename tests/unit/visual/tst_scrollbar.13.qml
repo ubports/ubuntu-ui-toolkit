@@ -646,6 +646,7 @@ Item {
             mouseRelease(secondStepper, secondStepper.width/2, secondStepper.height/2)
         }
 
+        //test dragging the thumb and relative visual changes due to hover/pressed states
         function test_dragThumbAndCheckStyling(data) {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
@@ -655,6 +656,13 @@ Item {
             var trough = getTrough(scrollbar)
             var style = freshTestItem.scrollbar.__styleInstance
             var scrollbarUtils = getScrollbarUtils(scrollbar)
+            var secondStepper = getSecondStepper(scrollbar)
+            var thumbNormalColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 0.4)
+            var thumbHoveredColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 0.7)
+            var thumbPressedColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 1.0)
 
             addContentMargins(flickable)
 
@@ -663,27 +671,28 @@ Item {
             triggerSteppersMode(scrollbar)
 
             //check colour of the thumb in normal state
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 0.4)), true,
-                    "Wrong thumb color in normal state.")
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong thumb color in normal state.")
 
             //check hovered colour
             mouseMove(thumb, thumb.width/2, thumb.height/2)
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 0.7)), true,
-                    "Wrong thumb color in hover state.")
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true, "Wrong thumb color in hover state.")
+
+            //check that moving mouse outside the thumb (to the second stepper, in this case) and back in will
+            //trigger the correct color changes
+            mouseMove(secondStepper, secondStepper.width/2, secondStepper.height/2)
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong thumb color after moving mouse to a stepper.")
+            mouseMove(thumb, thumb.width/2, thumb.height/2)
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                    "Wrong thumb color after moving mouse from stepper back into the thumb.")
 
             //check pressed state colour
             mousePress(thumb, thumb.width/2, thumb.height/2)
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 1.0)), true,
-                    "Wrong thumb color in pressed state.")
+            compare(Qt.colorEqual(thumb.color, thumbPressedColor), true, "Wrong thumb color in pressed state.")
             mouseRelease(thumb, thumb.width/2, thumb.height/2)
 
             //check hovered colour again, the thumb should still show as hovered after releasing mouse
             //(assuming the mouse is still inside it, which it is)
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 0.7)), true,
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
                     "Thumb does not show as hovered after mouse press-release inside it.")
 
             if (style.isVertical) {
@@ -702,8 +711,25 @@ Item {
                 //bottom (vertical scrollbar) or to its right (in the case of the horiz scrollbar)
                 mousePress(thumb, thumb.width/2, thumb.height/2)
                 mouseMove(thumb, thumb.width/2, 0  )
+                //drag to the beginning
                 mouseMove(thumb, thumb.width/2, -sceneThumbY)
+
+                //try moving the mouse outside the thumb (to the left, the 10* is random)
+                //and check that it's still using the pressed state colour
+                mouseMove(thumb, -10*thumb.width/2, -sceneThumbY)
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it without releasing.")
+
+                //move mouse back inside the thumb
+                mouseMove(thumb, thumb.width/2, -sceneThumbY)
+                //check pressed colour again
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it and back in, without releasing.")
+
                 mouseRelease(thumb, 0, 0)
+
+                compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                        "Thumb does not show as hovered after mouse is dragged and released inside of it.")
 
                 compare(flickable[scrollbarUtils.propContent], -flickable.topMargin,
                         "Vertical thumb mouse drag: wrong contentProp after dragging to the beginning")
@@ -714,11 +740,29 @@ Item {
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the end")
 
                 var sceneThumbX = thumb.mapToItem(column).x
-                //Can't use mouseDrag here, read above to know why
+                //Can't use mouseDrag here, see the explanation inside the "if" branch
                 mousePress(thumb, thumb.width/2, thumb.height/2)
                 mouseMove(thumb, 0, thumb.height/2  )
+                //drag to beginning
                 mouseMove(thumb, -sceneThumbX, thumb.height/2)
+
+                //try moving the mouse outside the thumb (to the top, the 10* is random)
+                //and check that it's still using the pressed state colour
+                mouseMove(thumb, -sceneThumbX, -10*thumb.height/2)
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it without releasing.")
+
+                //move mouse back inside the thumb
+                mouseMove(thumb, -sceneThumbX, thumb.height/2)
+
+                //check pressed colour again
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it and back in, without releasing.")
+
                 mouseRelease(thumb, 0, 0)
+
+                compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                        "Thumb does not show as hovered after mouse is dragged and released inside of it.")
 
                 compare(flickable[scrollbarUtils.propContent], -flickable.leftMargin,
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the beginning")
