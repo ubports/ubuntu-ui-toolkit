@@ -107,6 +107,7 @@ Style.ActionBarStyle {
 
         ListView {
             id: actionsListView
+            objectName: "actions_listview"
             anchors {
                 right: parent.right
                 top: parent.top

@@ -109,7 +109,7 @@ Item {
         Label { text: "Overflow" }
         Switch {
             id: scrollingSwitch
-            checked: true
+            checked: false
         }
         Label { text: "Scrolling" }
     }
@@ -264,11 +264,14 @@ Item {
         when: windowShown
 
         function initTestCase() {
+            compare(root.actionBarStyleName, "ActionBarStyle");
+            compare(shortBar.styleName, "ActionBarStyle");
             compare(shortBar.numberOfSlots, 3, "Default number of slots should be 3.");
         }
 
         function init() {
             // revert to initial values
+            scrollingSwitch.checked = false;
             bar.numberOfSlots = 3;
             shortBar.numberOfSlots = 3;
             bar.actions = root.actionList;
@@ -276,13 +279,20 @@ Item {
         }
 
         function get_overflow_button_visible(actionBar) {
+            compare(actionBar.styleName, "ActionBarStyle", "Style has no overflow button.");
             var overflowButton = findChild(actionBar, "overflow_action_button")
             return overflowButton !== null && overflowButton.visible
         }
 
         function get_number_of_visible_buttons(actionBar) {
-            var repeater = findChild(actionBar, "actions_repeater");
-            return repeater.count;
+            if (actionBar.styleName === "ActionBarStyle") {
+                var repeater = findChild(actionBar, "actions_repeater");
+                return repeater.count;
+            } else {
+                compare(actionBar.styleName, "ScrollingActionBarStyle", "Unknown style name.");
+                var listView = findChild(actionBar, "actions_listview");
+                return listView.count;
+            }
         }
 
         function get_number_of_actions_in_overflow(actionBar) {
@@ -315,7 +325,29 @@ Item {
             compare(bar.actions, root.shortActionList, "Actions property can be updated.");
         }
 
-        function test_number_of_visible_buttons() {
+
+        function test_number_of_visible_buttons_data() {
+            // bar has 11 actions, shortBar has 2 actions.
+            return [
+                        {   tag: "Number of actions < number of slots.",
+                            bar: shortBar
+                        },
+                        {
+                            tag: "Number of actions = number of slots."
+                        },
+                        {   tag: "Number of actions > number of slots."
+                        },
+                        {   tag: "Number of slots < 1."
+                        }
+                    ];
+        }
+
+        function test_number_of_visible_buttons(data) {
+
+            // FIXME TIM: Use data.
+            // FIXME TIM: Tests for scrolling ActionBar.
+            // FIXME TIM: Incorporate test_overflow_button_visbile and test_number_of_actions_in_overflow.
+
             compare(shortActionList.length, get_number_of_visible_buttons(shortBar),
                     "Incorrect number of actions visible for num actions < num slots.");
             compare(bar.numberOfSlots, get_number_of_visible_buttons(bar),
