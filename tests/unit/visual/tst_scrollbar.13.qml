@@ -666,6 +666,7 @@ Item {
             compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
                                                        style.sliderColor.a * 0.4)), true,
                     "Wrong thumb color in normal state.")
+
             //check hovered colour
             mouseMove(thumb, thumb.width/2, thumb.height/2)
             compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
@@ -676,8 +677,14 @@ Item {
             mousePress(thumb, thumb.width/2, thumb.height/2)
             compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
                                                        style.sliderColor.a * 1.0)), true,
-                    "Wrong thumb color in hover state.")
+                    "Wrong thumb color in pressed state.")
             mouseRelease(thumb, thumb.width/2, thumb.height/2)
+
+            //check hovered colour again, the thumb should still show as hovered after releasing mouse
+            //(assuming the mouse is still inside it, which it is)
+            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                                       style.sliderColor.a * 0.7)), true,
+                    "Thumb does not show as hovered after mouse press-release inside it.")
 
             if (style.isVertical) {
                 mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
