@@ -761,7 +761,7 @@ Item {
                         pressHoldTimer.stop()
                     }
                     onReleased: {
-                        hoveringThumb = false
+                        handleHover(mouseX, mouseY)
                         resetDrag()
                         pressHoldTimer.stop()
                     }
