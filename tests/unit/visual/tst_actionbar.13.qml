@@ -330,31 +330,36 @@ Item {
             // bar has 11 actions, shortBar has 2 actions.
             return [
                         {   tag: "Number of actions < number of slots.",
-                            bar: shortBar
+                            bar: shortBar,
+                            number_of_slots: 3,
+                            number_of_visible_buttons: 2
                         },
                         {
-                            tag: "Number of actions = number of slots."
+                            tag: "Number of actions = number of slots.",
+                            bar: shortBar,
+                            number_of_slots: 2,
+                            number_of_visible_buttons: 2
                         },
-                        {   tag: "Number of actions > number of slots."
+                        {   tag: "Number of actions > number of slots.",
+                            bar: bar,
+                            number_of_slots: 3,
+                            number_of_visible_buttons: 3
                         },
-                        {   tag: "Number of slots < 1."
+                        {   tag: "Number of slots < 1.",
+                            bar: bar,
+                            number_of_slots: 0,
+                            number_of_visible_buttons: 1
                         }
                     ];
         }
 
         function test_number_of_visible_buttons(data) {
 
-            // FIXME TIM: Use data.
             // FIXME TIM: Tests for scrolling ActionBar.
             // FIXME TIM: Incorporate test_overflow_button_visbile and test_number_of_actions_in_overflow.
-
-            compare(shortActionList.length, get_number_of_visible_buttons(shortBar),
-                    "Incorrect number of actions visible for num actions < num slots.");
-            compare(bar.numberOfSlots, get_number_of_visible_buttons(bar),
-                    "Incorrect number of actions visible for num actions > num slots.");
-            bar.numberOfSlots = 0;
-            compare(1, get_number_of_visible_buttons(bar),
-                    "No slot visible when numberOfSlots < 1.");
+            data.bar.numberOfSlots = data.number_of_slots;
+            compare(data.number_of_visible_buttons, get_number_of_visible_buttons(data.bar),
+                        "Incorrect number of actions visible.");
         }
 
         function test_overflow_button_visible() {
