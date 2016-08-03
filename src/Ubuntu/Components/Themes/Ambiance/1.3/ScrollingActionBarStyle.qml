@@ -122,7 +122,7 @@ Style.ActionBarStyle {
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
 
-            onCurrentIndexChanged: print("current index = "+currentIndex)
+//            onCurrentIndexChanged: print("current index = "+currentIndex)
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
                 id: contentXAnim
@@ -157,6 +157,7 @@ Style.ActionBarStyle {
                 enabled: opacity === 1.0
                 onClicked: actionsListView.scroll(scrollDirection);
                 opacity: buttonOpacity
+                objectName: buttonName
                 Behavior on opacity {
                     UbuntuNumberAnimation {
                         duration: actionBarStyle.scrollButtonFadeDuration
@@ -191,6 +192,7 @@ Style.ActionBarStyle {
             property int iconRotation: 180
             property real buttonOpacity: actionsListView.atXBeginning ? 0.0 : 1.0
             property int scrollDirection: 1
+            property string buttonName: "trailing_scroll_button"
         }
         Loader {
             anchors {
@@ -202,6 +204,7 @@ Style.ActionBarStyle {
             property int iconRotation: 0
             property real buttonOpacity: actionsListView.atXEnd ? 0.0 : 1.0
             property int scrollDirection: -1
+            property string buttonName: "leading_scroll_button"
         }
     }
 }

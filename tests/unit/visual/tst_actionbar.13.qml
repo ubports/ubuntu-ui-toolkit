@@ -284,6 +284,28 @@ Item {
             return overflowButton !== null && overflowButton.visible
         }
 
+        function get_scroll_button_visible(actionBar, name) {
+            compare(actionBar.styleName, "ScrollingActionBarStyle", "Only scrolling action bar has scroll buttons.");
+            var button = findChild(actionBar, name);
+            compare(button === null, false, "Style has no button with objectName " + name);
+            var barStyle = actionBar.__styleInstance;
+            wait(barStyle.scrollButtonFadeDuration); // wait for potential animation to finish.
+            if (button.opacity === 0.0) {
+                return false;
+            } else {
+                compare(button.opacity, 1.0, "Scroll button is semi-transparent.");
+                return true;
+            }
+        }
+
+        function get_leading_scroll_button_visible(actionBar) {
+            return get_scroll_button_visible(actionBar, "leading_scroll_button");
+        }
+
+        function get_trailing_scroll_button_visible(actionBar) {
+            return get_scroll_button_visible(actionBar, "trailing_scroll_button");
+        }
+
         function get_number_of_visible_buttons(actionBar) {
             if (actionBar.styleName === "ActionBarStyle") {
                 var repeater = findChild(actionBar, "actions_repeater");
@@ -379,20 +401,19 @@ Item {
                             overflow_button_visible: true,
                             number_of_actions_in_overflow: 3
                         },
-
                     ];
         }
 
         function test_actions_visibility(data) {
-            // FIXME TIM: Tests for scrolling ActionBar.
             data.bar.numberOfSlots = data.number_of_slots;
-            compare(data.number_of_visible_buttons, get_number_of_visible_buttons(data.bar),
+            compare(get_number_of_visible_buttons(data.bar), data.number_of_visible_buttons,
                     "Incorrect number of actions visible.");
-            compare(data.overflow_button_visible, get_overflow_button_visible(data.bar),
+            compare(get_overflow_button_visible(data.bar), data.overflow_button_visible,
                     "Incorrect overflow button visibility.");
-            compare(data.number_of_actions_in_overflow, get_number_of_actions_in_overflow(data.bar),
+            compare(get_number_of_actions_in_overflow(data.bar), data.number_of_actions_in_overflow,
                     "Incorrect number of actions in overflow.");
         }
+
         function test_custom_delegate() {
             var i = 0; var button; var n = shortActionList.length;
             for (i = 0; i < n; i++) {
@@ -401,6 +422,38 @@ Item {
             }
             button = findChild(customDelegateBar, "custom_delegate_button_" + n);
             compare(button, null, "Too many buttons.");
+        }
+
+        function test_scrolling_style_data() {
+            // bar has 11 actions, shortBar has 2 actions.
+            return [
+                        {   tag: "Small number of actions.",
+                            bar: shortBar,
+                            number_of_visible_buttons: shortActionList.length,
+                            has_scrolling: false
+                        },
+                        {
+                            tag: "Large number of actions.",
+                            bar: bar,
+                            number_of_visible_buttons: actionList.length,
+                            has_scrolling: true
+                        }
+                    ];
+        }
+
+        function test_scrolling_style(data) {
+            scrollingSwitch.checked = true;
+            waitForRendering(data.bar);
+            compare(get_number_of_visible_buttons(data.bar), data.number_of_visible_buttons,
+                    "Incorrect number of visible buttons.");
+
+            // TODO TIM: Test scroll buttons visibility (and changes therein when scrolling).
+//            var leadingScrollButton =
+//            if (data.has_scrolling) {
+
+//            } else {
+                // no leading or trailing scroll button.
+//            }
         }
     }
 }
