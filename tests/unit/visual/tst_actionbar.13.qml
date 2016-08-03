@@ -287,7 +287,7 @@ Item {
         function get_scroll_button_visible(actionBar, name) {
             compare(actionBar.styleName, "ScrollingActionBarStyle", "Only scrolling action bar has scroll buttons.");
             var button = findChild(actionBar, name);
-            compare(button === null, false, "Style has no button with objectName " + name);
+            verify(button !== null, "Style has no button with objectName " + name);
             var barStyle = actionBar.__styleInstance;
             wait(barStyle.scrollButtonFadeDuration); // wait for potential animation to finish.
             if (button.opacity === 0.0) {
