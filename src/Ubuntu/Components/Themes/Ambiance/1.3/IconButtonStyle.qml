@@ -49,10 +49,6 @@ Item {
         id: background
         color: iconButtonStyle.backgroundColor
         anchors.fill: parent
-
-        // FIXME TIM: only for testing.
-//        border.color: "blue"
-//        border.width: 2
     }
 
     Icon {
@@ -63,9 +59,8 @@ Item {
         source: styledItem.iconSource
         color: iconButtonStyle.foregroundColor
 
-        // FIXME: Disable FocusShape for scrolling toolbar only.
-//        FocusShape {
-//        }
+        FocusShape {
+        }
     }
 
     Component {
