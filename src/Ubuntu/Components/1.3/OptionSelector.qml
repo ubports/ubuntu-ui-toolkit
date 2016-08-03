@@ -197,6 +197,9 @@ ListItem.Empty {
 
     // Prevent scrolling on pressed when released changes the index
     Keys.onPressed: {
+        // Only change index while expanded
+        if (!listContainer.currentlyExpanded)
+            return;
         var increment;
         switch (event.key) {
         case Qt.Key_Up:
@@ -221,15 +224,16 @@ ListItem.Empty {
         case Qt.Key_Enter:
         case Qt.Key_Return:
         case Qt.Key_Space:
-            if (!list.expanded && !list.multiSelection) {
+            if (!list.multiSelection) {
                 event.accepted = true;
                 listContainer.currentlyExpanded = !listContainer.currentlyExpanded;
             }
         default:
             return;
         }
+        // Only change index while expanded
         if (!listContainer.currentlyExpanded)
-            listContainer.currentlyExpanded = true;
+            return;
         var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
         if (newIndex != list.currentIndex) {
             event.accepted = true;
