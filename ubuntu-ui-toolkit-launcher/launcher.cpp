@@ -12,12 +12,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * QML launcher with the ability to setup the QQuickView/ QQmlEngine differently
- *
- * Rationale: Different variants of qmlscene exist as well as C++ and Go apps
- * This is to write Autopilot test cases that exhibit specific behavior
  */
+
+// Dedicated QML launcher with the ability to setup QQuickView/QQmlEngine
+// differently and with various extensions. Used internally to write Autopilot
+// test cases that exhibit specific behavior.
 
 #include <iostream>
 #include <QtCore/qdebug.h>
