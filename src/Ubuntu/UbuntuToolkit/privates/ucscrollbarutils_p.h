@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,35 +13,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
+ * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#include <UbuntuGestures/private/timesource_p.h>
+#ifndef UCSCROLLBARUTILS_H
+#define UCSCROLLBARUTILS_H
 
-#include <QElapsedTimer>
+#include <QObject>
+#include <ubuntutoolkitglobal.h>
 
-UG_NAMESPACE_BEGIN
+class QQuickItem;
 
-class RealTimeSourcePrivate {
+UT_NAMESPACE_BEGIN
+
+class UBUNTUTOOLKIT_EXPORT UCScrollbarUtils : public QObject
+{
+    Q_OBJECT
 public:
-    QElapsedTimer timer;
+    explicit UCScrollbarUtils(QObject *parent = 0);
+
+    Q_INVOKABLE static bool isComponentComplete(QQuickItem *item);
+
 };
 
-RealTimeSource::RealTimeSource()
-    : UG_PREPEND_NAMESPACE(TimeSource())
-    , d(new RealTimeSourcePrivate)
-{
-    d->timer.start();
-}
+UT_NAMESPACE_END
 
-RealTimeSource::~RealTimeSource()
-{
-    delete d;
-}
-
-qint64 RealTimeSource::msecsSinceReference()
-{
-    return d->timer.elapsed();
-}
-
-UG_NAMESPACE_END
+#endif // UCSCROLLBARUTILS_H

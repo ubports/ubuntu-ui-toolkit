@@ -22,7 +22,7 @@
 #include <QtCore/QFile>
 
 class UMEvent;
-class FileLoggerPrivate;
+class UMFileLoggerPrivate;
 struct UMLTTNGPlugin;
 
 // Log events to a specific device.
@@ -53,8 +53,8 @@ public:
     bool parsable();
 
 private:
-    FileLoggerPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(FileLogger);
+    UMFileLoggerPrivate* const d_ptr;
+    Q_DECLARE_PRIVATE(UMFileLogger);
 };
 
 // Log events to LTTng.

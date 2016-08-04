@@ -20,32 +20,19 @@
 
 #include <UbuntuMetrics/ubuntumetricsglobal.h>
 #include <UbuntuMetrics/logger.h>
+#include <UbuntuMetrics/events.h>
 #include <QtCore/QList>
-#include <QtCore/QMutex>
 
-class QTimer;
-class QQuickWindow;
-class LoggingThread;
-class ShowFilter;
-class UMEventUtils;
-class WindowMonitor;
+class UMApplicationMonitorPrivate;
 
 // Monitor a QtQuick application by automatically tracking QtQuick windows and
 // process metrics. The metrics gathered can be logged and displayed by an
 // overlay rendered on top of each frame.
-class UBUNTU_METRICS_EXPORT UMApplicationMonitor
+class UBUNTU_METRICS_EXPORT UMApplicationMonitor : public QObject
 {
-public:
-    enum MonitorFlag {
-        // Render an overlay of real-time metrics on top of each QtQuick frame.
-        Overlay = (1 << 0),
-        // Pass all the events to the loggers.
-        Logging = (1 << 1),
-        // Continuously update QtQuick windows.
-        ContinuousUpdates = (1 << 2)
-    };
-    Q_DECLARE_FLAGS(MonitorFlags, MonitorFlag)
+    Q_OBJECT
 
+public:
     enum LoggingFilter {
         // Allow process events logging.
         ProcessEvent = (1 << 0),
@@ -58,73 +45,57 @@ public:
     };
     Q_DECLARE_FLAGS(LoggingFilters, LoggingFilter)
 
-    // Start/Stop tracking of QtQuick windows and process metrics. start()
-    // returns false in case there's no QCoreApplication instance running or if
-    // the monitor has already been started. stop() is automatically called when
-    // the QCoreApplication instance is about to be stopped. isActive() returns
-    // whether the monitoring is running or not.
-    static bool start();
-    static void stop();
-    static bool isActive();
+    // Get the unique UMApplicationMonitor instance. A QGuiApplication instance
+    // must be running.
+    static UMApplicationMonitor* instance() { return self ? self : new UMApplicationMonitor; }
 
-    // Set flags. Default is Overlay.
-    static void setFlags(MonitorFlags flags);
-    static MonitorFlags flags();
+    // Render an overlay of real-time metrics on top of each QtQuick frame.
+    void setOverlay(bool overlay);
+    bool overlay();
 
-    // Set the time in milliseconds between two process event updates. -1 to
-    // disable automatic updates. Default is 1000, lower value 100, higher value
-    // 10000.
-    static void setUpdateInterval(int interval);
-    static int updateInterval();
-
-    // Set the loggers. Empty by default, max number of loggers is 8.
-    static QList<UMLogger*> loggers();
-    static bool installLogger(UMLogger* logger);
-    static bool removeLogger(UMLogger* logger, bool free = true);
-    static void clearLoggers(bool free = true);
+    // Log the events with the installed loggers.
+    void setLogging(bool logging);
+    bool logging();
 
     // Set the logging filter. All events are logged by default.
-    static void setLoggingFilters(LoggingFilters filters);
-    static LoggingFilters loggingFilters();
+    void setLoggingFilter(LoggingFilters filter);
+    LoggingFilters loggingFilter();
 
-    static const int maxMonitors = 16;
-    static const int maxLoggers = 8;
+    // Set the loggers. Empty by default, max number of loggers is 8.
+    QList<UMLogger*> loggers();
+    bool installLogger(UMLogger* logger);
+    bool removeLogger(UMLogger* logger, bool free = true);
+    void clearLoggers(bool free = true);
+
+    // Set the time in milliseconds between two updates of events of a given
+    // type. -1 to disable updates. Only UMEvent::Process is accepted so far as
+    // event type, default value is 1000. Note that when the overlay is enabled,
+    // a process update triggers a frame update.
+    void setUpdateInterval(UMEvent::Type type, int interval);
+    int updateInterval(UMEvent::Type type);
+
+Q_SIGNALS:
+    void overlayChanged();
+    void loggingChanged();
+    void loggingFilterChanged();
+    void loggersChanged();
+    void updateIntervalChanged(UMEvent::Type type);
+
+private Q_SLOTS:
+    void closeDown();
+    void processTimeout();
 
 private:
-    static void startMonitoring(QQuickWindow* window);
-    static void startMonitoringLocked(QQuickWindow* window);
-    static void stopMonitoring(WindowMonitor* monitor);
-    static bool hasMonitor(WindowMonitor* monitor);
-    static bool removeMonitor(WindowMonitor* monitor);
-    static void update();
+    static UMApplicationMonitor* self;
 
-    static LoggingThread* m_loggingThread;
-    static UMEventUtils* m_eventUtils;
-    static QTimer* m_updateTimer;
-    static ShowFilter* m_showFilter;
-    static WindowMonitor* m_monitors[maxMonitors];
-    static UMLogger* m_loggers[maxLoggers];
-    static QMutex m_monitorsMutex;
-    static QMetaObject::Connection m_aboutToQuitConnection;
-    static QMetaObject::Connection m_lastWindowClosedConnection;
-    static int m_monitorCount;
-    static int m_loggerCount;
-    static int m_updateInterval;
-    static quint16 m_flags;
-    static quint8 m_filters;
-    static UMEvent m_processEvent;
-
-    // Prevent instantiation, copy and assign.
     UMApplicationMonitor();
+    ~UMApplicationMonitor();
     Q_DISABLE_COPY(UMApplicationMonitor);
 
-    void* __reserved;
+    bool eventFilter(QObject* object, QEvent* event) Q_DECL_OVERRIDE;
 
-    friend class WindowMonitor;
-    friend class WindowMonitorDeleter;
-    friend class WindowMonitorFlagSetter;
-    friend class WindowMonitorFilterSetter;
-    friend class ShowFilter;
+    UMApplicationMonitorPrivate* const d_ptr;
+    Q_DECLARE_PRIVATE(UMApplicationMonitor);
 };
 
 #endif  // APPLICATIONMONITOR_H

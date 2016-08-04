@@ -88,6 +88,7 @@
 #include <privates/frame_p.h>
 #include <privates/ucpagewrapper_p.h>
 #include <privates/appheaderbase_p.h>
+#include <privates/ucscrollbarutils_p.h>
 
 // styles
 #include <ucbottomedgestyle_p.h>
@@ -247,6 +248,9 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
     qmlRegisterType<Tree>(privateUri, 1, 3, "Tree");
 
+    //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
+    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(privateUri, 1, 3, "PrivateScrollbarUtils");
+
     // allocate all context property objects prior we register them
     initializeContextProperties(engine);
 
@@ -267,53 +271,46 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     module->registerWindowContextProperty();
 
     // Application monitoring.
-    const bool metricsOverlay = qEnvironmentVariableIsSet("UC_METRICS_OVERLAY");
-    const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
+    UMApplicationMonitor* applicationMonitor = UMApplicationMonitor::instance();
     const QByteArray metricsLoggingFilter = qgetenv("UC_METRICS_LOGGING_FILTER");
-    if (metricsOverlay || !metricsLogging.isNull()) {
-        UMApplicationMonitor::MonitorFlags flags = 0;
-        if (!metricsLogging.isNull()) {
-            UMLogger* logger;
-            if (metricsLogging.isEmpty() || metricsLogging == "stdout") {
-                logger = new UMFileLogger(stdout);
-            } else if (metricsLogging == "lttng") {
-                logger = new UMLTTNGLogger();
-            } else {
-                logger = new UMFileLogger(metricsLogging);
+    if (!metricsLoggingFilter.isNull()) {
+        QStringList filterList = QString(metricsLoggingFilter).split(
+            QChar(','), QString::SkipEmptyParts);
+        UMApplicationMonitor::LoggingFilters filter = 0;
+        const int size = filterList.size();
+        for (int i = 0; i < size; ++i) {
+            if (filterList[i] == "*") {
+                filter |= UMApplicationMonitor::AllEvents;
+                break;
+            } else if (filterList[i] == "window") {
+                filter |= UMApplicationMonitor::WindowEvent;
+            } else if (filterList[i] == "process") {
+                filter |= UMApplicationMonitor::ProcessEvent;
+            } else if (filterList[i] == "frame") {
+                filter |= UMApplicationMonitor::FrameEvent;
             }
-            if (logger->isOpen()) {
-                flags |= UMApplicationMonitor::Logging;
-                UMApplicationMonitor::installLogger(logger);
-            } else {
-                delete logger;
-            }
         }
-        if (!metricsLoggingFilter.isNull()) {
-            QStringList filtersList = QString(metricsLoggingFilter).split(
-                QChar(','), QString::SkipEmptyParts);
-            UMApplicationMonitor::LoggingFilters filters = 0;
-            const int size = filtersList.size();
-            for (int i = 0; i < size; ++i) {
-                if (filtersList[i] == "*") {
-                    filters |= UMApplicationMonitor::AllEvents;
-                    break;
-                } else if (filtersList[i] == "window") {
-                    filters |= UMApplicationMonitor::WindowEvent;
-                } else if (filtersList[i] == "process") {
-                    filters |= UMApplicationMonitor::ProcessEvent;
-                } else if (filtersList[i] == "frame") {
-                    filters |= UMApplicationMonitor::FrameEvent;
-                }
-            }
-            UMApplicationMonitor::setLoggingFilters(filters);
+        applicationMonitor->setLoggingFilter(filter);
+    }
+    const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
+    if (!metricsLogging.isNull()) {
+        UMLogger* logger;
+        if (metricsLogging.isEmpty() || metricsLogging == "stdout") {
+            logger = new UMFileLogger(stdout);
+        } else if (metricsLogging == "lttng") {
+            logger = new UMLTTNGLogger();
+        } else {
+            logger = new UMFileLogger(metricsLogging);
         }
-        if (metricsOverlay) {
-            flags |= UMApplicationMonitor::Overlay;
+        if (logger->isOpen()) {
+            applicationMonitor->installLogger(logger);
+            applicationMonitor->setLogging(true);
+        } else {
+            delete logger;
         }
-        UMApplicationMonitor::setFlags(flags);
-        if (!UMApplicationMonitor::isActive()) {
-            UMApplicationMonitor::start();
-        }
+    }
+    if (qEnvironmentVariableIsSet("UC_METRICS_OVERLAY")) {
+        applicationMonitor->setOverlay(true);
     }
 
     // register performance monitor

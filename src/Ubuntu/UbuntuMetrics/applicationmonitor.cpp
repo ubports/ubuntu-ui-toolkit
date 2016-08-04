@@ -89,7 +89,7 @@ void LoggingThread::run()
 
         // Log.
         const int loggerCount = m_loggerCount;
-        UMLogger* loggers[UMApplicationMonitor::maxLoggers];
+        UMLogger* loggers[UMApplicationMonitorPrivate::maxLoggers];
         memcpy(loggers, m_loggers, loggerCount * sizeof(UMLogger*));
         m_mutex.unlock();
         for (int i = 0; i < loggerCount; ++i) {
@@ -122,7 +122,7 @@ void LoggingThread::push(const UMEvent* event)
 void LoggingThread::setLoggers(UMLogger** loggers, int count)
 {
     DASSERT(count >= 0);
-    DASSERT(count <= UMApplicationMonitor::maxLoggers);
+    DASSERT(count <= UMApplicationMonitorPrivate::maxLoggers);
 
     QMutexLocker locker(&m_mutex);
     memcpy(m_loggers, loggers, count * sizeof(UMLogger*));
@@ -146,35 +146,120 @@ void LoggingThread::deref()
     }
 }
 
-bool ShowFilter::eventFilter(QObject* object, QEvent* event)
+UMApplicationMonitor* UMApplicationMonitor::self = nullptr;
+
+UMApplicationMonitor::UMApplicationMonitor()
+    : d_ptr(new UMApplicationMonitorPrivate(this))
 {
-    if (event->type() == QEvent::Show) {
-        if (QQuickWindow* window = qobject_cast<QQuickWindow*>(object)) {
-            UMApplicationMonitor::startMonitoringLocked(window);
-        }
-    }
-    return QObject::eventFilter(object, event);
+    ASSERT_X(!self, "ApplicationMonitor: There should be only one UMApplicationMonitor.");
+    self = this;
 }
 
-LoggingThread* UMApplicationMonitor::m_loggingThread = nullptr;
-UMEventUtils* UMApplicationMonitor::m_eventUtils = nullptr;
-QTimer* UMApplicationMonitor::m_updateTimer = nullptr;
-ShowFilter* UMApplicationMonitor::m_showFilter = nullptr;
-WindowMonitor* UMApplicationMonitor::m_monitors[UMApplicationMonitor::maxMonitors];
-UMLogger* UMApplicationMonitor::m_loggers[UMApplicationMonitor::maxLoggers];
-QMetaObject::Connection UMApplicationMonitor::m_aboutToQuitConnection;
-QMetaObject::Connection UMApplicationMonitor::m_lastWindowClosedConnection;
-QMutex UMApplicationMonitor::m_monitorsMutex;
-int UMApplicationMonitor::m_monitorCount = 0;
-int UMApplicationMonitor::m_loggerCount = 0;
-int UMApplicationMonitor::m_updateInterval = 1000;
-quint16 UMApplicationMonitor::m_flags =
-    UMApplicationMonitor::Overlay | UMApplicationMonitor::Logging;
-quint8 UMApplicationMonitor::m_filters = UMApplicationMonitor::AllEvents;
-alignas(64) UMEvent UMApplicationMonitor::m_processEvent;
+UMApplicationMonitorPrivate::UMApplicationMonitorPrivate(UMApplicationMonitor* applicationMonitor)
+    : q_ptr(applicationMonitor)
+#if !defined(QT_NO_DEBUG)
+    , m_monitors{}
+    , m_loggers{}
+#endif
+    , m_loggingThread(nullptr)
+    , m_monitorCount(0)
+    , m_loggerCount(0)
+    , m_updateInterval{1000, -1, -1}
+    , m_flags(UMApplicationMonitor::AllEvents)
+{
+    Q_Q(UMApplicationMonitor);
 
-// static.
-void UMApplicationMonitor::startMonitoring(QQuickWindow* window)
+    QGuiApplication* application = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    ASSERT_X(application, "ApplicationMonitor: There should be a QGuiApplication instantiated.");
+#if !defined(QT_NO_DEBUG)
+    m_application = application;
+#endif
+
+    q->setParent(application);
+
+    QObject::connect(application, SIGNAL(lastWindowClosed()), q, SLOT(closeDown()));
+    QObject::connect(application, SIGNAL(aboutToQuit()), q, SLOT(closeDown()));
+    QObject::connect(&m_processTimer, SIGNAL(timeout()), q, SLOT(processTimeout()));
+
+    m_processTimer.setInterval(m_updateInterval[UMEvent::Process]);
+}
+
+UMApplicationMonitor::~UMApplicationMonitor()
+{
+    delete d_ptr;
+}
+
+UMApplicationMonitorPrivate::~UMApplicationMonitorPrivate()
+{
+    DASSERT(!(m_flags & Started));
+
+    // Note that there's no need to disconnect from QGuiApplication signals
+    // since the application monitor instance is automatically destroyed when
+    // the application is destroyed (parenting), the application instance would
+    // be NULL.
+}
+
+void UMApplicationMonitor::setOverlay(bool overlay)
+{
+    Q_D(UMApplicationMonitor);
+
+    if (!!(d->m_flags & UMApplicationMonitorPrivate::Overlay) != overlay) {
+        if (overlay) {
+            d->m_flags |= UMApplicationMonitorPrivate::Overlay;
+            if (!(d->m_flags & (UMApplicationMonitorPrivate::Started
+                                | UMApplicationMonitorPrivate::ClosingDown))) {
+                d->start();
+            } else {
+                d->setMonitoringFlags(d->m_flags);
+            }
+        } else {
+            d->m_flags &= ~UMApplicationMonitorPrivate::Overlay;
+            if (!(d->m_flags & UMApplicationMonitorPrivate::Logging)) {
+                d->stop();
+            } else {
+                d->setMonitoringFlags(d->m_flags);
+            }
+        }
+        Q_EMIT overlayChanged();
+    }
+}
+
+bool UMApplicationMonitor::overlay()
+{
+    return !!(d_func()->m_flags & UMApplicationMonitorPrivate::Overlay);
+}
+
+void UMApplicationMonitor::setLogging(bool logging)
+{
+    Q_D(UMApplicationMonitor);
+
+    if (!!(d->m_flags & UMApplicationMonitorPrivate::Logging) != logging) {
+        if (logging) {
+            d->m_flags |= UMApplicationMonitorPrivate::Logging;
+            if (!(d->m_flags & (UMApplicationMonitorPrivate::Started
+                                | UMApplicationMonitorPrivate::ClosingDown))) {
+                d->start();
+            } else {
+                d->setMonitoringFlags(d->m_flags);
+            }
+        } else {
+            d->m_flags &= ~UMApplicationMonitorPrivate::Logging;
+            if (!(d->m_flags & UMApplicationMonitorPrivate::Overlay)) {
+                d->stop();
+            } else {
+                d->setMonitoringFlags(d->m_flags);
+            }
+        }
+        Q_EMIT loggingChanged();
+    }
+}
+
+bool UMApplicationMonitor::logging()
+{
+    return !!(d_func()->m_flags & UMApplicationMonitorPrivate::Logging);
+}
+
+void UMApplicationMonitorPrivate::startMonitoring(QQuickWindow* window)
 {
     DASSERT(window);
     DASSERT(m_loggingThread);
@@ -182,9 +267,8 @@ void UMApplicationMonitor::startMonitoring(QQuickWindow* window)
     if (m_monitorCount < maxMonitors) {
         DASSERT(m_monitors[m_monitorCount] == nullptr);
         static quint32 id = 0;
-        // flags() used here instead of m_flags to clean up extended flags.
         m_monitors[m_monitorCount] =
-            new WindowMonitor(window, m_loggingThread->ref(), flags(), m_filters, ++id);
+            new WindowMonitor(q_func(), window, m_loggingThread->ref(), m_flags, ++id);
         m_monitors[m_monitorCount]->setProcessEvent(m_processEvent);
         m_monitorCount++;
     } else {
@@ -192,36 +276,11 @@ void UMApplicationMonitor::startMonitoring(QQuickWindow* window)
     }
 }
 
-// static.
-void UMApplicationMonitor::startMonitoringLocked(QQuickWindow* window)
+void UMApplicationMonitorPrivate::start()
 {
-    m_monitorsMutex.lock();
-    startMonitoring(window);
-    m_monitorsMutex.unlock();
-}
-
-// static.
-bool UMApplicationMonitor::start()
-{
-    if (!QCoreApplication::instance()) {
-        WARN("ApplicationMonitor: There's no QCoreApplication instance running!");
-        return false;
-    }
-    if (m_flags & Started) {
-        WARN("ApplicationMonitor: Already started!");
-        return false;
-    }
-
-    m_lastWindowClosedConnection = QObject::connect(
-        static_cast<QGuiApplication*>(QCoreApplication::instance()),
-        &QGuiApplication::lastWindowClosed, &stop);
-
-    // So that we don't crash when QCoreApplication::quit() is called.
-    m_aboutToQuitConnection = QObject::connect(
-        static_cast<QGuiApplication*>(QCoreApplication::instance()),
-        &QCoreApplication::aboutToQuit, &stop);
-
+    DASSERT(!(m_flags & Started));
     DASSERT(!m_loggingThread);
+
     m_loggingThread = new LoggingThread;
     m_loggingThread->setLoggers(m_loggers, m_loggerCount);
 
@@ -237,83 +296,19 @@ bool UMApplicationMonitor::start()
     }
     m_monitorsMutex.unlock();
 
-    DASSERT(!m_showFilter);
-    m_showFilter = new ShowFilter;
-    QGuiApplication::instance()->installEventFilter(m_showFilter);
+    QGuiApplication::instance()->installEventFilter(q_func());
 
-    DASSERT(!m_eventUtils);
-    m_eventUtils = new UMEventUtils;
-
-    DASSERT(!m_updateTimer);
-    m_updateTimer = new QTimer;
-    QObject::connect(m_updateTimer, &QTimer::timeout, &update);
-    m_updateTimer->setInterval(m_updateInterval);
-    if (m_flags & (Logging | Overlay)) {
-        m_updateTimer->start();
-    }
-    memset(&m_processEvent, 0, sizeof(UMEvent));
-    update();
-
+    // Doing it here so that processTimeout can assert the monitoring started.
     m_flags |= Started;
-    return true;
-}
 
-WindowMonitorDeleter::~WindowMonitorDeleter()
-{
-    // Remove the monitor from the list making sure it's not been removed
-    // (window going hidden) after this runnable was scheduled.
-    if (UMApplicationMonitor::removeMonitor(m_monitor)) {
-        delete m_monitor;
+    memset(&m_processEvent, 0, sizeof(UMEvent));
+    processTimeout();
+    if (m_updateInterval[UMEvent::Process] >= 0) {
+        m_processTimer.start();
     }
 }
 
-void WindowMonitorDeleter::run()
-{
-    // run() guarantees a valid context.
-    if (m_monitor->gpuResourcesInitialized()) {
-        m_monitor->finalizeGpuResources();
-    }
-}
-
-// static.
-void UMApplicationMonitor::stopMonitoring(WindowMonitor* monitor)
-{
-    DASSERT(monitor);
-    DASSERT(monitor->window());
-
-    // To ensure there's no signals emitted on the render thread while and after
-    // window monitor deletion, we schedule a render job that disconnects the
-    // signals on the render thread and then request deletion on the right
-    // thread with deleteLater().
-    monitor->window()->scheduleRenderJob(new WindowMonitorDeleter(monitor),
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-        QQuickWindow::NoStage);
-#else
-        QQuickWindow::BeforeSynchronizingStage);
-    monitor->window()->update();  // Wake up the render loop.
-#endif
-}
-
-// static.
-bool UMApplicationMonitor::hasMonitor(WindowMonitor* monitor)
-{
-    DASSERT(monitor);
-    DASSERT(monitor->window());
-
-    m_monitorsMutex.lock();
-    for (int i = 0; i < m_monitorCount; ++i) {
-        if (m_monitors[i] == monitor) {
-            m_monitorsMutex.unlock();
-            return true;
-        }
-    }
-    m_monitorsMutex.unlock();
-
-    return false;
-}
-
-// static.
-bool UMApplicationMonitor::removeMonitor(WindowMonitor* monitor)
+bool UMApplicationMonitorPrivate::removeMonitor(WindowMonitor* monitor)
 {
     DASSERT(monitor);
     DASSERT(monitor->window());
@@ -334,21 +329,58 @@ bool UMApplicationMonitor::removeMonitor(WindowMonitor* monitor)
         }
     }
     m_monitorsMutex.unlock();
-
     return false;
 }
 
-// static.
-void UMApplicationMonitor::stop()
+WindowMonitorDeleter::~WindowMonitorDeleter()
 {
-    if (!QCoreApplication::instance()) {
-        WARN("ApplicationMonitor: There's no QCoreApplication instance running!");
-        return;
+    // FIXME(loicm) Not sure if that assertion could ever fail, so let's debug
+    //     assert it and test in release for now.
+    DASSERT(m_applicationMonitor == UMApplicationMonitor::instance());
+    if (m_applicationMonitor == UMApplicationMonitor::instance()) {
+        // Remove the monitor from the list making sure it's not been removed
+        // (window going hidden) after this runnable was scheduled.
+        if (UMApplicationMonitorPrivate::get(m_applicationMonitor)->removeMonitor(m_monitor)) {
+            delete m_monitor;
+        }
     }
-    if (!(m_flags & Started)) {
-        WARN("ApplicationMonitor: Already stopped!");
-        return;
+}
+
+void WindowMonitorDeleter::run()
+{
+    // run() guarantees a valid context.
+    if (m_monitor->gpuResourcesInitialized()) {
+        m_monitor->finalizeGpuResources();
     }
+}
+
+void UMApplicationMonitorPrivate::stopMonitoring(WindowMonitor* monitor)
+{
+    DASSERT(monitor);
+    DASSERT(monitor->window());
+
+    // To ensure there's no signals emitted on the render thread while and after
+    // window monitor deletion, we schedule a render job that disconnects the
+    // signals on the render thread and then request deletion on the right
+    // thread with deleteLater().
+    monitor->window()->scheduleRenderJob(new WindowMonitorDeleter(q_func(), monitor),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        QQuickWindow::NoStage);
+#else
+        QQuickWindow::BeforeSynchronizingStage);
+    monitor->window()->update();  // Wake up the render loop.
+#endif
+}
+
+void UMApplicationMonitorPrivate::stop()
+{
+    DASSERT(m_flags & Started);
+
+    if (m_updateInterval[UMEvent::Process] >= 0) {
+        m_processTimer.stop();
+    }
+
+    QGuiApplication::instance()->removeEventFilter(q_func());
 
     m_monitorsMutex.lock();
     for (int i = 0; i < m_monitorCount; ++i) {
@@ -356,31 +388,15 @@ void UMApplicationMonitor::stop()
     }
     m_monitorsMutex.unlock();
 
-    QObject::disconnect(m_aboutToQuitConnection);
-    QObject::disconnect(m_lastWindowClosedConnection);
-
-    DASSERT(m_updateTimer);
-    delete m_updateTimer;
-    m_updateTimer = nullptr;
-
-    DASSERT(m_eventUtils);
-    delete m_eventUtils;
-    m_eventUtils = nullptr;
-
-    DASSERT(m_showFilter);
-    QGuiApplication::instance()->removeEventFilter(m_showFilter);
-    delete m_showFilter;
-    m_showFilter = nullptr;
-
     DASSERT(m_loggingThread);
     m_loggingThread->deref();
     m_loggingThread = nullptr;
 
-    // Wait for completion.
+    // Wait for window monitors complete deletion.
     m_monitorsMutex.lock();
     while (m_monitorCount > 0) {
-        // FIXME(loicm) We could yield the thread here in the case of a threaded
-        //     QtQuick renderer.
+        // FIXME(loicm) Should we yield the thread here in the case of a
+        //     threaded QtQuick renderer?
         m_monitorsMutex.unlock();
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         m_monitorsMutex.lock();
@@ -390,35 +406,38 @@ void UMApplicationMonitor::stop()
     m_flags &= ~Started;
 }
 
-// static.
-bool UMApplicationMonitor::isActive()
+bool UMApplicationMonitorPrivate::hasMonitor(WindowMonitor* monitor)
 {
-    return !!(m_flags & Started);
+    DASSERT(monitor);
+    DASSERT(monitor->window());
+
+    m_monitorsMutex.lock();
+    for (int i = 0; i < m_monitorCount; ++i) {
+        if (m_monitors[i] == monitor) {
+            m_monitorsMutex.unlock();
+            return true;
+        }
+    }
+    m_monitorsMutex.unlock();
+    return false;
 }
 
 WindowMonitorFlagSetter::~WindowMonitorFlagSetter()
 {
-    // Make sure it's not been removed (window going hidden) after this runnable
-    // was scheduled.
-    if (UMApplicationMonitor::hasMonitor(m_monitor)) {
-        m_monitor->setFlags(m_flags);
+    // FIXME(loicm) Not sure if that assertion could ever fail, so let's debug
+    //     assert it and do the check in release for now.
+    DASSERT(m_applicationMonitor == UMApplicationMonitor::instance());
+    if (m_applicationMonitor == UMApplicationMonitor::instance()) {
+        // Make sure it's not been removed (window going hidden) after this
+        // runnable was scheduled.
+        if (UMApplicationMonitorPrivate::get(m_applicationMonitor)->hasMonitor(m_monitor)) {
+            m_monitor->setFlags(m_flags);
+        }
     }
 }
 
-// static.
-void UMApplicationMonitor::setFlags(MonitorFlags flags)
+void UMApplicationMonitorPrivate::setMonitoringFlags(quint32 flags)
 {
-    m_flags = flags | (m_flags & ~0xff);  // Keep extended flags.
-    if (!(m_flags & Started)) {
-        return;
-    }
-
-    if (m_updateInterval >= 0 && flags & (Overlay | Logging)) {
-        m_updateTimer->start();
-    } else {
-        m_updateTimer->stop();
-    }
-
     m_monitorsMutex.lock();
     for (int i = 0; i < m_monitorCount; ++i) {
         DASSERT(m_monitors[i]);
@@ -427,9 +446,6 @@ void UMApplicationMonitor::setFlags(MonitorFlags flags)
             new WindowMonitorFlagSetter(m_monitors[i], flags),
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QQuickWindow::NoStage);
-        if (m_flags & ContinuousUpdates) {
-            m_monitors[i]->window()->update();
-        }
 #else
             QQuickWindow::BeforeSynchronizingStage);
         m_monitors[i]->window()->update();  // Wake up the render loop.
@@ -438,152 +454,167 @@ void UMApplicationMonitor::setFlags(MonitorFlags flags)
     m_monitorsMutex.unlock();
 }
 
-// static.
-UMApplicationMonitor::MonitorFlags UMApplicationMonitor::flags()
+void UMApplicationMonitor::setLoggingFilter(UMApplicationMonitor::LoggingFilters filter)
 {
-    return static_cast<MonitorFlags>(m_flags & 0xff);  // Reset extended flags.
-}
+    Q_D(UMApplicationMonitor);
 
-// static.
-void UMApplicationMonitor::setUpdateInterval(int interval)
-{
-    interval = qBound(100, interval, 10000);
-    if (interval != m_updateInterval) {
-        if (interval >= 0) {
-            if (m_flags & Started && m_flags & (Overlay | Logging)) {
-                m_updateTimer->setInterval(interval);
-                if (m_updateInterval < 0) {
-                    m_updateTimer->start();
-                }
-            }
-        } else if (m_updateInterval >= 0 && m_flags & Started && m_flags & (Overlay | Logging)) {
-            m_updateTimer->stop();
+    const quint32 maskedFilter = filter & UMApplicationMonitorPrivate::FilterMask;
+    if (maskedFilter != (d->m_flags & UMApplicationMonitorPrivate::FilterMask)) {
+        d->m_flags = (d->m_flags & ~UMApplicationMonitorPrivate::FilterMask) | maskedFilter;
+        if (d->m_flags & UMApplicationMonitorPrivate::Started) {
+            d->setMonitoringFlags(d->m_flags);
         }
-        m_updateInterval = interval;
+        Q_EMIT loggingFilterChanged();
     }
 }
 
-// static.
-int UMApplicationMonitor::updateInterval()
+UMApplicationMonitor::LoggingFilters UMApplicationMonitor::loggingFilter()
 {
-    return m_updateInterval;
+    return static_cast<LoggingFilters>(d_func()->m_flags & UMApplicationMonitorPrivate::FilterMask);
 }
 
-// static.
 QList<UMLogger*> UMApplicationMonitor::loggers()
 {
+    Q_D(UMApplicationMonitor);
+
     QList<UMLogger*> list;
-    for (int i = 0; i < m_loggerCount; ++i) {
-        list.append(m_loggers[i]);
+    const int count = d->m_loggerCount;
+    for (int i = 0; i < count; ++i) {
+        list.append(d->m_loggers[i]);
     }
     return list;
 }
 
-// static.
 bool UMApplicationMonitor::installLogger(UMLogger* logger)
 {
-    if (m_loggerCount < maxLoggers && logger) {
-        m_loggers[m_loggerCount++] = logger;
-        if (m_flags & Started) {
-            DASSERT(m_loggingThread);
-            m_loggingThread->setLoggers(m_loggers, m_loggerCount);
+    Q_D(UMApplicationMonitor);
+
+    if (d->m_loggerCount < UMApplicationMonitorPrivate::maxLoggers && logger) {
+        DASSERT(d->m_loggers[d->m_loggerCount] == nullptr);
+        d->m_loggers[d->m_loggerCount++] = logger;
+        if (d->m_flags & UMApplicationMonitorPrivate::Started) {
+            DASSERT(d->m_loggingThread);
+            d->m_loggingThread->setLoggers(d->m_loggers, d->m_loggerCount);
         }
+        Q_EMIT loggersChanged();
         return true;
     } else {
         return false;
     }
 }
 
-// static.
 bool UMApplicationMonitor::removeLogger(UMLogger* logger, bool free)
 {
     if (!logger) {
         return false;
     }
 
-    for (int i = m_loggerCount; i > 0; --i) {
-        if (m_loggers[i] == logger) {
-            if (i < --m_loggerCount) {
-                m_loggers[i] = m_loggers[m_loggerCount];
+    Q_D(UMApplicationMonitor);
+
+    for (int i = d->m_loggerCount; i > 0; --i) {
+        if (d->m_loggers[i] == logger) {
+            if (i < --d->m_loggerCount) {
+                d->m_loggers[i] = d->m_loggers[d->m_loggerCount];
             }
-            if (m_flags & Started) {
-                DASSERT(m_loggingThread);
-                m_loggingThread->setLoggers(m_loggers, m_loggerCount);
+#if !defined(QT_NO_DEBUG)
+            d->m_loggers[d->m_loggerCount] = nullptr;
+#endif
+            if (d->m_flags & UMApplicationMonitorPrivate::Started) {
+                DASSERT(d->m_loggingThread);
+                d->m_loggingThread->setLoggers(d->m_loggers, d->m_loggerCount);
             }
             if (free) {
                 delete logger;
             }
+            Q_EMIT loggersChanged();
             return true;
         }
     }
     return false;
 }
 
-// static.
 void UMApplicationMonitor::clearLoggers(bool free)
 {
-    if (free) {
-        for (int i = 0; i < m_loggerCount; ++i) {
-            delete m_loggers[i];
+    Q_D(UMApplicationMonitor);
+
+    if (d->m_loggerCount > 0) {
+        if (free) {
+            const int count = d->m_loggerCount;
+            for (int i = 0; i < count; ++i) {
+                delete d->m_loggers[i];
+            }
+        }
+        d->m_loggerCount = 0;
+        Q_EMIT loggersChanged();
+    }
+}
+
+// static.
+void UMApplicationMonitor::setUpdateInterval(UMEvent::Type type, int interval)
+{
+    Q_D(UMApplicationMonitor);
+
+    if (type == UMEvent::Process) {
+        // Other types (like UMEvent::Frame) are ignored for now.
+        if (interval != d->m_updateInterval[UMEvent::Process]) {
+            if (interval >= 0) {
+                d->m_processTimer.setInterval(interval);
+                if ((d->m_flags & UMApplicationMonitorPrivate::Started)
+                    && (d->m_updateInterval[UMEvent::Process] < 0)) {
+                    d->m_processTimer.start();
+                }
+            } else if ((d->m_flags & UMApplicationMonitorPrivate::Started)
+                       && (d->m_updateInterval[UMEvent::Process] >= 0)) {
+                d->m_processTimer.stop();
+            }
+            d->m_updateInterval[UMEvent::Process] = interval;
+            Q_EMIT updateIntervalChanged(UMEvent::Process);
         }
     }
-    m_loggerCount = 0;
 }
 
-WindowMonitorFilterSetter::~WindowMonitorFilterSetter()
+int UMApplicationMonitor::updateInterval(UMEvent::Type type)
 {
-    // Make sure it's not been removed (window going hidden) after this runnable
-    // was scheduled.
-    if (UMApplicationMonitor::hasMonitor(m_monitor)) {
-        m_monitor->setFilters(m_filters);
+    return d_func()->m_updateInterval[type];
+}
+
+void UMApplicationMonitor::closeDown()
+{
+    Q_D(UMApplicationMonitor);
+
+    d->m_flags |= UMApplicationMonitorPrivate::ClosingDown;
+    if (d->m_flags & UMApplicationMonitorPrivate::Started) {
+        d->stop();
     }
 }
 
-// static.
-void UMApplicationMonitor::setLoggingFilters(UMApplicationMonitor::LoggingFilters filters)
+void UMApplicationMonitor::processTimeout()
 {
-    m_filters = filters;
-    if (!(m_flags & Started)) {
-        return;
-    }
-
-    m_monitorsMutex.lock();
-    for (int i = 0; i < m_monitorCount; ++i) {
-        DASSERT(m_monitors[i]);
-        DASSERT(m_monitors[i]->window());
-        m_monitors[i]->window()->scheduleRenderJob(
-            new WindowMonitorFilterSetter(m_monitors[i], filters),
-#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-            QQuickWindow::NoStage);
-#else
-            QQuickWindow::BeforeSynchronizingStage);
-        m_monitors[i]->window()->update();  // Wake up the render loop.
-#endif
-    }
-    m_monitorsMutex.unlock();
+    d_func()->processTimeout();
 }
 
-// static.
-UMApplicationMonitor::LoggingFilters UMApplicationMonitor::loggingFilters()
+void UMApplicationMonitorPrivate::processTimeout()
 {
-    return static_cast<LoggingFilters>(m_filters);
-}
-
-// static.
-void UMApplicationMonitor::update()
-{
-    DASSERT(m_eventUtils);
+    DASSERT(m_flags & Started);
     DASSERT(m_loggingThread);
 
-    const bool processLogging = (m_flags & Logging) && (m_filters & ProcessEvent);
+    const bool processLogging =
+        (m_flags & Logging) && (m_flags & UMApplicationMonitor::ProcessEvent);
     const bool overlay = m_flags & Overlay;
 
     if (processLogging || overlay) {
-        m_eventUtils->updateProcessEvent(&m_processEvent);
+        m_eventUtils.updateProcessEvent(&m_processEvent);
         if (processLogging) {
             m_loggingThread->push(&m_processEvent);
         }
         if (overlay) {
+            // FIXME(loicm) We've got two choices here, locking all the monitors
+            //     and pushing the new process event or using scheduleRenderJob.
+            //     We're using direct pushing for now but it would be nice to
+            //     measure the cost of both methods at high update freqs. The
+            //     former one implying locks and the second one dynamic memory
+            //     allocations (placement new to the rescue?) and copies, and
+            //     also I guess locks at the QtQuick level.
             m_monitorsMutex.lock();
             for (int i = 0; i < m_monitorCount; ++i) {
                 DASSERT(m_monitors[i]);
@@ -592,6 +623,19 @@ void UMApplicationMonitor::update()
             m_monitorsMutex.unlock();
         }
     }
+}
+
+bool UMApplicationMonitor::eventFilter(QObject* object, QEvent* event)
+{
+    if (event->type() == QEvent::Show) {
+        if (QQuickWindow* window = qobject_cast<QQuickWindow*>(object)) {
+            Q_D(UMApplicationMonitor);
+            d->m_monitorsMutex.lock();
+            d->startMonitoring(window);
+            d->m_monitorsMutex.unlock();
+        }
+    }
+    return QObject::eventFilter(object, event);
 }
 
 static const char* const defaultOverlayText =
@@ -613,15 +657,18 @@ static const char* const defaultOverlayText =
     " CPU usage : %9cpuUsage %% ";
 
 WindowMonitor::WindowMonitor(
-    QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filters, quint32 id)
-    : m_loggingThread(loggingThread)
+    UMApplicationMonitor* applicationMonitor, QQuickWindow* window, LoggingThread* loggingThread,
+    quint32 flags, quint32 id)
+    : m_applicationMonitor(applicationMonitor)
+    , m_loggingThread(loggingThread)
     , m_window(window)
     , m_overlay(defaultOverlayText, id)
     , m_id(id)
     , m_flags(flags)
-    , m_filters(filters)
     , m_frameSize(window->width(), window->height())
 {
+    DASSERT(applicationMonitor == UMApplicationMonitor::instance());
+    DASSERT(m_applicationMonitor);
     DASSERT(window);
     DASSERT(loggingThread);
 
@@ -648,8 +695,8 @@ WindowMonitor::WindowMonitor(
     m_frameEvent.type = UMEvent::Frame;
     m_frameEvent.frame.window = id;
 
-    if ((flags & UMApplicationMonitor::Logging) &&
-        (filters & UMApplicationMonitor::WindowEvent)) {
+    if ((flags & UMApplicationMonitorPrivate::Logging)
+        && (flags & UMApplicationMonitor::WindowEvent)) {
         UMEvent event;
         event.type = UMEvent::Window;
         event.timeStamp = UMEventUtils::timeStamp();
@@ -665,8 +712,8 @@ WindowMonitor::~WindowMonitor()
 {
     DASSERT(!(m_flags & GpuResourcesInitialized));
 
-    if ((m_flags & UMApplicationMonitor::Logging) &&
-        (m_filters & UMApplicationMonitor::WindowEvent)) {
+    if ((m_flags & UMApplicationMonitorPrivate::Logging)
+        && (m_flags & UMApplicationMonitor::WindowEvent)) {
         UMEvent event;
         event.type = UMEvent::Window;
         event.timeStamp = UMEventUtils::timeStamp();
@@ -740,8 +787,8 @@ void WindowMonitor::windowBeforeRendering()
     const QSize frameSize = m_window->size();
     if (frameSize != m_frameSize) {
         m_frameSize = frameSize;
-        if ((m_flags & UMApplicationMonitor::Logging) &&
-            (m_filters & UMApplicationMonitor::WindowEvent)) {
+        if ((m_flags & UMApplicationMonitorPrivate::Logging) &&
+            (m_flags & UMApplicationMonitor::WindowEvent)) {
             UMEvent event;
             event.type = UMEvent::Window;
             event.timeStamp = UMEventUtils::timeStamp();
@@ -767,7 +814,7 @@ void WindowMonitor::windowAfterRendering()
         m_frameEvent.frame.renderTime = m_sceneGraphTimer.nsecsElapsed();
         m_frameEvent.frame.gpuTime = (m_flags & GpuTimerAvailable) ? m_gpuTimer.stop() : 0;
         m_frameEvent.frame.number++;
-        if (m_flags & UMApplicationMonitor::Overlay) {
+        if (m_flags & UMApplicationMonitorPrivate::Overlay) {
             m_mutex.lock();
             m_overlay.render(m_frameEvent, m_frameSize);
             m_mutex.unlock();
@@ -781,30 +828,27 @@ void WindowMonitor::windowFrameSwapped()
     if (m_flags & GpuResourcesInitialized) {
         m_frameEvent.frame.deltaTime = m_deltaTimer.isValid() ? m_deltaTimer.nsecsElapsed() : 0;
         m_deltaTimer.start();
-        if ((m_flags & UMApplicationMonitor::Logging) &&
-            (m_filters & UMApplicationMonitor::FrameEvent)) {
+        if ((m_flags & UMApplicationMonitorPrivate::Logging) &&
+            (m_flags & UMApplicationMonitor::FrameEvent)) {
             m_frameEvent.frame.swapTime = m_sceneGraphTimer.nsecsElapsed();
             m_frameEvent.timeStamp = UMEventUtils::timeStamp();
             m_loggingThread->push(&m_frameEvent);
         }
     } else {
         initializeGpuResources();  // Get everything ready for the next frame.
-        if (m_flags & UMApplicationMonitor::Overlay) {
+        if (m_flags & UMApplicationMonitorPrivate::Overlay) {
             m_window->update();
         }
-    }
-
-    if (m_flags & UMApplicationMonitor::ContinuousUpdates) {
-        m_window->update();
     }
 }
 
 void WindowMonitor::windowSceneGraphAboutToStop()
 {
 #if !defined(QT_NO_DEBUG)
-    ASSERT(UMApplicationMonitor::removeMonitor(this));
+    ASSERT(m_applicationMonitor == UMApplicationMonitor::instance());
+    ASSERT(UMApplicationMonitorPrivate::get(m_applicationMonitor)->removeMonitor(this) == true);
 #else
-    UMApplicationMonitor::removeMonitor(this);
+    UMApplicationMonitorPrivate::get(m_applicationMonitor)->removeMonitor(this);
 #endif
 
     if (m_flags & GpuResourcesInitialized) {
@@ -817,7 +861,7 @@ void WindowMonitor::setProcessEvent(const UMEvent& event)
 {
     DASSERT(event.type == UMEvent::Process);
 
-    if (m_flags & UMApplicationMonitor::Overlay) {
+    if (m_flags & UMApplicationMonitorPrivate::Overlay) {
         m_mutex.lock();
         m_overlay.setProcessEvent(event);
         m_mutex.unlock();

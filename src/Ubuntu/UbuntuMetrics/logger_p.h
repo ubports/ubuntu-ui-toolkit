@@ -23,7 +23,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
-class FileLoggerPrivate
+class UMFileLoggerPrivate
 {
 public:
     enum {
@@ -32,8 +32,8 @@ public:
         Parsable = (1 << 2)
     };
 
-    FileLoggerPrivate(const QString& fileName, bool parsable);
-    FileLoggerPrivate(FILE* fileHandle, bool parsable);
+    UMFileLoggerPrivate(const QString& fileName, bool parsable);
+    UMFileLoggerPrivate(FILE* fileHandle, bool parsable);
 
     void log(const UMEvent& event);
 

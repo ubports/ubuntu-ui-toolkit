@@ -19,11 +19,9 @@
 #define APPLICATIONMONITOR_P_H
 
 #include "applicationmonitor.h"
-#include "events.h"
 #include "overlay_p.h"
 #include "gputimer_p.h"
 #include "ubuntumetricsglobal_p.h"
-#include <QtCore/QHash>
 #include <QtCore/QTimer>
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
@@ -32,9 +30,60 @@
 #include <QtCore/QRunnable>
 #include <QtCore/QAtomicInteger>
 
-// Extension to UMApplicationMonitor flags.
-enum MonitorFlagEx {
-    Started = (1 << 8)
+class LoggingThread;
+class WindowMonitor;
+
+class UMApplicationMonitorPrivate
+{
+public:
+    static const int maxMonitors = 16;
+    static const int maxLoggers = 8;
+
+    static inline UMApplicationMonitorPrivate* get(UMApplicationMonitor* applicationMonitor) {
+        return applicationMonitor->d_func();
+    }
+
+    enum {
+        // Lower bit allowed is (1 << 8).
+        Overlay     = (1 << 8),
+        Logging     = (1 << 9),
+        Started     = (1 << 10),
+        ClosingDown = (1 << 11),
+        // Higher bit allowed is (1 << 15).
+        FilterMask             = 0x000000ff,
+        ApplicationMonitorMask = 0x0000ff00,
+        WindowMonitorMask      = 0xffff0000
+    };
+
+    UMApplicationMonitorPrivate(UMApplicationMonitor* applicationMonitor);
+    ~UMApplicationMonitorPrivate();
+
+    void startMonitoring(QQuickWindow* window);
+    void start();
+    bool removeMonitor(WindowMonitor* monitor);
+    void stopMonitoring(WindowMonitor* monitor);
+    void stop();
+    bool hasMonitor(WindowMonitor* monitor);
+    void setMonitoringFlags(quint32 flags);
+    void processTimeout();
+
+    UMApplicationMonitor* const q_ptr;
+    Q_DECLARE_PUBLIC(UMApplicationMonitor)
+
+    WindowMonitor* m_monitors[maxMonitors];
+    UMLogger* m_loggers[maxLoggers];
+    LoggingThread* m_loggingThread;
+#if !defined(QT_NO_DEBUG)
+    QGuiApplication* m_application;
+#endif
+    UMEventUtils m_eventUtils;
+    QTimer m_processTimer;
+    QMutex m_monitorsMutex;
+    int m_monitorCount;
+    int m_loggerCount;
+    int m_updateInterval[UMEvent::TypeCount];
+    quint32 m_flags;
+    alignas(64) UMEvent m_processEvent;
 };
 
 class LoggingThread : public QThread
@@ -49,15 +98,15 @@ public:
     void deref();
 
 private:
-    ~LoggingThread();
-
     enum {
         Waiting       = (1 << 0),
         JoinRequested = (1 << 1)
     };
 
+    ~LoggingThread();
+
     UMEvent* m_queue;
-    UMLogger* m_loggers[UMApplicationMonitor::maxLoggers];
+    UMLogger* m_loggers[UMApplicationMonitorPrivate::maxLoggers];
     int m_loggerCount;
     QMutex m_mutex;
     QWaitCondition m_condition;
@@ -67,53 +116,43 @@ private:
     quint8 m_flags;
 };
 
-class ShowFilter : public QObject
-{
-    Q_OBJECT
-
-private:
-    bool eventFilter(QObject* object, QEvent* event) override;
-};
-
 class WindowMonitorDeleter : public QRunnable
 {
 public:
-    WindowMonitorDeleter(WindowMonitor* monitor)
-        : m_monitor(monitor) { DASSERT(monitor); }
+    WindowMonitorDeleter(UMApplicationMonitor* applicationMonitor, WindowMonitor* monitor)
+        : m_applicationMonitor(applicationMonitor)
+        , m_monitor(monitor) {
+        DASSERT(applicationMonitor == UMApplicationMonitor::instance());
+        DASSERT(m_applicationMonitor);
+        DASSERT(monitor);
+    }
     ~WindowMonitorDeleter();
 
     void run() override;
 
 private:
+    UMApplicationMonitor* m_applicationMonitor;
     WindowMonitor* m_monitor;
 };
 
 class WindowMonitorFlagSetter : public QRunnable
 {
 public:
-    WindowMonitorFlagSetter(WindowMonitor* monitor, quint8 flags)
-        : m_monitor(monitor), m_flags(flags) { DASSERT(monitor); }
+    WindowMonitorFlagSetter(WindowMonitor* monitor, quint32 flags)
+        : m_applicationMonitor(UMApplicationMonitor::instance())
+        , m_monitor(monitor)
+        , m_flags(flags) {
+        DASSERT(m_applicationMonitor);
+        DASSERT(monitor);
+    }
     ~WindowMonitorFlagSetter();
 
     void run() override {}
 
 private:
+    UMApplicationMonitor* m_applicationMonitor;
     WindowMonitor* m_monitor;
-    quint8 m_flags;
-};
-
-class WindowMonitorFilterSetter : public QRunnable
-{
-public:
-    WindowMonitorFilterSetter(WindowMonitor* monitor, quint8 filters)
-        : m_monitor(monitor), m_filters(filters) { DASSERT(monitor); }
-    ~WindowMonitorFilterSetter();
-
-    void run() override {}
-
-private:
-    WindowMonitor* m_monitor;
-    quint8 m_filters;
+    quint32 m_flags;
 };
 
 class WindowMonitor : public QObject
@@ -122,8 +161,8 @@ class WindowMonitor : public QObject
 
 public:
     WindowMonitor(
-        QQuickWindow* window, LoggingThread* loggingThread, quint8 flags, quint8 filters,
-        quint32 id);
+        UMApplicationMonitor* applicationMonitor, QQuickWindow* window,
+        LoggingThread* loggingThread, quint32 flags, quint32 id);
     ~WindowMonitor();
 
     QQuickWindow* window() const { return m_window; }
@@ -141,17 +180,21 @@ private Q_SLOTS:
 
 private:
     enum {
-        GpuResourcesInitialized = (1 << 8),
-        GpuTimerAvailable       = (1 << 9),
-        SizeChanged             = (1 << 10)
+        // Lower bit allowed is (1 << 16).
+        GpuResourcesInitialized = (1 << 16),
+        GpuTimerAvailable       = (1 << 17),
+        SizeChanged             = (1 << 18)
+        // Higher bit allowed is (1 << 31).
     };
 
     bool gpuResourcesInitialized() const { return m_flags & GpuResourcesInitialized; }
-    void setFlags(quint16 flags) { m_flags = flags | (m_flags & ~0xff); }
-    void setFilters(quint8 filters) { m_filters = filters; }
+    void setFlags(quint32 flags) {
+        m_flags = (m_flags & UMApplicationMonitorPrivate::WindowMonitorMask) | flags;
+    }
     void initializeGpuResources();
     void finalizeGpuResources();
 
+    UMApplicationMonitor* m_applicationMonitor;
     LoggingThread* m_loggingThread;
     QQuickWindow* m_window;
     GPUTimer m_gpuTimer;
@@ -160,14 +203,12 @@ private:
     QElapsedTimer m_sceneGraphTimer;
     QElapsedTimer m_deltaTimer;
     quint32 m_id;
-    quint16 m_flags;
-    quint8 m_filters;
+    quint32 m_flags;
     QSize m_frameSize;
     UMEvent m_frameEvent;
 
     friend class WindowMonitorDeleter;
     friend class WindowMonitorFlagSetter;
-    friend class WindowMonitorFilterSetter;
 };
 
 #endif  // APPLICATIONMONITOR_P_H
