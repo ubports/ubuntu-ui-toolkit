@@ -32,6 +32,7 @@
 
 class LoggingThread;
 class WindowMonitor;
+class QQuickWindow;
 
 class UMApplicationMonitorPrivate
 {
