@@ -435,12 +435,11 @@ Item {
         function initTestCase() {
             scrollingSwitch.checked = true;
             waitForRendering(bar);
-            waitForRendering(bar);
             compare(root.actionBarStyleName, "ScrollingActionBarStyle");
             compare(shortBar.styleName, "ScrollingActionBarStyle");
         }
 
-        function test_scrolling_style_data() {
+        function test_scroll_buttons_visibility_data() {
             // bar has 11 actions, shortBar has 2 actions.
             return [
                         {   tag: "Small number of actions",
@@ -477,26 +476,44 @@ Item {
                     ];
         }
 
-        function test_scrolling_style(data) {
-//            waitForRendering(data.bar);
+        function test_scroll_buttons_visibility(data) {
             compare(get_number_of_visible_buttons(data.bar), data.number_of_visible_buttons,
                     "Incorrect number of visible buttons.");
 
             var listView = findChild(data.bar, "actions_listview");
             listView.positionViewAtIndex(data.view_position, ListView.Center);
-//            waitForRendering(listView);
             compare(get_leading_scroll_button_visible(data.bar), data.leading_scroll_button_visible,
                     "Incorrect leading scroll button visibility.");
             compare(get_trailing_scroll_button_visible(data.bar), data.trailing_scroll_button_visible,
                     "Incorrect trailing scroll button visibility.");
 
-            // TODO TIM: Test scroll buttons visibility (and changes therein when scrolling).
-//            var leadingScrollButton =
-//            if (data.has_scrolling) {
+            // revert to the initial position:
+            listView.positionViewAtBeginning();
+        }
 
-//            } else {
-                // no leading or trailing scroll button.
-//            }
+        function test_scroll_buttons_functionality() {
+            var leadingScrollButton = findChild(bar, "leading_scroll_button");
+            var trailingScrollButton = findChild(bar, "trailing_scroll_button");
+
+            var listView = findChild(bar, "actions_listview");
+            var x = listView.contentX;
+            compare(get_leading_scroll_button_visible(bar), true,
+                    "Leading scroll button is not visible initially.");
+
+            mouseClick(leadingScrollButton, leadingScrollButton.width/2, leadingScrollButton.height/2);
+            wait(UbuntuAnimation.FastDuration + 100); // wait for scrolling animation.
+            verify(listView.contentX < x, "Clicking the leading scroll button does not scroll to the left.");
+
+            x = listView.contentX;
+            compare(get_trailing_scroll_button_visible(bar), true,
+                    "Trailing scroll button is not visible after scrolling to the left.");
+
+            mouseClick(trailingScrollButton, trailingScrollButton.width/2, trailingScrollButton.height/2);
+            wait(UbuntuAnimation.FastDuration + 100); // wait for scrolling animation.
+            verify(listView.contentX > x, "Clicking the leading scroll button does not scroll to the left.");
+
+            // revert to the initial position:
+            listView.positionViewAtBeginning();
         }
     }
 }
