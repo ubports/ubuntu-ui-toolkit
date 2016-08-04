@@ -259,11 +259,13 @@ Item {
     }
 
     UbuntuTestCase {
-        id: testCase
+        id: actionBarTestCase
         name: "ActionBarApi"
         when: windowShown
 
         function initTestCase() {
+            scrollingSwitch.checked = false;
+            waitForRendering(bar);
             compare(root.actionBarStyleName, "ActionBarStyle");
             compare(shortBar.styleName, "ActionBarStyle");
             compare(shortBar.numberOfSlots, 3, "Default number of slots should be 3.");
@@ -271,7 +273,6 @@ Item {
 
         function init() {
             // revert to initial values
-            scrollingSwitch.checked = false;
             bar.numberOfSlots = 3;
             shortBar.numberOfSlots = 3;
             bar.actions = root.actionList;
@@ -284,37 +285,9 @@ Item {
             return overflowButton !== null && overflowButton.visible
         }
 
-        function get_scroll_button_visible(actionBar, name) {
-            compare(actionBar.styleName, "ScrollingActionBarStyle", "Only scrolling action bar has scroll buttons.");
-            var button = findChild(actionBar, name);
-            verify(button !== null, "Style has no button with objectName " + name);
-            var barStyle = actionBar.__styleInstance;
-            wait(barStyle.scrollButtonFadeDuration); // wait for potential animation to finish.
-            if (button.opacity === 0.0) {
-                return false;
-            } else {
-                compare(button.opacity, 1.0, "Scroll button is semi-transparent.");
-                return true;
-            }
-        }
-
-        function get_leading_scroll_button_visible(actionBar) {
-            return get_scroll_button_visible(actionBar, "leading_scroll_button");
-        }
-
-        function get_trailing_scroll_button_visible(actionBar) {
-            return get_scroll_button_visible(actionBar, "trailing_scroll_button");
-        }
-
         function get_number_of_visible_buttons(actionBar) {
-            if (actionBar.styleName === "ActionBarStyle") {
-                var repeater = findChild(actionBar, "actions_repeater");
-                return repeater.count;
-            } else {
-                compare(actionBar.styleName, "ScrollingActionBarStyle", "Unknown style name.");
-                var listView = findChild(actionBar, "actions_listview");
-                return listView.count;
-            }
+            var repeater = findChild(actionBar, "actions_repeater");
+            return repeater.count;
         }
 
         function get_number_of_actions_in_overflow(actionBar) {
@@ -351,7 +324,7 @@ Item {
         function test_actions_visibility_data() {
             // bar has 11 actions, shortBar has 2 actions.
             return [
-                        {   tag: "Small number of actions < number of slots.",
+                        {   tag: "Small number of actions < number of slots",
                             bar: shortBar,
                             number_of_slots: 3,
                             number_of_visible_buttons: 2,
@@ -359,42 +332,42 @@ Item {
                             number_of_actions_in_overflow: 0
                         },
                         {
-                            tag: "Small number of actions = number of slots.",
+                            tag: "Small number of actions = number of slots",
                             bar: shortBar,
                             number_of_slots: 2,
                             number_of_visible_buttons: 2,
                             overflow_button_visible: false,
                             number_of_actions_in_overflow: 0
                         },
-                        {   tag: "Number of actions > number of slots.",
+                        {   tag: "Number of actions > number of slots",
                             bar: bar,
                             number_of_slots: 3,
                             number_of_visible_buttons: 3,
                             overflow_button_visible: true,
                             number_of_actions_in_overflow: actionList.length - 2
                         },
-                        {   tag: "Number of slots < 1.",
+                        {   tag: "Number of slots < 1",
                             bar: bar,
                             number_of_slots: 0,
                             number_of_visible_buttons: 1,
                             overflow_button_visible: true,
                             number_of_actions_in_overflow: actionList.length
                         },
-                        {   tag: "Number of actions = number of slots.",
+                        {   tag: "Number of actions = number of slots",
                             bar: bar,
                             number_of_slots: actionList.length,
                             number_of_visible_buttons: actionList.length,
                             overflow_button_visible: false,
                             number_of_actions_in_overflow: 0
                         },
-                        {   tag: "Number of actions + 1 = number of slots.",
+                        {   tag: "Number of actions + 1 = number of slots",
                             bar: bar,
                             number_of_slots: actionList.length - 1,
                             number_of_visible_buttons: actionList.length - 1,
                             overflow_button_visible: true,
                             number_of_actions_in_overflow: 2
                         },
-                        {   tag: "Number of actions + 2 = number of slots.",
+                        {   tag: "Number of actions + 2 = number of slots",
                             bar: bar,
                             number_of_slots: actionList.length - 2,
                             number_of_visible_buttons: actionList.length - 2,
@@ -423,29 +396,99 @@ Item {
             button = findChild(customDelegateBar, "custom_delegate_button_" + n);
             compare(button, null, "Too many buttons.");
         }
+    }
+
+    UbuntuTestCase {
+        id: scrollingActionBarTestCase
+        name: "ScrollingActionBarApi"
+        when: windowShown
+
+        function get_scroll_button_visible(actionBar, name) {
+            compare(actionBar.styleName, "ScrollingActionBarStyle", "Only scrolling action bar has scroll buttons.");
+            var button = findChild(actionBar, name);
+            verify(button !== null, "Style has no button with objectName " + name);
+            var barStyle = actionBar.__styleInstance;
+            wait(barStyle.scrollButtonFadeDuration + 100); // wait for potential animation to finish.
+            if (button.opacity === 0.0) {
+                return false;
+            } else {
+                compare(button.opacity, 1.0, "Scroll button is semi-transparent.");
+                return true;
+            }
+        }
+
+        function get_leading_scroll_button_visible(actionBar) {
+            return get_scroll_button_visible(actionBar, "leading_scroll_button");
+        }
+
+        function get_trailing_scroll_button_visible(actionBar) {
+            return get_scroll_button_visible(actionBar, "trailing_scroll_button");
+        }
+
+        function get_number_of_visible_buttons(actionBar) {
+            compare(actionBar.styleName, "ScrollingActionBarStyle", "Unknown style name.");
+            var listView = findChild(actionBar, "actions_listview");
+            return listView.count;
+        }
+
+
+        function initTestCase() {
+            scrollingSwitch.checked = true;
+            waitForRendering(bar);
+            waitForRendering(bar);
+            compare(root.actionBarStyleName, "ScrollingActionBarStyle");
+            compare(shortBar.styleName, "ScrollingActionBarStyle");
+        }
 
         function test_scrolling_style_data() {
             // bar has 11 actions, shortBar has 2 actions.
             return [
-                        {   tag: "Small number of actions.",
+                        {   tag: "Small number of actions",
                             bar: shortBar,
                             number_of_visible_buttons: shortActionList.length,
-                            has_scrolling: false
+                            view_position: 0,
+                            leading_scroll_button_visible: false,
+                            trailing_scroll_button_visible: false
                         },
                         {
-                            tag: "Large number of actions.",
+                            tag: "Can scroll to the left",
                             bar: bar,
                             number_of_visible_buttons: actionList.length,
-                            has_scrolling: true
+                            view_position: 0, // the right-most action
+                            leading_scroll_button_visible: true,
+                            trailing_scroll_button_visible: false
+                        },
+                        {
+                            tag: "Can scroll to the right",
+                            bar: bar,
+                            number_of_visible_buttons: actionList.length,
+                            view_position: actionList.length - 1, // the left-most action
+                            leading_scroll_button_visible: false,
+                            trailing_scroll_button_visible: true
+                        },
+                        {
+                            tag: "Can scroll both ways",
+                            bar: bar,
+                            number_of_visible_buttons: actionList.length,
+                            view_position: actionList.length / 2,
+                            leading_scroll_button_visible: true,
+                            trailing_scroll_button_visible: true
                         }
                     ];
         }
 
         function test_scrolling_style(data) {
-            scrollingSwitch.checked = true;
-            waitForRendering(data.bar);
+//            waitForRendering(data.bar);
             compare(get_number_of_visible_buttons(data.bar), data.number_of_visible_buttons,
                     "Incorrect number of visible buttons.");
+
+            var listView = findChild(data.bar, "actions_listview");
+            listView.positionViewAtIndex(data.view_position, ListView.Center);
+//            waitForRendering(listView);
+            compare(get_leading_scroll_button_visible(data.bar), data.leading_scroll_button_visible,
+                    "Incorrect leading scroll button visibility.");
+            compare(get_trailing_scroll_button_visible(data.bar), data.trailing_scroll_button_visible,
+                    "Incorrect trailing scroll button visibility.");
 
             // TODO TIM: Test scroll buttons visibility (and changes therein when scrolling).
 //            var leadingScrollButton =
