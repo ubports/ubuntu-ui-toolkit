@@ -253,7 +253,7 @@ void UCSwipeAreaPrivate::setMaxTime(int value)
     }
 }
 
-void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *timer)
+void UCSwipeAreaPrivate::setRecognitionTimer(UG_PREPEND_NAMESPACE(AbstractTimer) *timer)
 {
     int interval = 0;
     bool timerWasRunning = false;
@@ -273,7 +273,7 @@ void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *time
     recognitionTimer = timer;
     timer->setInterval(interval);
     timer->setSingleShot(wasSingleShot);
-    QObject::connect(timer, &UbuntuGestures::AbstractTimer::timeout,
+    QObject::connect(timer, &UG_PREPEND_NAMESPACE(AbstractTimer)::timeout,
             q, &UCSwipeArea::rejectGesture);
     if (timerWasRunning) {
         recognitionTimer->start();

@@ -155,6 +155,7 @@ int main(int argc, const char *argv[])
     // The default constructor affects the components tree (autopilot vis)
     if (args.isSet(_engine) || !testCaseImport.isEmpty()) {
         QQuickView *view(new QQuickView());
+        engine = view->engine();
         if (args.isSet(_import)) {
             QStringList paths = args.values(_import);
             Q_FOREACH(const QString &path, paths) {
@@ -176,7 +177,6 @@ int main(int argc, const char *argv[])
         }
 
         window.reset(view);
-        engine = view->engine();
     } else {
         engine = new QQmlEngine();
         if (args.isSet(_import)) {
