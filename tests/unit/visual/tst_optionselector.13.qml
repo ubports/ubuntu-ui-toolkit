@@ -84,10 +84,10 @@ Page {
 
     ListModel {
         id: customModel
-        ListElement { name: "Name 1"; description: "Description 1"; image: "../../resources/optionselector/test.png" }
-        ListElement { name: "Name 2"; description: "Description 2"; image: "../../resources/optionselector/test.png" }
-        ListElement { name: "Name 3"; description: "Description 3"; image: "../../resources/optionselector/test.png" }
-        ListElement { name: "Name 4"; description: "Description 4"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Virgin Mary"; description: "With plenty hot sauce"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Shirley Temple"; description: "Grenadine for the color"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Ipanema"; description: "Non-alcoholic version of Caipirinha"; image: "../../resources/optionselector/test.png" }
+        ListElement { name: "Millionaire Sour"; description: "Swaps ginger ale for Irish whiskey"; image: "../../resources/optionselector/test.png" }
     }
 
     SignalSpy {
@@ -112,36 +112,36 @@ Page {
         name: "OptionSelectorAPI"
         when: windowShown
 
-        function test_expanded() {
-            var listContainer = findChild(selector, "listContainer");
-
-            selector.expanded = false;
-            compare(listContainer.currentlyExpanded, false, "expanded should be true if list is an expanded one");
-            compare(listContainer.state, "collapsed", "state should be collapsed");
-
-            selector.expanded = true;
-            compare(listContainer.currentlyExpanded, true, "expanded should be false if list is an expanded one");
-            compare(listContainer.state, "expanded", "state should be expanded");
+        function test_arrow_select_data() {
+            return [
+                // Collapsed: no movement
+                { 'tag': 'Collapsed/Down', key: Qt.Key_Down, index: 0, newIndex: 0, expanded: false },
+                { 'tag': 'Collapsed/Up', key: Qt.Key_Up, index: 3, newIndex: 3, expanded: false },
+                // Expanded: arrows select
+                { 'tag': 'Expanded/Up/First', key: Qt.Key_Up, index: 0, newIndex: 0, expanded: true },
+                { 'tag': 'Expanded/Down/First', key: Qt.Key_Down, index: 0, newIndex: 1, expanded: true },
+                { 'tag': 'Expanded/Up/Last', key: Qt.Key_Up, index: 3, newIndex: 2, expanded: true },
+                { 'tag': 'Expanded/Down/Last', key: Qt.Key_Down, index: 3, newIndex: 3, expanded: true },
+                // Expand and collapse on press
+                { 'tag': 'Expand(Enter)', key: Qt.Key_Enter, index: 0, expanded: false, newExpanded: true },
+                { 'tag': 'Expand(Return)', key: Qt.Key_Return, index: 0, expanded: false, newExpanded: true },
+                { 'tag': 'Expand(Space)', key: Qt.Key_Space, index: 0, expanded: false, newExpanded: true },
+                { 'tag': 'Collapse(Enter)', key: Qt.Key_Enter, index: 0, expanded: true, newExpanded: false },
+                { 'tag': 'Collapse(Return)', key: Qt.Key_Return, index: 0, expanded: true, newExpanded: false },
+                { 'tag': 'Collapse(Space)', key: Qt.Key_Space, index: 0, expanded: true, newExpanded: false },
+            ]
         }
-
-        function test_text() {
-            var newText = "Hello World!";
-            selector.text = newText;
-            compare(selector.text, newText, "set/get");
-        }
-
-        function test_0_selectedIndex() {
-            compare(selector.selectedIndex, 0, "selectedIndex is 0 by default");
-        }
-
-        function test_model() {
-            selector.delegate = null;
-            selector.model = undefined;
-            var newValues = ["value0","value1","value2","value3"];
-            selector.model = newValues;
-            compare(selector.model, newValues, "set/get");
-            selector.model = customModel;
-            selector.delegate = selectorDelegate;
+        function test_arrow_select(data) {
+            selector.forceActiveFocus();
+            selector.currentlyExpanded = data.expanded;
+            selector.selectedIndex = data.index;
+            waitForRendering(selector);
+            keyClick(data.key);
+            waitForRendering(selector);
+            if (data.newIndex)
+                compare(selector.selectedIndex, data.newIndex, 'Wrong index after key press');
+            if (data.newExpanded)
+                compare(selector.currentlyExpanded, data.newExpanded, data.newExpanded ? 'Not expanded' : 'Not collapsed');
         }
     }
 }
