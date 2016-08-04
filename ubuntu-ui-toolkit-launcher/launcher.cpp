@@ -213,47 +213,39 @@ int main(int argc, const char *argv[])
     }
 
     // Application monitoring.
-    const bool metricsOverlay = args.isSet(_metricsOverlay);
-    const bool metricsLogging = args.isSet(_metricsLogging);
-    if (metricsOverlay || metricsLogging) {
-        UMApplicationMonitor::MonitoringFlags flags = 0;
-        if (metricsLogging) {
-            QString device = args.value(_metricsLogging);
-            UMLogger* logger = (device.isEmpty() || device == "stdout")
-                ? new UMFileLogger(stdout) : new UMFileLogger(device);
-            if (logger->isOpen()) {
-                flags |= UMApplicationMonitor::Logging;
-                UMApplicationMonitor::installLogger(logger);
-            } else {
-                delete logger;
+    UMApplicationMonitor* applicationMonitor = UMApplicationMonitor::instance();
+    if (args.isSet(_metricsLoggingFilter)) {
+        QStringList filterList = QString(args.value(_metricsLoggingFilter)).split(
+            QChar(','), QString::SkipEmptyParts);
+        UMApplicationMonitor::LoggingFilters filter = 0;
+        const int size = filterList.size();
+        for (int i = 0; i < size; ++i) {
+            if (filterList[i] == "*") {
+                filter |= UMApplicationMonitor::AllEvents;
+                break;
+            } else if (filterList[i] == "window") {
+                filter |= UMApplicationMonitor::WindowEvent;
+            } else if (filterList[i] == "process") {
+                filter |= UMApplicationMonitor::ProcessEvent;
+            } else if (filterList[i] == "frame") {
+                filter |= UMApplicationMonitor::FrameEvent;
             }
         }
-        if (args.isSet(_metricsLoggingFilter)) {
-            QStringList filterList = QString(args.value(_metricsLoggingFilter)).split(
-                QChar(','), QString::SkipEmptyParts);
-            UMApplicationMonitor::LoggingFilters filter = 0;
-            const int size = filterList.size();
-            for (int i = 0; i < size; ++i) {
-                if (filterList[i] == "*") {
-                    filter |= UMApplicationMonitor::AllEvents;
-                    break;
-                } else if (filterList[i] == "window") {
-                    filter |= UMApplicationMonitor::WindowEvent;
-                } else if (filterList[i] == "process") {
-                    filter |= UMApplicationMonitor::ProcessEvent;
-                } else if (filterList[i] == "frame") {
-                    filter |= UMApplicationMonitor::FrameEvent;
-                }
-            }
-            UMApplicationMonitor::setLoggingFilter(filter);
+        applicationMonitor->setLoggingFilter(filter);
+    }
+    if (args.isSet(_metricsLogging)) {
+        QString device = args.value(_metricsLogging);
+        UMLogger* logger = (device.isEmpty() || device == "stdout")
+            ? new UMFileLogger(stdout) : new UMFileLogger(device);
+        if (logger->isOpen()) {
+            applicationMonitor->installLogger(logger);
+            applicationMonitor->setLogging(true);
+        } else {
+            delete logger;
         }
-        if (metricsOverlay) {
-            flags |= UMApplicationMonitor::Overlay;
-        }
-        UMApplicationMonitor::setFlags(flags);
-        if (!UMApplicationMonitor::isActive()) {
-            UMApplicationMonitor::start();
-        }
+    }
+    if (args.isSet(_metricsOverlay)) {
+        applicationMonitor->setOverlay(true);
     }
 
     if (window->title().isEmpty())
@@ -270,4 +262,3 @@ int main(int argc, const char *argv[])
 
     return application.exec();
 }
-

@@ -25,6 +25,8 @@
 #define WARN(...) qWarning(__VA_ARGS__)
 #define ASSERT(cond) do { if (Q_UNLIKELY(!(cond))) \
     qFatal("Assertion `"#cond"' failed in file %s, line %d", __FILE__, __LINE__); } while (0)
+#define ASSERT_X(cond,message) do { if (Q_UNLIKELY(!(cond))) \
+    qFatal("Assertion "#message" failed in file %s, line %d", __FILE__, __LINE__); } while (0)
 #define NOT_REACHED() \
     qFatal("Assertion `not reached' failed in file %s, line %d", __FILE__, __LINE__);
 
@@ -33,11 +35,13 @@
 #define DWARN(...) WARN(__VA_ARGS__)
 #define DNOT_REACHED(...) NOT_REACHED()
 #define DASSERT(cond) ASSERT(cond)
+#define DASSERT_X(cond,message) ASSERT(cond, message)
 #else
 #define DLOG(...) qt_noop()
 #define DWARN(...) qt_noop()
 #define DNOT_REACHED(...) qt_noop()
 #define DASSERT(cond) qt_noop()
+#define DASSERT_X(cond,message) qt_noop()
 #endif
 
 // Compile-time constant representing the number of elements in an array.

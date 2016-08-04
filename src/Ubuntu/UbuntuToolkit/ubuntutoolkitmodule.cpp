@@ -267,47 +267,40 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     module->registerWindowContextProperty();
 
     // Application monitoring.
-    const bool metricsOverlay = qEnvironmentVariableIsSet("UC_METRICS_OVERLAY");
-    const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
+    UMApplicationMonitor* applicationMonitor = UMApplicationMonitor::instance();
     const QByteArray metricsLoggingFilter = qgetenv("UC_METRICS_LOGGING_FILTER");
-    if (metricsOverlay || !metricsLogging.isNull()) {
-        UMApplicationMonitor::MonitoringFlags flags = 0;
-        if (!metricsLogging.isNull()) {
-            UMLogger* logger = (metricsLogging.isEmpty() || metricsLogging == "stdout")
-                ? new UMFileLogger(stdout) : new UMFileLogger(metricsLogging);
-            if (logger->isOpen()) {
-                flags |= UMApplicationMonitor::Logging;
-                UMApplicationMonitor::installLogger(logger);
-            } else {
-                delete logger;
+    if (!metricsLoggingFilter.isNull()) {
+        QStringList filterList = QString(metricsLoggingFilter).split(
+            QChar(','), QString::SkipEmptyParts);
+        UMApplicationMonitor::LoggingFilters filter = 0;
+        const int size = filterList.size();
+        for (int i = 0; i < size; ++i) {
+            if (filterList[i] == "*") {
+                filter |= UMApplicationMonitor::AllEvents;
+                break;
+            } else if (filterList[i] == "window") {
+                filter |= UMApplicationMonitor::WindowEvent;
+            } else if (filterList[i] == "process") {
+                filter |= UMApplicationMonitor::ProcessEvent;
+            } else if (filterList[i] == "frame") {
+                filter |= UMApplicationMonitor::FrameEvent;
             }
         }
-        if (!metricsLoggingFilter.isNull()) {
-            QStringList filterList = QString(metricsLoggingFilter).split(
-                QChar(','), QString::SkipEmptyParts);
-            UMApplicationMonitor::LoggingFilters filter = 0;
-            const int size = filterList.size();
-            for (int i = 0; i < size; ++i) {
-                if (filterList[i] == "*") {
-                    filter |= UMApplicationMonitor::AllEvents;
-                    break;
-                } else if (filterList[i] == "window") {
-                    filter |= UMApplicationMonitor::WindowEvent;
-                } else if (filterList[i] == "process") {
-                    filter |= UMApplicationMonitor::ProcessEvent;
-                } else if (filterList[i] == "frame") {
-                    filter |= UMApplicationMonitor::FrameEvent;
-                }
-            }
-            UMApplicationMonitor::setLoggingFilter(filter);
+        applicationMonitor->setLoggingFilter(filter);
+    }
+    const QByteArray metricsLogging = qgetenv("UC_METRICS_LOGGING");
+    if (!metricsLogging.isNull()) {
+        UMLogger* logger = (metricsLogging.isEmpty() || metricsLogging == "stdout")
+            ? new UMFileLogger(stdout) : new UMFileLogger(metricsLogging);
+        if (logger->isOpen()) {
+            applicationMonitor->installLogger(logger);
+            applicationMonitor->setLogging(true);
+        } else {
+            delete logger;
         }
-        if (metricsOverlay) {
-            flags |= UMApplicationMonitor::Overlay;
-        }
-        UMApplicationMonitor::setFlags(flags);
-        if (!UMApplicationMonitor::isActive()) {
-            UMApplicationMonitor::start();
-        }
+    }
+    if (qEnvironmentVariableIsSet("UC_METRICS_OVERLAY")) {
+        applicationMonitor->setOverlay(true);
     }
 
     // register performance monitor

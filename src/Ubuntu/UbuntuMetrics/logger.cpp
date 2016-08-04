@@ -22,11 +22,11 @@
 #include <QtCore/QTime>
 
 UMFileLogger::UMFileLogger(const QString& fileName, bool parsable)
-    : d_ptr(new FileLoggerPrivate(fileName, parsable))
+    : d_ptr(new UMFileLoggerPrivate(fileName, parsable))
 {
 }
 
-FileLoggerPrivate::FileLoggerPrivate(const QString& fileName, bool parsable)
+UMFileLoggerPrivate::UMFileLoggerPrivate(const QString& fileName, bool parsable)
 {
     if (QDir::isRelativePath(fileName)) {
         m_file.setFileName(QString(QDir::currentPath() + QDir::separator() + fileName));
@@ -51,11 +51,11 @@ FileLoggerPrivate::FileLoggerPrivate(const QString& fileName, bool parsable)
 }
 
 UMFileLogger::UMFileLogger(FILE* fileHandle, bool parsable)
-    : d_ptr(new FileLoggerPrivate(fileHandle, parsable))
+    : d_ptr(new UMFileLoggerPrivate(fileHandle, parsable))
 {
 }
 
-FileLoggerPrivate::FileLoggerPrivate(FILE* fileHandle, bool parsable)
+UMFileLoggerPrivate::UMFileLoggerPrivate(FILE* fileHandle, bool parsable)
 {
     if (m_file.open(fileHandle, QIODevice::WriteOnly | QIODevice::Text | QIODevice::Unbuffered)) {
         m_textStream.setDevice(&m_file);
@@ -85,7 +85,7 @@ UMFileLogger::~UMFileLogger()
 
 bool UMFileLogger::isOpen()
 {
-    return !!(d_func()->m_flags & FileLoggerPrivate::Open);
+    return !!(d_func()->m_flags & UMFileLoggerPrivate::Open);
 }
 
 // FIXME(loicm) We should maybe get rid of QTextStream and directly write to the
@@ -96,7 +96,7 @@ void UMFileLogger::log(const UMEvent& event)
     d_func()->log(event);
 }
 
-void FileLoggerPrivate::log(const UMEvent& event)
+void UMFileLoggerPrivate::log(const UMEvent& event)
 {
     if (m_flags & Open) {
         // ANSI/VT100 terminal codes.
@@ -190,16 +190,16 @@ void FileLoggerPrivate::log(const UMEvent& event)
 
 void UMFileLogger::setParsable(bool parsable)
 {
-    Q_D(FileLogger);
+    Q_D(UMFileLogger);
 
     if (parsable) {
-        d->m_flags |= FileLoggerPrivate::Parsable;
+        d->m_flags |= UMFileLoggerPrivate::Parsable;
     } else {
-        d->m_flags &= ~FileLoggerPrivate::Parsable;
+        d->m_flags &= ~UMFileLoggerPrivate::Parsable;
     }
 }
 
 bool UMFileLogger::parsable()
 {
-    return !!(d_func()->m_flags & FileLoggerPrivate::Parsable);
+    return !!(d_func()->m_flags & UMFileLoggerPrivate::Parsable);
 }

@@ -22,7 +22,7 @@
 #include <QtCore/QFile>
 
 class UMEvent;
-class FileLoggerPrivate;
+class UMFileLoggerPrivate;
 
 // Log events to a specific device.
 class UBUNTU_METRICS_EXPORT UMLogger
@@ -52,8 +52,8 @@ public:
     bool parsable();
 
 private:
-    FileLoggerPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(FileLogger);
+    UMFileLoggerPrivate* const d_ptr;
+    Q_DECLARE_PRIVATE(UMFileLogger);
 };
 
 #endif  // LOGGER_H
