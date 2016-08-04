@@ -22,13 +22,6 @@ import QtGraphicalEffects 1.0
 Style.ActionBarStyle {
     id: actionBarStyle
     implicitHeight: units.gu(5)
-    //        implicitWidth: units.gu(4) * styledItem.numberOfItems
-    implicitWidth: units.gu(36) // 9 * defaultDelegate.width
-
-    // FIXME: These 3 properties are not used in this style.
-//    overflowIconName: "contextual-menu" // FIXME: unused
-//    overflowText: "More" // FIXME: unused
-//    defaultNumberOfSlots: 3
 
     backgroundColor: theme.palette.normal.background
     buttons {
@@ -84,12 +77,10 @@ Style.ActionBarStyle {
     // The duration of the fade-in/out of the scroll buttons.
     property int scrollButtonFadeDuration: UbuntuAnimation.FastDuration
 
-//    Item {
     Rectangle {
         color: actionBarStyle.backgroundColor
         id: listViewContainer
         anchors.fill: parent
-//        clip: true
 
         property real listViewMargins: units.gu(2)
 
@@ -122,15 +113,12 @@ Style.ActionBarStyle {
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
 
-//            onCurrentIndexChanged: print("current index = "+currentIndex)
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
                 id: contentXAnim
                 target: actionsListView
                 property: "contentX"
                 duration: UbuntuAnimation.FastDuration
-//                velocity: units.gu(20)
-//                onRunningChanged: print("running = "+running)
             }
 
             // direction == 1 to show more icons on the left
@@ -171,7 +159,7 @@ Style.ActionBarStyle {
                 Icon {
                     // FIXME TIM: Use new theme icon from
                     //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
-                    //  after it lands in the theme.
+                    //  after it lands in the image/archive.
                     anchors.centerIn: parent
                     width: units.gu(1)
                     height: units.gu(1)
