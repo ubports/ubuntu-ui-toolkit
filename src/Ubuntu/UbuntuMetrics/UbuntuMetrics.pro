@@ -2,7 +2,6 @@ TEMPLATE=lib
 TARGET=UbuntuMetrics
 QT += core-private gui-private quick-private
 CONFIG += dll no_keywords c++11
-INCLUDEPATH += $$PWD/..  # To be able to include <UbuntuMetrics/*.h> in public headers.
 
 contains(QT_CONFIG, opengles2) {
     CONFIG += egl
