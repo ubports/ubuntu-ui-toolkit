@@ -18,4 +18,4 @@
 
 #define TRACEPOINT_CREATE_PROBES
 #define TRACEPOINT_DEFINE
-#include "tracepoints_p.h"
+#include "tracepoints.h"

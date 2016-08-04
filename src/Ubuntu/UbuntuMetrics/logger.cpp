@@ -23,7 +23,7 @@
 #include <dlfcn.h>
 #define TRACEPOINT_DEFINE
 #define TRACEPOINT_PROBE_DYNAMIC_LINKAGE
-#include "lttng/lttng_p.h"
+#include "lttng/lttng.h"
 
 UMFileLogger::UMFileLogger(const QString& fileName, bool parsable)
     : d_ptr(new UMFileLoggerPrivate(fileName, parsable))

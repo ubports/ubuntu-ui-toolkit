@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-#include "tracepoints_p.h"
+#include "tracepoints.h"
 
 static void logProcessEvent(UMLTTNGProcessEvent* event)
 {

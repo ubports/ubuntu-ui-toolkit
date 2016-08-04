@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LTTNG_P_H
-#define LTTNG_P_H
+#ifndef LTTNG_H
+#define LTTNG_H
 
 #include <stdint.h>
 
@@ -55,4 +55,4 @@ struct _UMLTTNGWindowEvent {
     uint16_t height;
 };
 
-#endif  // LTTNG_P_H
+#endif  // LTTNG_H
