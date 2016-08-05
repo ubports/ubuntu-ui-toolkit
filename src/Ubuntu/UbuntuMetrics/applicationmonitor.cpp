@@ -549,7 +549,6 @@ void UMApplicationMonitor::clearLoggers(bool free)
     }
 }
 
-// static.
 void UMApplicationMonitor::setUpdateInterval(UMEvent::Type type, int interval)
 {
     Q_D(UMApplicationMonitor);
