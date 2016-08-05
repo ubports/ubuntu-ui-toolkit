@@ -245,7 +245,7 @@ Item {
 
         function test_0_defaults() {
             verify(defaults.contentItem !== null, "Defaults is null");
-            compare(defaults.color, "#000000", "Transparent by default");
+            compare(defaults.color, Qt.rgba(0.0, 0.0, 0.0, 0.0), "Transparent by default");
             compare(defaults.highlightColor, theme.palette.selected.background, "theme.palette.selected.background color by default")
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.divider.visible, true, "divider is visible by default");
