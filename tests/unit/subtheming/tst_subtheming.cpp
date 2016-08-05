@@ -140,7 +140,11 @@ private Q_SLOTS:
 
     void test_create_without_engine()
     {
+#if !defined(UBUNTUTOOLKIT_NO_NAMESPACE)
         QTest::ignoreMessage(QtCriticalMsg, "The item UbuntuToolkit::UCLabel was created without a valid QML Engine. Styling will not be possible.");
+#else
+        QTest::ignoreMessage(QtCriticalMsg, "The item UCLabel was created without a valid QML Engine. Styling will not be possible.");
+#endif
         QScopedPointer<UCLabel> item(new UCLabel);
         QVERIFY(!item->getTheme());
     }

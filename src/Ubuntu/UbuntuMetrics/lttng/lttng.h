@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LTTNG_P_H
-#define LTTNG_P_H
+#ifndef LTTNG_H
+#define LTTNG_H
 
 #include <stdint.h>
 
@@ -57,12 +57,12 @@ struct _UMLTTNGWindowEvent {
     uint16_t height;
 };
 
-// Keep the size of the array in sync with UMGenericEvent::maxStringSize!
-// Unfortunately, a static assert is not possible here since we it's C and we
-// can't include the events.h C++ header...
 struct _UMLTTNGGenericEvent {
     uint32_t id;
+    // Keep the size in sync with UMGenericEvent::maxStringSize. Unfortunately,
+    // a static assert is not possible here since it's C and we can't include
+    // the events.h C++ header.
     char string[64];
 };
 
-#endif  // LTTNG_P_H
+#endif  // LTTNG_H

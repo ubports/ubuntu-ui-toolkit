@@ -40,6 +40,11 @@ UT_NAMESPACE_BEGIN
     ListItemLayout is essentially a \l {SlotsLayout} with a predefined
     \l {SlotsLayout::mainSlot} that provides (up to) 3 Labels automatically laid out
     according to our UI guidelines.
+
+    \b Note: those labels may have properties whose default value is different
+    from what is used by the standard Label component. The default wrapMode,
+    for instance, is different. Have a look at \l {Labels' properties} section.
+
     This main slot has been optimized to cover most of the usecases
     without compromising performance (read more in \l {Optimizing memory consumption}).
 
@@ -58,6 +63,28 @@ UT_NAMESPACE_BEGIN
     Because we think flexibility is an important value of our UI components,
     we made it possible to tweak the position of each slot by modifying
     its attached properties (see \l {Advanced layout tweaks}).
+
+    \b Note that if you're wrapping the ListItemLayout in a container such
+    as \l {ListItem}, \b {you will have to specify the height of the container so that
+    it follows ListItemLayout's height}, otherwise the layout content may appear clipped or
+    not vertically centered.
+
+    See \b {\l {Resizing the layout} {here}} for more details. Here's an example:
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Component 1.3
+    ListItem {
+        //CORRECT, ListItem will be tall enough to accomodate all the content
+        height: layout.height + (divider.visible ? divider.height : 0)
+
+        ListItemLayout {
+            id: layout
+            title.text: "Hello developers!"
+            subtitle.text: "I am a ListItemLayout"
+            summary.text: "I resize automatically to accomodate all the elements I hold. My parents should track my height property!"
+        }
+    }
+    \endqml
 
     If you need a progression symbol in your list item,
     just add \l ProgressionSlot as a child of your ListItemLayout.
@@ -186,6 +213,39 @@ UT_NAMESPACE_BEGIN
     to have the same height even without having to fill \l subtitle's (or summary's)
     text with dummy content.
 
+    \section1 Labels' properties
+
+    ListItemLayout's labels are the same component as \l {Label}, but with slightly different
+    default properties. Moreover, \l Label derives from \l {Text}. As a consequence,
+    you can access and override all the properties provided by \l {Text} and \l {Label}, if needed. Please
+    refer to \l {Text}'s and \l {Label}'s documentation to see the list of all the properties.
+
+    The default values for ListItemLayout's labels are defined in the documentation of each label.
+    See \l title, \l subtitle and \l summary.
+
+    \b Note: if you want to change the elide mode of a label to something other than \c Text.ElideRight,
+    make sure its \c wrapMode is set to \c Text.NoWrap. See \l Text::wrapMode for more details.
+
+    \qml
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+    Item {
+        width: units.gu(30)
+        height: units.gu(50)
+        ListItem {
+            height: layout.height + (divider.visible ? divider.height : 0)
+            ListItemLayout {
+                id: fileLayout
+                //Let's change the default elide mode to Text.ElideMiddle
+                title.elide: Text.ElideMiddle
+                //ElideMiddle only works if there is no wrapping (see Text::wrapMode doc)
+                title.wrapMode: Text.NoWrap
+                title.text: "Red Roses run no risk, sir, on nurses order."
+            }
+        }
+    }
+    \endqml
+
     \section1 Optimizing memory consumption
 
     In order to minimize memory consumption, the Labels in the \l SlotsLayout::mainSlot
@@ -221,6 +281,7 @@ UT_NAMESPACE_BEGIN
 
     \qml
     ListItem {
+        height: layout.height + (divider.visible ? divider.height : 0)
         property alias titleText: layout.title.text
         ListItemLayout {
             id: layout
@@ -301,13 +362,28 @@ UCListItemLayout::UCListItemLayout(QQuickItem *parent)
     Text component, as shown in the following example:
 
     \qml
-    Item {
-        ListItemLayout {
-            title.text: "Hello"
-            title.color: "yellow"
-        }
+    import QtQuick 2.4
+    import Ubuntu.Components 1.3
+    ListItemLayout {
+        height: units.gu(10)
+        width: units.gu(30)
+        title.color: UbuntuColors.orange
+        title.maximumLineCount: 3
+        title.text: "Red Roses\nrun no risk,\nsir, on nurses order."
     }
     \endqml
+
+    The default \l Text::elide value for \l title is \c Text.ElideRight.
+    
+    The default \l Text::wrapMode is \c Text.WrapAnywhere.
+    
+    That means, for instance, that if you want to use a different elide mode, you also have
+    to set wrapMode to \c Text.NoWrap. Refer to the official \l Text documentation for
+    further details.
+    
+    The default \l Label::textSize is \c Label.Medium.
+    
+    The rest of the properties have the same default values as \l Label.
 */
 UCLabel *UCListItemLayout::title()
 {
@@ -320,6 +396,14 @@ UCLabel *UCListItemLayout::title()
     This property defines the subtitle label and its properties.
     Styling and font properties can be set by using the prefix
     \c {subtitle.} in a similar way as shown in \l title.
+
+    The default \l Text::elide value for \l subtitle is \c Text.ElideRight.
+    
+    The default \l Text::wrapMode is \c Text.WrapAnywhere.
+    
+    The default \l Label::textSize is \c Label.Small.
+    
+    The rest of the properties have the same default values as \l Label.
 */
 UCLabel *UCListItemLayout::subtitle()
 {
@@ -332,6 +416,14 @@ UCLabel *UCListItemLayout::subtitle()
     This property defines the subtitle label and its properties.
     Styling and font properties can be set by using the prefix
     \c {summary.} in a similar way as shown in \l title.
+
+    The default \l Text::elide value for \l summary is \c Text.ElideRight.
+    
+    The default \l Text::wrapMode is \c Text.WrapAnywhere.
+    
+    The default \l Label::textSize is \c Label.Small.
+    
+    The rest of the properties have the same default values as \l Label.
 */
 UCLabel *UCListItemLayout::summary()
 {

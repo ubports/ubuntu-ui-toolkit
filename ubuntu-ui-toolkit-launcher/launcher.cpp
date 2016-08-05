@@ -12,12 +12,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * QML launcher with the ability to setup the QQuickView/ QQmlEngine differently
- *
- * Rationale: Different variants of qmlscene exist as well as C++ and Go apps
- * This is to write Autopilot test cases that exhibit specific behavior
  */
+
+// Dedicated QML launcher with the ability to setup QQuickView/QQmlEngine
+// differently and with various extensions. Used internally to write Autopilot
+// test cases that exhibit specific behavior.
 
 #include <iostream>
 #include <QtCore/qdebug.h>
@@ -156,6 +155,7 @@ int main(int argc, const char *argv[])
     // The default constructor affects the components tree (autopilot vis)
     if (args.isSet(_engine) || !testCaseImport.isEmpty()) {
         QQuickView *view(new QQuickView());
+        engine = view->engine();
         if (args.isSet(_import)) {
             QStringList paths = args.values(_import);
             Q_FOREACH(const QString &path, paths) {
@@ -177,7 +177,6 @@ int main(int argc, const char *argv[])
         }
 
         window.reset(view);
-        engine = view->engine();
     } else {
         engine = new QQmlEngine();
         if (args.isSet(_import)) {
@@ -213,53 +212,45 @@ int main(int argc, const char *argv[])
     }
 
     // Application monitoring.
-    const bool metricsOverlay = args.isSet(_metricsOverlay);
-    const bool metricsLogging = args.isSet(_metricsLogging);
-    if (metricsOverlay || metricsLogging) {
-        UMApplicationMonitor::MonitorFlags flags = 0;
-        if (metricsLogging) {
-            QString device = args.value(_metricsLogging);
-            UMLogger* logger;
-            if (device.isEmpty() || device == "stdout") {
-                logger = new UMFileLogger(stdout);
-            } else if (device == "lttng") {
-                logger = new UMLTTNGLogger();
-            } else {
-                logger = new UMFileLogger(device);
-            }
-            if (logger->isOpen()) {
-                flags |= UMApplicationMonitor::Logging;
-                UMApplicationMonitor::installLogger(logger);
-            } else {
-                delete logger;
+    UMApplicationMonitor* applicationMonitor = UMApplicationMonitor::instance();
+    if (args.isSet(_metricsLoggingFilter)) {
+        QStringList filterList = QString(args.value(_metricsLoggingFilter)).split(
+            QChar(','), QString::SkipEmptyParts);
+        UMApplicationMonitor::LoggingFilters filter = 0;
+        const int size = filterList.size();
+        for (int i = 0; i < size; ++i) {
+            if (filterList[i] == "*") {
+                filter |= UMApplicationMonitor::AllEvents;
+                break;
+            } else if (filterList[i] == "window") {
+                filter |= UMApplicationMonitor::WindowEvent;
+            } else if (filterList[i] == "process") {
+                filter |= UMApplicationMonitor::ProcessEvent;
+            } else if (filterList[i] == "frame") {
+                filter |= UMApplicationMonitor::FrameEvent;
             }
         }
-        if (args.isSet(_metricsLoggingFilter)) {
-            QStringList filtersList = QString(args.value(_metricsLoggingFilter)).split(
-                QChar(','), QString::SkipEmptyParts);
-            UMApplicationMonitor::LoggingFilters filters = 0;
-            const int size = filtersList.size();
-            for (int i = 0; i < size; ++i) {
-                if (filtersList[i] == "*") {
-                    filters |= UMApplicationMonitor::AllEvents;
-                    break;
-                } else if (filtersList[i] == "window") {
-                    filters |= UMApplicationMonitor::WindowEvent;
-                } else if (filtersList[i] == "process") {
-                    filters |= UMApplicationMonitor::ProcessEvent;
-                } else if (filtersList[i] == "frame") {
-                    filters |= UMApplicationMonitor::FrameEvent;
-                }
-            }
-            UMApplicationMonitor::setLoggingFilters(filters);
+        applicationMonitor->setLoggingFilter(filter);
+    }
+    if (args.isSet(_metricsLogging)) {
+        UMLogger* logger;
+        QString device = args.value(_metricsLogging);
+        if (device.isEmpty() || device == "stdout") {
+            logger = new UMFileLogger(stdout);
+        } else if (device == "lttng") {
+            logger = new UMLTTNGLogger();
+        } else {
+            logger = new UMFileLogger(device);
         }
-        if (metricsOverlay) {
-            flags |= UMApplicationMonitor::Overlay;
+        if (logger->isOpen()) {
+            applicationMonitor->installLogger(logger);
+            applicationMonitor->setLogging(true);
+        } else {
+            delete logger;
         }
-        UMApplicationMonitor::setFlags(flags);
-        if (!UMApplicationMonitor::isActive()) {
-            UMApplicationMonitor::start();
-        }
+    }
+    if (args.isSet(_metricsOverlay)) {
+        applicationMonitor->setOverlay(true);
     }
 
     if (window->title().isEmpty())
@@ -276,4 +267,3 @@ int main(int argc, const char *argv[])
 
     return application.exec();
 }
-
