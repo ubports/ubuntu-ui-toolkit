@@ -26,7 +26,7 @@
 class QOpenGLContext;
 #endif
 
-// 
+// Renders an overlay based on various metrics.
 class Overlay
 {
 public:
