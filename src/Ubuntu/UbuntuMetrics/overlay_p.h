@@ -69,9 +69,9 @@ private:
 #endif
     QString m_text;
     struct {
-      quint16 index;
-      quint16 textIndex;
-      quint8 width;
+        quint16 index;
+        quint16 textIndex;
+        quint8 width;
     } m_metrics[UMEvent::TypeCount][maxMetricsPerType];
     quint8 m_metricsSize[UMEvent::TypeCount];
     BitmapText m_bitmapText;
