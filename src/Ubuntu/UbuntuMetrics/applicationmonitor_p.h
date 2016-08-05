@@ -34,7 +34,7 @@ class LoggingThread;
 class WindowMonitor;
 class QQuickWindow;
 
-class UMApplicationMonitorPrivate
+class UBUNTU_METRICS_PRIVATE_EXPORT UMApplicationMonitorPrivate
 {
 public:
     static const int maxMonitors = 16;
@@ -87,7 +87,7 @@ public:
     alignas(64) UMEvent m_processEvent;
 };
 
-class LoggingThread : public QThread
+class UBUNTU_METRICS_PRIVATE_EXPORT LoggingThread : public QThread
 {
 public:
     LoggingThread();
@@ -117,7 +117,7 @@ private:
     quint8 m_flags;
 };
 
-class WindowMonitorDeleter : public QRunnable
+class UBUNTU_METRICS_PRIVATE_EXPORT WindowMonitorDeleter : public QRunnable
 {
 public:
     WindowMonitorDeleter(UMApplicationMonitor* applicationMonitor, WindowMonitor* monitor)
@@ -136,7 +136,7 @@ private:
     WindowMonitor* m_monitor;
 };
 
-class WindowMonitorFlagSetter : public QRunnable
+class UBUNTU_METRICS_PRIVATE_EXPORT WindowMonitorFlagSetter : public QRunnable
 {
 public:
     WindowMonitorFlagSetter(WindowMonitor* monitor, quint32 flags)
@@ -156,7 +156,7 @@ private:
     quint32 m_flags;
 };
 
-class WindowMonitor : public QObject
+class UBUNTU_METRICS_PRIVATE_EXPORT WindowMonitor : public QObject
 {
     Q_OBJECT
 

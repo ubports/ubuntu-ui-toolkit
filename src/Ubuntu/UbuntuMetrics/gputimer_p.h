@@ -18,6 +18,7 @@
 #ifndef GPUTIMER_P_H
 #define GPUTIMER_P_H
 
+#include "ubuntumetricsglobal_p.h"
 #include <QtGui/QOpenGLFunctions>
 #if defined(QT_OPENGL_ES)
 #include <EGL/egl.h>
@@ -30,7 +31,7 @@
 // in the command buffer from the CPU, this timer pushes dedicated
 // synchronization commands to the command buffer, which the GPU signals
 // whenever completed. That allows to get accurate GPU timings.
-class GPUTimer
+class UBUNTU_METRICS_PRIVATE_EXPORT GPUTimer
 {
 public:
     GPUTimer() :
