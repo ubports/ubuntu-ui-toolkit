@@ -23,6 +23,7 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
+    # FIXME TIM: add case for the scrolling action bar.
     test_qml_file_path = os.path.join(
         dir_path, 'test_actionbar.ActionBarTestCase.qml')
 
