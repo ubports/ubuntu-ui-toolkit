@@ -228,6 +228,8 @@ int main(int argc, const char *argv[])
                 filter |= UMApplicationMonitor::ProcessEvent;
             } else if (filterList[i] == "frame") {
                 filter |= UMApplicationMonitor::FrameEvent;
+            } else if (filterList[i] == "generic") {
+                filter |= UMApplicationMonitor::GenericEvent;
             }
         }
         applicationMonitor->setLoggingFilter(filter);
