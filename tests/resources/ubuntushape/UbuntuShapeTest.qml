@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.3
+import Ubuntu.Metrics 1.0
 
 Item {
     id: root
@@ -206,6 +207,15 @@ Item {
     // Keyboard handling.
     Keys.onPressed: {
         var shift = Qt.ShiftModifier;
+
+        if (event.key == Qt.Key_A) {
+        //ApplicationMonitor.logging = !ApplicationMonitor.logging;
+        //ApplicationMonitor.processUpdateInterval = 10
+            ApplicationMonitor.logEvent(ApplicationMonitor.UserInterfaceReady);
+            //ApplicationMonitor.loggingFilter = UMApplicationMonitor.FrameEvent;
+        } else if (event.key == Qt.Key_B) {
+            ApplicationMonitor.overlay = !ApplicationMonitor.overlay;
+        }
 
         // Background.
         if (event.key == Qt.Key_A) {
