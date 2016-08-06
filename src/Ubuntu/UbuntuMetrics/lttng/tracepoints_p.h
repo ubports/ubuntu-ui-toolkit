@@ -16,14 +16,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-#include "lttng.h"
+#include "lttng_p.h"
 
 #undef TRACEPOINT_PROVIDER
 #define TRACEPOINT_PROVIDER UbuntuMetrics
 #undef TRACEPOINT_INCLUDE
-#define TRACEPOINT_INCLUDE "./tracepoints.h"
+#define TRACEPOINT_INCLUDE "./tracepoints_p.h"
 #if !defined(TRACEPOINTS_H) || defined(TRACEPOINT_HEADER_MULTI_READ)
-#define TRACEPOINTS_H
+#define TRACEPOINTS_P_H
 #include <lttng/tracepoint.h>
 
 TRACEPOINT_EVENT(
@@ -79,5 +79,5 @@ TRACEPOINT_EVENT(
     )
 )
 
-#endif  // TRACEPOINTS_H
+#endif  // TRACEPOINTS_P_H
 #include <lttng/tracepoint-event.h>
