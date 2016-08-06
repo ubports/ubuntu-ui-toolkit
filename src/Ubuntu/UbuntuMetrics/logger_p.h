@@ -19,11 +19,12 @@
 #define LOGGER_P_H
 
 #include "logger.h"
+#include "ubuntumetricsglobal_p.h"
 #include "events.h"
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
-class UMFileLoggerPrivate
+class UBUNTU_METRICS_PRIVATE_EXPORT UMFileLoggerPrivate
 {
 public:
     enum {

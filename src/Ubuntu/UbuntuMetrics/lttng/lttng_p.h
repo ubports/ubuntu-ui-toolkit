@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LTTNG_H
-#define LTTNG_H
+#ifndef LTTNG_P_H
+#define LTTNG_P_H
 
 #include <stdint.h>
 
@@ -65,4 +65,4 @@ struct _UMLTTNGGenericEvent {
     char string[64];
 };
 
-#endif  // LTTNG_H
+#endif  // LTTNG_P_H

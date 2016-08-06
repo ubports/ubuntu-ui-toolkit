@@ -18,6 +18,7 @@
 #ifndef OVERLAY_P_H
 #define OVERLAY_P_H
 
+#include "ubuntumetricsglobal_p.h"
 #include "bitmaptext_p.h"
 #include "events.h"
 #include <QtCore/QSize>
@@ -26,8 +27,8 @@
 class QOpenGLContext;
 #endif
 
-// 
-class Overlay
+// Renders an overlay based on various metrics.
+class UBUNTU_METRICS_PRIVATE_EXPORT Overlay
 {
 public:
     Overlay(const char* text, int windowId);
@@ -69,9 +70,9 @@ private:
 #endif
     QString m_text;
     struct {
-      quint16 index;
-      quint16 textIndex;
-      quint8 width;
+        quint16 index;
+        quint16 textIndex;
+        quint8 width;
     } m_metrics[UMEvent::TypeCount][maxMetricsPerType];
     quint8 m_metricsSize[UMEvent::TypeCount];
     BitmapText m_bitmapText;

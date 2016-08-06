@@ -20,10 +20,12 @@
 #include "events.h"
 #include <QtCore/QDir>
 #include <QtCore/QTime>
+
+// LTTng shared object runtime loading.
 #include <dlfcn.h>
 #define TRACEPOINT_DEFINE
 #define TRACEPOINT_PROBE_DYNAMIC_LINKAGE
-#include "lttng/lttng.h"
+#include "lttng/lttng_p.h"
 
 UMFileLogger::UMFileLogger(const QString& fileName, bool parsable)
     : d_ptr(new UMFileLoggerPrivate(fileName, parsable))
