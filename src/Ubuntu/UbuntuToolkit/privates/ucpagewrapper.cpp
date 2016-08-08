@@ -210,7 +210,7 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     for (;i != propMap.constEnd(); i++) {
         QQmlProperty prop(target, i.key(), context);
         bool convertible = true;
-        if (!strcmp(i.value().typeName(),"void*")) {
+        if (!qstrcmp(i.value().typeName(),"void*")) {
             // we have void*, we cannot convert that one, so we must force the conversion
             void *pvalue = i.value().value<void*>();
             QVariant value(QVariant::Type(prop.propertyType()), pvalue);
