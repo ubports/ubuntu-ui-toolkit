@@ -21,6 +21,7 @@
 #include "ucbottomedgeregion_p_p.h"
 #include "ucbottomedgehint_p_p.h"
 #include "ucstyleditembase_p_p.h"
+#include <QtCore/QtMath>
 #include <QtQml/QQmlEngine>
 #include <QtGui/QScreen>
 #include <QtQml/QQmlProperty>
@@ -260,7 +261,7 @@ void UCBottomEdgePrivate::detectDirection(qreal currentDistance)
 
     UCBottomEdge::DragDirection newDirection = dragDirection;
     qreal delta = previousDistance - currentDistance;
-    bool deltaPassed = abs(delta) >= qApp->styleHints()->startDragDistance();
+    bool deltaPassed = qFabs(delta) >= qApp->styleHints()->startDragDistance();
     if (!deltaPassed) {
         return;
     }
@@ -822,7 +823,7 @@ bool UCBottomEdge::eventFilter(QObject *target, QEvent *event)
         if (d->mousePressed) {
             QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
             qreal mouseItemY = mapFromScene(mouse->windowPos()).y();
-            qreal distance = abs(height() - mouseItemY);
+            qreal distance = qFabs(height() - mouseItemY);
             d->updateProgressionStates(distance);
         }
         break;
