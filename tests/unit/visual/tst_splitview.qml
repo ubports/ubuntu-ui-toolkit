@@ -28,15 +28,14 @@ Window {
     SplitView {
         id: layout
         anchors.fill: parent
-        spacing: units.dp(8)
         focus: true
         Keys.onSpacePressed: mainLayout.when = !mainLayout.when
         handleDelegate: Rectangle {
             radius: units.gu(1)
             anchors {
                 fill: handle
-                leftMargin: units.dp(2)
-                rightMargin: units.dp(2)
+                leftMargin: units.dp(1)
+                rightMargin: units.dp(1)
                 topMargin: handle.height / 2 - units.gu(3)
                 bottomMargin: handle.height / 2 - units.gu(3)
             }

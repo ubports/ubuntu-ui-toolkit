@@ -115,6 +115,8 @@ class SplitView : public QQuickBasePositioner
     Q_PRIVATE_PROPERTY(SplitView::d_func(), UT_PREPEND_NAMESPACE(SplitViewLayout) *activeLayout READ getActiveLayout NOTIFY activeLayoutChanged)
 #endif
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlComponent *handleDelegate MEMBER handleDelegate WRITE setHandle NOTIFY handleDelegateChanged)
+    // overrides
+    Q_PROPERTY(qreal spacing READ spacing WRITE setSpacing2 NOTIFY spacingChanged2)
 public:
     explicit SplitView(QQuickItem *parent = 0);
 
@@ -124,10 +126,14 @@ Q_SIGNALS:
     void layoutsChanged();
     void activeLayoutChanged();
     void handleDelegateChanged();
+    void spacingChanged2();
 
 protected:
     SplitView(SplitViewPrivate &, QQuickItem *);
     ~SplitView();
+
+    // property setters
+    void setSpacing2(qreal spacing, bool reset = true);
 
     // from QQuickBasePositioner
     void doPositioning(QSizeF *contentSize) override;

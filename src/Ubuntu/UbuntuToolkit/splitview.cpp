@@ -22,8 +22,11 @@
 
 #include "splitview_p.h"
 #include "splitview_p_p.h"
+#include "ucunits_p.h"
 
 #include "privates/splitviewhandler_p_p.h"
+
+#define DEFAULT_SPACING_DP      4
 
 UT_NAMESPACE_BEGIN
 
@@ -155,6 +158,19 @@ UT_NAMESPACE_BEGIN
  * is less than the \l {ViewColumn::maximumWidth}{maximumWidth}.
  * Defaults to 4 device pixels.
  */
+void SplitView::setSpacing2(qreal spacing, bool reset)
+{
+    Q_D(SplitView);
+    if (reset && d->defaultSpacing) {
+        QObject::disconnect(*d->defaultSpacing);
+        delete d->defaultSpacing;
+        d->defaultSpacing = Q_NULLPTR;
+    }
+    if (qFuzzyCompare(this->spacing(), spacing)) {
+        return;
+    }
+    static_cast<QQuickBasePositioner*>(this)->setSpacing(spacing);
+}
 
 /******************************************************************************
  * SplitViewAttached
@@ -473,18 +489,38 @@ SplitView::SplitView(QQuickItem *parent)
     : QQuickBasePositioner(Horizontal, parent)
     , d_ptr(new SplitViewPrivate(this))
 {
+    Q_D(SplitView);
+    d->init();
 }
 
 SplitView::SplitView(SplitViewPrivate &dd, QQuickItem *parent)
     : QQuickBasePositioner(Vertical, parent)
     , d_ptr(&dd)
 {
+    Q_D(SplitView);
+    d->init();
 }
 
 SplitView::~SplitView()
 {
     Q_D(SplitView);
     delete d;
+}
+
+void SplitViewPrivate::init()
+{
+    Q_Q(SplitView);
+    auto spacingHandle = [q]() {
+        q->setSpacing2(UCUnits::instance()->dp(DEFAULT_SPACING_DP), false);
+    };
+    defaultSpacing = new QMetaObject::Connection;
+    *defaultSpacing = QObject::connect(UCUnits::instance(), &UCUnits::gridUnitChanged, spacingHandle);
+
+    // connect the spacingChanged signals
+    QObject::connect(q, SIGNAL(spacingChanged()), q, SIGNAL(spacingChanged2()));
+
+    // set the defaults
+    q->setSpacing2(UCUnits::instance()->dp(DEFAULT_SPACING_DP), false);
 }
 
 void SplitView::doPositioning(QSizeF *contentSize)

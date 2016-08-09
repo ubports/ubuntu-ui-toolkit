@@ -115,6 +115,7 @@ public:
 
     SplitViewPrivate(SplitView *qq);
     virtual ~SplitViewPrivate();
+    void init();
 
     static SplitViewPrivate *get(SplitView *q)
     {
@@ -136,6 +137,7 @@ public:
     QList<SplitViewLayout*> columnLatouts;
     SplitViewLayout* activeLayout{nullptr};
     QQmlComponent *handleDelegate{nullptr};
+    QMetaObject::Connection *defaultSpacing{nullptr};
     int viewCount{0};
     bool dirty{false};
 
