@@ -110,46 +110,12 @@ class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
             str(error), 'The popover is not open.')
 
 
-class ComposerSheetTestCase(tests.QMLStringAppTestCase):
+class ComposerSheetTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.Popups 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Button {
-        objectName: "openComposerSheetButton"
-        text: "Open Composer Sheet"
-        onClicked: PopupUtils.open(testComposerSheet);
-    }
-
-    Label {
-        id: "label"
-        objectName: "actionLabel"
-        anchors.centerIn: parent
-        text: "No action taken."
-    }
-
-    Component {
-        id: testComposerSheet
-        ComposerSheet {
-            id: sheet
-            objectName: "testComposerSheet"
-            onCancelClicked: {
-                label.text = "Cancel selected."
-            }
-            onConfirmClicked: {
-                label.text = "Confirm selected."
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_popups.ComposerSheetTestCase.qml')
 
     def setUp(self):
         super().setUp()
