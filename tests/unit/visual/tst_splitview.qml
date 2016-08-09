@@ -78,43 +78,42 @@ Window {
             }
         ]
 
-        // TODO:!!!!
-        Repeater {
-            model: layout.activeLayout.columns
-            Rectangle {
-                color: UbuntuColors.red
-                height: layout.height
-                Label { text: parent.width + "/" + modelData.preferredWidth }
-            }
-        }
+//        Repeater {
+//            model: layout.activeLayout.columns
+//            Rectangle {
+//                color: UbuntuColors.red
+//                height: layout.height
+//                Label { text: parent.width + "/" + modelData.preferredWidth }
+//            }
+//        }
 
-//        Rectangle {
-//            color: UbuntuColors.red
-//            height: parent.height
-//            width: units.gu(90)
-//            Label { text: parent.width }
-//        }
-//        Rectangle {
-//            color: UbuntuColors.green
-//            height: parent.height
-//            Label { text: parent.width }
-//            Component.onCompleted: print(SplitView.column)
-//        }
-//        Rectangle {
-//            color: UbuntuColors.blue
-//            height: parent.height
-//            Label { text: parent.width }
-//        }
-//        Rectangle {
-//            color: UbuntuColors.ash
-//            height: parent.height
-//            Label { text: parent.width }
-//        }
-//        Rectangle {
-//            color: "pink"
-//            height: parent.height
-//            width: units.gu(30)
-//            Label { text: parent.width }
-//        }
+        Rectangle {
+            color: UbuntuColors.red
+            height: parent.height
+            width: units.gu(90)
+            Label { text: parent.width }
+        }
+        Rectangle {
+            color: UbuntuColors.green
+            height: parent.height
+            Label { text: parent.width }
+            Component.onCompleted: print(SplitView.column)
+        }
+        Rectangle {
+            color: UbuntuColors.blue
+            height: parent.height
+            Label { text: parent.width }
+        }
+        Rectangle {
+            color: UbuntuColors.ash
+            height: parent.height
+            Label { text: parent.width }
+        }
+        Rectangle {
+            color: "pink"
+            height: parent.height
+            width: units.gu(30)
+            Label { text: parent.width }
+        }
     }
 }
