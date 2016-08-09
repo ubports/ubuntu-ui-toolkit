@@ -42,9 +42,7 @@ Window {
             }
             color: UbuntuColors.graphite
             scale: handle.containsMouse || handle.pressed ? 1.6 : 1.0
-            Behavior on scale {
-                UbuntuNumberAnimation { }
-            }
+            Behavior on scale { UbuntuNumberAnimation {} }
         }
 
         layouts: [

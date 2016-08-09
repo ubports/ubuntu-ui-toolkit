@@ -89,6 +89,71 @@ UT_NAMESPACE_BEGIN
  *     }
  * }
  * \endcode
+ *
+ * The SplitView can be used with a Repeater in case the content of the view columns
+ * doesn't need to be preserved between layout changes. The example above with a
+ * Repeater would look as follows:
+ * \code
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
+ *
+ * MainView {
+ *     id: main
+ *     width: units.gu(300)
+ *     height: units.gu(80)
+ *     SplitView {
+ *         id: view
+ *         anchors.fill: parent
+ *         layouts: [
+ *             SplitViewLayout {
+ *                 when: main.width < units.gu(80)
+ *                 ViewColumn {
+ *                     fillWidth: true
+ *                 }
+ *             },
+ *             SplitViewLayout {
+ *                 when: main.width >= units.gu(80)
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(30)
+ *                     maximumWidth: units.gu(100)
+ *                     preferredWidth: units.gu(40)
+ *                 }
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(40)
+ *                     fillWidth: true
+ *                 }
+ *             }
+ *         ]
+ *     }
+ *
+ *     Repeater {
+ *         model: view.activeLayout.columns
+ *         Page {
+ *             height: parent.height
+ *         }
+ *     }
+ * }
+ * \endcode
+ *
+ * \section2 Resizing
+ * SplitView provides the ability to resize view columns. Each column has an attached
+ * handle which provides the ability to resize the columns using a mouse or touch.
+ * Columns can be resized if the spacing property is set and the column configurations
+ * allow that (see \l spacing property).
+ *
+ * \section2 Attached properties
+ * SplitView provides a set of attached properties to each column view. Views can in
+ * this way have access to various values of the SplitView and configurations.
+ */
+
+/*!
+ * \qmlproperty real SplitView::spacing
+ * Spacing between the view columns, also drives the ability to resize view columns.
+ * If the value is zero, the view cannot resize columns. If the value is > 0, the
+ * view can resize those columns which have their \l{ViewColumn::minimumWidth}{minimumWidth}
+ * is less than the \l {ViewColumn::maximumWidth}{maximumWidth}.
+ * Defaults to 4 device pixels.
  */
 
 /******************************************************************************
@@ -134,6 +199,8 @@ void SplitViewAttached::resize(qreal delta)
 /*!
  * \qmlattachedproperty ViewColumn SplitView::columnConfig
  * The attached property holds the active layout's column configuration data.
+ * The value is null if there is no active configuration value provided for
+ * the column.
  */
 UT_PREPEND_NAMESPACE(ViewColumn*) SplitViewAttachedPrivate::config()
 {
@@ -152,10 +219,12 @@ UT_PREPEND_NAMESPACE(ViewColumn*) SplitViewAttachedPrivate::config()
 
 /*!
  * \qmlattachedproperty SplitView SplitView::view
+ * Contains the SplitView instance of the column.
  */
 
 /*!
  * \qmlattachedproperty int SplitView::column
+ * The property holds the column index the view is configured to.
  */
 
 /******************************************************************************
@@ -337,8 +406,67 @@ void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
 /*!
  * \qmlproperty Component SplitView::handleDelegate
  * The property holds the delegate to be shown for the column resizing handle.
- * The delegate is for pure visual, mouse and touch handling should not be provided
- * by it.
+ * The delegate is for pure visual, mouse and touch handling is provided by the
+ * SplitView component itself. The component provides a context property called
+ * \e handle which embeds the visuals. This can be used to anchor the visuals
+ * to the resize handle. The thickness of the handle is driven by the \l spacing
+ * property.
+ * \code
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
+ *
+ * MainView {
+ *     id: main
+ *     width: units.gu(300)
+ *     height: units.gu(80)
+ *
+ *     SplitView {
+ *         anchors.fill: parent
+ *         handleDelegate: Rectangle {
+ *             anchors {
+ *                 fill: parent
+ *                 leftMargin: units.dp(2)
+ *                 rightMargin: units.dp(2)
+ *                 topMargin: handle.height / 2 - units.gu(3)
+ *                 bottomMargin: handle.height / 2 - units.gu(3)
+ *             }
+ *             color: UbuntuColors.graphite
+ *             scale: handle.containsMouse || handle.pressed ? 1.6 : 1.0
+ *             Behavior on scale { UbuntuNumberAnimation {} }
+ *         }
+ *         layouts: [
+ *             SplitViewLayout {
+ *                 when: main.width < units.gu(80)
+ *                 ViewColumn {
+ *                     fillWidth: true
+ *                 }
+ *             },
+ *             SplitViewLayout {
+ *                 when: main.width >= units.gu(80)
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(30)
+ *                     maximumWidth: units.gu(100)
+ *                     preferredWidth: units.gu(40)
+ *                 }
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(40)
+ *                     fillWidth: true
+ *                 }
+ *             }
+ *         ]
+ *     }
+ *
+ *     Page {
+ *         id: column1
+ *         height: parent.height
+ *     }
+ *     Page {
+ *         id: column2
+ *         height: parent.height
+ *     }
+ * }
+ * \endcode
  */
 
 SplitView::SplitView(QQuickItem *parent)
