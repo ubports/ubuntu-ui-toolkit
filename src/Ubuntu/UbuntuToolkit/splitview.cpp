@@ -27,6 +27,71 @@
 
 UT_NAMESPACE_BEGIN
 
+/*!
+ * \qmltype SplitView
+ * \inqmlmodule Ubuntu.Components.Labs 1.0
+ * \inherits QQuickBasePositioner
+ * \ingroup ubuntu-labs
+ * \brief A view component with a flexible layout configuration setup.
+ *
+ * The component arranges the declared child elements horizontally based on an active
+ * column configuration layout. Child elements are considered to be views, and each view
+ * is identified with a column index, specified by the SplitView.column attached property.
+ * Views should not have width declared, because the (implicit) width of each view is
+ * specified by the active layout's configuration (ViewColumn) and will overrule the
+ * value specified by the view.
+ *
+ * In order a SplitView to show some content it must have at least one active layout
+ * present. All views which are not configured by the active layout will be hidden. A
+ * hidden view may get a different size, therefore its content will be resized when
+ * hidden. If the content is size sensitive (i.e. the amount shown differs on the space
+ * available), the model used should be refreshed only if the view visualizing the
+ * data is visible.
+ * \code
+ * import QtQuick 2.4
+ * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
+ *
+ * MainView {
+ *     id: main
+ *     width: units.gu(300)
+ *     height: units.gu(80)
+ *     SplitView {
+ *         anchors.fill: parent
+ *         layouts: [
+ *             SplitViewLayout {
+ *                 when: main.width < units.gu(80)
+ *                 ViewColumn {
+ *                     fillWidth: true
+ *                 }
+ *             },
+ *             SplitViewLayout {
+ *                 when: main.width >= units.gu(80)
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(30)
+ *                     maximumWidth: units.gu(100)
+ *                     preferredWidth: units.gu(40)
+ *                 }
+ *                 ViewColumn {
+ *                     minimumWidth: units.gu(40)
+ *                     fillWidth: true
+ *                 }
+ *             }
+ *         ]
+ *     }
+ *
+ *     Page {
+ *         id: column1
+ *         height: parent.height
+ *     }
+ *     Page {
+ *         id: column2
+ *         height: parent.height
+ *     }
+ * }
+ * \endcode
+ */
+
 /******************************************************************************
  * SplitViewAttached
  */
@@ -293,71 +358,6 @@ void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
     }
     dirty = false;
 }
-
-/*!
- * \qmltype SplitView
- * \inqmlmodule Ubuntu.Components.Labs
- * \inherits QQuickBasePositioner
- * \ingroup ubuntu-labs
- * \brief A view component with a flexible layout configuration setup.
- *
- * The component arranges the declared child elements horizontally based on an active
- * column configuration layout. Child elements are considered to be views, and each view
- * is identified with a column index, specified by the SplitView.column attached property.
- * Views should not have width declared, because the (implicit) width of each view is
- * specified by the active layout's configuration (ViewColumn) and will overrule the
- * value specified by the view.
- *
- * In order a SplitView to show some content it must have at least one active layout
- * present. All views which are not configured by the active layout will be hidden. A
- * hidden view may get a different size, therefore its content will be resized when
- * hidden. If the content is size sensitive (i.e. the amount shown differs on the space
- * available), the model used should be refreshed only if the view visualizing the
- * data is visible.
- * \code
- * import QtQuick 2.4
- * import Ubuntu.Components 1.3
- * import Ubuntu.Components.Labs 1.0
- *
- * MainView {
- *     id: main
- *     width: units.gu(300)
- *     height: units.gu(80)
- *     SplitView {
- *         anchors.fill: parent
- *         layouts: [
- *             SplitViewLayout {
- *                 when: main.width < units.gu(80)
- *                 ViewColumn {
- *                     fillWidth: true
- *                 }
- *             },
- *             SplitViewLayout {
- *                 when: main.width >= units.gu(80)
- *                 ViewColumn {
- *                     minimumWidth: units.gu(30)
- *                     maximumWidth: units.gu(100)
- *                     preferredWidth: units.gu(40)
- *                 }
- *                 ViewColumn {
- *                     minimumWidth: units.gu(40)
- *                     fillWidth: true
- *                 }
- *             }
- *         ]
- *     }
- *
- *     Page {
- *         id: column1
- *         height: parent.height
- *     }
- *     Page {
- *         id: column2
- *         height: parent.height
- *     }
- * }
- * \endcode
- */
 
 /*!
  * \qmlproperty list<SplitViewLayout> SplitView::layouts
