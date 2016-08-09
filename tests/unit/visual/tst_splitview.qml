@@ -26,6 +26,7 @@ Window {
     height: units.gu(70)
 
     SplitView {
+        id: layout
         anchors.fill: parent
         spacing: units.dp(8)
         focus: true
@@ -33,17 +34,19 @@ Window {
         handleDelegate: Rectangle {
             radius: units.gu(1)
             anchors {
-                fill: parent
+                fill: handle
                 leftMargin: units.dp(2)
                 rightMargin: units.dp(2)
-                topMargin: parent.height / 2 - units.gu(3)
-                bottomMargin: parent.height / 2 - units.gu(3)
+                topMargin: handle.height / 2 - units.gu(3)
+                bottomMargin: handle.height / 2 - units.gu(3)
             }
             color: UbuntuColors.graphite
             scale: handle.containsMouse || handle.pressed ? 1.6 : 1.0
             Behavior on scale {
                 UbuntuNumberAnimation { }
             }
+
+            Component.onDestruction: print("die, handler, DIE!")
         }
 
         layouts: [
@@ -81,42 +84,43 @@ Window {
         ]
 
         // TODO:!!!!
-//        Repeater {
-//            model: parent.activeLayout.columns.length
-//            Rectangle {
-//                color: UbuntuColors.red
-//                height: parent.height
-//                Label { text: parent.width }
-//            }
-//        }
+        Repeater {
+            model: layout.activeLayout.columns
+            Rectangle {
+                color: UbuntuColors.red
+                height: layout.height
+                Label { text: parent.width + "/" + modelData.preferredWidth }
+                Component.onCompleted: print("doing")
+            }
+        }
 
-        Rectangle {
-            color: UbuntuColors.red
-            height: parent.height
-            width: units.gu(90)
-            Label { text: parent.width }
-        }
-        Rectangle {
-            color: UbuntuColors.green
-            height: parent.height
-            Label { text: parent.width }
-            Component.onCompleted: print(SplitView.column)
-        }
-        Rectangle {
-            color: UbuntuColors.blue
-            height: parent.height
-            Label { text: parent.width }
-        }
-        Rectangle {
-            color: UbuntuColors.ash
-            height: parent.height
-            Label { text: parent.width }
-        }
-        Rectangle {
-            color: "pink"
-            height: parent.height
-            width: units.gu(30)
-            Label { text: parent.width }
-        }
+//        Rectangle {
+//            color: UbuntuColors.red
+//            height: parent.height
+//            width: units.gu(90)
+//            Label { text: parent.width }
+//        }
+//        Rectangle {
+//            color: UbuntuColors.green
+//            height: parent.height
+//            Label { text: parent.width }
+//            Component.onCompleted: print(SplitView.column)
+//        }
+//        Rectangle {
+//            color: UbuntuColors.blue
+//            height: parent.height
+//            Label { text: parent.width }
+//        }
+//        Rectangle {
+//            color: UbuntuColors.ash
+//            height: parent.height
+//            Label { text: parent.width }
+//        }
+//        Rectangle {
+//            color: "pink"
+//            height: parent.height
+//            width: units.gu(30)
+//            Label { text: parent.width }
+//        }
     }
 }

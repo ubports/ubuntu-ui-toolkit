@@ -107,7 +107,6 @@ class SplitViewPrivate;
 class SplitView : public QQuickBasePositioner
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<QObject> splitViewData READ data DESIGNABLE false)
 #ifdef Q_QDOC
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlListProperty<SplitViewLayout> layouts READ layouts NOTIFY layoutsChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(SplitView::d_func(), SplitViewLayout *activeLayout READ getActiveLayout NOTIFY activeLayoutChanged)
@@ -116,7 +115,6 @@ class SplitView : public QQuickBasePositioner
     Q_PRIVATE_PROPERTY(SplitView::d_func(), UT_PREPEND_NAMESPACE(SplitViewLayout) *activeLayout READ getActiveLayout NOTIFY activeLayoutChanged)
 #endif
     Q_PRIVATE_PROPERTY(SplitView::d_func(), QQmlComponent *handleDelegate MEMBER handleDelegate WRITE setHandle NOTIFY handleDelegateChanged)
-    Q_CLASSINFO("DefaultProperty", "splitViewData")
 public:
     explicit SplitView(QQuickItem *parent = 0);
 
@@ -138,6 +136,7 @@ protected:
     // overrides
     void componentComplete() override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+    void itemChange(ItemChange, const ItemChangeData &) override;
 private:
     // QQuickBasePositionerPrivate is not an exported API, therefore we cannot derive from it
     SplitViewPrivate* const d_ptr;

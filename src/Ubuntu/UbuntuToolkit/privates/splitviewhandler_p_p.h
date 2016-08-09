@@ -32,7 +32,7 @@ class SplitViewHandler : public QQuickMouseArea
 public:
     explicit SplitViewHandler(QQuickItem *parent = 0);
     ~SplitViewHandler();
-    void configureHandler(SplitView *view);
+    void connectToView(SplitView *view);
 
 protected:
     QPointF prevPos;

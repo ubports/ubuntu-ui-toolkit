@@ -139,8 +139,6 @@ public:
     bool dirty{false};
 
 private:
-    static void data_Append(QQmlListProperty<QObject> *, QObject*);
-
     static void layout_Append(QQmlListProperty<SplitViewLayout> *, SplitViewLayout*);
     static int layout_Count(QQmlListProperty<SplitViewLayout> *);
     static SplitViewLayout *layout_At(QQmlListProperty<SplitViewLayout> *, int);

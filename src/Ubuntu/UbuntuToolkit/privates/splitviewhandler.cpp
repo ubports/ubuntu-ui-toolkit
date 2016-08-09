@@ -33,9 +33,10 @@ SplitViewHandler::SplitViewHandler(QQuickItem *parent)
     setAcceptedButtons(Qt::LeftButton);
 
     setCursorShape(Qt::SplitHCursor);
-    qDebug() << "Anchor to" << parent;
+    setParentItem(parent);
+
     // attach the handler to the parent's rigth edge
-    QQuickItemPrivate *dParent = QQuickItemPrivate::get(parent);
+    QQuickItemPrivate *dParent = QQuickItemPrivate::get(parentItem());
     QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
     anchors->setTop(dParent->top());
     anchors->setBottom(dParent->bottom());
@@ -49,11 +50,13 @@ SplitViewHandler::SplitViewHandler(QQuickItem *parent)
 
 SplitViewHandler::~SplitViewHandler()
 {
-    disconnect(*spacing);
+    if (spacing) {
+        disconnect(*spacing);
+    }
     delete spacing;
 }
 
-void SplitViewHandler::configureHandler(SplitView *view)
+void SplitViewHandler::connectToView(SplitView *view)
 {
     this->view = view;
     // grab the context of the parent

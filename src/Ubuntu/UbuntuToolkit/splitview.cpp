@@ -37,16 +37,15 @@ UT_NAMESPACE_BEGIN
  * The component arranges the declared child elements horizontally based on an active
  * column configuration layout. Child elements are considered to be views, and each view
  * is identified with a column index, specified by the SplitView.column attached property.
- * Views should not have width declared, because the (implicit) width of each view is
- * specified by the active layout's configuration (ViewColumn) and will overrule the
- * value specified by the view.
+ * Views should not have width declared, because the width of each view is specified
+ * by the active layout's configuration (ViewColumn) and will overwrite the value
+ * specified by the view.
  *
  * In order a SplitView to show some content it must have at least one active layout
- * present. All views which are not configured by the active layout will be hidden. A
- * hidden view may get a different size, therefore its content will be resized when
- * hidden. If the content is size sensitive (i.e. the amount shown differs on the space
- * available), the model used should be refreshed only if the view visualizing the
- * data is visible.
+ * present. Views which are not configured by the active layout will be hidden. Hidden
+ * views may be resized, therefore if the content is size sensitive (i.e. the amount
+ * shown differs on the space available), make sure the content of your view does take
+ * this into account.
  * \code
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -176,36 +175,12 @@ UT_PREPEND_NAMESPACE(SplitViewAttached) *SplitView::qmlAttachedProperties(QObjec
     return new SplitViewAttached(owner);
 }
 
-// data property
-void SplitViewPrivate::data_Append(QQmlListProperty<QObject> *list, QObject* object)
-{
-    QQuickItemPrivate::data_append(list, object);
-
-    SplitView *view = static_cast<SplitView*>(list->object);
-    // if the object is an item, we attache the SplitView properties and hide it
-    QQuickItem *item = qobject_cast<QQuickItem*>(object);
-    if (item) {
-        // attach properties and configure
-        SplitViewAttached *attached = static_cast<SplitViewAttached*>(
-                    qmlAttachedPropertiesObject<SplitView>(item, true));
-
-        SplitViewAttachedPrivate::get(attached)->configure(view, view->childItems().size() - 1);
-
-        // attach the split handler to it
-        SplitViewHandler *handler = new SplitViewHandler(item);
-        handler->configureHandler(view);
-    }
-}
-QQmlListProperty<QObject> SplitViewPrivate::data()
-{
-    return QQmlListProperty<QObject>(q_func(), 0,
-                                     SplitViewPrivate::data_Append,
-                                     QQuickItemPrivate::data_count,
-                                     QQuickItemPrivate::data_at,
-                                     QQuickItemPrivate::data_clear);
-}
-
 // layouts property
+/*!
+ * \qmlproperty list<SplitViewLayout> SplitView::layouts
+ * The property holds the layout configurations declared for the given SplitView.
+ * \sa SplitViewLayout
+ */
 void SplitViewPrivate::layout_Append(QQmlListProperty<SplitViewLayout> *list, SplitViewLayout* layout)
 {
     SplitView *view = static_cast<SplitView*>(list->object);
@@ -336,7 +311,7 @@ void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
             }
         } else {
             if (operation & SetPreferredSize) {
-                child->setImplicitWidth(config->preferredWidth);
+                child->setWidth(config->preferredWidth);
             }
             if (operation & CalculateFillWidth) {
                 fillWidth -= config->preferredWidth;
@@ -353,17 +328,11 @@ void SplitViewPrivate::recalculateWidths(RelayoutOperation operation)
             ViewColumnPrivate *config = ViewColumnPrivate::get(SplitViewAttachedPrivate::getConfig(child));
             config->setPreferredWidth(fillWidth, false);
             // update preferredWidth so it can be used in case of resize
-            child->setImplicitWidth(config->preferredWidth);
+            child->setWidth(config->preferredWidth);
         }
     }
     dirty = false;
 }
-
-/*!
- * \qmlproperty list<SplitViewLayout> SplitView::layouts
- * The property holds the layout configurations declared for the given SplitView.
- * \sa SplitViewLayout
- */
 
 /*!
  * \qmlproperty Component SplitView::handleDelegate
@@ -484,6 +453,24 @@ void SplitView::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeom
     if (newGeometry.width() != oldGeometry.width()) {
         Q_D(SplitView);
         d->recalculateWidths(SplitViewPrivate::CalculateFillWidth);
+    }
+}
+
+void SplitView::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    QQuickBasePositioner::itemChange(change, data);
+    // we must exclude Repeater
+    if (change == ItemChildAddedChange && data.item && !data.item->inherits("QQuickRepeater")) {
+        // attach properties and configure
+        qDebug() << data.item;
+        SplitViewAttached *attached = static_cast<SplitViewAttached*>(
+                    qmlAttachedPropertiesObject<SplitView>(data.item, true));
+
+        SplitViewAttachedPrivate::get(attached)->configure(this, childItems().size() - 1);
+
+        // attach the split handler to it
+        SplitViewHandler *handler = new SplitViewHandler(data.item);
+        handler->connectToView(this);
     }
 }
 
