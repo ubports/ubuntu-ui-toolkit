@@ -34,7 +34,6 @@ class ToggleTestCase(tests.QMLFileAppTestCase):
     checkbox_test_qml_file_path = os.path.join(
         dir_path, 'test_checkbox.ToggleTestCase.test_with_checkbox.qml')
 
-
     scenarios = [
         ('checkbox', dict(
             test_qml_file_path=checkbox_test_qml_file_path,
