@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (1.3.2030+16.10.20160726.15) yakkety; urgency=medium
+
+  * More s390x dependencies workarounding until upstart is really fixed.
+  * Replace abs with qFabs due to GCC6 breakage (LP: #1610943)
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Mon, 08 Aug 2016 13:26:34 +0300
+
 ubuntu-ui-toolkit (1.3.2030+16.10.20160726.2) yakkety; urgency=medium
   [ William Hua ]
   * Make qml-module-ubuntu-components-gles depend on 
