@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,33 +14,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import QtTest 1.0
-import Ubuntu.Components 1.1
-import Ubuntu.Test 1.0 // UbuntuTestCase
+import QtQuick 2.4
+import QtQuick.Window 2.2 // Not Ubuntu.Test
+import Ubuntu.Components 1.3
 
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
+Window {
+    title: "Hello World"
+    minimumWidth: units.gu(30)
+    minimumHeight: units.gu(50)
+    maximumWidth: units.gu(90)
+    maximumHeight: units.gu(120)
+    MainView {
+        objectName: "mainView"
 
-    Page {
-        title: "Launcher/TestCase"
+        Page {
+            title: "Launcher/Window"
 
-        Column {
-            TextArea {
-                objectName: "textarea"
-                text: "Lorem ipsum dolor sit amet"
-                width: units.gu(25)
-                height: units.gu(25)
-            }
-        }
-
-        UbuntuTestCase {
-            name: "LauncherCanRunTests"
-
-            function test_can_run() {
-                verify(true);
+            Column {
+                Label {
+                    objectName: "label"
+                    text: "Lorem ipsum dolor sit amet"
+                    width: units.gu(25)
+                    height: units.gu(25)
+                }
             }
         }
     }

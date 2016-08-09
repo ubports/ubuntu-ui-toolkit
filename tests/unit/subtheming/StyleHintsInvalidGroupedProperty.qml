@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,36 +12,19 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#include <UbuntuGestures/private/timesource_p.h>
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
-#include <QElapsedTimer>
+Item {
+    width: units.gu(40)
+    height: units.gu(71)
 
-UG_NAMESPACE_BEGIN
-
-class RealTimeSourcePrivate {
-public:
-    QElapsedTimer timer;
-};
-
-RealTimeSource::RealTimeSource()
-    : UG_PREPEND_NAMESPACE(TimeSource())
-    , d(new RealTimeSourcePrivate)
-{
-    d->timer.start();
+    Button {
+        StyleHints {
+            ignoreUnknownProperties: false
+            gradientProxy.invalidProperty: 10
+        }
+    }
 }
-
-RealTimeSource::~RealTimeSource()
-{
-    delete d;
-}
-
-qint64 RealTimeSource::msecsSinceReference()
-{
-    return d->timer.elapsed();
-}
-
-UG_NAMESPACE_END

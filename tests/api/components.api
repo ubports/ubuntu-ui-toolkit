@@ -11,21 +11,21 @@ Extinct.Animals.Europe 4.1: QtObject
 Extinct.Animals.Europe 4.2: Europe
     readonly property ushort era 4.2
     function ushort era(uchar year)
-Extinct.Animals.Europe.ModernContinent: Enum
-    America
-    Europe
 Extinct.Animals.Excavator 1.0 1.1
 Extinct.Animals.Gigantophis 4.3: QQuickItem
     property bool extinct
     function var first()
     function var fourth()
+Extinct.Animals.ModernContinent: Enum
+    America
+    Europe
+Extinct.Animals.ModernContinent: Enum
+    America
+    Europe
 Extinct.Animals.Pangaea 1.0: QtObject singleton
 Extinct.Animals.Pangaea 4.0: Pangaea singleton
     readonly property ushort era 4.0
     function ushort era(uchar year)
-Extinct.Animals.Pangaea.ModernContinent: Enum
-    America
-    Europe
 Extinct.Animals.Smilodon 1.0 ScimitarCat 0.1 EASmilodon: QtObject
     function string paw(int i)
     property string name

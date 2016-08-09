@@ -331,6 +331,19 @@ AbstractButton {
         onClicked: {
             // toggle expanded
             combo.expanded = !combo.expanded;
+            combo.forceActiveFocus()
+        }
+    }
+
+    Keys.onReleased: {
+        if (event.key == Qt.Key_Enter || event.key == Qt.Key_Return) {
+            // Enter or Return should trigger, not expand
+            event.accepted = true;
+            combo.trigger();
+        } else if (event.key == Qt.Key_Space) {
+            // Space should expand, not trigger
+            event.accepted = true;
+            combo.expanded = !combo.expanded;
         }
     }
 

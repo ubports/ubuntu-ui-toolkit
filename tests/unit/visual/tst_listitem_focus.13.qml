@@ -27,27 +27,125 @@ Item {
 
     property Item activeFocusItem: Window.activeFocusItem
 
-    Rectangle {
-        id: topItem
-        objectName: "topItem"
-        activeFocusOnTab: true
-        width: parent.width
-        height: units.gu(2)
+    PageHeader {
+        id: header
+        title: "ListItem focus test"
+        extension: Sections {
+            id: directionSections
+            width: parent.width
+            selectedIndex: -1
+            function setupListView(showContent, orientation, reverseDirection) {
+                testCase.cleanup();
+                var test = testCase.loadTest(listView);
+                test.orientation = orientation;
+                if (reverseDirection) {
+                    if (orientation === ListView.Horizontal) {
+                        test.layoutDirection = Qt.RightToLeft;
+                    } else {
+                        test.verticalLayoutDirection = ListView.BottomToTop;
+                    }
+                }
+                if (showContent) {
+                    test.delegate = listItemWithContent;
+                } else {
+                    test.delegate = simpleListItem;
+                }
+            }
+
+            actions: [
+                Action {
+                    text: "TopToBottom"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Vertical, false);
+                },
+                Action {
+                    text: "LeftToRight"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Horizontal, false);
+                },
+                Action {
+                    text: "BottomToTop"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Vertical, true);
+                },
+                Action {
+                    text: "RightToLeft"
+                    onTriggered: directionSections.setupListView(switchContentAction.showContent,
+                                                                 ListView.Horizontal, true);
+                }
+
+            ]
+        }
+        trailingActionBar.actions: [
+            Action {
+                id: switchContentAction
+                property bool showContent: false
+                iconName: showContent ? "select" : "select-none"
+                onTriggered: {
+                    showContent = !showContent;
+                    if (directionSections.selectedIndex >= 0) {
+                        directionSections.actions[directionSections.selectedIndex].trigger();
+                    }
+                }
+            }
+        ]
     }
 
+    Rectangle {
+        id: topFocusItem
+        objectName: "topFocusItem"
+        activeFocusOnTab: true
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: header.bottom
+        }
+        height: units.gu(2)
+        border {
+            width: units.dp(3)
+            color: topFocusItem.activeFocus ? UbuntuColors.orange : UbuntuColors.silk
+        }
+    }
     Loader {
         id: testLoader
         anchors {
-            fill: parent
-            topMargin: topItem.height
+            left: parent.left
+            right: parent.right
+            top: topFocusItem.bottom
+            bottom: bottomFocusItem.top
+        }
+        clip: true
+    }
+    Rectangle {
+        id: bottomFocusItem
+        objectName: "bottomFocusItem"
+        activeFocusOnTab: true
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(2)
+        border {
+            width: units.dp(3)
+            color: bottomFocusItem.activeFocus ? UbuntuColors.orange : UbuntuColors.silk
         }
     }
 
     Component {
         id: simpleListItem
         ListItem {
+            id: listItem
             objectName: "simple" + index
             property int itemIndex: index
+            Label {
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(2)
+                    verticalCenter: parent.verticalCenter
+                }
+                text: listItem.objectName
+            }
         }
     }
 
@@ -61,7 +159,7 @@ Item {
                 spacing: units.gu(1)
                 CheckBox { objectName: "checkbox" + listItem.itemIndex }
                 Switch { objectName: "switch" + listItem.itemIndex }
-                Button { objectName: "button" + listItem.itemIndex; text: "test" }
+                Button { objectName: "button" + listItem.itemIndex; text: "test " + itemIndex }
             }
             leadingActions: ListItemActions {
                 actions: Action {
@@ -100,6 +198,7 @@ Item {
     }
 
     ListItemTestCase13 {
+        id: testCase
         name: "ListItemFocus"
         when: windowShown
 
@@ -114,7 +213,7 @@ Item {
             wait(200);
         }
         function init() {
-            topItem.forceActiveFocus(Qt.TabFocusReason);
+            topFocusItem.forceActiveFocus(Qt.TabFocusReason);
         }
 
         function initTestCase() {
@@ -124,10 +223,10 @@ Item {
         // Tab/Backtab focuses the First ListItem in a ListView
         function test_focusing_listview_focuses_first_item_data() {
             return [
-                {tag: "Tab, no content", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Tab, focusItem: "simple0"},
-                {tag: "Tab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Tab, focusItem: "withContent0"},
-                {tag: "Backtab, no content", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Backtab, focusItem: "simple0"},
-                {tag: "Backtab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Backtab, focusItem: "withContent0"},
+                {tag: "Tab, no content", preFocus: topFocusItem, delegate: simpleListItem, key: Qt.Key_Tab, focusItem: "simple0"},
+                {tag: "Tab, with content", preFocus: topFocusItem, delegate: listItemWithContent, key: Qt.Key_Tab, focusItem: "withContent0"},
+                {tag: "Backtab, no content", preFocus: bottomFocusItem, delegate: simpleListItem, key: Qt.Key_Backtab, focusItem: "simple0"},
+                {tag: "Backtab, with content", preFocus: bottomFocusItem, delegate: listItemWithContent, key: Qt.Key_Backtab, focusItem: "withContent0"},
             ];
         }
         function test_focusing_listview_focuses_first_item(data) {
@@ -155,12 +254,32 @@ Item {
                             keyTimes: 3,
                             focusItems: ["simple1", "simple2", "simple3"]
                         },
+                        {   tag: "BottomToTop up, no content, bottom to top direction, from beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: 0,
+                            key: Qt.Key_Up,
+                            keyTimes: 3,
+                            focusItems: ["simple1", "simple2", "simple3"]
+                        },
                         {
                             tag: "Down, no contents, near end",
                             delegate: simpleListItem,
                             orientation: ListView.Vertical,
                             initialIndex: n - 3,
                             key: Qt.Key_Down,
+                            keyTimes: 3,
+                            // Don't navigate beyond the last item:
+                            focusItems: ["simple"+(n-2), "simple"+(n-1), "simple"+(n-1)]
+                        },
+                        {
+                            tag: "BottomToTop up, no contents, near end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: n - 3,
+                            key: Qt.Key_Up,
                             keyTimes: 3,
                             // Don't navigate beyond the last item:
                             focusItems: ["simple"+(n-2), "simple"+(n-1), "simple"+(n-1)]
@@ -173,12 +292,31 @@ Item {
                             keyTimes: 3,
                             focusItems: ["simple1", "simple0", "simple0"]
                         },
+                        {   tag: "BottomToTop down, no content, near beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: 2,
+                            key: Qt.Key_Down,
+                            keyTimes: 3,
+                            focusItems: ["simple1", "simple0", "simple0"]
+                        },
                         {
                             tag: "Up, no contents, from end",
                             delegate: simpleListItem,
                             orientation: ListView.Vertical,
                             initialIndex: n - 1,
                             key: Qt.Key_Up,
+                            keyTimes: 3,
+                            focusItems: ["simple"+(n-2), "simple"+(n-3), "simple"+(n-4)]
+                        },
+                        {
+                            tag: "BottomToTop down, no contents, from end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: n - 1,
+                            key: Qt.Key_Down,
                             keyTimes: 3,
                             focusItems: ["simple"+(n-2), "simple"+(n-3), "simple"+(n-4)]
                         },
@@ -190,11 +328,29 @@ Item {
                             keyTimes: 3,
                             focusItems: ["simple1", "simple0", "simple0"]
                         },
+                        {   tag: "RightToLeft right, no content, near beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            direction: Qt.RightToLeft,
+                            initialIndex: 2,
+                            key: Qt.Key_Right,
+                            keyTimes: 3,
+                            focusItems: ["simple1", "simple0", "simple0"]
+                        },
                         {   tag: "Left, no content, from end",
                             delegate: simpleListItem,
                             orientation: ListView.Horizontal,
                             initialIndex: n - 1,
                             key: Qt.Key_Left,
+                            keyTimes: 3,
+                            focusItems: ["simple"+(n-2), "simple"+(n-3), "simple"+(n-4)]
+                        },
+                        {   tag: "RightToLeft right, no content, from end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            direction: Qt.RightToLeft,
+                            initialIndex: n - 1,
+                            key: Qt.Key_Right,
                             keyTimes: 3,
                             focusItems: ["simple"+(n-2), "simple"+(n-3), "simple"+(n-4)]
                         },
@@ -206,11 +362,29 @@ Item {
                             keyTimes: 5,
                             focusItems: ["simple1", "simple2", "simple3", "simple4", "simple5"]
                         },
+                        {   tag: "RightToLeft left, no content, from beginning",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            direction: Qt.RightToLeft,
+                            initialIndex: 0,
+                            key: Qt.Key_Left,
+                            keyTimes: 5,
+                            focusItems: ["simple1", "simple2", "simple3", "simple4", "simple5"]
+                        },
                         {   tag: "Right, no content, near end",
                             delegate: simpleListItem,
                             orientation: ListView.Horizontal,
                             initialIndex: n - 3,
                             key: Qt.Key_Right,
+                            keyTimes: 2,
+                            focusItems: ["simple"+(n-2), "simple"+(n-1), "simple"+(n-1)]
+                        },
+                        {   tag: "RightToLeft left, no content, near end",
+                            delegate: simpleListItem,
+                            orientation: ListView.Horizontal,
+                            direction: Qt.RightToLeft,
+                            initialIndex: n - 3,
+                            key: Qt.Key_Left,
                             keyTimes: 2,
                             focusItems: ["simple"+(n-2), "simple"+(n-1), "simple"+(n-1)]
                         },
@@ -222,11 +396,29 @@ Item {
                             keyTimes: 3,
                             focusItems: ["withContent1", "withContent2", "withContent3"]
                         },
+                        {   tag: "BottomToTop up, with content, from beginning",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: 0,
+                            key: Qt.Key_Up,
+                            keyTimes: 3,
+                            focusItems: ["withContent1", "withContent2", "withContent3"]
+                        },
                         {   tag: "Down, with content, near end",
                             delegate: listItemWithContent,
                             orientation: ListView.Vertical,
                             initialIndex: n - 3,
                             key: Qt.Key_Down,
+                            keyTimes: 3,
+                            focusItems: ["withContent"+(n-2), "withContent"+(n-1), "withContent"+(n-1)]
+                        },
+                        {   tag: "BottomToTop up, with content, near end",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: n - 3,
+                            key: Qt.Key_Up,
                             keyTimes: 3,
                             focusItems: ["withContent"+(n-2), "withContent"+(n-1), "withContent"+(n-1)]
                         },
@@ -238,11 +430,29 @@ Item {
                             keyTimes: 3,
                             focusItems: ["withContent1", "withContent0", "withContent0"]
                         },
+                        {   tag: "BottomToTop down, with content, near beginning",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: 2,
+                            key: Qt.Key_Down,
+                            keyTimes: 3,
+                            focusItems: ["withContent1", "withContent0", "withContent0"]
+                        },
                         {   tag: "Up, with content, from end",
                             delegate: listItemWithContent,
                             orientation: ListView.Vertical,
                             initialIndex: n - 1,
                             key: Qt.Key_Up,
+                            keyTimes: 2,
+                            focusItems: ["withContent"+(n-2), "withContent"+(n-3)]
+                        },
+                        {   tag: "BottomToTop down, with content, from end",
+                            delegate: listItemWithContent,
+                            orientation: ListView.Vertical,
+                            direction: ListView.BottomToTop,
+                            initialIndex: n - 1,
+                            key: Qt.Key_Down,
                             keyTimes: 2,
                             focusItems: ["withContent"+(n-2), "withContent"+(n-3)]
                         }
@@ -253,6 +463,15 @@ Item {
             var test = loadTest(listView);
             test.orientation = data.orientation;
             test.delegate = data.delegate;
+            // The cases where data.direction is set to ListView.BottomtoTop or Qt.RightToLeft
+            //  are regression tests for bug #1605634.
+            if (data.direction) {
+                if (data.orientation === ListView.Horizontal) {
+                    test.layoutDirection = data.direction;
+                } else {
+                    test.verticalLayoutDirection = data.direction;
+                }
+            }
             test.currentIndex = data.initialIndex;
             waitForRendering(test, 500);
             keyClick(Qt.Key_Tab);
@@ -296,10 +515,10 @@ Item {
         // Tab/Backtab focuses, next Tab/Backtab focuses out of ListItem in a ListView
         function test_tab_backtab_navigates_away_of_listview_data() {
             return [
-                {tag: "Tab, simple", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Tab},
-                {tag: "Tab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Tab},
-                {tag: "BackTab, simple", preFocus: topItem, delegate: simpleListItem, key: Qt.Key_Backtab},
-                {tag: "BackTab, with content", preFocus: topItem, delegate: listItemWithContent, key: Qt.Key_Backtab},
+                {tag: "Tab, simple", preFocus: topFocusItem, delegate: simpleListItem, key: Qt.Key_Tab},
+                {tag: "Tab, with content", preFocus: topFocusItem, delegate: listItemWithContent, key: Qt.Key_Tab},
+                {tag: "BackTab, simple", preFocus: bottomFocusItem, delegate: simpleListItem, key: Qt.Key_Backtab},
+                {tag: "BackTab, with content", preFocus: bottomFocusItem, delegate: listItemWithContent, key: Qt.Key_Backtab},
             ];
         }
         function test_tab_backtab_navigates_away_of_listview(data) {
@@ -310,7 +529,7 @@ Item {
             verify(data.preFocus.activeFocus);
             // the first tab focuses the ListView and its first child
             keyClick(data.key);
-            tryCompare(test, "activeFocus", true, 500, "Focus hasn't been gained bythe ListItem");
+            tryCompare(test, "activeFocus", true, 500, "Focus hasn't been gained by the ListItem");
 
             // the second tab should leave the ListView
             keyClick(data.key);
@@ -320,10 +539,10 @@ Item {
         // testing Tab/Backtab navigation when in a generic item
         function test_tab_navigation_when_not_in_listview_data() {
             return [
-                {tag: "Tabs", firstFocus: topItem, key: Qt.Key_Tab,
+                {tag: "Tabs", firstFocus: topFocusItem, key: Qt.Key_Tab,
                             focusItems: ["withContent0", "checkbox0", "switch0", "button0"
                                 , "withContent1", "checkbox1", "switch1", "button1"]},
-                {tag: "Backtabs", firstFocus: topItem, key: Qt.Key_Backtab,
+                {tag: "Backtabs", firstFocus: bottomFocusItem, key: Qt.Key_Backtab,
                             focusItems: ["simple1", "simple0"
                                 , "button1", "switch1", "checkbox1", "withContent1"]},
             ];
@@ -408,7 +627,7 @@ Item {
             return [
                 {tag: "Tabs in ListView", test: listView, delegate: listItemWithContent, testPlan: [
                         {key: Qt.Key_Tab, focus: "withContent0"},
-                        {key: Qt.Key_Tab, focus: "topItem"},
+                        {key: Qt.Key_Tab, focus: "bottomFocusItem"},
                         {key: Qt.Key_Backtab, focus: "withContent0"},
                 ]},
                 {tag: "Tab and navigate in ListView", test: listView, delegate: listItemWithContent, testPlan: [
@@ -421,7 +640,7 @@ Item {
                         {key: Qt.Key_Right, focus: "switch2"},
                         {key: Qt.Key_Down, focus: "withContent3"},
                         {key: Qt.Key_Down, focus: "withContent4"},
-                        {key: Qt.Key_Backtab, focus: "topItem"},
+                        {key: Qt.Key_Backtab, focus: "topFocusItem"},
                         {key: Qt.Key_Tab, focus: "withContent4"},
                 ]},
                 {tag: "Tab and navigate in generic", test: generic, testPlan: [
@@ -434,7 +653,7 @@ Item {
                         {key: Qt.Key_Right, focus: "withContent0"},
                         {key: Qt.Key_Down, focus: "withContent0"},
                         {key: Qt.Key_Down, focus: "withContent0"},
-                        {key: Qt.Key_Backtab, focus: "topItem"},
+                        {key: Qt.Key_Backtab, focus: "topFocusItem"},
                         {key: Qt.Key_Tab, focus: "withContent0"},
                 ]},
                 {tag: "Mixed Tab and navigate keys in generic", test: generic, testPlan: [
