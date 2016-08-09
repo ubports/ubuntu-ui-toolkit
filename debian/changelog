@@ -1,7 +1,8 @@
-ubuntu-ui-toolkit (1.3.2047+16.10) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.2051+16.10) UNRELEASED; urgency=medium
 
   [ Timo Jyrinki ]
   * Disable documentation building for GLES builds. Fixes LP: #1606222.
+  * Replace abs with qFabs due to GCC6 breakage. Fixes LP: #1610943.
 
   [ Andrea Bernabei ]
   * ListItemLayout doc: add elide mode change example and add section about
@@ -9,6 +10,8 @@ ubuntu-ui-toolkit (1.3.2047+16.10) UNRELEASED; urgency=medium
   * ListItemLayout doc: add explicit note about the need to bind ListItem's
     height to layout's height.
   * More Scrollbar optimizations: 20% faster creation time. Fixes LP: #1606451
+  * Scrollbar: fix wrong thumb color on tap/mouse release and increase coverage
+    of hover states unit tests. Fixes LP: #1608897
 
   [ Zsombor Egri ]
   * Fix null pointer property initializer used with 1.3 PageWrapper. 
@@ -30,6 +33,8 @@ ubuntu-ui-toolkit (1.3.2047+16.10) UNRELEASED; urgency=medium
     their Styles. Fixes LP: #1597774.
   * Fix assigning of constant values to a grouped property in StyleHints.
     Fixes LP: #1602836.
+  * Fix list view keyboard navigation for RightToLeft and BottomToTop 
+    directions. Fixes LP: #1605634
 
   [Christian Dywan ]
   * Include indexes in "offline" docs and filter out link errors.
@@ -38,6 +43,8 @@ ubuntu-ui-toolkit (1.3.2047+16.10) UNRELEASED; urgency=medium
   * Add a snippet about tests to the toplevel README
   * Enter/Return to trigger, Space to expand ComboButton. Fixes LP: #1523817.
   * Initialize engine variable before using it in the _engine case.
+  * Use Qt.rgba instead of #0000 checking ListItem default color. 
+    Fixes LP: #1560004
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 29 Jul 2016 14:49:16 +0300
 
