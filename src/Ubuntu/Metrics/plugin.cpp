@@ -14,13 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-// FIXME(loicm)
-//     - Not sure how to add support for the loggers API?
-//     - Add support for the generic logging API.
-//     - loggingFilter is broken.
-
 #include <QtQml/QtQml>
 #include <UbuntuMetrics/applicationmonitor.h>
+
+// FIXME(loicm)
+//   - Not sure how to add support for the loggers API?
+//   - Add support for the generic logging API.
 
 class ApplicationMonitorWrapper : public QObject
 {
@@ -51,6 +50,15 @@ public:
     }
     ~ApplicationMonitorWrapper() {}
 
+    enum LoggingFilter {
+        ProcessEvent = UMApplicationMonitor::ProcessEvent,
+        WindowEvent  = UMApplicationMonitor::WindowEvent,
+        FrameEvent   = UMApplicationMonitor::FrameEvent,
+        GenericEvent = UMApplicationMonitor::GenericEvent,
+        AllEvents    = UMApplicationMonitor::AllEvents
+    };
+    Q_DECLARE_FLAGS(LoggingFilters, LoggingFilter)
+
     enum Event {
         UserInterfaceReady = UMApplicationMonitor::UserInterfaceReady
     };
@@ -59,10 +67,14 @@ public:
     void setOverlay(bool overlay) { m_applicationMonitor->setOverlay(overlay); }
     bool logging() const { return m_applicationMonitor->logging(); }
     void setLogging(bool logging) { m_applicationMonitor->setLogging(logging); }
-    UMApplicationMonitor::LoggingFilters loggingFilter() const {
-        return m_applicationMonitor->loggingFilter(); }
-    void setLoggingFilter(UMApplicationMonitor::LoggingFilters filter) {
-        m_applicationMonitor->setLoggingFilter(filter); }
+    LoggingFilters loggingFilter() const {
+        return QFlags<LoggingFilters>::enum_type(
+            QFlags<UMApplicationMonitor::LoggingFilters>::Int(
+                m_applicationMonitor->loggingFilter())); }
+    void setLoggingFilter(LoggingFilters filter) {
+        m_applicationMonitor->setLoggingFilter(
+            QFlags<UMApplicationMonitor::LoggingFilters>::enum_type(
+                QFlags<LoggingFilters>::Int(filter))); }
     int processUpdateInterval() const {
         return m_applicationMonitor->updateInterval(UMEvent::Process); }
     void setProcessUpdateInterval(int interval) {
