@@ -24,7 +24,8 @@ class OptionSelectorCustomDelegateTestCase(tests.QMLFileAppTestCase):
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
-        dir_path, 'test_optionselector.OptionSelectorCustomDelegateTestCase.qml')
+        dir_path,
+        'test_optionselector.OptionSelectorCustomDelegateTestCase.qml')
 
     def setUp(self):
         super().setUp()

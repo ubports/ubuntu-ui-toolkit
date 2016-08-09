@@ -28,7 +28,6 @@ class DatePickerBaseTestCase(tests.QMLFileAppTestCase):
     test_qml_file_path = os.path.join(
         dir_path, 'test_date_picker.DatePickerBaseTestCase.qml')
 
-
     def setUp(self):
         super().setUp()
         self.date_picker = self.main_view.select_single(

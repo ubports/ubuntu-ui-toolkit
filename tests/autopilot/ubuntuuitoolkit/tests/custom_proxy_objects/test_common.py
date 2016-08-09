@@ -40,6 +40,7 @@ class CheckAutopilotVersionTestCase(unittest.TestCase):
         with mock.patch.object(autopilot, 'version', '1.5'):
             ubuntuuitoolkit.check_autopilot_version()
 
+
 # FIXME: this class is not used anywhere, and QMLStringAppTestCase subclasses
 #   no longer work (see bug 1578319), so the code below can be deleted.
 class UbuntuUIToolkitCustomProxyObjectBaseTestCase(tests.QMLStringAppTestCase):
