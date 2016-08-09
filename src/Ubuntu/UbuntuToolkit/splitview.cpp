@@ -460,17 +460,29 @@ void SplitView::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickBasePositioner::itemChange(change, data);
     // we must exclude Repeater
-    if (change == ItemChildAddedChange && data.item && !data.item->inherits("QQuickRepeater")) {
-        // attach properties and configure
-        qDebug() << data.item;
-        SplitViewAttached *attached = static_cast<SplitViewAttached*>(
-                    qmlAttachedPropertiesObject<SplitView>(data.item, true));
+    switch (change) {
+    case ItemChildAddedChange:
+        if (data.item && !data.item->inherits("QQuickRepeater")) {
+            // attach properties and configure
+            SplitViewAttached *attached = static_cast<SplitViewAttached*>(
+                        qmlAttachedPropertiesObject<SplitView>(data.item, true));
 
-        SplitViewAttachedPrivate::get(attached)->configure(this, childItems().size() - 1);
+            Q_D(SplitView);
+            SplitViewAttachedPrivate::get(attached)->configure(this, d->viewCount++);
 
-        // attach the split handler to it
-        SplitViewHandler *handler = new SplitViewHandler(data.item);
-        handler->connectToView(this);
+            // attach the split handler to it
+            SplitViewHandler *handler = new SplitViewHandler(data.item);
+            handler->connectToView(this);
+        }
+        break;
+    case ItemChildRemovedChange:
+        if (data.item && !data.item->inherits("QQuickRepeater")) {
+            Q_D(SplitView);
+            d->viewCount--;
+        }
+        break;
+    default: // ommit the rest
+        break;
     }
 }
 

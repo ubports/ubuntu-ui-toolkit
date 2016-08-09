@@ -107,10 +107,10 @@ void ViewColumnPrivate::setMaximumWidth(qreal width)
  */
 void ViewColumnPrivate::setPreferredWidth(qreal width, bool notify)
 {
-    if (completed && clamp(minimumWidth, maximumWidth, width) != width) {
-        qmlInfo(q_func()) << "preferredWidth value falls outside of minimumWidth and maximumWidth values";
-        return;
-    }
+//    if (completed && clamp(minimumWidth, maximumWidth, width) != width) {
+//        qmlInfo(q_func()) << "preferredWidth value falls outside of minimumWidth and maximumWidth values";
+//        return;
+//    }
     // clamp
     width = clamp(minimumWidth, maximumWidth, width);
     if (qFuzzyCompare(preferredWidth, width)) {

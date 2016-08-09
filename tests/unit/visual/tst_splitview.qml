@@ -45,8 +45,6 @@ Window {
             Behavior on scale {
                 UbuntuNumberAnimation { }
             }
-
-            Component.onDestruction: print("die, handler, DIE!")
         }
 
         layouts: [
@@ -90,7 +88,6 @@ Window {
                 color: UbuntuColors.red
                 height: layout.height
                 Label { text: parent.width + "/" + modelData.preferredWidth }
-                Component.onCompleted: print("doing")
             }
         }
 

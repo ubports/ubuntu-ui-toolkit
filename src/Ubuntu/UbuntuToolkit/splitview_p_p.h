@@ -97,8 +97,8 @@ public:
     void configure(SplitView *view, int column);
     UT_PREPEND_NAMESPACE(ViewColumn*) config();
 
-    int column{-1};
     SplitView *splitView{nullptr};
+    int column{-1};
 };
 
 class SplitViewPrivate
@@ -136,6 +136,7 @@ public:
     QList<SplitViewLayout*> columnLatouts;
     SplitViewLayout* activeLayout{nullptr};
     QQmlComponent *handleDelegate{nullptr};
+    int viewCount{0};
     bool dirty{false};
 
 private:
