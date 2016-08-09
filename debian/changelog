@@ -1,8 +1,10 @@
-ubuntu-ui-toolkit (1.3.2051+16.10) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.2052+16.10) UNRELEASED; urgency=medium
 
   [ Timo Jyrinki ]
   * Disable documentation building for GLES builds. Fixes LP: #1606222.
   * Replace abs with qFabs due to GCC6 breakage. Fixes LP: #1610943.
+  * Limit s390x dependencies more due to upstart/s390x problems and removed
+    packages in archives. Fixes LP: #1610951
 
   [ Andrea Bernabei ]
   * ListItemLayout doc: add elide mode change example and add section about
