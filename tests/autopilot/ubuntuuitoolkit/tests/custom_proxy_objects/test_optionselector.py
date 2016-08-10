@@ -14,58 +14,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
+class OptionSelectorCustomDelegateTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Page{
-
-        Column {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.fill: parent
-
-            spacing: units.gu(3)
-
-            Component {
-                id: valueSelectorDelegate
-                OptionSelectorDelegate {
-                    text: label
-                    objectName: name
-                }
-            }
-
-            ListModel {
-                id: valueModel
-                ListElement { name: "one"; label: "Value 1" }
-                ListElement { name: "two"; label: "Value 2" }
-                ListElement { name: "three"; label: "Value 3" }
-                ListElement { name: "four"; label: "Value 4" }
-                ListElement { name: "five"; label: "Value 5" }
-            }
-
-            OptionSelector {
-                id: valueSelector
-                objectName: "test_option_selector_collapsed"
-                text: "Collapsed"
-                delegate: valueSelectorDelegate
-                model: valueModel
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path,
+        'test_optionselector.OptionSelectorCustomDelegateTestCase.qml')
 
     def setUp(self):
         super().setUp()
@@ -119,36 +79,12 @@ MainView {
         self.assertEqual(2, self.option_selector.selectedIndex)
 
 
-class OptionSelectorTestCase(tests.QMLStringAppTestCase):
+class OptionSelectorTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(120)
-    objectName: "mainView"
-
-        Column {
-           anchors.fill: parent
-           anchors.left: parent.left
-           anchors.right: parent.right
-           spacing: units.gu(3)
-
-                OptionSelector {
-                    objectName: "option_selector"
-                    text: i18n.tr("option_selector")
-                    expanded: true
-                    model: [i18n.tr("Red"),
-                            i18n.tr("Blue"),
-                            i18n.tr("Green"),
-                            i18n.tr("Yellow"),
-                            i18n.tr("Black")]
-                }
-        }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_optionselector.OptionSelectorTestCase.qml')
 
     def setUp(self):
         super().setUp()
