@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -335,6 +335,30 @@ Item {
             var config = test.layouts[0].columns[0];
             config.maximumWidth = config.preferredWidth - 10;
             compare(config.preferredWidth, config.maximumWidth);
+        }
+
+        // test layout change keeps value
+        function test_resize_and_change_layouts() {
+            var test = loadTest(testLayout);
+            // move the mouse to the resizer handler
+            var column0 = findChild(test, "column0");
+            verify(column0);
+            resizeSpy.target = column0.SplitView.columnConfig;
+            // aim to the resize handle
+            mouseDrag(column0, column0.width + test.spacing/2, column0.height / 2, units.gu(10), 0);
+            resizeSpy.wait();
+
+            var prevWidth = column0.width;
+
+            // change layout
+            test.when = 2;
+            waitForRendering(test);
+            verify(prevWidth != column0.width);
+
+            // restore the previous layout
+            test.when = 1;
+            waitForRendering(test);
+            compare(prevWidth, column0.width);
         }
     }
 }

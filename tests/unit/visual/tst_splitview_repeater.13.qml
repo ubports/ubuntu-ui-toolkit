@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,13 +25,14 @@ Item {
     height: units.gu(70)
 
     SplitView {
-        id: layout
+        id: splitView
         anchors.fill: parent
+        property int columns: 4
 
         layouts: [
             SplitViewLayout {
                 id: mainLayout
-                when: true
+                when: splitView.columns == 4
                 ViewColumn {
                     preferredWidth: units.gu(40)
                     maximumWidth: units.gu(100)
@@ -50,7 +51,7 @@ Item {
                 }
             },
             SplitViewLayout {
-                when: !mainLayout.when
+                when: splitView.columns == 2
                 ViewColumn {
                     preferredWidth: units.gu(10)
                     minimumWidth: units.gu(30)
@@ -63,12 +64,35 @@ Item {
         ]
 
         Repeater {
-            model: layout.activeLayout.columns
+            objectName: "ignored"
+            model: splitView.columns
             Rectangle {
                 objectName: "column" + index
                 color: UbuntuColors.red
-                height: layout.height
-                Label { text: parent.width + "/" + modelData.preferredWidth }
+                height: splitView.height
+            }
+        }
+    }
+
+    UbuntuTestCase {
+        when: windowShown
+
+        function cleanup() {
+            splitView.columns = 0;
+        }
+
+        function test_children_data() {
+            return [
+                {tag: "4 columns", columns: 4, childCount: 5, children: ["column0", "column1", "column2", "column3", "ignored"]},
+                {tag: "2 columns", columns: 2, childCount: 3, children: ["column0", "column1", "ignored"]},
+                {tag: "0 columns", columns: 0, childCount: 1, children: ["ignored"]},
+            ];
+        }
+        function test_children(data) {
+            splitView.columns = data.columns;
+            compare(splitView.children.length, data.childCount);
+            for (var i in splitView.children) {
+                compare(splitView.children[i].objectName, data.children[i]);
             }
         }
     }
