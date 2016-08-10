@@ -511,16 +511,16 @@ void SplitViewPrivate::init()
 {
     Q_Q(SplitView);
     auto spacingHandle = [q]() {
-        q->setSpacing2(UCUnits::instance()->dp(DEFAULT_SPACING_DP), false);
+        q->setSpacing2(UCUnits::instance(q)->dp(DEFAULT_SPACING_DP), false);
     };
     defaultSpacing = new QMetaObject::Connection;
-    *defaultSpacing = QObject::connect(UCUnits::instance(), &UCUnits::gridUnitChanged, spacingHandle);
+    *defaultSpacing = QObject::connect(UCUnits::instance(q), &UCUnits::gridUnitChanged, spacingHandle);
 
     // connect the spacingChanged signals
     QObject::connect(q, SIGNAL(spacingChanged()), q, SIGNAL(spacingChanged2()));
 
     // set the defaults
-    q->setSpacing2(UCUnits::instance()->dp(DEFAULT_SPACING_DP), false);
+    q->setSpacing2(UCUnits::instance(q)->dp(DEFAULT_SPACING_DP), false);
 }
 
 void SplitView::doPositioning(QSizeF *contentSize)
