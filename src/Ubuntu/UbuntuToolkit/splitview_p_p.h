@@ -44,7 +44,7 @@ public:
     void recalculateLayoutContent();
 
     qreal minimumWidth{0.0};
-    qreal maximumWidth{0xFFFFFFFF};
+    qreal maximumWidth{std::numeric_limits<qreal>::max()};
     qreal preferredWidth{0.0};
     int column{-1};
     bool fillWidth{false};

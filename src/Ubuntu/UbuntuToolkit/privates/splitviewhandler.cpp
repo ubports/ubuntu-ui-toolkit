@@ -28,6 +28,8 @@ UT_NAMESPACE_BEGIN
 SplitViewHandler::SplitViewHandler(QQuickItem *parent)
     : QQuickMouseArea(parent)
 {
+    // for testing purposes
+    setObjectName("resize_handle");
     setFlag(ItemHasContents);
     setHoverEnabled(true);
     setAcceptedButtons(Qt::LeftButton);
@@ -115,6 +117,7 @@ void SplitViewHandler::onDelegateChanged()
             QQuickItem *item = qobject_cast<QQuickItem*>(object);
             if (!item) {
                 qmlInfo(view) << "handle delegate not an Item";
+                SplitViewPrivate::get(view)->handleDelegate->completeCreate();
                 delete object;
             } else {
                 QQml_setParent_noEvent(item, this);

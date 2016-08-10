@@ -15,12 +15,11 @@
  */
 
 import QtQuick 2.4
-import QtQuick.Window 2.1
 import Ubuntu.Test 1.3
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Labs 1.0
 
-Window {
+Item {
     id: main
     width: units.gu(200)
     height: units.gu(70)
@@ -28,21 +27,6 @@ Window {
     SplitView {
         id: layout
         anchors.fill: parent
-        focus: true
-        Keys.onSpacePressed: mainLayout.when = !mainLayout.when
-        handleDelegate: Rectangle {
-            radius: units.gu(1)
-            anchors {
-                fill: handle
-                leftMargin: units.dp(1)
-                rightMargin: units.dp(1)
-                topMargin: handle.height / 2 - units.gu(3)
-                bottomMargin: handle.height / 2 - units.gu(3)
-            }
-            color: UbuntuColors.graphite
-            scale: handle.containsMouse || handle.pressed ? 1.6 : 1.0
-            Behavior on scale { UbuntuNumberAnimation {} }
-        }
 
         layouts: [
             SplitViewLayout {
@@ -78,42 +62,14 @@ Window {
             }
         ]
 
-//        Repeater {
-//            model: layout.activeLayout.columns
-//            Rectangle {
-//                color: UbuntuColors.red
-//                height: layout.height
-//                Label { text: parent.width + "/" + modelData.preferredWidth }
-//            }
-//        }
-
-        Rectangle {
-            color: UbuntuColors.red
-            height: parent.height
-            width: units.gu(90)
-            Label { text: parent.width }
-        }
-        Rectangle {
-            color: UbuntuColors.green
-            height: parent.height
-            Label { text: parent.width }
-            Component.onCompleted: print(SplitView.column)
-        }
-        Rectangle {
-            color: UbuntuColors.blue
-            height: parent.height
-            Label { text: parent.width }
-        }
-        Rectangle {
-            color: UbuntuColors.ash
-            height: parent.height
-            Label { text: parent.width }
-        }
-        Rectangle {
-            color: "pink"
-            height: parent.height
-            width: units.gu(30)
-            Label { text: parent.width }
+        Repeater {
+            model: layout.activeLayout.columns
+            Rectangle {
+                objectName: "column" + index
+                color: UbuntuColors.red
+                height: layout.height
+                Label { text: parent.width + "/" + modelData.preferredWidth }
+            }
         }
     }
 }

@@ -84,16 +84,18 @@ void ViewColumnPrivate::setMinimumWidth(qreal width)
     if (qFuzzyCompare(minimumWidth, width)) {
         return;
     }
-    if (minimumWidth > maximumWidth) {
-        qmlInfo(q_func()) << "minimumWidth is greater than maximumWidth";
+    if (width < 0.0) {
+        qmlInfo(q_func()) << "minimumWidth cannot be a negative value";
         return;
     }
-    if (minimumWidth < 0.0) {
-        qmlInfo(q_func()) << "minimumWidth cannot be a negative value";
+    if (width > maximumWidth) {
+        qmlInfo(q_func()) << "minimumWidth is greater than maximumWidth";
         return;
     }
     minimumWidth = width;
     Q_EMIT q_func()->minimumWidthChanged();
+    // clamp preferredWidth if needed
+    setPreferredWidth(preferredWidth);
     recalculateLayoutContent();
 }
 
@@ -107,16 +109,17 @@ void ViewColumnPrivate::setMaximumWidth(qreal width)
     if (qFuzzyCompare(maximumWidth, width)) {
         return;
     }
-    if (maximumWidth < minimumWidth) {
-        qmlInfo(q_func()) << "maximumWidth is smaller than minimumWidth";
+    if (width < 0.0) {
+        qmlInfo(q_func()) << "maximumWidth cannot be a negative value";
         return;
     }
-    if (maximumWidth < 0.0) {
-        qmlInfo(q_func()) << "maximumWidth cannot be a negative value";
+    if (width < minimumWidth) {
+        qmlInfo(q_func()) << "maximumWidth is smaller than minimumWidth";
         return;
     }
     maximumWidth = width;
     Q_EMIT q_func()->maximumWidthChanged();
+    setPreferredWidth(preferredWidth);
     recalculateLayoutContent();
 }
 
