@@ -131,11 +131,11 @@ void UCMainWindowPrivate::init()
 UCMainWindow::UCMainWindow(QWindow *parent)
     : QQuickWindow(parent)
 {
-    QObject::connect(UbuntuI18n::instance(), SIGNAL(domainChanged()),
+    QObject::connect(UbuntuI18n::instance(this), SIGNAL(domainChanged()),
                      this, SIGNAL(i18nChanged()));
-    QObject::connect(UbuntuI18n::instance(), SIGNAL(languageChanged()),
+    QObject::connect(UbuntuI18n::instance(this), SIGNAL(languageChanged()),
                      this, SIGNAL(i18nChanged()));
-    QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
+    QObject::connect(UCUnits::instance(this), SIGNAL(gridUnitChanged()),
                      this, SIGNAL(unitsChanged()));
 }
 
