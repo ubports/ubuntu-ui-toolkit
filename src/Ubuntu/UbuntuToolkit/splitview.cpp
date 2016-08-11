@@ -44,11 +44,11 @@ UT_NAMESPACE_BEGIN
  * by the active layout's configuration (ViewColumn) and will overwrite the value
  * specified by the view.
  *
- * In order a SplitView to show some content it must have at least one active layout
+ * In order for a SplitView to show some content it must have at least one active layout
  * present. Views which are not configured by the active layout will be hidden. Hidden
  * views may be resized, therefore if the content is size sensitive (i.e. the amount
- * shown differs on the space available), make sure the content of your view does take
- * this into account.
+ * shown differs depending on the space available), make sure the content of your view
+ * does take this into account.
  * \code
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
@@ -152,10 +152,9 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmlproperty real SplitView::spacing
- * Spacing between the view columns, also drives the ability to resize view columns.
- * If the value is zero, the view cannot resize columns. If the value is > 0, the
- * view can resize those columns which have their \l{ViewColumn::minimumWidth}{minimumWidth}
- * is less than the \l {ViewColumn::maximumWidth}{maximumWidth}.
+ * Spacing between view columns. A value bigger than 0 enables resizing of columns with
+ * a \l{ViewColumn::minimumWidth}{minimumWidth} lower than \l {ViewColumn::maximumWidth}{maximumWidth}.
+ * If spacing is 0 the columns cannot be resized.
  * Defaults to 4 device pixels.
  */
 void SplitView::setSpacing2(qreal spacing, bool reset)
