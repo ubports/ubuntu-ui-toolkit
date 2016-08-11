@@ -74,7 +74,7 @@ static float getenvFloat(const char* name, float defaultValue)
  * In Qt5.6 the following variables affect scaling in QWidget and QML:
  *   1. QT_SCALE_FACTOR: global integer scale factor, including point-sized fonts
  *   2. QT_SCREEN_SCALE_FACTORS: a list of scale factors
- *   3. QT_QUTO_SCREEN_SCALE_FACTOR: enables automatic scaling heuristics
+ *   3. QT_AUTO_SCREEN_SCALE_FACTOR: enables automatic scaling heuristics
  *
  * In Qt5.4 there is a single means to scale the UI: the QT_DEVICE_PIXEL_RATIO environment
  * variable. This accepts only integer values, thus allowing a x2 or x3 scaling of any
