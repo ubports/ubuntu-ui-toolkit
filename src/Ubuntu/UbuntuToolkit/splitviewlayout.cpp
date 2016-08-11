@@ -21,13 +21,9 @@
 
 #include "splitview_p.h"
 #include "splitview_p_p.h"
+#include "ucmathutils_p.h"
 
 UT_NAMESPACE_BEGIN
-
-static qreal clamp(qreal min, qreal max, qreal v)
-{
-    return qMax<qreal>(min, qMin<qreal>(max, v));
-}
 
 /******************************************************************************
  * ViewColumn configuration object
@@ -133,7 +129,7 @@ void ViewColumnPrivate::setMaximumWidth(qreal width)
 void ViewColumnPrivate::setPreferredWidth(qreal width, bool notify)
 {
     // clamp
-    width = clamp(minimumWidth, maximumWidth, width);
+    width = UCMathUtils::clamp(width, minimumWidth, maximumWidth);
     if (qFuzzyCompare(preferredWidth, width)) {
         return;
     }
@@ -171,7 +167,7 @@ bool ViewColumn::resize(qreal delta)
     // apply limits
     qreal newWidth = d->preferredWidth + delta;
     // clamp
-    newWidth = qMax<qreal>(d->minimumWidth, qMin<qreal>(d->maximumWidth, newWidth));
+    newWidth = UCMathUtils::clamp(newWidth, d->minimumWidth, d->maximumWidth);
     if (newWidth != d->preferredWidth) {
         d->resized = true;
         d->setPreferredWidth(newWidth);
