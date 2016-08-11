@@ -28,7 +28,7 @@ class tst_UCUnits: public QObject
 private Q_SLOTS:
 
     void defaultGridUnit() {
-        qputenv("GRID_UNIT_PX", "");
+        qunsetenv("GRID_UNIT_PX");
         UCUnits units;
         QCOMPARE(units.gridUnit(), 8.0f);
     }
@@ -46,7 +46,7 @@ private Q_SLOTS:
         qputenv("GRID_UNIT_PX", gridUnit);
         UCUnits units;
         QCOMPARE(units.gridUnit(), 11.0);
-        qputenv("GRID_UNIT_PX", "");
+        qunsetenv("GRID_UNIT_PX");
     }
 
     void dpGridUnitDefault() {
