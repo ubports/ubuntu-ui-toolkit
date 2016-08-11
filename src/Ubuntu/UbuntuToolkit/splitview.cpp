@@ -23,6 +23,7 @@
 #include "splitview_p.h"
 #include "splitview_p_p.h"
 #include "ucunits_p.h"
+#include "ucpagetreenode_p.h"
 
 #include "privates/splitviewhandler_p_p.h"
 
@@ -42,7 +43,9 @@ UT_NAMESPACE_BEGIN
  * is identified with a column index, specified by the SplitView.column attached property.
  * Views should not have width declared, because the width of each view is specified
  * by the active layout's configuration (ViewColumn) and will overwrite the value
- * specified by the view.
+ * specified by the view. On the other hand they should have a height specified, or
+ * they can be anchored to the top and bottom of the view. SplitView being a positioner,
+ * remember not to anchor horizontal anchor lines or anchor fill the columns.
  *
  * In order for a SplitView to show some content it must have at least one active layout
  * present. Views which are not configured by the active layout will be hidden. Hidden
@@ -584,6 +587,11 @@ void SplitView::reportConflictingAnchors()
         if (child.item) {
             QQuickAnchors *anchors = QQuickItemPrivate::get(static_cast<QQuickItem *>(child.item))->_anchors;
             if (anchors) {
+                // can we patch out the anchors (Page?)
+                if (qobject_cast<UCPageTreeNode*>(child.item)) {
+                    // unset left anchor
+                    anchors->resetLeft();
+                }
                 QQuickAnchors::Anchors usedAnchors = anchors->usedAnchors();
                 if (usedAnchors & QQuickAnchors::LeftAnchor ||
                         usedAnchors & QQuickAnchors::RightAnchor ||
