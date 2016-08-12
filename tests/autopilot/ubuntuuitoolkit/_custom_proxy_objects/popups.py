@@ -98,10 +98,10 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
             button = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
-                'Action with objectName "{0}" not found.'.format(action_object_name))
+                'Button for action with objectName "{0}" not found.'.format(action_object_name))
         if not button.visible:
             raise _common.ToolkitException(
-                'Action with objectName "{0}" not visible.'.format(action_object_name))
+                'Button for action with objectName "{0}" not visible.'.format(action_object_name))
         self.pointing_device.click_object(button)
         if self.autoClose:
             try:
