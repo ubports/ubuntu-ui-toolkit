@@ -53,6 +53,7 @@ MainView {
             Action {
                 text: "Action three"
                 objectName: "actionHidden"
+                visible: false
                 onTriggered: label.text = "Hidden button clicked."
             }
         }

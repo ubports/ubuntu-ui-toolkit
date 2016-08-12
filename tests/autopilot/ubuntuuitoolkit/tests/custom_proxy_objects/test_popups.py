@@ -83,7 +83,7 @@ class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
             popover.click_action_button, 'actionHidden')
         self.assertEqual(
             str(error),
-            'Action with objectName "actionHidden" not found.')
+            'Action with objectName "actionHidden" not visible.')
 
     def _open_popover(self):
         open_button = self.main_view.select_single(
