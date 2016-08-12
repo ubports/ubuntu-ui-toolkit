@@ -23,6 +23,8 @@ from ubuntuuitoolkit import popups, tests
 
 class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
 
+    # FIXME: Currently we are only testing UITK 1.0 Popups,
+    #   we need to test 1.3 as well. See bug 1612582.
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
