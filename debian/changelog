@@ -1,5 +1,8 @@
 ubuntu-ui-toolkit (1.3.2055+16.10) UNRELEASED; urgency=medium
 
+  [ Zoltan Balogh ]
+  * Fix OptionSelectorTestCase tests.
+
   [ Timo Jyrinki ]
   * Disable documentation building for GLES builds. Fixes LP: #1606222.
   * Replace abs with qFabs due to GCC6 breakage. Fixes LP: #1610943.
@@ -39,6 +42,8 @@ ubuntu-ui-toolkit (1.3.2055+16.10) UNRELEASED; urgency=medium
     directions. Fixes LP: #1605634
   * Use external QML files instead of embedded QML strings for autopilot tests.
     Fixes LP: #1578319
+  * Fix failing autopilot header tests.
+  * Fix ActionSelectionPopover Autopilot CPO tests.
 
   [Christian Dywan ]
   * Include indexes in "offline" docs and filter out link errors.
@@ -51,6 +56,8 @@ ubuntu-ui-toolkit (1.3.2055+16.10) UNRELEASED; urgency=medium
     Fixes LP: #1560004
   * Don't use a different .desktop file in the gallery tests.
     Fixes LP: #1578319
+  * Update scaling docs, set QT_SCALE_FACTOR and unset GRID_UNIT_PX.
+    Fixes LP: #1610208
 
   [ Florian Boucault ]
   * Sections: load Icons asynchronously.
