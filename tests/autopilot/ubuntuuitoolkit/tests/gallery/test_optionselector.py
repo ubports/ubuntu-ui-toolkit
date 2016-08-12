@@ -37,7 +37,8 @@ class OptionSelectorTestCase(GalleryTestCase):
         self.assertEqual(
             collapsed_option_selector.get_selected_text(), 'Value 1')
 
-        collapsed_option_selector.select_option('UCLabel', text='Once upon a time there was a story nobody told.')
+        collapsed_option_selector.select_option(
+            'UCLabel', text='Once upon a time there was a story nobody told.')
         self.assertEqual(collapsed_option_selector.get_selected_index(), 3)
 
     def test_select_option_from_expanded_optionselector(self):
@@ -48,7 +49,8 @@ class OptionSelectorTestCase(GalleryTestCase):
         self.assertEqual(
             expanded_option_selector.get_selected_text(), 'Value 1')
 
-        expanded_option_selector.select_option('UCLabel', text='Once upon a time there was a story nobody told.')
+        expanded_option_selector.select_option(
+            'UCLabel', text='Once upon a time there was a story nobody told.')
         self.assertEqual(expanded_option_selector.get_selected_index(), 3)
 
     def test_select_option_from_optionselector_with_custom_model(self):
