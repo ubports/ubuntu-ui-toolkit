@@ -382,7 +382,7 @@ void UCBottomEdgeRegion::setUrl(const QUrl &url)
     d->url = url;
     Q_EMIT contentChanged(d->url);
     // invoke loader if the preload is set
-    if (d->bottomEdge && (d->bottomEdge->preloadContent()) && !d->url.isValid()) {
+    if (d->bottomEdge && (d->bottomEdge->preloadContent()) && d->url.isValid()) {
         d->loadContent(UCBottomEdgeRegionPrivate::LoadingUrl);
     }
 }

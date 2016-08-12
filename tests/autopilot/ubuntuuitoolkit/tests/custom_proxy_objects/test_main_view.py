@@ -14,24 +14,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class MainView10TestCase(tests.QMLStringAppTestCase):
+class MainView10TestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_main_view.MainView10TestCase.qml')
 
     def test_main_view_custom_proxy_object(self):
         self.assertIsInstance(self.main_view, ubuntuuitoolkit.MainView)
@@ -75,18 +70,12 @@ MainView {
             str(error), 'The MainView has no Tabs.')
 
 
-class MainView12TestCase(tests.QMLStringAppTestCase):
+class MainView12TestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.3
-import Ubuntu.Components 1.2
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_main_view.MainView12TestCase.qml')
 
     def test_main_view_custom_proxy_object(self):
         self.assertIsInstance(self.main_view, ubuntuuitoolkit.MainView)
@@ -128,51 +117,20 @@ MainView {
             str(error), 'The MainView has no Toolbar.')
 
 
-TEST_GO_BACK_QML_FORMAT = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+class GoBackTestCase(tests.QMLFileAppTestCase):
 
-MainView {{
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-    useDeprecatedToolbar: {use_deprecated_toolbar}
-
-    PageStack {{
-        id: pageStack
-        Component.onCompleted: push(page0)
-
-        Page {{
-            id: page0
-            title: "Page 0"
-            visible: false
-
-            Button {{
-                objectName: "go_to_page1"
-                text: "Go to page 1"
-                onClicked: pageStack.push(page1)
-            }}
-        }}
-
-        Page {{
-            id: page1
-            title: "Page 1"
-            visible: false
-        }}
-    }}
-}}
-""")
-
-
-class GoBackTestCase(tests.QMLStringAppTestCase):
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    toolbar_test_qml_file_path = os.path.join(
+        dir_path, 'test_main_view.GoBackTestCase.back_in_toolbar.qml')
+    header_test_qml_file_path = os.path.join(
+        dir_path, 'test_main_view.GoBackTestCase.back_in_header.qml')
 
     scenarios = [
-        ('back in toolbar', dict(
-            test_qml=TEST_GO_BACK_QML_FORMAT.format(
-                use_deprecated_toolbar='true'))),
-        ('back in header', dict(
-            test_qml=TEST_GO_BACK_QML_FORMAT.format(
-                use_deprecated_toolbar='false')))
+        ('back_in_toolbar', dict(
+            test_qml_file_path=toolbar_test_qml_file_path)),
+        ('back_in_header', dict(
+            test_qml_file_path=header_test_qml_file_path))
     ]
 
     def setUp(self):

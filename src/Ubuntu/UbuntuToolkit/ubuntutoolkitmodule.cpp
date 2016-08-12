@@ -88,6 +88,7 @@
 #include <privates/frame_p.h>
 #include <privates/ucpagewrapper_p.h>
 #include <privates/appheaderbase_p.h>
+#include <privates/ucscrollbarutils_p.h>
 #include <actionlist_p.h>
 #include <exclusivegroup_p.h>
 
@@ -246,6 +247,9 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
     qmlRegisterType<Tree>(privateUri, 1, 3, "Tree");
+
+    //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
+    qmlRegisterSimpleSingletonType<UCScrollbarUtils>(privateUri, 1, 3, "PrivateScrollbarUtils");
 
     // allocate all context property objects prior we register them
     initializeContextProperties(engine);

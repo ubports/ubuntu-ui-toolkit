@@ -30,7 +30,9 @@ Item {
     property color foregroundColor
 
     /*!
+      \deprecated
       The color of disabled action buttons in the header.
+      Replaced by buttons.disabledForegroundColor.
      */
     property color disabledForegroundColor
 
@@ -43,6 +45,11 @@ Item {
       The color of the background of the header.
      */
     property color backgroundColor
+
+    /*!
+      Configuration of the colors of the action buttons in the header.
+     */
+    readonly property ActionItemProperties buttons: ActionItemProperties { }
 
     /*!
       The color of the divider at the bottom of the header.

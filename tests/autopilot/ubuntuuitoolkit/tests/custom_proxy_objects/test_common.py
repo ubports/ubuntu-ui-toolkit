@@ -41,6 +41,8 @@ class CheckAutopilotVersionTestCase(unittest.TestCase):
             ubuntuuitoolkit.check_autopilot_version()
 
 
+# FIXME: this class is not used anywhere, and QMLStringAppTestCase subclasses
+#   no longer work (see bug 1578319), so the code below can be deleted.
 class UbuntuUIToolkitCustomProxyObjectBaseTestCase(tests.QMLStringAppTestCase):
 
     def test_pointing_device(self):
