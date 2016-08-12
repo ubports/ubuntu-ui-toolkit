@@ -48,11 +48,13 @@ MainView {
             Action {
                 text: "Action two"
                 objectName: "actionDisabled"
+                enabled: false
                 onTriggered: label.text = "Disabled button clicked."
             }
             Action {
                 text: "Action three"
                 objectName: "actionHidden"
+                visible: false
                 onTriggered: label.text = "Hidden button clicked."
             }
         }

@@ -23,6 +23,8 @@ from ubuntuuitoolkit import popups, tests
 
 class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
 
+    # FIXME: Currently we are only testing UITK 1.0 Popups,
+    #   we need to test 1.3 as well. See bug 1612582.
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
@@ -60,7 +62,7 @@ class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
             popover.click_action_button, 'actionTwo')
         self.assertEqual(
             str(error),
-            'Action with objectName "actionTwo" not found.')
+            'Button for action with objectName "actionTwo" not found.')
 
     def test_click_disabled_button_by_object_name(self):
         self._open_popover()
@@ -72,7 +74,7 @@ class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
             popover.click_action_button, 'actionDisabled')
         self.assertEqual(
             str(error),
-            'Action with objectName "actionDisabled" not found.')
+            'Button for action with objectName "actionDisabled" not visible.')
 
     def test_click_hidden_button_by_object_name(self):
         self._open_popover()
@@ -83,7 +85,7 @@ class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
             popover.click_action_button, 'actionHidden')
         self.assertEqual(
             str(error),
-            'Action with objectName "actionHidden" not found.')
+            'Button for action with objectName "actionHidden" not visible.')
 
     def _open_popover(self):
         open_button = self.main_view.select_single(
