@@ -112,23 +112,23 @@ class OptionSelectorTestCase(tests.QMLFileAppTestCase):
 
     def test_select_option(self):
         """select_text() must select the text in the OptionSelector"""
-        self.option_selector.select_option('Label', text="Green")
+        self.option_selector.select_option('UCLabel', text="Green")
         self.assertEqual(2, self.option_selector.selectedIndex)
 
     def test_get_selected_text(self):
         """get_selected_text() must return the text selected item"""
-        self.option_selector.select_option('Label', text="Blue")
+        self.option_selector.select_option('UCLabel', text="Blue")
         self.assertEqual(1, self.option_selector.selectedIndex)
         self.assertEqual(
             self.option_selector.get_selected_text(), "Blue")
 
     def test_same_item_2_times(self):
         """Emulator must be able to select 2 items in a row"""
-        self.option_selector.select_option('Label', text="Green")
+        self.option_selector.select_option('UCLabel', text="Green")
         self.assertEqual(
             self.option_selector.get_selected_text(), "Green")
         self.assertEqual(2, self.option_selector.selectedIndex)
-        self.option_selector.select_option('Label', text="Green")
+        self.option_selector.select_option('UCLabel', text="Green")
         self.assertEqual(
             self.option_selector.get_selected_text(), "Green")
         self.assertEqual(2, self.option_selector.selectedIndex)
