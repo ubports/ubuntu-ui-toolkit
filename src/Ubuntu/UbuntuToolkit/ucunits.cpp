@@ -71,15 +71,14 @@ static float getenvFloat(const char* name, float defaultValue)
 */
 
 /*
- * Note on the interaction between GRID_UNIT_PX and QT_DEVICE_PIXEL_RATIO
+ * In Qt5.6 the following variables affect scaling in QWidget and QML:
+ *   1. QT_SCALE_FACTOR: global integer scale factor, including point-sized fonts
+ *   2. QT_SCREEN_SCALE_FACTORS: a list of scale factors
+ *   3. QT_AUTO_SCREEN_SCALE_FACTOR: enables automatic scaling heuristics
  *
  * In Qt5.4 there is a single means to scale the UI: the QT_DEVICE_PIXEL_RATIO environment
  * variable. This accepts only integer values, thus allowing a x2 or x3 scaling of any
  * Qt-based UI, that includes QWidget as well as any QML UI.
- *
- * Setting QT_DEVICE_PIXEL_RATIO=2 implies one density-independent pixel corresponds to 2
- * physical pixels. Developers describe their UI in terms of density-independent pixels.
- * Qt scales accordingly.
  *
  * The Ubuntu UI Toolkit has solved the scaling problem with the GRID_UNIT_PX variable.
  * It offers more flexibility, but only scales QML applications written to use the UITK
@@ -184,13 +183,17 @@ QString UCUnits::resolveResource(const QUrl& url)
         return QString();
     }
 
-    QFileInfo fileInfo(path);
-    if (fileInfo.exists() && !fileInfo.isFile()) {
-        return QString();
+    const QFileInfo fileInfo(path);
+    if (fileInfo.exists()) {
+        if (fileInfo.isFile()) {
+            return QStringLiteral("1/") + path;
+        } else {
+            return QString();
+        }
     }
 
-    QString prefix = fileInfo.dir().absolutePath() + "/" + fileInfo.baseName();
-    QString suffix = "." + fileInfo.completeSuffix();
+    const QString prefix = fileInfo.dir().absolutePath() + "/" + fileInfo.baseName();
+    const QString suffix = "." + fileInfo.completeSuffix();
 
     /* Use file with expected grid unit suffix if it exists.
        For example, if m_gridUnit = 10, look for resource@10.png.
@@ -198,7 +201,7 @@ QString UCUnits::resolveResource(const QUrl& url)
 
     path = prefix + suffixForGridUnit(m_gridUnit) + suffix;
     if (QFile::exists(path)) {
-        return QString("1") + "/" + path;
+        return QStringLiteral("1/") + path;
     }
 
     /* No file with expected grid unit suffix exists.
@@ -219,7 +222,7 @@ QString UCUnits::resolveResource(const QUrl& url)
     */
     QStringList nameFilters;
     nameFilters << fileInfo.baseName() + "@[0-9]*" + suffix;
-    QStringList files = fileInfo.dir().entryList(nameFilters, QDir::Files);
+    const QStringList files = fileInfo.dir().entryList(nameFilters, QDir::Files);
 
     if (!files.empty()) {
         float selectedGridUnitSuffix = gridUnitSuffixFromFileName(files.first());
@@ -235,11 +238,6 @@ QString UCUnits::resolveResource(const QUrl& url)
         path = prefix + suffixForGridUnit(selectedGridUnitSuffix) + suffix;
         float scaleFactor = m_gridUnit / selectedGridUnitSuffix;
         return QString::number(scaleFactor) + "/" + path;
-    }
-
-    path = prefix + suffix;
-    if (QFile::exists(path)) {
-        return QString("1") + "/" + path;
     }
 
     return QString();

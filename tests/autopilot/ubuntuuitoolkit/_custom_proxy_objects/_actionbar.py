@@ -62,6 +62,9 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         try:
             object_name = action_object_name + "_button"
             button = self.select_single(objectName=object_name)
+            # In an animating header, the button is disabled until the header
+            #   animation is done. Wait for that:
+            button.enabled.wait_for(True)
             self.pointing_device.click_object(button)
         except dbus.StateNotFoundError:
             # the button is not in the ActionBar, but it may be in the overflow

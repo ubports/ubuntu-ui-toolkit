@@ -261,6 +261,9 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         except dbus.StateNotFoundError:
             # for Ubuntu.Components < 1.3
             button = self._get_action_button(action_object_name)
+            # In an animating header, the button is disabled until the header
+            #   animation is done. Wait for that:
+            button.enabled.wait_for(True)
             self.pointing_device.click_object(button)
         except _common.ToolkitException:
             # Catch 'Button not found in ActionBar or overflow' exception

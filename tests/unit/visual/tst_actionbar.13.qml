@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,38 +15,71 @@
  */
 
 import QtQuick 2.4
+import QtQuick.Layouts 1.1
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.3
 
 Item {
     id: root
-    width: 400
-    height: 600
+    width: units.gu(50)
+    height: units.gu(60)
 
     property list<Action> actionList:  [
         Action {
             iconName: "alarm-clock"
             text: "Tick tock"
+            onTriggered: print("tock")
         },
         Action {
             iconName: "appointment"
             text: "Date"
+            onTriggered: print("date")
         },
         Action {
             iconName: "attachment"
             text: "Attach"
+            onTriggered: print("attach")
         },
         Action {
             iconName: "contact"
             text: "Contact"
+            onTriggered: print("contact")
         },
         Action {
             iconName: "like"
             text: "Like"
+            onTriggered: print("+1")
         },
         Action {
             iconName: "lock"
             text: "Lock"
+            onTriggered: print("lock")
+        },
+        Action {
+            iconName: "camcorder"
+            text: "Camera"
+            onTriggered: print("cam")
+        },
+        Action {
+            iconName: "location"
+            text: "Location"
+            onTriggered: print("loc")
+            enabled: false
+        },
+        Action {
+            iconName: "message"
+            text: "Message"
+            onTriggered: print("msg")
+        },
+        Action {
+            iconName: "livetv"
+            text: "Television"
+            onTriggered: print("tv")
+        },
+        Action {
+            iconName: "lock-broken"
+            text: "Unlock"
+            onTriggered: print("unlock")
         }
     ]
 
@@ -54,10 +87,12 @@ Item {
         Action {
             iconName: "share"
             text: "Share"
+            onTriggered: print("share")
         },
         Action {
             iconName: "starred"
             text: "Favorite"
+            onTriggered: print("fav")
         }
     ]
 
@@ -70,13 +105,12 @@ Item {
         }
         height: childrenRect.height
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: shortBar.verticalCenter
                 }
                 text: "" + shortBar.numberOfSlots + " slot(s):"
@@ -85,18 +119,17 @@ Item {
             ActionBar {
                 // no numberOfSlots specified. Using default value.
                 id: shortBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.shortActionList
             }
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: bar.verticalCenter
                 }
                 text: "" + bar.numberOfSlots + " slot(s):"
@@ -104,9 +137,36 @@ Item {
 
             ActionBar {
                 id: bar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
+            }
+        }
+
+        RowLayout {
+            width: parent.width
+            height: childrenRect.height
+            Label {
+                anchors {
+                    verticalCenter: coloredBar.verticalCenter
+                }
+                text: "colored:"
+            }
+            ActionBar {
+                id: coloredBar
+                Layout.fillWidth: true
+                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+                actions: root.actionList
+                StyleHints {
+                    ignoreUnknownProperties: false
+                    backgroundColor: UbuntuColors.blue
+                    buttons {
+                        foregroundColor: "white"
+                        disabledForegroundColor: UbuntuColors.silk
+                        pressedBackgroundColor: UbuntuColors.ash
+                        disabledBackgroundColor: UbuntuColors.slate
+                    }
+                }
             }
         }
 
@@ -122,20 +182,19 @@ Item {
             live: true
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
 
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: customDelegateBar.verticalCenter
                 }
                 text: "Custom delegate"
             }
             ActionBar {
                 id: customDelegateBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.shortActionList
                 delegate: Button {
                     action: modelData
@@ -146,23 +205,25 @@ Item {
             }
         }
 
-        Item {
+        RowLayout {
             width: parent.width
             height: childrenRect.height
             Label {
                 anchors {
-                    left: parent.left
                     verticalCenter: greenButtonsBar.verticalCenter
                 }
                 text: "Custom delegate 2"
             }
             ActionBar {
+                // Note: The same result (green buttons) can be accomplished
+                //  by setting the foregroundColor in the style.
                 id: greenButtonsBar
-                anchors.right: parent.right
+                Layout.fillWidth: true
                 actions: root.actionList
                 delegate: AbstractButton {
                     styleName: "IconButtonStyle"
                     action: modelData
+                    height: greenButtonsBar.height
                     StyleHints {
                         foregroundColor: UbuntuColors.green
                     }

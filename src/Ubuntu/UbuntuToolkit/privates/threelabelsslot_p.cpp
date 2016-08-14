@@ -44,6 +44,8 @@ void UCThreeLabelsSlotPrivate::setTitleProperties()
         //Using WrapAnywhere because ElideRight elides too early when used
         //together with WrapWord, and that produces an unexpected result.
         //This will cover most of the usecases.
+        //NOTE: If you want to use ElideMiddle or ElideLeft you'll have to
+        //set wrapMode to NoWrap (see Text docs for more details)
         m_title->setWrapMode(UCLabel::WrapAnywhere);
         m_title->setElideMode(UCLabel::ElideRight);
         m_title->setMaximumLineCount(1);
@@ -55,6 +57,8 @@ void UCThreeLabelsSlotPrivate::setSubtitleProperties()
 {
     if (m_subtitle != Q_NULLPTR) {
         m_subtitle->setWrapMode(UCLabel::WrapAnywhere);
+        //NOTE: If you want to use ElideMiddle or ElideLeft you'll have to
+        //set wrapMode to NoWrap (see Text docs for more details)
         m_subtitle->setElideMode(UCLabel::ElideRight);
         m_subtitle->setMaximumLineCount(1);
         m_subtitle->setTextSize(UCLabel::Small);
@@ -65,6 +69,8 @@ void UCThreeLabelsSlotPrivate::setSummaryProperties()
 {
     if (m_summary != Q_NULLPTR) {
         m_summary->setWrapMode(UCLabel::WrapAnywhere);
+        //NOTE: If you want to use ElideMiddle or ElideLeft you'll have to
+        //set wrapMode to NoWrap (see Text docs for more details)
         m_summary->setElideMode(UCLabel::ElideRight);
         m_summary->setMaximumLineCount(2);
         m_summary->setTextSize(UCLabel::Small);
