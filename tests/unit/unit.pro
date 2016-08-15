@@ -40,6 +40,7 @@ SUBDIRS += \
     qquick_image_extension \
     performance \
     mainview \
+    mainwindow \
     i18n \
     arguments \
     argument \

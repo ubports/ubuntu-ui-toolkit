@@ -49,7 +49,7 @@ public:
     QString applicationName() const;
     void setApplicationName(QString applicationName);
 
-    UCUnits* units() const;
+    UCUnits* units();
     UbuntuI18n* i18n() const;
 
     UCPopupContext* actionContext() const;

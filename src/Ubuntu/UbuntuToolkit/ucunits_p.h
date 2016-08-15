@@ -19,6 +19,7 @@
 #ifndef UBUNTU_COMPONENTS_UNITS_H
 #define UBUNTU_COMPONENTS_UNITS_H
 
+#include <QWindow>
 #include <QObject>
 #include <QtCore/QHash>
 #include <QtCore/QString>
@@ -47,6 +48,7 @@ public:
     }
 
     explicit UCUnits(QObject *parent = 0);
+    explicit UCUnits(QWindow *parent);
     ~UCUnits();
     Q_INVOKABLE float dp(float value);
     Q_INVOKABLE float gu(float value);
@@ -67,10 +69,13 @@ protected:
 
 private Q_SLOTS:
     void windowPropertyChanged(QPlatformWindow *window, const QString &propertyName);
+    void screenChanged(QScreen *screen);
+    void devicePixelRatioChanged(qreal dpi);
 
 private:
     static UCUnits *m_units;
     float m_devicePixelRatio;
+    QScreen *m_screen;
     float m_gridUnit;
 };
 

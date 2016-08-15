@@ -113,7 +113,7 @@ UT_NAMESPACE_BEGIN
 **/
 UCMainWindowPrivate::UCMainWindowPrivate()
     : m_actionContext(nullptr),
-      m_flags(0)
+      m_units(nullptr)
 {
 }
 
@@ -135,8 +135,6 @@ UCMainWindow::UCMainWindow(QWindow *parent)
                      this, SIGNAL(i18nChanged()));
     QObject::connect(UbuntuI18n::instance(this), SIGNAL(languageChanged()),
                      this, SIGNAL(i18nChanged()));
-    QObject::connect(UCUnits::instance(this), SIGNAL(gridUnitChanged()),
-                     this, SIGNAL(unitsChanged()));
 }
 
 /*!
@@ -173,11 +171,19 @@ void UCMainWindow::setApplicationName(QString applicationName)
 /*!
   \qmlproperty Units MainWindow::units
 
-  The property holds its breath for documentation.
+  Grid units for this particular window - unlike the global context property
+  by the same name.
 */
-UCUnits* UCMainWindow::units() const
+UCUnits* UCMainWindow::units()
 {
-    return UCUnits::instance();
+    Q_D(UCMainWindow);
+
+    if (!d->m_units) {
+        d->m_units = new UCUnits(this);
+        QObject::connect(d->m_units, SIGNAL(gridUnitChanged()),
+                         this, SIGNAL(unitsChanged()));
+    }
+    return d->m_units;
 }
 
 /*!

@@ -17,7 +17,7 @@
 #ifndef UCMAINWINDOW_P_H
 #define UCMAINWINDOW_P_H
 
-#include "ucpagetreenode_p_p.h"
+#include "ucstyleditembase_p_p.h"
 #include "ucmainwindow_p.h"
 #include <QQmlProperty>
 
@@ -26,7 +26,7 @@ UT_NAMESPACE_BEGIN
 class UCMainWindow;
 class UCPopupContext;
 
-class UCMainWindowPrivate : public UCPageTreeNodePrivate
+class UCMainWindowPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCMainWindow)
 
@@ -36,7 +36,7 @@ public:
 
     QString m_applicationName;
     UCPopupContext* m_actionContext = nullptr;
-    qint8 m_flags;
+    UCUnits* m_units = nullptr;
 
 };
 
