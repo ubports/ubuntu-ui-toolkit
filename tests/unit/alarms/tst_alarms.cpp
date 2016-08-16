@@ -537,8 +537,7 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
 
         // update alarm to occur 1h earlier
-        QDateTime date = alarm.date();
-        date.addSecs(-60);
+        QDateTime date = alarm.date().addSecs(-60);
         alarm.save();
         waitForUpdate();
         QVERIFY(containsAlarm(&alarm));
