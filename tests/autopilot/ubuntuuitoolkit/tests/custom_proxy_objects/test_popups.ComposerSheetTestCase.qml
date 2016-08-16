@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,38 +24,28 @@ MainView {
     objectName: "mainView"
 
     Button {
-        objectName: "open_popover"
-        text: "Open Popover"
-        onClicked: testActionsPopover.show();
+        objectName: "openComposerSheetButton"
+        text: "Open Composer Sheet"
+        onClicked: PopupUtils.open(testComposerSheet);
     }
 
     Label {
         id: "label"
-        objectName: "clicked_label"
+        objectName: "actionLabel"
         anchors.centerIn: parent
-        text: "Button not clicked."
+        text: "No action taken."
     }
 
-    ActionSelectionPopover {
-        objectName: "test_actions_popover"
-        id: testActionsPopover
-        actions: ActionList {
-            Action {
-                text: "Action one"
-                objectName: "actionOne"
-                onTriggered: label.text = "Button clicked."
+    Component {
+        id: testComposerSheet
+        ComposerSheet {
+            id: sheet
+            objectName: "testComposerSheet"
+            onCancelClicked: {
+                label.text = "Cancel selected."
             }
-            Action {
-                text: "Action two"
-                objectName: "actionDisabled"
-                enabled: false
-                onTriggered: label.text = "Disabled button clicked."
-            }
-            Action {
-                text: "Action three"
-                objectName: "actionHidden"
-                visible: false
-                onTriggered: label.text = "Hidden button clicked."
+            onConfirmClicked: {
+                label.text = "Confirm selected."
             }
         }
     }

@@ -14,30 +14,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from testtools.matchers import GreaterThan
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class TextAreaTestCase(tests.QMLStringAppTestCase):
+class TextAreaTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Item {
-        TextArea {
-            objectName: "simple_text_area"
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_textarea.TextAreaTestCase.qml')
 
     def setUp(self):
         super().setUp()
