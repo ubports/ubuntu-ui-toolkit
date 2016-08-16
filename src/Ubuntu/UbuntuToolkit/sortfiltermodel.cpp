@@ -224,19 +224,9 @@ QSortFilterProxyModelQML::get(int row)
     QHashIterator<int, QByteArray> i(roles);
     while (i.hasNext()) {
         i.next();
-        res.insert(i.value(), data(row, i.key()));
+        res.insert(i.value(), index(row, 0).data(i.key()));
     }
     return res;
-}
-
-QVariant
-QSortFilterProxyModelQML::data(int row, int role)
-{
-    if (sourceModel() == NULL) {
-        return QVariant();
-    }
-
-    return index(row, 0).data(role);
 }
 
 int
