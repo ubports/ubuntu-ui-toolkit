@@ -19,13 +19,10 @@ import QtFeedback 5.0
 import Ubuntu.Components 1.1
 
 Object {
-    readonly property alias enabled: vibra.otherVibrate
+    readonly property bool enabled: true
     property alias effect: effect
 
     function play(customEffect) {
-        if (!vibra.otherVibrate) {
-            return;
-        }
         if (effectData.data) {
             // we have a custom effect playing, stop it
             effect.stop();
@@ -75,16 +72,5 @@ Object {
                 effectData.restore();
             }
         }
-    }
-
-    // watch system settings for otherVibrate
-    ServiceProperties {
-        objectName: "system_effect_settings"
-        id: vibra
-        service: "org.freedesktop.Accounts"
-        serviceInterface: "org.freedesktop.Accounts"
-        path: "/org/freedesktop/Accounts"
-        adaptorInterface: "com.ubuntu.touch.AccountsService.Sound"
-        property bool otherVibrate: true
     }
 }
