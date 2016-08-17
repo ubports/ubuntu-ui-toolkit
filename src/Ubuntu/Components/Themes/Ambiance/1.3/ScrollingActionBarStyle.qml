@@ -22,6 +22,7 @@ Style.ActionBarStyle {
     id: actionBarStyle
     implicitHeight: units.gu(5)
 
+    clip: true // avoid showing the icons that are scrolled out of the view.
     backgroundColor: theme.palette.normal.background
     buttons {
         foregroundColor: theme.palette.normal.backgroundText
@@ -81,8 +82,6 @@ Style.ActionBarStyle {
         id: listViewContainer
         anchors.fill: parent
 
-        property real listViewMargins: units.gu(2)
-
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
@@ -102,11 +101,15 @@ Style.ActionBarStyle {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
+                rightMargin: units.gu(4)
             }
-            width: listViewContainer.width //Math.min(listViewContainer.width, contentWidth)
+            displayMarginBeginning: units.gu(4)
+            displayMarginEnd: units.gu(4)
+            leftMargin: -units.gu(4)
+            rightMargin: -units.gu(4)
+            width: listViewContainer.width - units.gu(8) //Math.min(listViewContainer.width, contentWidth)
             layoutDirection: Qt.RightToLeft
 
-            clip: true
             orientation: ListView.Horizontal
             boundsBehavior: Flickable.StopAtBounds
             delegate: styledItem.delegate
@@ -127,6 +130,7 @@ Style.ActionBarStyle {
                 var newContentX = actionsListView.contentX - (actionsListView.width * direction);
                 contentXAnim.from = actionsListView.contentX;
                 // make sure we don't overshoot bounds
+// FIXME TIM: Take the new margins for the scroll buttons into account.
                 contentXAnim.to = MathUtils.clamp(
                             newContentX,
                             originX,
