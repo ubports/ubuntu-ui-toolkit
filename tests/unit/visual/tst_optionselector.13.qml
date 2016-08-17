@@ -50,7 +50,16 @@ Page {
             states: [
                 State {
                     name: 'default'
-                    PropertyChanges { target: selector; model: ['Gin and Tonic', 'White Russian', 'Sex on the Beach', 'Strawberry Mojito']; delegate: defaultDelegate }
+                    PropertyChanges {
+                        target: selector;
+                        model: [
+                            'Gin and Tonic',
+                            'White Russian',
+                            'Sex on the Beach',
+                            'Strawberry Mojito'
+                        ];
+                        delegate: defaultDelegate
+                    }
                 },
                 State {
                     name: 'expanded'

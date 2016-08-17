@@ -150,8 +150,6 @@ Item {
                 height: comboButton.comboListHeight
                 color: "blue"
             }
-            /* FIXME: property bool override: false
-            Keys.onReleased: event.accepted = override */
         }
         OptionSelector {
             id: optionSelector
@@ -462,7 +460,6 @@ Item {
                 {tag: "ListItem/Enter", key: Qt.Key_Enter, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Return", key: Qt.Key_Return, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Space", key: Qt.Key_Space, item: listItem, signalName: 'onClicked'},
-                // FIXME: Use item: comboButton
                 {tag: "ComboButton/Enter", key: Qt.Key_Enter, item: button , signalName: 'onTriggered'},
                 {tag: "ComboButton/Return", key: Qt.Key_Return, item: button, signalName: 'onTriggered'},
                 {tag: "ComboButton/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
