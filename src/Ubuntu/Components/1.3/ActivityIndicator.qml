@@ -52,10 +52,5 @@ AnimatedItem {
     */
     property bool running: false
 
-    implicitWidth: units.gu(3)
-    implicitHeight: units.gu(3)
-    width: units.gu(3)
-    height: units.gu(3)
-
     styleName: "ActivityIndicatorStyle"
 }
