@@ -23,6 +23,7 @@
 
 class UMEvent;
 class UMFileLoggerPrivate;
+struct UMLTTNGPlugin;
 
 // Log events to a specific device.
 class UBUNTU_METRICS_EXPORT UMLogger
@@ -54,6 +55,21 @@ public:
 private:
     UMFileLoggerPrivate* const d_ptr;
     Q_DECLARE_PRIVATE(UMFileLogger);
+};
+
+// Log events to LTTng.
+class UBUNTU_METRICS_EXPORT UMLTTNGLogger : public UMLogger
+{
+public:
+    UMLTTNGLogger();
+    void log(const UMEvent& event) Q_DECL_OVERRIDE;
+    bool isOpen() Q_DECL_OVERRIDE { return true; }
+
+private:
+    static UMLTTNGPlugin* m_plugin;
+    static bool m_error;
+
+    void* __reserved;
 };
 
 #endif  // LOGGER_H

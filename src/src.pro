@@ -6,6 +6,9 @@ src_gestures.target = sub-gestures
 src_metrics.subdir = Ubuntu/UbuntuMetrics
 src_metrics.target = sub-metrics
 
+src_metrics_lttng.subdir = Ubuntu/UbuntuMetrics/lttng
+src_metrics_lttng.target = sub-metrics-lttng
+
 src_toolkitlib.subdir = Ubuntu/UbuntuToolkit
 src_toolkitlib.target = sub-libtoolkit
 src_toolkitlib.depends = sub-gestures sub-metrics
@@ -27,6 +30,7 @@ src_test.depends = sub-components
 SUBDIRS += \
     src_gestures \
     src_metrics \
+    src_metrics_lttng \
     src_toolkitlib \
     src_components \
     src_layouts \

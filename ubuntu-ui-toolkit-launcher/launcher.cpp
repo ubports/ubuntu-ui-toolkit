@@ -76,7 +76,7 @@ int main(int argc, const char *argv[])
     QCommandLineOption _desktop_file_hint("desktop_file_hint", "Desktop file - ignored", "desktop_file");
     QCommandLineOption _metricsOverlay("metrics-overlay", "Enable the metrics overlay");
     QCommandLineOption _metricsLogging(
-        "metrics-logging", "Enable metrics logging, <device> can be 'stdout' or a local or "
+        "metrics-logging", "Enable metrics logging, <device> can be 'stdout', 'lttng', a local or "
         "absolute filename", "device");
     QCommandLineOption _metricsLoggingFilter(
         "metrics-logging-filter", "Filter metrics logging, <filter> is a list of events separated "
@@ -233,9 +233,15 @@ int main(int argc, const char *argv[])
         applicationMonitor->setLoggingFilter(filter);
     }
     if (args.isSet(_metricsLogging)) {
+        UMLogger* logger;
         QString device = args.value(_metricsLogging);
-        UMLogger* logger = (device.isEmpty() || device == "stdout")
-            ? new UMFileLogger(stdout) : new UMFileLogger(device);
+        if (device.isEmpty() || device == "stdout") {
+            logger = new UMFileLogger(stdout);
+        } else if (device == "lttng") {
+            logger = new UMLTTNGLogger();
+        } else {
+            logger = new UMFileLogger(device);
+        }
         if (logger->isOpen()) {
             applicationMonitor->installLogger(logger);
             applicationMonitor->setLogging(true);
