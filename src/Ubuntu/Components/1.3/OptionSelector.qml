@@ -204,12 +204,15 @@ ListItem.Empty {
         switch (event.key) {
         case Qt.Key_Up:
             increment = -1;
+            break;
         case Qt.Key_Down:
             increment = 1;
-            var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
-            if (newIndex != list.currentIndex) {
-                event.accepted = true;
-            }
+        default:
+            return;
+        }
+        var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
+        if (newIndex != list.currentIndex) {
+            event.accepted = true;
         }
     }
     Keys.onReleased: {
