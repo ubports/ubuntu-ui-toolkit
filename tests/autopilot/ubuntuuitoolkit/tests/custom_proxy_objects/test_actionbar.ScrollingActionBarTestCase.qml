@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ MainView {
             styleName: "ScrollingActionBarStyle"
             objectName: "ActionBar"
 
-            width: units.gu(10)
+            width: units.gu(12)
             anchors.centerIn: parent
 
             actions: [
@@ -60,6 +60,18 @@ MainView {
                     text: "Lock"
                     onTriggered: label.text = "Action 3 triggered."
                     objectName: "Action3"
+                },
+                Action {
+                    iconName: "alarm-clock"
+                    text: "Tick tock"
+                    onTriggered: label.text = "Action 4 triggered."
+                    objectName: "Action4"
+                },
+                Action {
+                    iconName: "appointment"
+                    text: "Date"
+                    onTriggered: label.text = "Action 5 triggered."
+                    objectName: "Action5"
                 }
             ]
         }

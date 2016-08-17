@@ -27,6 +27,14 @@ logger = logging.getLogger(__name__)
 class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ActionBar Autopilot custom proxy object."""
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        # FIXME TIM: clean this up.
+#        self.listview = ''
+#        if self.styleName == "ScrollingActionBar":
+        # Note that listview will only be set for a scrolling ActionBar.
+        self.listview = self.select_single(objectName='actions_listview')
+
     def _open_overflow(self):
         """Click the overflow button and return the overflow panel"""
         actions_overflow_button = self.select_single(
@@ -49,16 +57,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         return popover
 
-    @autopilot_logging.log_action(logger.info)
-    def click_action_button(self, action_object_name):
-        """Click an action button of the action bar.
-
-        :parameter object_name: The QML objectName property of the action
-        :raise ToolkitException: If there is no action button with that object
-            name.
-
-        """
-
+    def _overflow_bar_click_action_button(self, action_object_name):
         try:
             object_name = action_object_name + "_button"
             button = self.select_single(objectName=object_name)
@@ -71,3 +70,29 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
             except _common.ToolkitException:
                 raise _common.ToolkitException(
                     'Button not found in ActionBar or overflow')
+
+    def _scrolling_bar_click_action_button(self, action_object_name):
+        try:
+            self.listview.click_element(action_object_name + "_button")
+        except _common.ToolkitException:
+            raise _common.ToolkitException(
+                'Button with objectName ' + action_object_name +
+                ' not found in scrolling ActionBar.')
+
+
+    @autopilot_logging.log_action(logger.info)
+    def click_action_button(self, action_object_name):
+        """Click an action button of the action bar.
+
+        :parameter object_name: The QML objectName property of the action
+        :raise ToolkitException: If there is no action button with that object
+            name.
+
+        """
+        if self.styleName == "ActionBarStyle":
+            return self._overflow_bar_click_action_button(action_object_name)
+        elif self.styleName == "ScrollingActionBarStyle":
+            return self._scrolling_bar_click_action_button(action_object_name)
+        else:
+            raise _common.ToolkitException(
+                'Unsupported style name ' + self.styleName + ' for ActionBar.')
