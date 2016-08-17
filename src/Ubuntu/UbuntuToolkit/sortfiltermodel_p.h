@@ -45,7 +45,6 @@ public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
 
     Q_INVOKABLE QVariantMap get(int row);
-    QVariant data(int row, int role);
     Q_INVOKABLE int count();
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 

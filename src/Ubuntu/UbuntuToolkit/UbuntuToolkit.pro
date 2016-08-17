@@ -7,7 +7,7 @@ unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
 }
-QT *= dbus svg UbuntuGestures UbuntuGestures_private
+QT *= dbus svg UbuntuGestures UbuntuGestures_private UbuntuMetrics
 
 # QOrganizer for Alarm API
 QT *= organizer
@@ -148,7 +148,8 @@ HEADERS += \
     privates/ucpagewrapperincubator_p.h \
     privates/appheaderbase_p.h \
     label_p.h \
-    ucbottomedgeregion_p_p.h
+    ucbottomedgeregion_p_p.h \
+    privates/ucscrollbarutils_p.h
 
 SOURCES += \
     uctheme.cpp \
@@ -224,7 +225,8 @@ SOURCES += \
     privates/frame.cpp \
     privates/ucpagewrapper.cpp \
     privates/ucpagewrapperincubator.cpp \
-    privates/appheaderbase.cpp
+    privates/appheaderbase.cpp \
+    privates/ucscrollbarutils.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

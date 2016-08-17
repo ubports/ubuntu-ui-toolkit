@@ -40,7 +40,7 @@ class OptionSelector(_common.UbuntuUIToolkitCustomProxyObjectBase):
         option_selector_delegate = self.select_single(
             'OptionSelectorDelegate', focus='True')
         current_label = option_selector_delegate.select_single(
-            'Label', visible='True')
+            'UCLabel', visible='True')
         return current_label.text
 
     def get_current_label(self):
@@ -48,7 +48,7 @@ class OptionSelector(_common.UbuntuUIToolkitCustomProxyObjectBase):
         option_selector_delegate = self.select_single(
             'OptionSelectorDelegate', focus='True')
         current_label = option_selector_delegate.select_single(
-            'Label', visible='True')
+            'UCLabel', visible='True')
         return current_label
 
     def _expand(self):
@@ -69,7 +69,7 @@ class OptionSelector(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         Example usage::
             select_option(objectName="myOptionSelectorDelegate")
-            select_option('Label', text="some_text_here")
+            select_option('UCLabel', text="some_text_here")
 
         :parameter kwargs: keywords used to find property(s) of delegate in
             option selector

@@ -237,6 +237,9 @@ Style.ComboButtonStyle {
                 }
             }
         }
+
+        FocusShape {
+        }
     }
 
     Item {
@@ -247,7 +250,8 @@ Style.ComboButtonStyle {
             top: mainButton.bottom
             right: parent.right
         }
-        opacity: styledItem.expanded && (styledItem.comboList.length > 0)? 1.0 : 0.0
+        // Hide panel to suppress keyboard input including (Shift)Tab
+        visible: styledItem.expanded && (styledItem.comboList.length > 0)
 
         ShaderEffectSource {
             id: listContent

@@ -65,6 +65,11 @@ Item {
         }
     }
 
+    Component {
+        id: freshScrollbar
+        Scrollbar { }
+    }
+
     SignalSpy {
         id: signalSpy
     }
@@ -229,6 +234,24 @@ Item {
             verify(style.__stepperBgOpacityOnHover < style.__stepperBgOpacityOnPressed, "Sanity check: check that stepper background is darker on pressed than on hover state.")
         }
 
+        function test_visibility(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var scrollbar = freshTestItem.scrollbar
+            compare(scrollbar.visible, true, "Wrong Scrollbar visible property value")
+            
+            scrollbar.flickableItem = null
+            compare(scrollbar.visible, false, "Wrong Scrollbar visible property value")
+
+            //check that the same apply to a scrollbar that was born without Flickable
+            var nullFlickableScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(nullFlickableScrollbar !== null, "Error: dynamic item creation failed.")
+            compare(nullFlickableScrollbar.visible, false, "Scrollbar is visible before an initialized flickable is assigned to it")
+
+            nullFlickableScrollbar.destroy()
+        }
+
+        //no need to test the anchors values when flickable is not set because we already 
+        //test that the scrollbar is hidden when there's no flickable set
         function test_bottomAlign_anchors() {
             compare(scrollbar_bottomAlign_anchors.flickableItem,
                     flickable_bottomAlign_anchors, "wrong flickableItem")
@@ -623,6 +646,7 @@ Item {
             mouseRelease(secondStepper, secondStepper.width/2, secondStepper.height/2)
         }
 
+        //test dragging the thumb and relative visual changes due to hover/pressed states
         function test_dragThumbAndCheckStyling(data) {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
@@ -632,6 +656,13 @@ Item {
             var trough = getTrough(scrollbar)
             var style = freshTestItem.scrollbar.__styleInstance
             var scrollbarUtils = getScrollbarUtils(scrollbar)
+            var secondStepper = getSecondStepper(scrollbar)
+            var thumbNormalColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 0.4)
+            var thumbHoveredColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 0.7)
+            var thumbPressedColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 1.0)
 
             addContentMargins(flickable)
 
@@ -640,21 +671,29 @@ Item {
             triggerSteppersMode(scrollbar)
 
             //check colour of the thumb in normal state
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 0.4)), true,
-                    "Wrong thumb color in normal state.")
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong thumb color in normal state.")
+
             //check hovered colour
             mouseMove(thumb, thumb.width/2, thumb.height/2)
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 0.7)), true,
-                    "Wrong thumb color in hover state.")
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true, "Wrong thumb color in hover state.")
+
+            //check that moving mouse outside the thumb (to the second stepper, in this case) and back in will
+            //trigger the correct color changes
+            mouseMove(secondStepper, secondStepper.width/2, secondStepper.height/2)
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong thumb color after moving mouse to a stepper.")
+            mouseMove(thumb, thumb.width/2, thumb.height/2)
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                    "Wrong thumb color after moving mouse from stepper back into the thumb.")
 
             //check pressed state colour
             mousePress(thumb, thumb.width/2, thumb.height/2)
-            compare(Qt.colorEqual(thumb.color, Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
-                                                       style.sliderColor.a * 1.0)), true,
-                    "Wrong thumb color in hover state.")
+            compare(Qt.colorEqual(thumb.color, thumbPressedColor), true, "Wrong thumb color in pressed state.")
             mouseRelease(thumb, thumb.width/2, thumb.height/2)
+
+            //check hovered colour again, the thumb should still show as hovered after releasing mouse
+            //(assuming the mouse is still inside it, which it is)
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                    "Thumb does not show as hovered after mouse press-release inside it.")
 
             if (style.isVertical) {
                 mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
@@ -672,8 +711,25 @@ Item {
                 //bottom (vertical scrollbar) or to its right (in the case of the horiz scrollbar)
                 mousePress(thumb, thumb.width/2, thumb.height/2)
                 mouseMove(thumb, thumb.width/2, 0  )
+                //drag to the beginning
                 mouseMove(thumb, thumb.width/2, -sceneThumbY)
+
+                //try moving the mouse outside the thumb (to the left, the 10* is random)
+                //and check that it's still using the pressed state colour
+                mouseMove(thumb, -10*thumb.width/2, -sceneThumbY)
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it without releasing.")
+
+                //move mouse back inside the thumb
+                mouseMove(thumb, thumb.width/2, -sceneThumbY)
+                //check pressed colour again
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it and back in, without releasing.")
+
                 mouseRelease(thumb, 0, 0)
+
+                compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                        "Thumb does not show as hovered after mouse is dragged and released inside of it.")
 
                 compare(flickable[scrollbarUtils.propContent], -flickable.topMargin,
                         "Vertical thumb mouse drag: wrong contentProp after dragging to the beginning")
@@ -684,11 +740,29 @@ Item {
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the end")
 
                 var sceneThumbX = thumb.mapToItem(column).x
-                //Can't use mouseDrag here, read above to know why
+                //Can't use mouseDrag here, see the explanation inside the "if" branch
                 mousePress(thumb, thumb.width/2, thumb.height/2)
                 mouseMove(thumb, 0, thumb.height/2  )
+                //drag to beginning
                 mouseMove(thumb, -sceneThumbX, thumb.height/2)
+
+                //try moving the mouse outside the thumb (to the top, the 10* is random)
+                //and check that it's still using the pressed state colour
+                mouseMove(thumb, -sceneThumbX, -10*thumb.height/2)
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it without releasing.")
+
+                //move mouse back inside the thumb
+                mouseMove(thumb, -sceneThumbX, thumb.height/2)
+
+                //check pressed colour again
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true,
+                        "Not showing pressed colour after dragging the thumb up and moving mouse outside of it and back in, without releasing.")
+
                 mouseRelease(thumb, 0, 0)
+
+                compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                        "Thumb does not show as hovered after mouse is dragged and released inside of it.")
 
                 compare(flickable[scrollbarUtils.propContent], -flickable.leftMargin,
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the beginning")
@@ -1133,11 +1207,60 @@ Item {
             var scrollbar = freshTestItem.scrollbar
 
             verify(scrollbar.flickableItem !== null, "Check that Scrollbar is linked to a Flickable.")
+            //try triggering warnings (they will be marked as failures by the SDK test runner)
             scrollbar.flickableItem = null
+
+            var secondScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(secondScrollbar !== null, "Error: dynamic item creation failed.")
+
+            var style = secondScrollbar.__styleInstance
+
+            //check that the default value is correct
+            compare(style.flickableItem, null, "Wrong style flickableItem")
+            compare(scrollbar.flickableItem, null, "Wrong scrollbar's flickableItem")
+            compare(scrollbar.__initializedFlickable, null, "Wrong scrollbar's initialized flickable var")
+
+            //check that calling functions that rely on flickableItem doesn't output errors
+            style.scrollToBeginning()
+            style.scrollToEnd()
 
             //This test will always pass if run with qmltestrunner, unfortunately there's no way
             //using TestCase to do "if (testOutputsWarnings) --> fail", but the SDK test script
             //will fail if this test outputs warnings, which is what we want
+        }
+
+        //test that __initializedFlickable has the right value even when
+        //the Scrollbar is assigned to one Flickable, then to another one (this could
+        //be useful to reuse the same instance of Scrollbar for multiple Flickables
+        //if they're only visible one at a time)
+        function test_initializedFlickableVariableChange() {
+            var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+
+            //check that the variables are correct when the Scrollbar is initialized with a set Flickable
+            compare(scrollbar.flickableItem, flickable, "Wrong value of flickableItem")
+            compare(scrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")
+
+            var secondScrollbar = freshScrollbar.createObject(freshTestItem)
+            verify(secondScrollbar !== null, "Error: dynamic item creation failed.")
+
+            //check that the variables are correct when the Scrollbar is assigned a new Flickable
+            secondScrollbar.flickableItem = flickable
+            compare(secondScrollbar.flickableItem, flickable, "Wrong value of flickableItem")
+            compare(secondScrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")
+
+            //set to null and check that both change
+            secondScrollbar.flickableItem = null
+            compare(secondScrollbar.flickableItem, null, "Wrong value of flickableItem")
+            compare(secondScrollbar.__initializedFlickable, null, "Wrong value of __initializedFlickable")
+
+            //set to a valid flickable again and check that both the variables are correctly updated
+            secondScrollbar.flickableItem = flickable
+            compare(secondScrollbar.flickableItem, flickable, "Wrong value of flickableItem")
+            compare(secondScrollbar.__initializedFlickable, flickable, "Wrong value of __initializedFlickable")
+
+            secondScrollbar.destroy()
         }
     }
 }

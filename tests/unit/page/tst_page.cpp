@@ -29,12 +29,8 @@ class tst_Page : public QObject
 {
     Q_OBJECT
 
-private:
-    QQuickView *view;
-
 public:
-    tst_Page() :
-        view(0)
+    tst_Page()
     {
     }
 

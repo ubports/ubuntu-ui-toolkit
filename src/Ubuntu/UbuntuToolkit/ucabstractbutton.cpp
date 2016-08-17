@@ -35,12 +35,18 @@ UCAbstractButtonPrivate::UCAbstractButtonPrivate()
     , acceptEvents(true)
     , pressAndHoldConnected(false)
 {
+    isFocusScope = false;
 }
 void UCAbstractButtonPrivate::init()
 {
     Q_Q(UCAbstractButton);
     q->setActiveFocusOnPress(true);
-    q->setActiveFocusOnTab(true);
+
+    // bind mouse area
+    QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
+    QObject::connect(mouseArea, &QQuickMouseArea::hoveredChanged, q, &UCAbstractButton::hoveredChanged);
+    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaClicked()));
+    QObject::connect(mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaPressed()));
 }
 
 /*!
@@ -163,12 +169,6 @@ void UCAbstractButtonPrivate::completeComponentInitialization()
 
     // adjust sensing area
     _q_adjustSensingArea();
-
-    // bind mouse area
-    QObject::connect(mouseArea, &QQuickMouseArea::pressedChanged, q, &UCAbstractButton::pressedChanged);
-    QObject::connect(mouseArea, &QQuickMouseArea::hoveredChanged, q, &UCAbstractButton::hoveredChanged);
-    QObject::connect(mouseArea, SIGNAL(clicked(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaClicked()));
-    QObject::connect(mouseArea, SIGNAL(pressed(QQuickMouseEvent*)), q, SLOT(_q_mouseAreaPressed()));
 }
 
 // check the pressAndHold connection on runtime, as Connections

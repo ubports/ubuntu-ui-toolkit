@@ -28,7 +28,7 @@ public:
 };
 
 RealTimeSource::RealTimeSource()
-    : UbuntuGestures::TimeSource()
+    : UG_PREPEND_NAMESPACE(TimeSource())
     , d(new RealTimeSourcePrivate)
 {
     d->timer.start();
