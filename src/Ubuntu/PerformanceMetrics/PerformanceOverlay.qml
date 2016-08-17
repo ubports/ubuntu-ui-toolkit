@@ -32,6 +32,8 @@ import Ubuntu.PerformanceMetrics 1.0 as PerformanceMetrics
             active: true
         }
     \endqml
+
+    \deprecated Use the QML Ubuntu.Metrics module or the C++ libUbuntuMetrics instead.
 */
 Item {
     id: overlay

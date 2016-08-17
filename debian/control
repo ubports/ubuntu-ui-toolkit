@@ -70,6 +70,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: libqt5svg5,
          libubuntugestures5 (= ${binary:Version}),
+         libubuntumetrics5 (= ${binary:Version}),
          libubuntutoolkit5 (= ${binary:Version}),
          qml-module-qtfeedback,
          qml-module-qtgraphicaleffects,
@@ -102,6 +103,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: libqt5svg5,
          libubuntugestures5 (= ${binary:Version}),
+         libubuntumetrics5 (= ${binary:Version}),
          libubuntutoolkit5 (= ${binary:Version}),
          qml-module-qtfeedback,
          qml-module-qtgraphicaleffects,
@@ -219,6 +221,40 @@ Depends: ${misc:Depends},
 Description: Ubuntu gestures library private development files
  This package contains the private development files for
  Ubuntu gestures library with SwipeArea
+
+Package: libubuntumetrics5
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library for Ubuntu UI Toolkit
+ Library for monitoring QtQuick 2 applications
+
+Package: libubuntumetrics5-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library development files
+ This package contains the development files for the
+ Ubuntu metrics library
+
+Package: libubuntumetrics5-private-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library private development files
+ This package contains the private development files for
+ the Ubuntu metrics library
 
 Package: libubuntutoolkit5
 Architecture: any
