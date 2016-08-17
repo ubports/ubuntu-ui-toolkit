@@ -71,6 +71,10 @@ Item {
                 Page {
                     objectName: "column" + index
                     height: splitView.height
+                    header: PageHeader {
+                        title: "Column #" + index
+                    }
+
                     Rectangle {
                         color: UbuntuColors.red
                         anchors.fill: parent
@@ -80,10 +84,28 @@ Item {
         }
     }
 
+    Sections {
+        id: sections
+        actions: [
+            Action {
+                text: "4 columns"
+                onTriggered: testLoader.item.columns = 4
+            },
+            Action {
+                text: "2 columns"
+                onTriggered: testLoader.item.columns = 2
+            }
+        ]
+    }
+
     Loader {
         id: testLoader
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            topMargin: sections.height
+        }
         asynchronous: false
+        sourceComponent: testLayout
     }
 
     UbuntuTestCase {
@@ -117,20 +139,5 @@ Item {
                 }
             }
         }
-
-//        function test_children_data() {
-//            return [
-//                {tag: "4 columns", columns: 4, childCount: 5, children: ["column0", "column1", "column2", "column3", "ignored"]},
-//                {tag: "2 columns", columns: 2, childCount: 3, children: ["column0", "column1", "ignored"]},
-//                {tag: "0 columns", columns: 0, childCount: 1, children: ["ignored"]},
-//            ];
-//        }
-//        function test_children(data) {
-//            splitView.columns = data.columns;
-//            compare(splitView.children.length, data.childCount);
-//            for (var i in splitView.children) {
-//                compare(splitView.children[i].objectName, data.children[i]);
-//            }
-//        }
     }
 }

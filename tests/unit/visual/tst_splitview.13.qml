@@ -48,6 +48,7 @@ Item {
             id: layout
             anchors.fill: parent
             property int when: 1
+            handleDelegate: testHandle
 
             layouts: [
                 SplitViewLayout {
@@ -124,9 +125,27 @@ Item {
         }
     }
 
+    Sections {
+        id: sections
+        actions: [
+            Action {
+                text: "4 columns"
+                onTriggered: testLoader.item.when = 1
+            },
+            Action {
+                text: "2 columns"
+                onTriggered: testLoader.item.when = 2
+            }
+        ]
+    }
+
     Loader {
         id: testLoader
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            topMargin: sections.height
+        }
+        sourceComponent: testLayout
     }
 
     UbuntuTestCase {
@@ -276,30 +295,30 @@ Item {
             }
         }
         function test_invalid_handle() {
-            ignoreWarning(warningFormat(263, 9, "QML SplitView: handle delegate not an Item"));
+            ignoreWarning(warningFormat(282, 9, "QML SplitView: handle delegate not an Item"));
             bad.handleDelegate = badHandle;
         }
 
         function test_minimum_greater_than_maximum_value() {
-            ignoreWarning(warningFormat(56, 21, "QML ViewColumn: minimumWidth is greater than maximumWidth"));
+            ignoreWarning(warningFormat(57, 21, "QML ViewColumn: minimumWidth is greater than maximumWidth"));
             var test = loadTest(testLayout);
             test.layouts[0].columns[0].minimumWidth = test.layouts[0].columns[0].maximumWidth + 1;
         }
 
         function test_invalid_minimum_value() {
-            ignoreWarning(warningFormat(56, 21, "QML ViewColumn: minimumWidth cannot be a negative value"));
+            ignoreWarning(warningFormat(57, 21, "QML ViewColumn: minimumWidth cannot be a negative value"));
             var test = loadTest(testLayout);
             test.layouts[0].columns[0].minimumWidth = -1;
         }
 
         function test_maximum_smaller_than_minimum_value() {
-            ignoreWarning(warningFormat(60, 21, "QML ViewColumn: maximumWidth is smaller than minimumWidth"));
+            ignoreWarning(warningFormat(61, 21, "QML ViewColumn: maximumWidth is smaller than minimumWidth"));
             var test = loadTest(testLayout);
             test.layouts[0].columns[1].maximumWidth = test.layouts[0].columns[1].minimumWidth - 1;
         }
 
         function test_invalid_maximum_value() {
-            ignoreWarning(warningFormat(60, 21, "QML ViewColumn: maximumWidth cannot be a negative value"));
+            ignoreWarning(warningFormat(61, 21, "QML ViewColumn: maximumWidth cannot be a negative value"));
             var test = loadTest(testLayout);
             test.layouts[0].columns[1].maximumWidth = -1;
         }

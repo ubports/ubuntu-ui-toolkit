@@ -24,9 +24,26 @@ Item {
     width: units.gu(200)
     height: units.gu(70)
 
+    Sections {
+        id: sections
+        actions: [
+            Action {
+                text: "4 columns"
+                onTriggered: splitView.columns = 4
+            },
+            Action {
+                text: "2 columns"
+                onTriggered: splitView.columns = 2
+            }
+        ]
+    }
+
     SplitView {
         id: splitView
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            topMargin: sections.height
+        }
         property int columns: 4
 
         layouts: [

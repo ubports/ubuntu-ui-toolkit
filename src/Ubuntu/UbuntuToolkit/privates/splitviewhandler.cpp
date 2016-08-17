@@ -104,6 +104,7 @@ void SplitViewHandler::onPositionChanged(QQuickMouseEvent *event)
 
 void SplitViewHandler::onDelegateChanged()
 {
+    static bool warningShown = false;
     // the child is an instance of the delegate
     QList<QQuickItem*> children = childItems();
     qDeleteAll(children);
@@ -116,10 +117,14 @@ void SplitViewHandler::onDelegateChanged()
         if (object) {
             QQuickItem *item = qobject_cast<QQuickItem*>(object);
             if (!item) {
-                qmlInfo(view) << "handle delegate not an Item";
+                if (!warningShown) {
+                    qmlInfo(view) << "handle delegate not an Item";
+                    warningShown = true;
+                }
                 SplitViewPrivate::get(view)->handleDelegate->completeCreate();
                 delete object;
             } else {
+                warningShown = false;
                 QQml_setParent_noEvent(item, this);
                 item->setParentItem(this);
                 SplitViewPrivate::get(view)->handleDelegate->completeCreate();
