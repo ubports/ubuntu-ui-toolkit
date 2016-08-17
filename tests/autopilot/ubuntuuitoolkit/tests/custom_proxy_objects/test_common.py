@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,10 +18,7 @@ import unittest
 
 import autopilot
 from autopilot import platform, input
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -44,6 +41,8 @@ class CheckAutopilotVersionTestCase(unittest.TestCase):
             ubuntuuitoolkit.check_autopilot_version()
 
 
+# FIXME: this class is not used anywhere, and QMLStringAppTestCase subclasses
+#   no longer work (see bug 1578319), so the code below can be deleted.
 class UbuntuUIToolkitCustomProxyObjectBaseTestCase(tests.QMLStringAppTestCase):
 
     def test_pointing_device(self):

@@ -1,0 +1,161 @@
+<!--
+    Copyright 2015 Canonical Ltd.
+-->
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ubuntuuitoolkit &mdash; ubuntu-ui-toolkit-autopilot 15.04 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '15.04',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="ubuntu-ui-toolkit-autopilot 15.04 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">ubuntu-ui-toolkit-autopilot 15.04 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+<div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for ubuntuuitoolkit</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2012, 2013, 2014 Canonical Ltd.</span>
+<span class="c">#</span>
+<span class="c"># This program is free software; you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU Lesser General Public License as published by</span>
+<span class="c"># the Free Software Foundation; version 3.</span>
+<span class="c">#</span>
+<span class="c"># This program is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</span>
+<span class="c"># GNU Lesser General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU Lesser General Public License</span>
+<span class="c"># along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Ubuntu UI Toolkit Autopilot tests and helpers.&quot;&quot;&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;AppHeader&#39;</span><span class="p">,</span>
+    <span class="s">&#39;base&#39;</span><span class="p">,</span>
+    <span class="s">&#39;check_autopilot_version&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CheckBox&#39;</span><span class="p">,</span>
+    <span class="s">&#39;environment&#39;</span><span class="p">,</span>
+    <span class="s">&#39;fixture_setup&#39;</span><span class="p">,</span>
+    <span class="s">&#39;get_keyboard&#39;</span><span class="p">,</span>
+    <span class="s">&#39;get_pointing_device&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Header&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Dialog&#39;</span><span class="p">,</span>
+    <span class="s">&#39;listitems&#39;</span><span class="p">,</span>
+    <span class="s">&#39;UCListItem&#39;</span><span class="p">,</span>
+    <span class="s">&#39;MainView&#39;</span><span class="p">,</span>
+    <span class="s">&#39;OptionSelector&#39;</span><span class="p">,</span>
+    <span class="s">&#39;pickers&#39;</span><span class="p">,</span>
+    <span class="s">&#39;popups&#39;</span><span class="p">,</span>
+    <span class="s">&#39;QQuickFlickable&#39;</span><span class="p">,</span>
+    <span class="s">&#39;QQuickGridView&#39;</span><span class="p">,</span>
+    <span class="s">&#39;QQuickListView&#39;</span><span class="p">,</span>
+    <span class="s">&#39;TabBar&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Tabs&#39;</span><span class="p">,</span>
+    <span class="s">&#39;tests&#39;</span><span class="p">,</span>
+    <span class="s">&#39;TextArea&#39;</span><span class="p">,</span>
+    <span class="s">&#39;TextField&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Toolbar&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ToolkitException&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ubuntu_scenarios&#39;</span><span class="p">,</span>
+    <span class="s">&#39;UbuntuListView11&#39;</span><span class="p">,</span>
+    <span class="s">&#39;UbuntuUIToolkitCustomProxyObjectBase&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="kn">from</span> <span class="nn">ubuntuuitoolkit</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">base</span><span class="p">,</span>
+    <span class="n">environment</span><span class="p">,</span>
+    <span class="n">fixture_setup</span><span class="p">,</span>
+    <span class="n">tests</span><span class="p">,</span>
+    <span class="n">ubuntu_scenarios</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ubuntuuitoolkit._custom_proxy_objects</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AppHeader</span><span class="p">,</span>
+    <span class="n">check_autopilot_version</span><span class="p">,</span>
+    <span class="n">CheckBox</span><span class="p">,</span>
+    <span class="n">get_keyboard</span><span class="p">,</span>
+    <span class="n">get_pointing_device</span><span class="p">,</span>
+    <span class="n">Header</span><span class="p">,</span>
+    <span class="n">Dialog</span><span class="p">,</span>
+    <span class="n">listitems</span><span class="p">,</span>
+    <span class="n">UCListItem</span><span class="p">,</span>
+    <span class="n">MainView</span><span class="p">,</span>
+    <span class="n">OptionSelector</span><span class="p">,</span>
+    <span class="n">pickers</span><span class="p">,</span>
+    <span class="n">popups</span><span class="p">,</span>
+    <span class="n">QQuickFlickable</span><span class="p">,</span>
+    <span class="n">QQuickGridView</span><span class="p">,</span>
+    <span class="n">QQuickListView</span><span class="p">,</span>
+    <span class="n">TabBar</span><span class="p">,</span>
+    <span class="n">Tabs</span><span class="p">,</span>
+    <span class="n">TextArea</span><span class="p">,</span>
+    <span class="n">TextField</span><span class="p">,</span>
+    <span class="n">Toolbar</span><span class="p">,</span>
+    <span class="n">ToolkitException</span><span class="p">,</span>
+    <span class="n">UbuntuUIToolkitCustomProxyObjectBase</span><span class="p">,</span>
+    <span class="n">UbuntuListView11</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+          </div>
+      </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">ubuntu-ui-toolkit-autopilot 15.04 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Canonical.
+    </div>
+  </body>
+</html>

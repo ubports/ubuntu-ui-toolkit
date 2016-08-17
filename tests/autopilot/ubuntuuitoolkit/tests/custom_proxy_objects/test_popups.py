@@ -16,54 +16,26 @@
 
 from autopilot.introspection import dbus
 
+import os
 import ubuntuuitoolkit
 from ubuntuuitoolkit import popups, tests
 
 
-class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
+class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.Popups 1.0
+    # FIXME: Currently we are only testing UITK 1.0 Popups,
+    #   we need to test 1.3 as well. See bug 1612582.
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_popups.ActionSelectionPopoverTestCase.qml')
 
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Button {
-        objectName: "open_popover"
-        text: "Open Popover"
-        onClicked: testActionsPopover.show();
-    }
-
-    Label {
-        id: "label"
-        objectName: "clicked_label"
-        anchors.centerIn: parent
-        text: "Button not clicked."
-    }
-
-    ActionSelectionPopover {
-        objectName: "test_actions_popover"
-        id: testActionsPopover
-        actions: ActionList {
-            Action {
-                text: "Action one"
-                onTriggered: label.text = "Button clicked."
-            }
-        }
-    }
-}
-""")
-
-    def test_action_selection_popover_custom_proxy_object(self):
+    def test_custom_proxy_object(self):
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         self.assertIsInstance(popover, popups.ActionSelectionPopover)
 
-    def test_click_action_select_popover_button(self):
+    def test_click_button_by_label(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
         self._open_popover()
@@ -71,6 +43,49 @@ MainView {
             'test_actions_popover')
         popover.click_button_by_text('Action one')
         self.assertEqual(label.text, 'Button clicked.')
+
+    def test_click_button_by_object_name(self):
+        label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertNotEqual(label.text, 'Button clicked.')
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        popover.click_action_button('actionOne')
+        self.assertEqual(label.text, 'Button clicked.')
+
+    def test_click_unexisting_button_by_object_name(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            popover.click_action_button, 'actionTwo')
+        self.assertEqual(
+            str(error),
+            'Button for action with objectName "actionTwo" not found.')
+
+    def test_click_disabled_button_by_object_name(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        # Disabled actions are not shown in ActionSelectionPopover
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            popover.click_action_button, 'actionDisabled')
+        self.assertEqual(
+            str(error),
+            'Button for action with objectName "actionDisabled" not visible.')
+
+    def test_click_hidden_button_by_object_name(self):
+        self._open_popover()
+        popover = self.main_view.get_action_selection_popover(
+            'test_actions_popover')
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            popover.click_action_button, 'actionHidden')
+        self.assertEqual(
+            str(error),
+            'Button for action with objectName "actionHidden" not visible.')
 
     def _open_popover(self):
         open_button = self.main_view.select_single(
@@ -97,49 +112,15 @@ MainView {
             str(error), 'The popover is not open.')
 
 
-class ComposerSheetTestCase(tests.QMLStringAppTestCase):
+class ComposerSheetTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.Popups 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Button {
-        objectName: "openComposerSheetButton"
-        text: "Open Composer Sheet"
-        onClicked: PopupUtils.open(testComposerSheet);
-    }
-
-    Label {
-        id: "label"
-        objectName: "actionLabel"
-        anchors.centerIn: parent
-        text: "No action taken."
-    }
-
-    Component {
-        id: testComposerSheet
-        ComposerSheet {
-            id: sheet
-            objectName: "testComposerSheet"
-            onCancelClicked: {
-                label.text = "Cancel selected."
-            }
-            onConfirmClicked: {
-                label.text = "Confirm selected."
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_popups.ComposerSheetTestCase.qml')
 
     def setUp(self):
-        super(ComposerSheetTestCase, self).setUp()
+        super().setUp()
         self.label = self.main_view.select_single(
             'Label', objectName='actionLabel')
         self.assertEqual(self.label.text, 'No action taken.')

@@ -18,6 +18,41 @@
 
 import logging
 
+from ubuntuuitoolkit._custom_proxy_objects import (
+    check_autopilot_version,
+    get_keyboard,
+    get_pointing_device,
+    CheckBox,
+    Header,
+    Dialog,
+    UCListItem,
+    MainView,
+    OptionSelector,
+    QQuickFlickable,
+    QQuickListView,
+    TabBar,
+    Tabs,
+    TextField,
+    Toolbar,
+    ToolkitException as ToolkitEmulatorException,
+    UbuntuUIToolkitCustomProxyObjectBase as UbuntuUIToolkitEmulatorBase,
+)
+from ubuntuuitoolkit._custom_proxy_objects.listitems import (
+    Base,
+    Empty,
+    ItemSelector,
+    MultiValue,
+    SingleControl,
+    SingleValue,
+    Standard,
+    Subtitled
+)
+from ubuntuuitoolkit._custom_proxy_objects.popups import (
+    TextInputPopover,
+    ActionSelectionPopover,
+    ComposerSheet
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -57,39 +92,3 @@ __all__ = [
     'ToolkitEmulatorException',
     'UbuntuUIToolkitEmulatorBase',
 ]
-
-
-from ubuntuuitoolkit._custom_proxy_objects import (
-    check_autopilot_version,
-    get_keyboard,
-    get_pointing_device,
-    CheckBox,
-    Header,
-    Dialog,
-    UCListItem,
-    MainView,
-    OptionSelector,
-    QQuickFlickable,
-    QQuickListView,
-    TabBar,
-    Tabs,
-    TextField,
-    Toolbar,
-    ToolkitException as ToolkitEmulatorException,
-    UbuntuUIToolkitCustomProxyObjectBase as UbuntuUIToolkitEmulatorBase,
-)
-from ubuntuuitoolkit._custom_proxy_objects.listitems import (
-    Base,
-    Empty,
-    ItemSelector,
-    MultiValue,
-    SingleControl,
-    SingleValue,
-    Standard,
-    Subtitled
-)
-from ubuntuuitoolkit._custom_proxy_objects.popups import (
-    TextInputPopover,
-    ActionSelectionPopover,
-    ComposerSheet
-)

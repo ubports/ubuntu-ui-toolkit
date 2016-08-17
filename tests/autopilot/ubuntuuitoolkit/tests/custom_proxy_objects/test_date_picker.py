@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -14,75 +14,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import datetime
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import pickers, tests
 
 
-class DatePickerBaseTestCase(tests.QMLStringAppTestCase):
+class DatePickerBaseTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.1
-import Ubuntu.Components.Pickers 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Column {
-        DatePicker {
-            id: datePicker
-            objectName: 'datePicker'
-            mode: 'Years|Months|Days'
-            maximum: {
-                var d = new Date()
-                d.setFullYear('2030')
-                return d
-            }
-            minimum: {
-                var d = new Date()
-                d.setFullYear('1990')
-                return d
-            }
-            date: {
-                var d = new Date()
-                d.setFullYear('2010')
-                d.setMonth('5')
-                d.setDate('15')
-                return d
-            }
-        }
-        DatePicker {
-            id: timePicker
-            objectName: 'timePicker'
-            mode: 'Hours|Minutes|Seconds'
-            maximum: {
-                var d = new Date()
-                d.setFullYear('2030')
-                return d
-            }
-            minimum: {
-                var d = new Date()
-                d.setFullYear('1990')
-                return d
-            }
-            date: {
-                var d = new Date()
-                d.setHours(12)
-                d.setMinutes('30')
-                d.setSeconds('30')
-                return d
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_date_picker.DatePickerBaseTestCase.qml')
 
     def setUp(self):
-        super(DatePickerBaseTestCase, self).setUp()
+        super().setUp()
         self.date_picker = self.main_view.select_single(
             pickers.DatePicker, objectName='datePicker')
         self.time_picker = self.main_view.select_single(

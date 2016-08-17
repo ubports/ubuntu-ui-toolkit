@@ -14,39 +14,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
-from autopilot import platform
+import os
 from testtools.matchers import GreaterThan
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class TextAreaTestCase(tests.QMLStringAppTestCase):
+class TextAreaTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Item {
-        TextArea {
-            objectName: "simple_text_area"
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_textarea.TextAreaTestCase.qml')
 
     def setUp(self):
-        super(TextAreaTestCase, self).setUp()
+        super().setUp()
         self.simple_text_area = self.main_view.select_single(
             ubuntuuitoolkit.TextArea, objectName='simple_text_area')
 
@@ -59,17 +42,11 @@ MainView {
         self.simple_text_area.clear()
         self.assertEqual(self.simple_text_area.text, '')
 
-    def test_clear_with_multiple_lines_on_touch(self):
+    def test_clear_with_multiple_lines(self):
         # This is a regrestion test for http://pad.lv/1359167
         self.simple_text_area.write(
             'Long text that will make it wrap into multiple lines.')
         self.assertThat(self.simple_text_area.lineCount, GreaterThan(1))
-        self.simple_text_area.keyboard.press_and_release('Ctrl+Home')
-        if platform.model() == 'Desktop':
-            # Use a touch mock.
-            patcher = mock.patch('autopilot.platform.model')
-            mock_model = patcher.start()
-            self.addCleanup(patcher.stop)
-            mock_model.return_value = 'not desktop'
+        self.simple_text_area._go_to_start()
         self.simple_text_area.clear()
         self.assertEqual(self.simple_text_area.text, '')

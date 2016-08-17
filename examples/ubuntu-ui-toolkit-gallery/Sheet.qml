@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 Template {
     objectName: "sheetsTemplate"
@@ -34,7 +34,7 @@ Template {
     TemplateSection {
         title: "Default sheet"
         className: "DefaultSheet"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Standard")
@@ -67,7 +67,7 @@ Template {
     TemplateSection {
         title: "Composer sheet"
         className: "ComposerSheet"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Standard")

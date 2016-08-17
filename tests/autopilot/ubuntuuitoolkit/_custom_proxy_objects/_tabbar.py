@@ -17,7 +17,6 @@
 import logging
 
 from autopilot import logging as autopilot_logging
-
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
@@ -57,6 +56,7 @@ class TabBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return len(self._get_tab_buttons())
 
     def _get_tab_buttons(self):
+        # TabBar is only used before 1.3, when there was no UCAbstractButton
         return self.select_many('AbstractButton')
 
     def _get_tab_button(self, index):

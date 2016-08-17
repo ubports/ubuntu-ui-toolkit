@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -56,7 +56,7 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
         text_input_scenarios)
 
     def setUp(self):
-        super(WriteAndClearTextInputTestCase, self).setUp()
+        super().setUp()
         # Apply the user locale from the environment
         # The UITK does the same, so the test must be localized
         locale.setlocale(locale.LC_ALL, "")
@@ -83,7 +83,7 @@ class DisabledTextInputTestCase(GalleryTestCase):
     scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
-        super(DisabledTextInputTestCase, self).setUp()
+        super().setUp()
         self.open_page('textinputsElement')
 
     def test_textfield_disabled(self):
@@ -92,6 +92,7 @@ class DisabledTextInputTestCase(GalleryTestCase):
         self.assertFalse(textfield_disabled.enabled)
 
         disabled_text = textfield_disabled.text
-        self.pointing_device.click_object(textfield_disabled)
-        textfield_disabled.keyboard.type('This should not be written')
+        self.assertRaises(AssertionError,
+                          textfield_disabled.write,
+                          'This should not be written')
         self.assertEqual(disabled_text, textfield_disabled.text)

@@ -5,7 +5,17 @@
 check.target = check
 check.commands = "set -e;"
 for(TEST, TESTS) {
-  check.commands += cd $$_PRO_FILE_PWD_;
-  check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/modules/Ubuntu/Components:$${ROOT_BUILD_DIR}/modules/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/modules/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/modules/Ubuntu/Test
-  check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$${TEST}" minimal';
+  _uitk_command = cd $$_PRO_FILE_PWD_;
+  _uitk_command += env UITK_TEST_KEEP_RUNNING=1
+  _uitk_command += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$${_PRO_FILE_PWD_}/$${TEST}" minimal';
+
+  check.commands += $${_uitk_command}
+
+  #add a convenience target per TEST file
+  check_name = "check_$${TEST}"
+  check_name = $$replace(check_name, "\.qml", "")
+  check_name = $$replace(check_name, "\.", "_")
+  $${check_name}.target   = $${check_name}
+  $${check_name}.commands += $${_uitk_command}
+  QMAKE_EXTRA_TARGETS+=$${check_name}
 }

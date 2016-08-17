@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -61,13 +61,12 @@ def get_qmlscene_launch_command():
 def get_toolkit_launcher_command():
     root = ubuntuuitoolkit.tests.get_path_to_build_root()
     path_to_local_launcher = os.path.join(
-        root, 'tests', 'launcher', 'launcher')
+        root, 'ubuntu-ui-toolkit-launcher', 'ubuntu-ui-toolkit-launcher')
     if os.path.exists(path_to_local_launcher):
         return path_to_local_launcher
     else:
-        arch = ubuntuuitoolkit.base.get_host_multiarch()
         path_to_installed_launcher = os.path.join(
-            '/', 'usr', 'lib', arch, 'ubuntu-ui-toolkit', 'launcher')
+            '/', 'usr', 'bin', 'ubuntu-ui-toolkit-launcher')
     return path_to_installed_launcher
 
 
@@ -75,7 +74,7 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
     """Autopilot test case for applications using the Ubuntu UI Toolkit."""
 
     def setUp(self):
-        super(UbuntuUIToolkitAppTestCase, self).setUp()
+        super().setUp()
         self.input_device_class = self._get_input_device_class()
 
     def _get_input_device_class(self):

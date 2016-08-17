@@ -16,10 +16,47 @@
 
 """Ubuntu UI Toolkit Autopilot tests and helpers."""
 
+from ubuntuuitoolkit import (
+    base,
+    environment,
+    fixture_setup,
+    tests,
+    ubuntu_scenarios
+)
+from ubuntuuitoolkit._custom_proxy_objects import (
+    ActionBar,
+    AppHeader,
+    check_autopilot_version,
+    CheckBox,
+    get_keyboard,
+    get_pointing_device,
+    Header,
+    Dialog,
+    listitems,
+    UCListItem,
+    MainView,
+    OptionSelector,
+    pickers,
+    popups,
+    QQuickFlickable,
+    QQuickGridView,
+    QQuickListView,
+    Sections,
+    TabBar,
+    Tabs,
+    TextArea,
+    TextField,
+    Toolbar,
+    ToolkitException,
+    UbuntuUIToolkitCustomProxyObjectBase,
+    UbuntuListView11,
+    UbuntuListView,
+)
 
 __all__ = [
     'AppHeader',
     'base',
+    'ActionBar',
     'check_autopilot_version',
     'CheckBox',
     'environment',
@@ -37,6 +74,7 @@ __all__ = [
     'QQuickFlickable',
     'QQuickGridView',
     'QQuickListView',
+    'Sections',
     'TabBar',
     'Tabs',
     'tests',
@@ -46,40 +84,6 @@ __all__ = [
     'ToolkitException',
     'ubuntu_scenarios',
     'UbuntuListView11',
+    'UbuntuListView',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
-
-
-from ubuntuuitoolkit import (
-    base,
-    environment,
-    fixture_setup,
-    tests,
-    ubuntu_scenarios
-)
-from ubuntuuitoolkit._custom_proxy_objects import (
-    AppHeader,
-    check_autopilot_version,
-    CheckBox,
-    get_keyboard,
-    get_pointing_device,
-    Header,
-    Dialog,
-    listitems,
-    UCListItem,
-    MainView,
-    OptionSelector,
-    pickers,
-    popups,
-    QQuickFlickable,
-    QQuickGridView,
-    QQuickListView,
-    TabBar,
-    Tabs,
-    TextArea,
-    TextField,
-    Toolbar,
-    ToolkitException,
-    UbuntuUIToolkitCustomProxyObjectBase,
-    UbuntuListView11,
-)

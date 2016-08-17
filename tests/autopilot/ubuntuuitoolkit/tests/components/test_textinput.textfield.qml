@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
     width: units.gu(48)
@@ -24,12 +24,17 @@ MainView {
 
     Page {
         title: "Textfield"
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
+        }
 
         Column {
             TextField {
                 objectName: "textfield"
                 placeholderText: "Type here"
-                width: units.gu(15)
+                width: units.gu(35)
             }
         }
     }

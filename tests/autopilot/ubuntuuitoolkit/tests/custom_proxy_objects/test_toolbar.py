@@ -14,55 +14,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+import os
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class ToolbarTestCase(tests.QMLStringAppTestCase):
+class ToolbarTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(50)
-    height: units.gu(50)
-    objectName: "mainView"
-
-    // Make sure that for these tests the toolbar starts closed.
-    Component.onCompleted: {
-        __propagated.toolbar.close();
-    }
-
-    Page {
-
-        Label {
-            id: "label"
-            objectName: "clicked_label"
-            anchors.centerIn: parent
-            text: "Button not clicked."
-        }
-
-        tools: ToolbarItems {
-            ToolbarButton {
-                objectName: "buttonName"
-                action: Action {
-                    text: "buttonText"
-                    onTriggered: label.text = "Button clicked."
-                }
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_toolbar.ToolbarTestCase.qml')
 
     def setUp(self):
-        super(ToolbarTestCase, self).setUp()
+        super().setUp()
         self.toolbar = self.main_view.get_toolbar()
         # toolbar may be opened or closed now, depending on whether
         # the application has been deactivated and resumed already

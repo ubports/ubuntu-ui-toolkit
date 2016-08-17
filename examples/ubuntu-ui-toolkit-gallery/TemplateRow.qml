@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.3
 
 Item {
     id: templateRow
@@ -26,7 +26,7 @@ Item {
     default property alias content: contentRow.children
 
     height: Math.max(contentRow.height, label.height)
-    width: parent.width
+    width: parent ? parent.width : 0
 
     Label {
         id: label

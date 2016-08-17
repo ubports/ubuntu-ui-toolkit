@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
 Template {
     objectName: "ubuntuShapesTemplate"
@@ -25,92 +25,123 @@ Template {
         className: "UbuntuShape"
 
         TemplateRow {
-            title: i18n.tr("Color")
-            titleWidth: units.gu(6)
+            title: i18n.tr("Aspect")
+            titleWidth: units.gu(8)
             height: units.gu(8)
 
             UbuntuShape {
-                objectName: "ubuntushape_color_hex"
-                color: UbuntuColors.orange
+                objectName: "ubuntushape_aspect_inset"
+                backgroundColor: UbuntuColors.orange
+                radius: "medium"
+                aspect: UbuntuShape.Inset
+                Label {
+                    anchors.centerIn: parent
+                    text: "Inset"
+                    textSize: Label.XSmall
+                    color: theme.palette.normal.foregroundText
+                }
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_color_lightaubergine"
-                color: UbuntuColors.lightAubergine
+                objectName: "ubuntushape_aspect_dropshadow"
+                backgroundColor: UbuntuColors.orange
+                radius: "medium"
+                aspect: UbuntuShape.DropShadow
+                Label {
+                    anchors.centerIn: parent
+                    text: "DropShadow"
+                    textSize: Label.XxSmall
+                    color: theme.palette.normal.foregroundText
+                }
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_color_darkgray"
-                color: UbuntuColors.warmGrey
-            }
-        }
-
-        TemplateRow {
-            title: i18n.tr("Image")
-            titleWidth: units.gu(6)
-            height: units.gu(8)
-
-            UbuntuShape {
-                objectName: "ubuntushape_image"
-
-                image: Image {
-                    source: "map_icon.png"
-                    fillMode: Image.PreserveAspectCrop
+                objectName: "ubuntushape_aspect_flat"
+                backgroundColor: UbuntuColors.orange
+                radius: "medium"
+                aspect: UbuntuShape.Flat
+                Label {
+                    anchors.centerIn: parent
+                    text: "Flat"
+                    textSize: Label.XxSmall
+                    color: theme.palette.normal.foregroundText
                 }
             }
         }
 
         TemplateRow {
             title: i18n.tr("Radius")
-            titleWidth: units.gu(6)
+            titleWidth: units.gu(8)
             height: units.gu(8)
 
             UbuntuShape {
                 objectName: "ubuntushape_radius_small"
-
-                color: Theme.palette.normal.foreground
+                backgroundColor: theme.palette.normal.foreground
                 radius: "small"
-
                 Label {
                     anchors.centerIn: parent
                     text: "small"
-                    fontSize: "x-small"
-                    color: Theme.palette.normal.foregroundText
+                    textSize: Label.XxSmall
+                    color: theme.palette.normal.foregroundText
                 }
             }
 
             UbuntuShape {
                 objectName: "ubuntushape_radius_medium"
-                color: Theme.palette.normal.foreground
+                backgroundColor: theme.palette.normal.foreground
                 radius: "medium"
-
                 Label {
                     anchors.centerIn: parent
                     text: "medium"
-                    fontSize: "x-small"
-                    color: Theme.palette.normal.foregroundText
+                    textSize: Label.XxSmall
+                    color: theme.palette.normal.foregroundText
+                }
+            }
+
+            UbuntuShape {
+                objectName: "ubuntushape_radius_medium"
+                backgroundColor: theme.palette.normal.foreground
+                radius: "large"
+                Label {
+                    anchors.centerIn: parent
+                    text: "large"
+                    textSize: Label.XxSmall
+                    color: theme.palette.normal.foregroundText
                 }
             }
         }
 
         TemplateRow {
-            title: i18n.tr("Sizes")
-            titleWidth: units.gu(6)
-            height: units.gu(20)
+            title: i18n.tr("Image")
+            titleWidth: units.gu(8)
+            height: units.gu(8)
 
             UbuntuShape {
-                objectName: "ubuntushape_sizes_15_6"
-                color: Theme.palette.normal.foreground
-                width: units.gu(15)
-                height: units.gu(6)
-                anchors.verticalCenter: parent.verticalCenter
+                objectName: "ubuntushape_preserveaspectcrop"
+                source: Image { source: "map_icon.png" }
+                sourceFillMode: UbuntuShape.PreserveAspectCrop
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_sizes_10_14"
-                color: Theme.palette.normal.foreground
-                width: units.gu(10)
-                height: units.gu(14)
+                objectName: "ubuntushape_pad"
+                backgroundColor: UbuntuColors.warmGrey
+                source: Image { source: "images.png" }
+                sourceFillMode: UbuntuShape.Pad
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Gradient")
+            titleWidth: units.gu(8)
+            height: units.gu(8)
+
+            UbuntuShape {
+                objectName: "ubuntushape_verticalgradient"
+                backgroundColor: UbuntuColors.lightAubergine
+                secondaryBackgroundColor: Qt.rgba(
+                    UbuntuColors.lightAubergine.r, UbuntuColors.lightAubergine.g,
+                    UbuntuColors.lightAubergine.b, 0.25)
+                backgroundMode: UbuntuShape.VerticalGradient
             }
         }
     }

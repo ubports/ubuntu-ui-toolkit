@@ -7,19 +7,140 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-11-05 14:29+0100\n"
+"POT-Creation-Date: 2015-11-05 10:05+0100\n"
 "PO-Revision-Date: 2014-08-31 05:21+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-11-29 06:46+0000\n"
-"X-Generator: Launchpad (build 17267)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2016-06-21 05:57+0000\n"
+"X-Generator: Launchpad (build 18097)\n"
 
-#: Ubuntu/Components/ListItems/Empty.qml:413
+#: Ubuntu/Components/1.2/TextInputPopover.qml:29
+#: Ubuntu/Components/1.3/TextInputPopover.qml:29
+msgid "Select All"
+msgstr "Pilih Semua"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:36
+#: Ubuntu/Components/1.3/TextInputPopover.qml:36
+msgid "Cut"
+msgstr "Potong"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:48
+#: Ubuntu/Components/1.3/TextInputPopover.qml:48
+msgid "Copy"
+msgstr "Salin"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:57
+#: Ubuntu/Components/1.3/TextInputPopover.qml:57
+msgid "Paste"
+msgstr "Tempel"
+
+#: Ubuntu/Components/1.2/ToolbarItems.qml:143
+#: Ubuntu/Components/1.3/ToolbarItems.qml:143
+msgid "Back"
+msgstr "Mundur"
+
+#: Ubuntu/Components/ListItems/1.2/Empty.qml:398
+#: Ubuntu/Components/ListItems/1.3/Empty.qml:398
 msgid "Delete"
 msgstr "Hapus"
+
+#: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
+msgid "No service/path specified"
+msgstr "Tidak ada service/path yang ditentukan"
+
+#: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
+#, qt-format
+msgid "Invalid bus type: %1."
+msgstr "Jenis bus tidak sah: %1."
+
+#. TRANSLATORS: Time based "this is happening/happened now"
+#: Ubuntu/Components/plugin/i18n.cpp:268
+msgid "Now"
+msgstr "Saat Ini"
+
+#: Ubuntu/Components/plugin/i18n.cpp:275
+#, qt-format
+msgid "%1 minute ago"
+msgid_plural "%1 minutes ago"
+msgstr[0] "%1 menit yang lalu"
+
+#: Ubuntu/Components/plugin/i18n.cpp:277
+#, qt-format
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "%1 menit"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:284
+msgid "h:mm ap"
+msgstr "h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:287
+msgid "HH:mm"
+msgstr "HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:293
+msgid "'Yesterday 'h:mm ap"
+msgstr "'Kemarin 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:296
+msgid "'Yesterday 'HH:mm"
+msgstr "'Kemarin 'HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:302
+msgid "'Tomorrow 'h:mm ap"
+msgstr "'Besok 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:305
+msgid "'Tomorrow 'HH:mm"
+msgstr "'Besok 'HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:312
+msgid "ddd' 'h:mm ap"
+msgstr "ddd' 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:315
+msgid "ddd' 'HH:mm"
+msgstr "ddd' 'HH:mm"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:322
+msgid "ddd d MMM' 'h:mm ap"
+msgstr "ddd d MMM' 'h:mm ap"
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:325
+msgid "ddd d MMM' 'HH:mm"
+msgstr "ddd d MMM' 'HH:mm"
+
+#: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
+msgid ""
+"ListView has no ViewItems.dragUpdated() signal handler implemented. No "
+"dragging will be possible."
+msgstr ""
+"ListView tidak memiliki signal handler terimplementasi pada "
+"ViewItems.dragUpdated(). Tidak akan memungkinkan untuk melakukan Dragging."
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -35,13 +156,13 @@ msgstr ""
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr "properti \"%1\" tak ada atau tak dapat ditulisi untuk objek %2"
 
-#: Ubuntu/Components/plugin/ucalarm.cpp:42
-#: Ubuntu/Components/plugin/ucalarm.cpp:136
+#: Ubuntu/Components/plugin/ucalarm.cpp:41
+#: Ubuntu/Components/plugin/ucalarm.cpp:643
 msgid "Alarm"
 msgstr "Alarm"
 
-#: Ubuntu/Components/plugin/ucalarm.cpp:684
-#: Ubuntu/Components/plugin/ucalarm.cpp:716
+#: Ubuntu/Components/plugin/ucalarm.cpp:635
+#: Ubuntu/Components/plugin/ucalarm.cpp:667
 msgid "Alarm has a pending operation."
 msgstr "Alarm memiliki operasi yang tertunda"
 
@@ -68,9 +189,28 @@ msgstr "%1 mengharapkan suatu nilai bagi argumen: %2"
 msgid "%1 is expecting additional arguments: %2"
 msgstr "%1 mengharapkan argumen-argumen tambahan: %2"
 
-#: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
+#: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
+msgid "consider overriding swipeEvent() slot!"
+msgstr "disarankan melakukan overriding pada slot swipeEvent()!"
+
+#: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
+msgid "consider overriding rebound() slot!"
+msgstr "disarankan melakukan overriding pada slot rebound()!"
+
+#: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
 msgstr "Mengabaikan prioritas AfterItem untuk penyaring InverseMouse."
+
+#: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
+msgid "Changing connection parameters forbidden."
+msgstr "Tidak diperbolehkan mengubah koneksi parameter."
+
+#: Ubuntu/Components/plugin/ucserviceproperties.cpp:160
+#, qt-format
+msgid ""
+"Binding detected on property '%1' will be removed by the service updates."
+msgstr ""
+"Binding terdeteksi pada properti '%1' akan dihapus dengan update service."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
@@ -83,7 +223,7 @@ msgid ""
 msgstr ""
 "Peringatan: UUID lampiran telah terdaftar, keadaan tak akan disimpan: %1"
 
-#: Ubuntu/Components/plugin/ucstatesaver.cpp:102
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:107
 #, qt-format
 msgid ""
 "All the parents must have an id.\n"
@@ -92,54 +232,61 @@ msgstr ""
 "Semua induk mesti memiliki id.\n"
 "Penyimpanan keadaan dimatikan bagi %1, kelas %2"
 
-#: Ubuntu/Components/plugin/uctheme.cpp:233
-msgid "Theme not found: "
-msgstr "Tema tak ditemukan: "
+#: Ubuntu/Components/plugin/uctheme.cpp:208
+#, qt-format
+msgid "Theme not found: \"%1\""
+msgstr "Tema tidak ditemukan: \"%1\""
 
-#: Ubuntu/Components/Popups/ComposerSheet.qml:80
+#: Ubuntu/Components/plugin/uctheme.cpp:539
+msgid "Not a Palette component."
+msgstr "Bukan komponen Palet warna."
+
+#: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
+msgid "Dragging mode requires ListView"
+msgstr "Mode Dragging memerlukan ListView"
+
+#: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
+msgid ""
+"Dragging is only supported when using a QAbstractItemModel, ListModel or "
+"list."
+msgstr ""
+"Dragging hanya didukung apabila menggunakan QAbstractItemModel, ListModel "
+"atau list."
+
+#: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
+#: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78
 msgid "Cancel"
 msgstr "Batal"
 
-#: Ubuntu/Components/Popups/ComposerSheet.qml:90
+#: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:88
+#: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:88
 msgid "Confirm"
 msgstr "Konfirmasi"
 
-#: Ubuntu/Components/Popups/DefaultSheet.qml:89
+#: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:85
+#: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:85
 msgid "Close"
 msgstr "Tutup"
 
-#: Ubuntu/Components/Popups/DefaultSheet.qml:99
+#: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:95
+#: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:95
 msgid "Done"
 msgstr "Selesai"
 
-#: Ubuntu/Components/TextInputPopover.qml:27
-msgid "Select All"
-msgstr "Pilih Semua"
-
-#: Ubuntu/Components/TextInputPopover.qml:33
-msgid "Cut"
-msgstr "Potong"
-
-#: Ubuntu/Components/TextInputPopover.qml:42
-msgid "Copy"
-msgstr "Salin"
-
-#: Ubuntu/Components/TextInputPopover.qml:49
-msgid "Paste"
-msgstr "Tempel"
-
-#: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
+#: Ubuntu/Components/Themes/Ambiance/1.2/ProgressBarStyle.qml:51
+#: Ubuntu/Components/Themes/Ambiance/1.3/ProgressBarStyle.qml:50
 msgid "In Progress"
 msgstr "Tengah Berlangsung"
 
-#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
 msgstr "Lepaskan untuk menyegarkan..."
 
-#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
 msgstr "Tarik untuk menyegarkan..."
 
-#: Ubuntu/Components/ToolbarItems.qml:142
-msgid "Back"
-msgstr "Mundur"
+#~ msgid "Theme not found: "
+#~ msgstr "Tema tak ditemukan: "

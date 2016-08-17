@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013, 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -16,10 +16,7 @@
 
 import os
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -33,12 +30,16 @@ class TabsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_tabs.TabsTestCase.deprecated_TabBar.qml')
     new_header_test_qml_file_path = os.path.join(
         dir_path, 'test_tabs.TabsTestCase.new_header.qml')
+    new_header_1_3_test_qml_file_path = os.path.join(
+        dir_path, 'test_tabs.TabsTestCase.new_header.1.3.qml')
 
     scenarios = [
         ('deprecated TabBar',
          dict(test_qml_file_path=deprecated_tabbar_test_qml_file_path)),
         ('new header',
-         dict(test_qml_file_path=new_header_test_qml_file_path))
+         dict(test_qml_file_path=new_header_test_qml_file_path)),
+        ('new header 1.3',
+         dict(test_qml_file_path=new_header_1_3_test_qml_file_path))
     ]
 
     def test_tabs_custom_proxy_object(self):

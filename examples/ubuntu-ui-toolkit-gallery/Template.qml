@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,42 +14,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 
-Item {
+Page {
     id: template
 
-    width: units.gu(40)
-    height: units.gu(75)
+    default property alias content: column.children
+    property alias spacing: column.spacing
+    property alias scrollable: templateFlickable.interactive
+    property list<Action> trailingActions
+    flickable: templateFlickable
 
-    default property alias content: layout.children
-    property alias spacing: layout.spacing
-    property Item tools: null
-    property Flickable flickable: flickable
-
-    Flickable {
-        id: flickable
-        objectName: "TemplateFlickable"
-        anchors.fill: parent
-        anchors.topMargin: units.gu(2)
-        anchors.bottomMargin: units.gu(2)
-        contentHeight: layout.height
-        interactive: contentHeight > height
-
-        Column {
-            id: layout
-            spacing: units.gu(6)
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: units.gu(2)
-        }
+    header: PageHeader {
+        title: template.title
+        flickable: layout.columns === 1 ? templateFlickable : null
+        onFlickableChanged: exposed = true;
+        trailingActionBar.actions: trailingActions
     }
 
-    Scrollbar {
-        id: sb
-        objectName: "TemplateScrollbar"
-        flickableItem: flickable
-        property alias interactive: sb.__interactive
+    ScrollView {
+        objectName: "TemplateScrollView"
+        anchors {
+            fill: parent
+            topMargin: template.header.flickable ? 0 : template.header.height
+        }
+
+        Flickable {
+            id: templateFlickable
+            objectName: "TemplateFlickable"
+            anchors.fill: parent
+            contentHeight: column.height
+            interactive: contentHeight > height
+            Column {
+                id: column
+                spacing: units.gu(6)
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: units.gu(2)
+            }
+        }
     }
 }

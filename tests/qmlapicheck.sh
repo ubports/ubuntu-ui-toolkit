@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 #
 # Copyright 2013 Canonical Ltd.
 #
@@ -16,37 +16,25 @@
 #
 ################################################################################
 
-. `dirname $0`/../build_paths.inc
+source `dirname $0`/../export_qml_dir.sh || exit 1
 
-QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/*/qmldir"
-CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
+if [ ! -e $BUILD_DIR/qml/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
+    echo You need to build UITK before you can dump QML API!
+    exit 1
+fi
 
+CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubuntu.Components.Pickers Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 echo Dumping QML API of C++ components
-echo '' > $BUILD_DIR/plugins.qmltypes
-ERRORS=0
-for i in $CPP; do
-    # Silence spam on stderr due to fonts
-    # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
-    # https://bugreports.qt-project.org/browse/QTBUG-36243
-    env UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/modules ALARM_BACKEND=memory \
-        qmlplugindump -noinstantiate $i 0.1 $BUILD_DIR/modules 1>> $BUILD_DIR/plugins.qmltypes
-    test $? != 0 && ERRORS=1
-done
-test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
-
-echo Running QML API check for $QML
-# Palette and UbuntuColors gets included in Qt > 5.2 qmlplugindump even though it's qml
-BUILTINS=QQuick,QQml,U1db::,Palette,UbuntuColors python3 tests/qmlapicheck.py $QML $BUILD_DIR/plugins.qmltypes > $BUILD_DIR/components.api.new
-test $? != 0 && echo Error: qmlapicheck.py failed && exit 1
-
-echo Verifying the diff between existing and generated API
-diff -Fqml -u components.api $BUILD_DIR/components.api.new
-test $? != 0 && ERRORS=1
-
-if [ "x$ERRORS" != "x1" ]; then
-    echo API is all fine.
-    exit 0
+test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
+env ALARM_BACKEND=memory \
+    $BUILD_DIR/apicheck/apicheck \
+    --qml $CPP 1>> $BUILD_DIR/components.api.new &&
+    echo Verifying the diff between existing and generated API
+if [ $? -gt 0 ]; then
+    echo Error: apicheck failed
 else
-    echo API test failed with errors. Did you forget to update components.api?
+    diff -F '[.0-9]' -u $SRC_DIR/components.api $BUILD_DIR/components.api.new && \
+        echo API is all fine. && exit 0
+    echo Differences in API. Did you forget to update components.api?
     exit 1
 fi

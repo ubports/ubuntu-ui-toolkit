@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 import Ubuntu.Layouts 1.0
 import "components"
 import "components/calculator.js" as Calculator
@@ -77,7 +77,7 @@ MainView {
                         width: units.gu(3)
                         height: parent.height
                         text: "M"
-                        fontSize: "large"
+                        textSize: Label.Large
                         font.bold: true
                     }
                 }

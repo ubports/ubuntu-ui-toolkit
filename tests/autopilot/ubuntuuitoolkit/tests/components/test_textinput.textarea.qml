@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
     width: units.gu(48)
@@ -24,11 +24,15 @@ MainView {
 
     Page {
         title: "Textarea"
+        head.backAction: Action {
+            iconName: "back"
+            text: i18n.tr("Back")
+            onTriggered: visible = false
+        }
 
         Column {
             TextArea {
                 objectName: "textarea"
-                text: "Lorem ipsum dolor sit amet."
                 width: units.gu(25)
                 height: units.gu(25)
             }

@@ -1,4 +1,0 @@
-module Ubuntu.Components.Styles
-ComboButtonStyle 1.1 ComboButtonStyle.qml
-PullToRefreshStyle 1.1 PullToRefreshStyle.qml
-PageHeadStyle 1.1 PageHeadStyle.qml

@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014, 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -27,9 +27,6 @@ class DialogScrollTestCase(tests.QMLFileAppTestCase):
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
         dir_path, 'test_popover.qml')
-
-    def setUp(self):
-        super(DialogScrollTestCase, self).setUp()
 
     def test_dialog_small(self):
         button = self.main_view.select_single(objectName='button_small')

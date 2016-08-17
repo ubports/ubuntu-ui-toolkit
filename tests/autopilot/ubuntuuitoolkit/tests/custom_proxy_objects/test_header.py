@@ -19,6 +19,7 @@ import os
 
 import fixtures
 from testtools.matchers import Contains
+from autopilot import introspection
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -33,7 +34,7 @@ class HideShowTestCase(tests.QMLFileAppTestCase):
         'test_header.HideShowTestCase.qml')
 
     def setUp(self):
-        super(HideShowTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
 
     def test_ensure_header_visible_must_show_it_when_not_visible(self):
@@ -69,10 +70,9 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     ]
 
     def setUp(self):
-        super(ActionsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
-        self.label = self.app.select_single(
-            'Label', objectName='clicked_label')
+        self.label = self.app.select_single(objectName='clicked_label')
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
@@ -110,20 +110,6 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
         self.header.click_action_button('action0')
         self.assertEqual(self.label.text, 'Button 0 clicked.')
 
-    def test_overflow_button(self):
-        # there are 5 actions plus a custom back action
-        overflow_button = self.header.select_single(
-            objectName='actions_overflow_button')
-        self.assertEqual(overflow_button.visible, True)
-
-        hide_actions_button = self.main_view.select_single(
-            'Button',
-            objectName='hide_actions_button')
-        self.pointing_device.click_object(hide_actions_button)
-
-        # only three actions are visible
-        self.assertEqual(overflow_button.visible, False)
-
 
 class SectionsTestCase(tests.QMLFileAppTestCase):
 
@@ -133,7 +119,7 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_header.SectionsTestCase.qml')
 
     def setUp(self):
-        super(SectionsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
         # initially, section 0 is selected
         self.assertEqual(self.header.get_selected_section_index(), 0)
@@ -161,7 +147,7 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_header.DeprecatedHeaderSectionsTestCase.qml')
 
     def setUp(self):
-        super(DeprecatedHeaderSectionsTestCase, self).setUp()
+        super().setUp()
         self.header = self.main_view.get_header()
 
     def test_get_selection_index(self):
@@ -195,6 +181,12 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""
 
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        state_name = introspection.get_classname_from_path(path)
+        class_name = cls.__name__.encode('utf-8')
+        return state_name == class_name
+
 
 class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
@@ -205,7 +197,7 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(CustomMainView)
+        return self.app.select_single(objectName='customMainView')
 
     def test_get_header_from_custom_main_view(self):
         """Test that we can get the header from a custom main view.

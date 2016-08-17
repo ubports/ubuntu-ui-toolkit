@@ -18,6 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
+from autopilot import introspection
 
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
@@ -59,29 +60,64 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 pass
 
     def _get_button(self, text):
-        buttons = self.select_many('AbstractButton')
-        for button in buttons:
-            # workaround used in the text input's context menu to access
-            # action.text so we can get the proper button by text, action
-            # being not accessible
-            # https://bugs.launchpad.net/autopilot/+bug/1334599
-            if button.text == text:
-                return button
+        # Try the C++ class name in case this is a 1.3 AbstractButton
+        try:
+            return self.wait_select_single(
+                'UbuntuToolkit::UCAbstractButton', text=text)
+        except dbus.StateNotFoundError:
+            return self.wait_select_single('AbstractButton', text=text)
 
 
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ActionSelectionPopover Autopilot custom proxy object."""
 
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        if super().validate_dbus_object(path, state):
+            return True
+
+        name = introspection.get_classname_from_path(path)
+        if name == b'OverflowPanel':
+            return True
+
+        return False
+
+    def click_action_button(self, action_object_name):
+        """Click an action button on the popover.
+
+        :parameter object_name: The QML objectName property of the action
+        :raise ToolkitException: If there is no visible button with that object
+            name or the popover is not open.
+
+        """
+
+        if not self.visible:
+            raise _common.ToolkitException('The popover is not open.')
+        try:
+            object_name = action_object_name + "_button"
+            button = self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(
+                'Button for action with objectName "{0}" not found.'.format(
+                    action_object_name))
+        if not button.visible:
+            raise _common.ToolkitException(
+                'Button for action with objectName "{0}" not visible.'.format(
+                    action_object_name))
+        self.pointing_device.click_object(button)
+        if self.autoClose:
+            try:
+                self.visible.wait_for(False)
+            except dbus.StateNotFoundError:
+                # The popover was removed from the tree.
+                pass
+
     def click_button_by_text(self, text):
         """Click a button on the popover.
 
-        XXX We are receiving the text because there's no way to set the
-        objectName on the action. This is reported at
-        https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205144
-        --elopio - 2013-07-25
-
         :parameter text: The text of the button.
-        :raise ToolkitException: If the popover is not open.
+        :raise ToolkitException: If there is no visible button with that label
+            or the popover is not open.
 
         """
         if not self.visible:
@@ -107,9 +143,6 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 class ComposerSheet(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ComposerSheet Autopilot custom proxy object."""
-
-    def __init__(self, *args):
-        super(ComposerSheet, self).__init__(*args)
 
     @autopilot_logging.log_action(logger.info)
     def confirm(self):

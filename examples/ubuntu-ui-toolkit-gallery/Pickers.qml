@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,16 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Pickers 0.1
+import QtQuick 2.4
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Pickers 1.3
 
 Template {
     objectName: "pickersTemplate"
     id: root
+
+    property var stringListModel: ["starred", "media-record", "like", "language-chooser", "go-home", "email", "contact-group", "notification", "active-call"]
     TemplateSection {
         className: "Picker"
-        documentation: "qml-ubuntu-components-pickers0-picker.html"
+        documentation: "qml-ubuntu-components-pickers-picker.html"
 
         TemplateRow {
             title: i18n.tr("Linear")
@@ -41,6 +43,19 @@ Template {
                 }
 
                 onSelectedIndexChanged: print("index=" + selectedIndex)
+            }
+            Picker {
+                circular: false
+                model: stringListModel
+                itemHeight: units.gu(3)
+                delegate: PickerDelegate {
+                    Icon {
+                        anchors.centerIn: parent
+                        name: modelData
+                        width: units.gu(2)
+                        height: units.gu(2)
+                    }
+                }
             }
         }
 
@@ -65,6 +80,18 @@ Template {
                     }
                     model = stack;
                     selectedIndex = 3;
+                }
+            }
+            Picker {
+                model: stringListModel
+                itemHeight: units.gu(3)
+                delegate: PickerDelegate {
+                    Icon {
+                        anchors.centerIn: parent
+                        name: modelData
+                        width: units.gu(2)
+                        height: units.gu(2)
+                    }
                 }
             }
         }
@@ -104,7 +131,7 @@ Template {
 
     TemplateSection {
         className: "Dialer"
-        documentation: "qml-ubuntu-components-pickers0-dialer.html"
+        documentation: "qml-ubuntu-components-pickers-dialer.html"
 
         TemplateRow {
             title: i18n.tr("Clock")
@@ -158,7 +185,7 @@ Template {
                         width: height
                         height: units.gu(3)
                         radius: width / 2
-                        color: Theme.palette.normal.background
+                        color: theme.palette.normal.background
                         antialiasing: true
                         Label {
                             text: Math.round(selector.value)
@@ -180,7 +207,7 @@ Template {
     }
     TemplateSection {
         className: "DatePicker"
-        documentation: "qml-ubuntu-components-pickers0-datepicker.html"
+        documentation: "qml-ubuntu-components-pickers-datepicker.html"
         TemplateRow {
             title: "Date"
             DatePicker {
@@ -207,6 +234,17 @@ Template {
                 width: Math.min(root.width - units.gu(16), units.gu(40))
                 onDateChanged: print("picked time="+Qt.formatTime(date, "hh:mm:ss"))
             }
+        }
+    }
+
+    TemplateSection {
+        title: "PickerPanel"
+        TextField {
+            id: textField
+            readOnly: true
+            property date date: new Date()
+            text: date.toISOString()
+            Mouse.onClicked: PickerPanel.openDatePicker(textField, "date");
         }
     }
 }

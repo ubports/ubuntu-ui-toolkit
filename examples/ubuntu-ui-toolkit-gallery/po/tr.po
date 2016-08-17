@@ -1,0 +1,500 @@
+# Turkish translation for ubuntu-ui-toolkit
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the ubuntu-ui-toolkit package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu-ui-toolkit\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-11-05 10:04+0100\n"
+"PO-Revision-Date: 2015-12-08 15:43+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Turkish <tr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2016-06-21 05:57+0000\n"
+"X-Generator: Launchpad (build 18097)\n"
+
+#: About.qml:34
+msgid "About..."
+msgstr "Hakkında..."
+
+#: ActionBars.qml:68
+msgid "Short list"
+msgstr "Kısa liste"
+
+#: ActionBars.qml:79
+msgid "Number of slots"
+msgstr "Slot sayıları"
+
+#: ActionBars.qml:92
+msgid "Long list"
+msgstr "Uzun liste"
+
+#: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
+#: Toggles.qml:45 Toggles.qml:83
+msgid "Disabled"
+msgstr "Etkin Değil"
+
+#: Animations.qml:24
+msgid "NumberAnimation"
+msgstr "Animasyon Numarası"
+
+#: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
+#: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
+#: Sliders.qml:28 TextInputs.qml:46
+msgid "Standard"
+msgstr "Standart"
+
+#: Animations.qml:58
+msgid "Standard Durations"
+msgstr "Standart Süreler"
+
+#: Animations.qml:62
+msgid "Snap"
+msgstr "Yakala"
+
+#: Animations.qml:98
+msgid "Fast"
+msgstr "Hızlı"
+
+#: Animations.qml:134
+msgid "Slow"
+msgstr "Yavaş"
+
+#: Animations.qml:159
+msgid "Sleepy"
+msgstr "Uykulu"
+
+#: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
+msgid "Call"
+msgstr "Çağrı"
+
+#: Buttons.qml:37
+msgid "Stroke"
+msgstr "Çizgili"
+
+#: Buttons.qml:47 Icons.qml:54
+msgid "Color"
+msgstr "Renk"
+
+#: Buttons.qml:53
+#, qt-format
+msgid "Call %1"
+msgstr "%1 kişisini ara"
+
+#: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
+msgid "Icon"
+msgstr "Simge"
+
+#: Buttons.qml:72 Buttons.qml:134
+msgid "Icon+Text"
+msgstr "İkon+Metin"
+
+#: Buttons.qml:105 OptionSelectors.qml:41
+msgid "Collapsed"
+msgstr "Daraltılmış"
+
+#: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
+msgid "Expanded"
+msgstr "Genişletilmiş"
+
+#: Colors.qml:30
+msgid "Orange"
+msgstr "Turuncu"
+
+#: Colors.qml:36
+msgid "Light grey"
+msgstr "Açık yeşil"
+
+#: Colors.qml:42
+msgid "Dark grey"
+msgstr "Koyu yeşil"
+
+#: Colors.qml:48
+msgid "Red"
+msgstr "Kırmızı"
+
+#: Colors.qml:54
+msgid "Green"
+msgstr "Yeşil"
+
+#: Colors.qml:60
+msgid "Blue"
+msgstr "Mavi"
+
+#: Colors.qml:66
+msgid "Purple"
+msgstr "Mor"
+
+#: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
+msgid "Open"
+msgstr "Aç"
+
+#: Icons.qml:29
+msgid "Scaling"
+msgstr "Ölçeklendirme"
+
+#: Icons.qml:79
+msgid "Theme"
+msgstr "Tema"
+
+#: ListItemLayouts.qml:208 NewListItems.qml:79
+msgid "Leading and trailing actions"
+msgstr ""
+
+#: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
+#: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
+#: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
+msgid "Label"
+msgstr "Etiket"
+
+#: ListItems.qml:33
+msgid "Subtitled"
+msgstr "Altyazılı"
+
+#: ListItems.qml:37
+msgid "Secondary label"
+msgstr "İkincil etiket"
+
+#: ListItems.qml:52
+msgid "ThinDivider"
+msgstr ""
+
+#: ListItems.qml:73
+msgid "Progression"
+msgstr "İlerleme"
+
+#: ListItems.qml:82
+msgid "Single value"
+msgstr "Tek değer"
+
+#: ListItems.qml:86
+msgid "Value"
+msgstr "Değer"
+
+#: ListItems.qml:91
+msgid "Multi value"
+msgstr "Çift değer"
+
+#: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
+#: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
+#: OptionSelectors.qml:84 OptionSelectors.qml:99
+msgid "Value 1"
+msgstr "Değer 1"
+
+#: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
+#: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
+#: OptionSelectors.qml:100
+msgid "Value 2"
+msgstr "Değer 2"
+
+#: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
+#: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
+#: OptionSelectors.qml:101
+msgid "Value 3"
+msgstr "Değer 3"
+
+#: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
+#: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
+#: OptionSelectors.qml:102
+msgid "Value 4"
+msgstr "Değer 4"
+
+#: ListItems.qml:103
+msgid "Item selector"
+msgstr "Madde seçici"
+
+#: ListItems.qml:112 TextInputs.qml:117
+msgid "Expanding"
+msgstr "Genişleyen"
+
+#: ListItems.qml:129 OptionSelectors.qml:54
+msgid "Multiple Selection"
+msgstr "Çoklu seçim"
+
+#: ListItems.qml:139 OptionSelectors.qml:62
+msgid "Custom Model"
+msgstr "Özel Model"
+
+#: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
+#: OptionSelectors.qml:103
+msgid "Value 5"
+msgstr "Değer 5"
+
+#: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
+#: OptionSelectors.qml:104
+msgid "Value 6"
+msgstr "Değer 6"
+
+#: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
+#: OptionSelectors.qml:105
+msgid "Value 7"
+msgstr "Değer 7"
+
+#: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
+#: OptionSelectors.qml:106
+msgid "Value 8"
+msgstr "Değer 8"
+
+#: ListItems.qml:190
+msgid "Control"
+msgstr "Denetim"
+
+#: ListItems.qml:202
+msgid "Removable"
+msgstr "Kaldırılabilir"
+
+#: ListItems.qml:205
+msgid "Slide to remove"
+msgstr "Kaldırmak için kaydır"
+
+#: ListItems.qml:215
+msgid "Reset"
+msgstr "Sıfırla"
+
+#: ListItems.qml:226
+msgid "Grouped list"
+msgstr "Gruplandırılmış liste"
+
+#: ListItems.qml:261
+msgid "UbuntuListView"
+msgstr "Ubuntu Liste Görünümü"
+
+#: ListItems.qml:321
+msgid "ExpandablesColumn"
+msgstr "Harcanılabilir Sütun"
+
+#: ListItems.qml:364
+msgid "Expandable"
+msgstr "Harcanılabilir"
+
+#: NewListItems.qml:39
+msgid "Colored"
+msgstr "Renkli"
+
+#: NewListItems.qml:42
+msgid "Highlight color"
+msgstr "Vurgulama rengi"
+
+#: NewListItems.qml:71
+msgid "Leading actions"
+msgstr ""
+
+#: NewListItems.qml:75
+msgid "Trailing actions"
+msgstr ""
+
+#: NewListItems.qml:84
+msgid "Custom action delegates"
+msgstr ""
+
+#: NewListItems.qml:111
+msgid "Edit"
+msgstr "Düzenle"
+
+#: NewListItems.qml:114
+msgid "Move"
+msgstr "Taşı"
+
+#: NewListItems.qml:163
+msgid "Basic"
+msgstr "Temel"
+
+#: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
+#: NewListItems.qml:213 NewListItems.qml:214
+msgid "Colored divider"
+msgstr "Renkli bölücü"
+
+#: NewListItems.qml:163
+msgid "Immutable"
+msgstr "Değişmez"
+
+#: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
+msgid "No divider"
+msgstr "Bölücü yok"
+
+#: OptionSelectors.qml:24
+msgid "Option Selector"
+msgstr "Seçenek Seçici"
+
+#: OptionSelectors.qml:34
+msgid "This is the second value"
+msgstr "Bu ikinci değer"
+
+#: OptionSelectors.qml:35
+msgid ""
+"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
+"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+msgstr ""
+
+#: OptionSelectors.qml:36
+msgid "Once upon a time there was a story nobody told."
+msgstr "Bir zamanlar kimsenin anlatmadığı bir hikaye varmış."
+
+#: OptionSelectors.qml:83
+msgid "Custom container height"
+msgstr "Özelleştirilmiş konteyner yüksekliği"
+
+#: OptionSelectors.qml:96
+msgid "No initial selection, scrollable."
+msgstr ""
+
+#: Pickers.qml:31
+msgid "Linear"
+msgstr "Çizgisel"
+
+#: Pickers.qml:63
+msgid "Circular"
+msgstr "Dairesel"
+
+#: Pickers.qml:100 ProgressBars.qml:49
+msgid "Infinite"
+msgstr "Sonsuz"
+
+#: Pickers.qml:137
+msgid "Clock"
+msgstr "Saat"
+
+#: Pickers.qml:174
+msgid "Overlay"
+msgstr "Kaplama"
+
+#: Popover.qml:38
+msgid "Flickable"
+msgstr ""
+
+#: Popover.qml:74
+msgid "Action #1"
+msgstr ""
+
+#: Popover.qml:78
+msgid "Action #2"
+msgstr ""
+
+#: Popover.qml:82
+msgid "Action #3"
+msgstr ""
+
+#: Popover.qml:86
+msgid "Action #4"
+msgstr ""
+
+#: Popover.qml:90
+msgid "Action #5"
+msgstr "Eylem 5#"
+
+#: ProgressBars.qml:24
+msgid "Progress Bar"
+msgstr "İlerleme Çubuğu"
+
+#: ProgressBars.qml:59
+msgid "No label"
+msgstr "Etiket yok"
+
+#: ProgressBars.qml:81
+msgid "Activity Indicator"
+msgstr "Aktivite Göstergesi"
+
+#: ProportionalShape.qml:28
+msgid "Sizes"
+msgstr "Boyutlar"
+
+#: Sections.qml:34
+msgid "Enabled"
+msgstr "Etkin"
+
+#: Sheet.qml:28
+msgid "The visual style of the Sheet is early work and thus clunky looking."
+msgstr ""
+
+#: Sheet.qml:53 Sheet.qml:86
+msgid "Title"
+msgstr "Başlık"
+
+#: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
+#, qt-format
+msgid "Actual value: %1"
+msgstr "Gerçek değer: %1"
+
+#: Sliders.qml:42
+msgid "Live Update"
+msgstr "Canlı Güncelleme"
+
+#: Sliders.qml:57
+msgid "Range"
+msgstr "Aralık"
+
+#: Sliders.qml:74
+msgid "Labels"
+msgstr "Etiketler"
+
+#: Sliders.qml:85
+msgid "Small"
+msgstr "Küçük"
+
+#: Sliders.qml:87
+msgid "Medium"
+msgstr "Orta"
+
+#: Sliders.qml:89
+msgid "Large"
+msgstr "Büyük"
+
+#: TextInputs.qml:50
+msgid "Type me in..."
+msgstr "Beni yaz..."
+
+#: TextInputs.qml:56
+msgid "Password"
+msgstr "Şifre"
+
+#: TextInputs.qml:67
+msgid "Numbers"
+msgstr "Sayılar"
+
+#: TextInputs.qml:78
+msgid "Read-only"
+msgstr "Salt-okunur"
+
+#: TextInputs.qml:82
+msgid "Nobody type here"
+msgstr "Buraya kimse yazmadı"
+
+#: TextInputs.qml:94
+msgid "No interaction allowed"
+msgstr ""
+
+#: TextInputs.qml:107
+msgid "Default"
+msgstr "Varsayılan"
+
+#: TextInputs.qml:129
+msgid "Rich Text"
+msgstr "Zengin Metin"
+
+#: Toggles.qml:28 Toggles.qml:66
+msgid "Unchecked"
+msgstr "İşaretlenmemiş"
+
+#: Toggles.qml:36 Toggles.qml:74
+msgid "Checked"
+msgstr ""
+
+#: UbuntuShape.qml:28
+msgid "Aspect"
+msgstr ""
+
+#: UbuntuShape.qml:73
+msgid "Radius"
+msgstr ""
+
+#: UbuntuShape.qml:115
+msgid "Image"
+msgstr ""
+
+#: UbuntuShape.qml:134
+msgid "Gradient"
+msgstr ""

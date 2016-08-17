@@ -14,45 +14,30 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
-from autopilot import platform
+import os
+from unittest import mock
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class TextFieldTestCase(tests.QMLStringAppTestCase):
+class TextFieldTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Item {
-        TextField {
-            id: simpleTextField
-            objectName: "simple_text_field"
-        }
-        TextField {
-            id: textFieldWithoutClearButton
-            objectName: "text_field_without_clear_button"
-            hasClearButton: false
-            anchors.top: simpleTextField.bottom
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    qml_file_path_1_0 = os.path.join(
+        dir_path, 'test_textfield.1.0.qml')
+    qml_file_path_1_3 = os.path.join(
+        dir_path, 'test_textfield.1.3.qml')
+    scenarios = [
+        ('1.0',
+            dict(test_qml_file_path=qml_file_path_1_0)),
+        ('1.3',
+            dict(test_qml_file_path=qml_file_path_1_3)),
+    ]
 
     def setUp(self):
-        super(TextFieldTestCase, self).setUp()
+        super().setUp()
         self.simple_text_field = self.main_view.select_single(
             ubuntuuitoolkit.TextField, objectName='simple_text_field')
 
@@ -101,8 +86,6 @@ MainView {
         self.assertFalse(self.simple_text_field.is_empty())
 
     def test_select_all_selects_all_text(self):
-        if platform.model() != 'Desktop':
-            self.skipTest('Select all is not yet implemented on the phone.')
         self.simple_text_field.write('Text to select.')
         self.simple_text_field._select_all()
 
@@ -110,8 +93,6 @@ MainView {
 
     def test_select_all_when_already_selected_must_do_nothing(self):
         """Test for select all the text when it's already selected."""
-        if platform.model() != 'Desktop':
-            self.skipTest('Select all is not yet implemented on the phone.')
         self.simple_text_field.write('Text to select.')
         self.simple_text_field._select_all()
         with mock.patch.object(

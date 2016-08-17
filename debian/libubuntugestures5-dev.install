@@ -1,0 +1,13 @@
+usr/include/*/qt5/UbuntuGestures/UbuntuGestures
+usr/include/*/qt5/UbuntuGestures/UbuntuGesturesDepends
+usr/include/*/qt5/UbuntuGestures/UbuntuGesturesModule
+usr/include/*/qt5/UbuntuGestures/UbuntuGesturesVersion
+usr/include/*/qt5/UbuntuGestures/ubuntugesturesglobal.h
+usr/include/*/qt5/UbuntuGestures/ubuntugesturesmodule.h
+usr/include/*/qt5/UbuntuGestures/ubuntugesturesversion.h
+usr/lib/*/libUbuntuGestures.la
+usr/lib/*/libUbuntuGestures.prl
+usr/lib/*/libUbuntuGestures.so
+usr/lib/*/pkgconfig/UbuntuGestures.pc
+usr/lib/*/qt5/mkspecs/modules/qt_lib_UbuntuGestures.pri
+usr/lib/*/qt5/mkspecs/modules/qt_lib_UbuntuGestures_private.pri

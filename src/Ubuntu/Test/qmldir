@@ -1,0 +1,9 @@
+module Ubuntu.Test
+plugin UbuntuTest
+UbuntuTestCase 0.1 UbuntuTestCase.qml
+
+#version 1.0
+UbuntuTestCase 1.0 UbuntuTestCase.qml
+
+#version 1.3
+UbuntuTestCase 1.3 UbuntuTestCase13.qml

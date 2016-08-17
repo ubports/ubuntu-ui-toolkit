@@ -12,14 +12,18 @@
 # serve to show the default.
 
 import sys
-assert sys
 import os
+import ubuntuuitoolkit
+
+assert sys
 assert os
+assert ubuntuuitoolkit
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-# sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.join(os.path.abspath('../..'), 'tests/autopilot/'))
+
 
 # -- General configuration ------------------------------------------------
 

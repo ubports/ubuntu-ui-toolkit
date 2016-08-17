@@ -92,7 +92,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(UbuntuUIToolkitWithFakeAppRunningTestCase, self).setUp()
+        super().setUp()
         self.launch_application()
 
     def launch_application(self):
@@ -126,7 +126,7 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
     """Base test case for self tests that define the QML on an string."""
 
     def setUp(self):
-        super(QMLStringAppTestCase, self).setUp()
+        super().setUp()
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
 
@@ -156,7 +156,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     desktop_file_path = None
 
     def setUp(self):
-        super(QMLFileAppTestCase, self).setUp()
+        super().setUp()
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
 
@@ -204,11 +204,10 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         return orientationHelper
 
     def checkPageHeader(self, pageTitle):
-        orientationHelper = self.getOrientationHelper()
-        header = orientationHelper.select_single("AppHeader", title=pageTitle)
-        self.assertThat(header, Not(Is(None)))
-        self.assertThat(header.visible, Eventually(Equals(True)))
-        return header
+        header_label = self.main_view.wait_select_single(
+            objectName="header_title_label", text=pageTitle, visible=True)
+        self.assertThat(header_label, Not(Is(None)))
+        self.assertThat(header_label.visible, Eventually(Equals(True)))
 
     def getObject(self, objectName):
         obj = self.app.select_single(objectName=objectName)

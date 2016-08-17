@@ -3,29 +3,35 @@
 # Uncomment this to turn on verbose mode.
 # export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
-export QMAKEFEATURES=$(CURDIR)/features
+export QT_SELECT := qt5
+export CFLAGS := $(shell dpkg-buildflags --get CFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
+export CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(shell dpkg-buildflags --get CPPFLAGS)
+export LDFLAGS := $(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-
-CONFIGURE_SWITCHES = "-r" \
-                     "ROOT_SOURCE_DIR=$(CURDIR)" \
-                     "ROOT_BUILD_DIR=$(CURDIR)" 
+DEB_HOST_SERIES ?= $(shell lsb_release -c -s)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := powerpc arm64 ppc64el
+testskip_architectures := powerpc arm64 ppc64el s390x
+testskip_series := yakkety
 
 override_dh_auto_configure:
-	dh_auto_configure -- $(CONFIGURE_SWITCHES)
+	qmake -r
 
 %:
-	dh $@ --fail-missing
+	dh $@ --parallel
 
 override_dh_auto_test:
+	echo TRACE_TEST
+	echo $(DEB_HOST_SERIES)
+	echo $(testskip_series)
+ifneq ($(DEB_HOST_SERIES),$(findstring $(DEB_HOST_SERIES), $(testskip_series)))
 ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
 	chmod +x tests/xvfb.sh
 	tests/xvfb.sh dh_auto_test || exit $?
+endif
 endif
 endif
 
@@ -34,10 +40,12 @@ override_dh_build:
 	dh_auto_build --parallel -- docs
 
 override_dh_install:
-	dh_auto_build -- docs
-	sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
-	sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
 	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
+	# FIXME: Due to autopilot not being in the archive we ship docs for now
+	# sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
+	# sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json
+	# Drop QML types used to test apicheck only
+	rm -f debian/tmp/usr/lib/*/qt5/qml/Extinct/Animals/*
 	dh_install --fail-missing

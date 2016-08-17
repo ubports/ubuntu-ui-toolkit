@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.3
 
 Column {
     id: templateSection
@@ -32,7 +32,7 @@ Column {
     Label {
         id: label
         text: templateSection.title
-        fontSize: "large"
+        textSize: Label.Large
         anchors.left: parent.left
     }
 
@@ -42,14 +42,14 @@ Column {
         label: title ? "API Documentation" : "%1 API Documentation".arg(className)
         url: prefix + documentation
         visible: documentation != ""
-        fontSize: "small"
+        textSize: Label.Small
         anchors.left: parent.left
     }
 
     WebLink {
         label: "Design guidelines"
         url: templateSection.designUrl
-        fontSize: "small"
+        textSize: Label.Small
         anchors.left: parent.left
     }
 

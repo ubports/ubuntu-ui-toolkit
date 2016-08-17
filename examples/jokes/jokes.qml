@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 import QtMultimedia 5.0
 
 /*!
@@ -84,7 +84,7 @@ MainView {
 
     SoundEffect {
         id: laugh
-        source: "laugh.wav"
+        source: "jokes.wav"
     }
 
     UbuntuShape {
@@ -105,7 +105,7 @@ MainView {
             id: jokeHolder
             anchors.fill: parent
             text: "Tap here!"
-            fontSize: "large"
+            textSize: Label.Large
             color: Theme.palette.normal.baseText
             textFormat: Text.RichText
             horizontalAlignment: Text.AlignHCenter

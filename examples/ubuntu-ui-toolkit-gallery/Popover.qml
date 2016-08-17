@@ -15,27 +15,24 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 Template {
     objectName: "popoversTemplate"
 
-    tools: ToolbarItems {
-        ToolbarButton {
-            id: actionsButton
+    trailingActions: [
+        Action {
             text: "Actions"
             iconSource: "call_icon.png"
-            onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
+            onTriggered: PopupUtils.open(actionSelectionPopover)
             visible: true
         }
-        locked: true
-        opened: true
-    }
+    ]
 
     TemplateSection {
         className: "Popover"
-        documentation: "qml-ubuntu-components-popups0-%1.html".arg(className.toLowerCase())
+        documentation: "qml-ubuntu-components-popups-%1.html".arg(className.toLowerCase())
 
         TemplateRow {
             title: i18n.tr("Flickable")

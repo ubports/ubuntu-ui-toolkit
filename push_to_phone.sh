@@ -84,7 +84,6 @@ done
 
 # Autopilot tests should always match the Toolkit
 adb push tests/autopilot/ubuntuuitoolkit/ $STONE/ap || exit 1
-echo cp -R ap/* /usr/lib/python2.7/dist-packages/ubuntuuitoolkit >> $RUN/copy.sh || exit 1
 echo cp -R ap/* /usr/lib/python3/dist-packages/ubuntuuitoolkit >> $RUN/copy.sh || exit 1
 adb push examples/ubuntu-ui-toolkit-gallery/ $STONE/ex >> $RUN/copy.sh || exit 1
 echo cp -R ex/* /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery
