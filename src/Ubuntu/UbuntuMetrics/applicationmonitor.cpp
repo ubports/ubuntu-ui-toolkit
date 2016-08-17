@@ -549,6 +549,46 @@ void UMApplicationMonitor::clearLoggers(bool free)
     }
 }
 
+quint32 UMApplicationMonitor::registerGenericEvent()
+{
+    static quint32 id = 0;  // 0 is reserved for UMApplicationMonitor events.
+    return ++id;
+}
+
+bool UMApplicationMonitor::logGenericEvent(quint32 id, const char* string, quint32 size)
+{
+    Q_D(UMApplicationMonitor);
+
+    if ((d->m_flags & UMApplicationMonitorPrivate::Logging) && (d->m_flags & GenericEvent)) {
+        DASSERT(d->m_loggingThread);
+        UMEvent event;
+        event.type = UMEvent::Generic;
+        event.timeStamp = UMEventUtils::timeStamp();
+        event.generic.id = id;
+        // We don't bother fixing up non null-terminated string, just potential
+        // overflows.
+        event.generic.stringSize = qMin(size, UMGenericEvent::maxStringSize);
+        memcpy(event.generic.string, string, event.generic.stringSize);
+        d->m_loggingThread->push(&event);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool UMApplicationMonitor::logEvent(Event event)
+{
+    switch (event) {
+    case UserInterfaceReady: {
+        return logGenericEvent(0, "UserInterfaceReady", sizeof("UserInterfaceReady"));
+    }
+    default: {
+        DNOT_REACHED();
+        return false;
+    }
+    };
+}
+
 void UMApplicationMonitor::setUpdateInterval(UMEvent::Type type, int interval)
 {
     Q_D(UMApplicationMonitor);

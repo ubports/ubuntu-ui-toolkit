@@ -24,11 +24,13 @@
 typedef struct _UMLTTNGProcessEvent UMLTTNGProcessEvent;
 typedef struct _UMLTTNGFrameEvent UMLTTNGFrameEvent;
 typedef struct _UMLTTNGWindowEvent UMLTTNGWindowEvent;
+typedef struct _UMLTTNGGenericEvent UMLTTNGGenericEvent;
 
 struct UMLTTNGPlugin {
     void (*logProcessEvent)(UMLTTNGProcessEvent*);
     void (*logFrameEvent)(UMLTTNGFrameEvent*);
     void (*logWindowEvent)(UMLTTNGWindowEvent*);
+    void (*logGenericEvent)(UMLTTNGGenericEvent*);
 };
 
 struct _UMLTTNGProcessEvent {
@@ -53,6 +55,14 @@ struct _UMLTTNGWindowEvent {
     uint32_t id;
     uint16_t width;
     uint16_t height;
+};
+
+struct _UMLTTNGGenericEvent {
+    uint32_t id;
+    // Keep the size in sync with UMGenericEvent::maxStringSize. Unfortunately,
+    // a static assert is not possible here since it's C and we can't include
+    // the events.h C++ header.
+    char string[64];
 };
 
 #endif  // LTTNG_P_H

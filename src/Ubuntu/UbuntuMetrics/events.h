@@ -99,9 +99,28 @@ struct UBUNTU_METRICS_EXPORT UMFrameEvent
 };
 Q_STATIC_ASSERT(sizeof(UMFrameEvent) == 112);
 
+struct UBUNTU_METRICS_EXPORT UMGenericEvent
+{
+    static const quint32 maxStringSize = 64;
+
+    // Id retrieved from UMApplicationMonitor::registerGenericEvent().
+    quint32 id;
+
+    // Size of the string (including the null-terminating char).
+    quint32 stringSize;
+
+    // Null-terminated string describing the generic event.
+    char string[maxStringSize];
+
+    // The whole struct must take 112 bytes to allow future additions and best
+    // memory alignment, don't forget to update when adding new metrics.
+    quint8 __reserved[/*72 bytes taken,*/ 40 /*bytes free*/];
+};
+Q_STATIC_ASSERT(sizeof(UMGenericEvent) == 112);
+
 struct UBUNTU_METRICS_EXPORT UMEvent
 {
-    enum Type { Process = 0, Window = 1, Frame = 2, TypeCount = 3 };
+    enum Type { Process = 0, Window = 1, Frame = 2, Generic = 3, TypeCount = 4 };
 
     // Event type.
     Type type;
@@ -113,6 +132,7 @@ struct UBUNTU_METRICS_EXPORT UMEvent
         UMProcessEvent process;
         UMWindowEvent window;
         UMFrameEvent frame;
+        UMGenericEvent generic;
     };
 };
 Q_STATIC_ASSERT(sizeof(UMEvent) == 128);

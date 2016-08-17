@@ -288,6 +288,8 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
                 filter |= UMApplicationMonitor::ProcessEvent;
             } else if (filterList[i] == "frame") {
                 filter |= UMApplicationMonitor::FrameEvent;
+            } else if (filterList[i] == "generic") {
+                filter |= UMApplicationMonitor::GenericEvent;
             }
         }
         applicationMonitor->setLoggingFilter(filter);

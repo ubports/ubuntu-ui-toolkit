@@ -40,10 +40,19 @@ public:
         WindowEvent  = (1 << 1),
         // Allow frame events logging.
         FrameEvent   = (1 << 2),
+        // Allow generic events logging.
+        GenericEvent = (1 << 3),
         // Allow all events logging.
-        AllEvents    = (ProcessEvent | WindowEvent | FrameEvent)
+        AllEvents    = (ProcessEvent | WindowEvent | FrameEvent | GenericEvent)
     };
     Q_DECLARE_FLAGS(LoggingFilters, LoggingFilter)
+
+    enum Event {
+        // Application defined event indicating that the initialisation is done
+        // and the UI ready. It can be used by tools to measure the time needed
+        // to start up an application.
+        UserInterfaceReady = 0
+    };
 
     // Get the unique UMApplicationMonitor instance. A QGuiApplication instance
     // must be running.
@@ -66,6 +75,21 @@ public:
     bool installLogger(UMLogger* logger);
     bool removeLogger(UMLogger* logger, bool free = true);
     void clearLoggers(bool free = true);
+
+    // Generic event system allowing to log application specific
+    // events. registerGenericEvent() returns a unique integer id to be used as
+    // first argument to logGenericEvent(). logGenericEvent() logs a generic
+    // event with a dedicated id, a null-terminated string describing the event
+    // and the string size with the null-terminating character. The maximum
+    // string size (with the null-terminating character) is defined in
+    // UMGenericEvent::maxStringSize. Does not log and returns false if logging
+    // is disabled or if the logging filter does not contain GenericEvent.
+    quint32 registerGenericEvent();
+    bool logGenericEvent(quint32 id, const char* string, quint32 size);
+
+    // Log events predefined by the application monitor. Relies on the generic
+    // event system.
+    bool logEvent(Event event);
 
     // Set the time in milliseconds between two updates of events of a given
     // type. -1 to disable updates. Only UMEvent::Process is accepted so far as
