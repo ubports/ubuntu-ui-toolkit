@@ -25,6 +25,7 @@ ubuntu-ui-toolkit (1.3.2073+16.10) UNRELEASED; urgency=medium
   * Added support for logging generic events. Made use of it to log predefined
     ApplicationMonitor events. Predefined events only define UserInterfaceReady
     for now, as it's needed to track start-up time.
+  * Wrapped libUbuntuMetrics to QML.
 
   [ Florian Boucault ]
   * Icon, Switch and ProgressBar: enable use of texture atlas.
