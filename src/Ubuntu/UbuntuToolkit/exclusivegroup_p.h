@@ -21,6 +21,7 @@
 #include "actionlist_p.h"
 #include "ubuntutoolkitglobal.h"
 
+#include <QMetaObject>
 #include <QPointer>
 
 class QSignalMapper;
