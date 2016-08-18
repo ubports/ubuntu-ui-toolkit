@@ -131,7 +131,6 @@ Style.ActionBarStyle {
                 var newContentX = actionsListView.contentX - (actionsListView.width * direction);
                 contentXAnim.from = actionsListView.contentX;
                 // make sure we don't overshoot bounds
-// FIXME TIM: Take the new margins for the scroll buttons into account.
                 contentXAnim.to = MathUtils.clamp(
                             newContentX,
                             originX + scrollButtons.width,
