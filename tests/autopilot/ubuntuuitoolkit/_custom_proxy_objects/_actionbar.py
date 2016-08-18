@@ -72,12 +72,22 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
                     'Button not found in ActionBar or overflow')
 
     def _scrolling_bar_click_action_button(self, action_object_name):
+        rightMessage = "Can't swipe more, we are already at the right of the container."
+        leftMessage = "Can't swipe more, we are already at the left of the container."
         try:
             self.listview.click_element(action_object_name + "_button")
-        except _common.ToolkitException:
-            raise _common.ToolkitException(
-                'Button with objectName ' + action_object_name +
-                ' not found in scrolling ActionBar.')
+        except _common.ToolkitException as e:
+            # TODO: Deal with the special case where the scroll button is not
+            #   visible and the button is visible within the Rectangle of the
+            #   ScrollingActionBarStyle background.
+            if (e.args[0] == leftMessage):
+                raise e
+            elif (e.args[0] == rightMessage):
+                raise e
+            else:
+                raise _common.ToolkitException(
+                    'Button with objectName ' + action_object_name +
+                    ' not found in scrolling ActionBar.')
 
 
     @autopilot_logging.log_action(logger.info)

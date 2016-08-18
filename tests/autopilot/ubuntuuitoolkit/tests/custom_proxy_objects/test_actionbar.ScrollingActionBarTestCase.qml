@@ -39,7 +39,7 @@ MainView {
             styleName: "ScrollingActionBarStyle"
             objectName: "ActionBar"
 
-            width: units.gu(12)
+            width: units.gu(15)
             anchors.centerIn: parent
 
             actions: [

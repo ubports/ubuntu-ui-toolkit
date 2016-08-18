@@ -54,7 +54,9 @@ Style.ActionBarStyle {
         width: units.gu(4)
         height: actionBarStyle.height
         enabled: modelData.enabled
-        onClicked: button.trigger()
+        objectName: modelData.objectName + "_button"
+//        onClicked: button.trigger()
+        onClicked: print("clicked object "+objectName)
         AbstractButton {
             id: button
             anchors.fill: parent
@@ -70,7 +72,6 @@ Style.ActionBarStyle {
                                          actionBarStyle.buttons.backgroundColor :
                                          actionBarStyle.buttons.disabledBackgroundColor
             }
-            objectName: action.objectName + "_button"
             height: parent ? parent.height : undefined
             action: modelData
             activeFocusOnTab: false
