@@ -114,6 +114,12 @@ Ubuntu.Components.AlarmModel 1.0 0.1 UCAlarmModel: QAbstractListModel
 Ubuntu.Components.AlarmType: Enum
     OneTime
     Repeating
+Ubuntu.Metrics.ApplicationMonitor 1.0: QtObject singleton
+    property bool logging
+    property LoggingFilters loggingFilter
+    function bool logEvent(Event event)
+    property bool overlay
+    property int processUpdateInterval
 Ubuntu.Components.Argument 1.0 0.1 UCArgument: QtObject
     property string help
     function var at(int i)
@@ -450,6 +456,8 @@ Ubuntu.Components.Error: Enum
     NoError
     OneTimeOnMoreDays
     OperationPending
+Ubuntu.Metrics.Event: Enum
+    UserInterfaceReady
 Ubuntu.Components.ListItems.Expandable 1.0 0.1: Empty
     property bool collapseOnClick
     property double collapsedHeight
@@ -622,6 +630,12 @@ Ubuntu.Components.LiveTimer 1.3 LiveTimer: QtObject
     property Frequency frequency
     signal trigger()
     property QDateTime relativeTime
+Ubuntu.Metrics.LoggingFilters: Flag
+    AllEvents
+    FrameEvent
+    GenericEvent
+    ProcessEvent
+    WindowEvent
 Ubuntu.Components.MainView 1.0 0.1: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
