@@ -38,6 +38,7 @@ Style.ActionBarStyle {
         pressedForegroundColor: actionBarStyle.buttons.pressedForegroundColor
         backgroundColor: actionBarStyle.backgroundColor // must be opaque to hide the icon buttons
         pressedBackgroundColor: actionBarStyle.buttons.pressedBackgroundColor
+        property real width: units.gu(4)
     }
 
     /*!
@@ -101,13 +102,13 @@ Style.ActionBarStyle {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
-                rightMargin: units.gu(4)
+                rightMargin: scrollButtons.width
             }
-            displayMarginBeginning: units.gu(4)
-            displayMarginEnd: units.gu(4)
-            leftMargin: -units.gu(4)
-            rightMargin: -units.gu(4)
-            width: listViewContainer.width - units.gu(8) //Math.min(listViewContainer.width, contentWidth)
+            displayMarginBeginning: scrollButtons.width
+            displayMarginEnd: scrollButtons.width
+            leftMargin: -scrollButtons.width
+            rightMargin: -scrollButtons.width
+            width: listViewContainer.width - 2*scrollButtons.width //Math.min(listViewContainer.width, contentWidth)
             layoutDirection: Qt.RightToLeft
 
             orientation: ListView.Horizontal
@@ -143,7 +144,7 @@ Style.ActionBarStyle {
             id: scrollButtonComponent
             AbstractButton {
                 id: scrollButton
-                width: units.gu(4)
+                width: actionBarStyle.scrollButtons.width
                 enabled: opacity === 1.0
                 onClicked: actionsListView.scroll(scrollDirection);
                 opacity: buttonOpacity
