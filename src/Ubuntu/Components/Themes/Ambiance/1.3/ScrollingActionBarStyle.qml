@@ -134,8 +134,9 @@ Style.ActionBarStyle {
 // FIXME TIM: Take the new margins for the scroll buttons into account.
                 contentXAnim.to = MathUtils.clamp(
                             newContentX,
-                            originX,
-                            actionsListView.originX + actionsListView.contentWidth - actionsListView.width);
+                            originX + scrollButtons.width,
+                            actionsListView.originX + actionsListView.contentWidth
+                            - actionsListView.width - scrollButtons.width);
                 contentXAnim.start();
             }
         }
