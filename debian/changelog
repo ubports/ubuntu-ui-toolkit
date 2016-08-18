@@ -1,3 +1,116 @@
+ubuntu-ui-toolkit (1.3.2073+16.10) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * No need to check the setting anymore when vibrate. Fixes LP: #1433590.
+
+  [ Albert Astals Cid ]
+  * AbstractButton: Bind mouse area signals earlier. Otherwise it can happen that
+    someone clicks on button and the binding is still not done, i.e. 22911213 .
+    Fixes LP: #1610165.
+
+  [ Christian Dywan ]
+  * Fix build warnings.
+  * Remove unused Q_Q(UCAbtractButton) declaration.
+
+  [ Larry Price ]
+  * Address documentation issue in UbuntuListView - pullToRefresh has "enabled"
+    property. Fixes LP: #1387679
+
+  [ Loïc Molinari ]
+  * Added new C++ UbuntuMetrics library. 
+    This library allows the monitoring of various metrics in QtQuick 2 
+    applications. It allows the logging of different metrics as well as
+    overlaying these metrics on top of each QtQuick windows.
+  * Added LTTng support to UbuntuMetrics.
+  * Added support for logging generic events. Made use of it to log predefined
+    ApplicationMonitor events. Predefined events only define UserInterfaceReady
+    for now, as it's needed to track start-up time.
+
+  [ Florian Boucault ]
+  * Icon, Switch and ProgressBar: enable use of texture atlas.
+  * ActivityIndicator: do not load the image until the ActivityIndicator is
+    made visible. Load it asynchronously.
+
+  [ Tim Peeters ]
+  * Remove unused CHANGES, CHANGES.syntax and NEWS files.
+ 
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 18 Aug 2016 19:52:52 +0300
+
+ubuntu-ui-toolkit (1.3.2060+16.10.20160814) yakkety; urgency=medium
+
+  [ Zoltan Balogh ]
+  * Fix OptionSelectorTestCase tests.
+  * Fix more OptionSelector autopilot tests
+
+  [ Timo Jyrinki ]
+  * Disable documentation building for GLES builds. Fixes LP: #1606222.
+  * Replace abs with qFabs due to GCC6 breakage. Fixes LP: #1610943.
+  * Limit s390x dependencies more due to upstart/s390x problems and removed
+    packages in archives. Fixes LP: #1610951
+
+  [ Andrea Bernabei ]
+  * ListItemLayout doc: add elide mode change example and add section about
+    labels default properties values. Fixes LP: #1603450.
+  * ListItemLayout doc: add explicit note about the need to bind ListItem's
+    height to layout's height.
+  * More Scrollbar optimizations: 20% faster creation time. Fixes LP: #1606451
+  * Scrollbar: fix wrong thumb color on tap/mouse release and increase coverage
+    of hover states unit tests. Fixes LP: #1608897
+
+  [ Zsombor Egri ]
+  * Fix null pointer property initializer used with 1.3 PageWrapper. 
+    Fixes LP: #1604780.
+  * Fix BottomEdge content URL preloading. Fixes LP: #1604509.
+
+  [Albert Astals Cid ]
+  * UCUnits::resolveResource: Prefer image path if it exists. This saves
+    searching the disk for @gu images, which is a big speedup. According to
+    callgrind loading 100 images from a folder that contains 380 images goes
+    from around 3 million instructions per UCUnits::resolveResource call down
+    to around 10 thousand. This optimization is ok since it is not correct to
+    ship both image.png and image@20.png. You either have to ship gu-enabled
+    files or not, but mixing them is not allowed. Searched for cases in which
+    that may be happening in my phone and found none. Fixes LP: #1604029.
+
+  [ Tim Peeters ]
+  * Configure colors of the buttons in the ActionBar and PageHeader through
+    their Styles. Fixes LP: #1597774.
+  * Fix assigning of constant values to a grouped property in StyleHints.
+    Fixes LP: #1602836.
+  * Fix list view keyboard navigation for RightToLeft and BottomToTop 
+    directions. Fixes LP: #1605634
+  * Use external QML files instead of embedded QML strings for autopilot tests.
+    Fixes LP: #1578319
+  * Fix failing autopilot header tests.
+  * Fix ActionSelectionPopover Autopilot CPO tests.
+
+  [Christian Dywan ]
+  * Include indexes in "offline" docs and filter out link errors.
+    Fixes LP: #1603937.
+  * Increase focus ring thickness from 1dp to 2dp. Fixes LP: #1602690.
+  * Add a snippet about tests to the toplevel README
+  * Enter/Return to trigger, Space to expand ComboButton. Fixes LP: #1523817.
+  * Initialize engine variable before using it in the _engine case.
+  * Use Qt.rgba instead of #0000 checking ListItem default color. 
+    Fixes LP: #1560004
+  * Don't use a different .desktop file in the gallery tests.
+    Fixes LP: #1578319
+  * Update scaling docs, set QT_SCALE_FACTOR and unset GRID_UNIT_PX.
+    Fixes LP: #1610208
+
+  [ Florian Boucault ]
+  * Sections: load Icons asynchronously.
+
+ -- Zoltán Balogh <zoltan.balogh@canonical.com>  Sun, 14 Aug 2016 09:06:46 +0000
+
+ubuntu-ui-toolkit (1.3.2030+16.10.20160726.15) yakkety; urgency=medium
+
+  * More s390x dependencies workarounding until upstart is really fixed.
+  * Replace abs with qFabs due to GCC6 breakage (LP: #1610943)
+
+ -- Timo Jyrinki <timo-jyrinki@ubuntu.com>  Mon, 08 Aug 2016 13:26:34 +0300
+
 ubuntu-ui-toolkit (1.3.2030+16.10.20160726.2) yakkety; urgency=medium
   [ William Hua ]
   * Make qml-module-ubuntu-components-gles depend on 

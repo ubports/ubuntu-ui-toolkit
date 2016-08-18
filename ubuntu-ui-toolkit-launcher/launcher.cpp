@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,12 +12,11 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * QML launcher with the ability to setup the QQuickView/ QQmlEngine differently
- *
- * Rationale: Different variants of qmlscene exist as well as C++ and Go apps
- * This is to write Autopilot test cases that exhibit specific behavior
  */
+
+// Dedicated QML launcher with the ability to setup QQuickView/QQmlEngine
+// differently and with various extensions. Used internally to write Autopilot
+// test cases that exhibit specific behavior.
 
 #include <iostream>
 #include <QtCore/qdebug.h>
@@ -35,6 +34,7 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QCommandLineOption>
 #include <UbuntuToolkit/private/mousetouchadaptor_p.h>
+#include <UbuntuMetrics/applicationmonitor.h>
 #include <QtGui/QTouchDevice>
 #include <QtQml/qqml.h>
 
@@ -74,6 +74,14 @@ int main(int argc, const char *argv[])
     QCommandLineOption _frameless("frameless", "Run without borders");
     QCommandLineOption _engine("engine", "Use quick engine from quick view");
     QCommandLineOption _desktop_file_hint("desktop_file_hint", "Desktop file - ignored", "desktop_file");
+    QCommandLineOption _metricsOverlay("metrics-overlay", "Enable the metrics overlay");
+    QCommandLineOption _metricsLogging(
+        "metrics-logging", "Enable metrics logging, <device> can be 'stdout', 'lttng', a local or "
+        "absolute filename", "device");
+    QCommandLineOption _metricsLoggingFilter(
+        "metrics-logging-filter", "Filter metrics logging, <filter> is a list of events separated "
+        "by a comma ('window', 'process', 'frame' or '*'), events not filtered are discarded",
+        "filter");
 
     args.addOption(_import);
     args.addOption(_enableTouch);
@@ -81,6 +89,9 @@ int main(int argc, const char *argv[])
     args.addOption(_frameless);
     args.addOption(_engine);
     args.addOption(_desktop_file_hint);
+    args.addOption(_metricsOverlay);
+    args.addOption(_metricsLogging);
+    args.addOption(_metricsLoggingFilter);
     args.addPositionalArgument("filename", "Document to be viewed");
     args.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
     args.addHelpOption();
@@ -200,6 +211,50 @@ int main(int argc, const char *argv[])
         }
     }
 
+    // Application monitoring.
+    UMApplicationMonitor* applicationMonitor = UMApplicationMonitor::instance();
+    if (args.isSet(_metricsLoggingFilter)) {
+        QStringList filterList = QString(args.value(_metricsLoggingFilter)).split(
+            QChar(','), QString::SkipEmptyParts);
+        UMApplicationMonitor::LoggingFilters filter = 0;
+        const int size = filterList.size();
+        for (int i = 0; i < size; ++i) {
+            if (filterList[i] == "*") {
+                filter |= UMApplicationMonitor::AllEvents;
+                break;
+            } else if (filterList[i] == "window") {
+                filter |= UMApplicationMonitor::WindowEvent;
+            } else if (filterList[i] == "process") {
+                filter |= UMApplicationMonitor::ProcessEvent;
+            } else if (filterList[i] == "frame") {
+                filter |= UMApplicationMonitor::FrameEvent;
+            } else if (filterList[i] == "generic") {
+                filter |= UMApplicationMonitor::GenericEvent;
+            }
+        }
+        applicationMonitor->setLoggingFilter(filter);
+    }
+    if (args.isSet(_metricsLogging)) {
+        UMLogger* logger;
+        QString device = args.value(_metricsLogging);
+        if (device.isEmpty() || device == "stdout") {
+            logger = new UMFileLogger(stdout);
+        } else if (device == "lttng") {
+            logger = new UMLTTNGLogger();
+        } else {
+            logger = new UMFileLogger(device);
+        }
+        if (logger->isOpen()) {
+            applicationMonitor->installLogger(logger);
+            applicationMonitor->setLogging(true);
+        } else {
+            delete logger;
+        }
+    }
+    if (args.isSet(_metricsOverlay)) {
+        applicationMonitor->setOverlay(true);
+    }
+
     if (window->title().isEmpty())
         window->setTitle("UI Toolkit QQuickView");
     if (args.isSet(_frameless)) {
@@ -214,4 +269,3 @@ int main(int argc, const char *argv[])
 
     return application.exec();
 }
-

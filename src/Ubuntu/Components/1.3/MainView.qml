@@ -235,9 +235,4 @@ Toolkit.MainViewBase {
     }
 
     backgroundColor: theme.palette.normal.background
-
-    PerformanceOverlay {
-        id: performanceOverlay
-        active: false
-    }
 }
