@@ -111,7 +111,7 @@ Style.ActionBarStyle {
             displayMarginEnd: scrollButtons.width
             leftMargin: -scrollButtons.width
             rightMargin: -scrollButtons.width
-            width: listViewContainer.width - 2*scrollButtons.width //Math.min(listViewContainer.width, contentWidth)
+            width: listViewContainer.width - 2*scrollButtons.width
             layoutDirection: Qt.RightToLeft
 
             orientation: ListView.Horizontal
