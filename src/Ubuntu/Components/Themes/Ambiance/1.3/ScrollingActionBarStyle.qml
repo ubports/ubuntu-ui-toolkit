@@ -116,6 +116,10 @@ Style.ActionBarStyle {
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
 
+            // This gives the correct behavior when scrollButtons.width is
+            //  larger/smaller/equal compared to the width of the delegate.
+            onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
+
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
                 id: contentXAnim
