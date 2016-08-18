@@ -46,7 +46,10 @@ Style.ActionBarStyle {
       not provide a delegate.
      */
     // FIXME: This ListItem { AbstractButton { } } construction can be avoided
-    //  when StyledItem supports cursor keys navigation, see bug #1573616
+    //  when StyledItem supports cursor keys navigation, see bug #1573616.
+    // FIXME: For the first and last item in the list, it is possible to move
+    //  the focus inside the ListItem to the AbstractButton, see bug #1590005.
+    // FIXME: Focus can go on disabled item. See bug #1611327.
     defaultDelegate: ListItem {
         width: units.gu(4)
         height: actionBarStyle.height
