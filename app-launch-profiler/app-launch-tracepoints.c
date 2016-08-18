@@ -28,6 +28,8 @@
 
 int main (int argc, char* argv[])
 {
+    #pragma unused(argc)
+    #pragma unused(argv)
     tracepoint(app,invokeApplauncher);
     return 0;
 }

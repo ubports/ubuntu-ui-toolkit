@@ -52,8 +52,5 @@ AnimatedItem {
     */
     property bool running: false
 
-    implicitWidth: units.gu(3)
-    implicitHeight: units.gu(3)
-
     style: Theme.createStyleComponent("ActivityIndicatorStyle.qml", indicator)
 }
