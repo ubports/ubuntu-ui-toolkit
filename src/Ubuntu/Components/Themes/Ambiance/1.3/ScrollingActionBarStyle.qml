@@ -16,7 +16,6 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3 as Style
-//import QtGraphicalEffects 1.0
 
 Style.ActionBarStyle {
     id: actionBarStyle
@@ -56,11 +55,9 @@ Style.ActionBarStyle {
         height: actionBarStyle.height
         enabled: modelData.enabled
         objectName: modelData.objectName + "_button"
-//        onClicked: button.trigger()
         AbstractButton {
             id: button
             anchors.fill: parent
-            onClicked: print("clicked object "+theItem.objectName)
 
             style: IconButtonStyle {
                 foregroundColor: button.pressed ?

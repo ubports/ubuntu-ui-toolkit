@@ -96,7 +96,6 @@ Item {
         }
     ]
 
-
     Row {
         id: scrollingSwitchRow
         anchors {
@@ -109,7 +108,7 @@ Item {
         Label { text: "Overflow" }
         Switch {
             id: scrollingSwitch
-            checked: true
+            checked: false
         }
         Label { text: "Scrolling" }
     }
