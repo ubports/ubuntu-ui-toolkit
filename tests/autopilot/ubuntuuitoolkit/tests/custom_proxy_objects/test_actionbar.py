@@ -47,13 +47,15 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
     def test_click_action_button(self):
         for i in range(1, 4):
             self.actionbar.click_action_button('Action' + str(i))
-            self.assertEqual(self.label.text, 'Action ' + str(i) + ' triggered.')
+            self.assertEqual(self.label.text, 'Action ' + str(i) +
+                             ' triggered.')
 
     def test_click_overflow_action_button(self):
         # Action1-3 are directly the ActionBar, Action4-5 are in the overflow
         for i in range(4, 6):
             self.actionbar.click_action_button('Action' + str(i))
-            self.assertEqual(self.label.text, 'Action ' + str(i) + ' triggered.')
+            self.assertEqual(self.label.text, 'Action ' + str(i) +
+                             ' triggered.')
 
     def test_click_unexisting_action_button(self):
         error = self.assertRaises(

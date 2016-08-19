@@ -72,24 +72,25 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
                     'Button not found')
 
     def _scrolling_bar_click_action_button(self, action_object_name):
-        rightMessage = "Can't swipe more, we are already at the right of the container."
-        leftMessage = "Can't swipe more, we are already at the left of the container."
+        rightMessage = str("Can't swipe more, we are already at the " +
+                           "right of the container.")
+        leftMessage = str("Can't swipe more, we are already at the " +
+                          "left of the container.")
         buttonName = action_object_name + "_button"
         try:
             self.listview.click_element(buttonName)
         except _common.ToolkitException as e:
             if (e.args[0] == leftMessage or e.args[0] == rightMessage):
                 # The button was found, but is not inside the ListView. This
-                # happens because at the beginning and end of the ListView there
-                # are list items visible inside the extra margins. But the
-                # buttons are present otherwise a different error message was
-                # given.
+                # happens because at the beginning and end of the ListView
+                # there are list items visible inside the extra margins. But
+                # the buttons are present otherwise a different error message
+                # wass given.
                 button = self.listview.select_single(objectName=buttonName)
                 self.pointing_device.click_object(button)
             else:
                 raise _common.ToolkitException(
                     'Button not found')
-
 
     @autopilot_logging.log_action(logger.info)
     def click_action_button(self, action_object_name):
