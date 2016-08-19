@@ -140,7 +140,7 @@ Q_SIGNALS:
     Q_REVISION(1) void exclusiveGroupChanged();
 
     void triggered(const QVariant &value);
-    Q_REVISION(1) void toggled(bool);
+    Q_REVISION(1) void toggled(bool value);
 
 public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
