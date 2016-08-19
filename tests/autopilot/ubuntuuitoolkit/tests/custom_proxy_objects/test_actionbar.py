@@ -29,7 +29,7 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_actionbar.ScrollingActionBarTestCase.qml')
 
     scenarios = [
-#        ('overflow', dict(test_qml_file_path=overflow_test_qml_file_path)),
+        ('overflow', dict(test_qml_file_path=overflow_test_qml_file_path)),
         ('scrolling', dict(test_qml_file_path=scrolling_test_qml_file_path))
     ]
 
@@ -40,9 +40,9 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
         self.label = self.app.select_single(objectName='Label')
         self.assertEqual(self.label.text, 'No action triggered.')
 
-#    def test_custom_proxy_object(self):
-#        self.assertIsInstance(self.actionbar, ubuntuuitoolkit.ActionBar)
-#        self.assertTrue(self.actionbar.visible)
+    def test_custom_proxy_object(self):
+        self.assertIsInstance(self.actionbar, ubuntuuitoolkit.ActionBar)
+        self.assertTrue(self.actionbar.visible)
 
     def test_click_action_button(self):
         for i in range(1, 4):
@@ -55,10 +55,10 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
             self.actionbar.click_action_button('Action' + str(i))
             self.assertEqual(self.label.text, 'Action ' + str(i) + ' triggered.')
 
-#    def test_click_unexisting_action_button(self):
-#        error = self.assertRaises(
-#            ubuntuuitoolkit.ToolkitException,
-#            self.actionbar.click_action_button, 'unexisting')
-#        self.assertEqual(
-#            str(error),
-#            'Button not found in ActionBar or overflow')
+    def test_click_unexisting_action_button(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            self.actionbar.click_action_button, 'unexisting')
+        self.assertEqual(
+            str(error),
+            'Button not found')

@@ -29,11 +29,11 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def __init__(self, *args):
         super().__init__(*args)
-        # FIXME TIM: clean this up.
-#        self.listview = ''
-#        if self.styleName == "ScrollingActionBar":
-        # Note that listview will only be set for a scrolling ActionBar.
-        self.listview = self.select_single(objectName='actions_listview')
+        # listview will only be set for a scrolling ActionBar.
+        try:
+            self.listview = self.select_single(objectName='actions_listview')
+        except dbus.StateNotFoundError:
+            self.listview = ''
 
     def _open_overflow(self):
         """Click the overflow button and return the overflow panel"""
@@ -69,7 +69,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 popover.click_action_button(action_object_name)
             except _common.ToolkitException:
                 raise _common.ToolkitException(
-                    'Button not found in ActionBar or overflow')
+                    'Button not found')
 
     def _scrolling_bar_click_action_button(self, action_object_name):
         rightMessage = "Can't swipe more, we are already at the right of the container."
@@ -88,8 +88,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 self.pointing_device.click_object(button)
             else:
                 raise _common.ToolkitException(
-                    'Button with objectName ' + action_object_name +
-                    ' not found in scrolling ActionBar.')
+                    'Button not found')
 
 
     @autopilot_logging.log_action(logger.info)
