@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
-#include <cmath.h>
+#include <math.h>
 #include "bitmaptext_p.h"
 #include "bitmaptextfont_p.h"
 #include "ubuntumetricsglobal_p.h"
