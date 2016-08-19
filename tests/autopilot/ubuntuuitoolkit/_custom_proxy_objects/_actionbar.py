@@ -74,16 +74,18 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _scrolling_bar_click_action_button(self, action_object_name):
         rightMessage = "Can't swipe more, we are already at the right of the container."
         leftMessage = "Can't swipe more, we are already at the left of the container."
+        buttonName = action_object_name + "_button"
         try:
-            self.listview.click_element(action_object_name + "_button")
+            self.listview.click_element(buttonName)
         except _common.ToolkitException as e:
-            # TODO: Deal with the special case where the scroll button is not
-            #   visible and the button is visible within the Rectangle of the
-            #   ScrollingActionBarStyle background.
-            if (e.args[0] == leftMessage):
-                raise e
-            elif (e.args[0] == rightMessage):
-                raise e
+            if (e.args[0] == leftMessage or e.args[0] == rightMessage):
+                # The button was found, but is not inside the ListView. This
+                # happens because at the beginning and end of the ListView there
+                # are list items visible inside the extra margins. But the
+                # buttons are present otherwise a different error message was
+                # given.
+                button = self.listview.select_single(objectName=buttonName)
+                self.pointing_device.click_object(button)
             else:
                 raise _common.ToolkitException(
                     'Button with objectName ' + action_object_name +

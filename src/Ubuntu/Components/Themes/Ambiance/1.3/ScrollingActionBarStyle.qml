@@ -51,15 +51,17 @@ Style.ActionBarStyle {
     //  the focus inside the ListItem to the AbstractButton, see bug #1590005.
     // FIXME: Focus can go on disabled item. See bug #1611327.
     defaultDelegate: ListItem {
+        id: theItem
         width: units.gu(4)
         height: actionBarStyle.height
         enabled: modelData.enabled
         objectName: modelData.objectName + "_button"
 //        onClicked: button.trigger()
-        onClicked: print("clicked object "+objectName)
         AbstractButton {
             id: button
             anchors.fill: parent
+            onClicked: print("clicked object "+theItem.objectName)
+
             style: IconButtonStyle {
                 foregroundColor: button.pressed ?
                                      actionBarStyle.buttons.pressedForegroundColor :
