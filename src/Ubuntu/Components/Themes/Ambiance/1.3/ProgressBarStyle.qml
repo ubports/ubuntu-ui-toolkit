@@ -38,8 +38,7 @@ Rectangle {
         id: strip
         anchors {
             top: parent.top
-            left: parent.left
-            leftMargin: styledItem.indeterminate ? -width : 0
+            left: !styledItem.indeterminate ? parent.left : undefined
             bottom: parent.bottom
         }
         color: foregroundColor
@@ -69,7 +68,7 @@ Rectangle {
                 SequentialAnimation {
                     NumberAnimation {
                         target: strip
-                        property: "anchors.leftMargin"
+                        property: "x"
                         duration: strip.duration
                         easing.type: strip.easing
                         from: -strip.width
@@ -84,7 +83,7 @@ Rectangle {
                 SequentialAnimation {
                     NumberAnimation {
                         target: strip
-                        property: "anchors.leftMargin"
+                        property: "x"
                         duration: strip.duration
                         easing.type: strip.easing
                         to: -strip.width
