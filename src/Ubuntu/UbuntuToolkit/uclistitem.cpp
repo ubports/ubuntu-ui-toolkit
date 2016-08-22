@@ -684,7 +684,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *
  * Flickable {
  *    width: units.gu(40)
- *    height: units.gu(71)
+ *    height: units.gu(50)
  *
  *    // this will not have any effect
  *    ViewItems.selectMode: true
@@ -756,7 +756,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     }
  *     delegate: ListItem {
  *         // shall specify the height when Using ListItemLayout inside ListItem
- *         height: modelLayout.height + (divider.visible ? divider.height : 0);
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0)
  *         ListItemLayout {
  *             id: modelLayout
  *             title.text: modelData
@@ -793,7 +793,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     }
  *     delegate: ListItem {
  *         // shall specify the height when Using ListItemLayout inside ListItem
- *         height: modelLayout.height + (divider.visible ? divider.height : 0);
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0)
  *         ListItemLayout {
  *             id: modelLayout
  *             title.text: modelData
@@ -836,7 +836,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     model: ["plum", "peach", "pomegrenade", "pear", "banana"]
  *     delegate: ListItem {
  *         // shall specify the height when Using ListItemLayout inside ListItem
- *         height: modelLayout.height + (divider.visible ? divider.height : 0);
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0)
  *         ListItemLayout {
  *             id: modelLayout
  *             title.text: modelData
@@ -874,7 +874,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         model: ["apple", "pear", "plum", "peach", "nuts", "dates"]
  *         delegate: ListItem {
  *             // shall specify the height when Using ListItemLayout inside ListItem
- *             height: modelLayout.height + (divider.visible ? divider.height : 0);
+ *             height: modelLayout.height + (divider.visible ? divider.height : 0)
  *             ListItemLayout {
  *                 id: modelLayout
  *                 title.text: modelData
@@ -924,8 +924,8 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * import Ubuntu.Components 1.3
  *
  * ListView {
- *     width: units.gu(100)
- *     height: units.gu(60)
+ *     width: units.gu(40)
+ *     height: units.gu(71)
  *     model: ListModel {
  *         Component.onCompleted: {
  *             for (var i = 0; i < 50; i++) {
@@ -937,7 +937,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     delegate: ListItem {
  *         ListItemLayout {
  *             // shall specify the height when Using ListItemLayout inside ListItem
- *             height: modelLayout.height + (divider.visible ? divider.height : 0);
+ *             height: modelLayout.height + (divider.visible ? divider.height : 0)
  *             id: modelLayout
  *             title.text: "Model item #" + modelData
  *         }
