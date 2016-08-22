@@ -75,7 +75,10 @@ import Ubuntu.Components 1.3
                             }
                         }
                         ListItem {
+ 			    // shall specify the height when Using ListItemLayout inside ListItem
+                            height: closeBtn.height + (divider.visible ? divider.height : 0);
                             Button {
+				id: closeBtn
                                 text: "Close button"
                                 onClicked: PopupUtils.close(popover);
                             }
