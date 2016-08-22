@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,67 +17,81 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-Item {
+Rectangle {
     id: progressBarStyle
 
     property color foregroundColor: styledItem.enabled
                                         ? theme.palette.normal.activity
                                         : theme.palette.disabled.activity
-    property color foregroundTextColor: styledItem.enabled
-                                            ? theme.palette.normal.activityText
-                                            : theme.palette.disabled.activityText
-    property color backgroundColor: styledItem.enabled
-                                        ? theme.palette.normal.base
-                                        : theme.palette.disabled.base
-    property color backgroundTextColor: styledItem.enabled
-                                            ? theme.palette.normal.baseText
-                                            : theme.palette.disabled.baseText
+    color: styledItem.enabled
+                ? theme.palette.normal.base
+                : theme.palette.disabled.base
 
-    property var progressBar: styledItem
+    implicitWidth: units.gu(36)
+    implicitHeight: units.gu(0.4)
+    clip: true
 
-    implicitWidth: units.gu(38)
-    implicitHeight: units.gu(4)
+    property real progress: styledItem.indeterminate ? 0.0
+                            : styledItem.value / (styledItem.maximumValue - styledItem.minimumValue)
 
-    UbuntuShapeOverlay {
-        id: background
-        anchors.fill: parent
-        backgroundColor: progressBarStyle.backgroundColor
-        overlayColor: foregroundColor
-        overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
-            Qt.rect(0.0, 0.0, progressBarStyle.progress, 1.0) :
-            Qt.rect(1.0 - progressBarStyle.progress, 0.0, 1.0, 1.0)
-    }
-
-    property real progress: progressBar.indeterminate ? 0.0
-                            : progressBar.value / (progressBar.maximumValue - progressBar.minimumValue)
-
-    Label {
-        id: valueLabel
-        anchors.centerIn: background
-        color: backgroundTextColor
-        text: progressBar.indeterminate ? i18n.dtr("ubuntu-ui-toolkit", "In Progress")
-              : "%1%".arg(Number(progressBarStyle.progress * 100.0).toFixed(0))
-        visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
-
-        SequentialAnimation on opacity {
-            loops: Animation.Infinite
-            running: progressBar.indeterminate
-            UbuntuNumberAnimation {
-                to: 0.2; duration: UbuntuAnimation.BriskDuration
-            }
-            UbuntuNumberAnimation {
-                to: 1.0; duration: UbuntuAnimation.BriskDuration
-            }
+    Rectangle {
+        id: strip
+        anchors {
+            top: parent.top
+            left: !styledItem.indeterminate ? parent.left : undefined
+            bottom: parent.bottom
         }
-    }
+        color: foregroundColor
+        width: styledItem.indeterminate
+                    ? MathUtils.clamp(parent.width / 4, units.gu(1), units.gu(30))
+                    : parent.width * progressBarStyle.progress
 
-    PartialColorize {
-        anchors.fill: valueLabel
-        sourceItem: progressBar.indeterminate ? null : valueLabel
-        leftColor: foregroundTextColor
-        rightColor: backgroundTextColor
-        progress: (progressBarStyle.progress * background.width - valueLabel.x) / valueLabel.width
-        mirror: Qt.application.layoutDirection == Qt.RightToLeft
-        visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
+        property int duration: UbuntuAnimation.SleepyDuration
+        property int easing: Easing.InOutQuad
+        readonly property bool animateStrip:
+            (styledItem.enabled || styledItem.visible)
+            && styledItem.indeterminate
+            // animate only after style completion!
+            && animated && !reverseAnimate
+        property bool reverseAnimate: false
+
+        state: animateStrip ? "animate" : ""
+
+        // reversible doesn't work, so we need animatiomns for both transitions
+        // note: we cannot use XAnimator as there will be a point when
+        // there will be two animators altering (running) the x property at the
+        // same time, which causes SIGSEG
+        transitions: [
+            Transition {
+                from: ""
+                to: "animate"
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: strip
+                        property: "x"
+                        duration: strip.duration
+                        easing.type: strip.easing
+                        from: -strip.width
+                        to: progressBarStyle.width
+                    }
+                    ScriptAction { script: strip.reverseAnimate = true; }
+                }
+            },
+            Transition {
+                from: "animate"
+                to: ""
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: strip
+                        property: "x"
+                        duration: strip.duration
+                        easing.type: strip.easing
+                        to: -strip.width
+                        from: progressBarStyle.width
+                    }
+                    ScriptAction { script: strip.reverseAnimate = false; }
+                }
+            }
+        ]
     }
 }
