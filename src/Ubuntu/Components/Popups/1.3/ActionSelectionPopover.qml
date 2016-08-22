@@ -120,6 +120,8 @@ Popover {
         }
         /*! \internal */
         onTriggered: popover.hide()
+        // FIXME: Disabled actions should be visible, but greyed-out.
+        //  See bug 1612579. Tests will also need to be updated.
         visible: enabled && ((action === undefined) || action.visible)
         height: visible ? implicitHeight : 0
     }
