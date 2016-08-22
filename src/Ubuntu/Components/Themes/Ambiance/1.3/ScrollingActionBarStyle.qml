@@ -27,7 +27,7 @@ Style.ActionBarStyle {
         foregroundColor: theme.palette.normal.backgroundText
         pressedForegroundColor: buttons.foregroundColor
         disabledForegroundColor: theme.palette.disabled.backgroundText
-        backgroundColor: "transparent" // action bar background is already colored
+        backgroundColor: "transparent" // background is already colored
         pressedBackgroundColor: theme.palette.highlighted.background
         disabledBackgroundColor: buttons.backgroundColor
     }
@@ -38,6 +38,7 @@ Style.ActionBarStyle {
         backgroundColor: actionBarStyle.backgroundColor // must be opaque to hide the icon buttons
         pressedBackgroundColor: actionBarStyle.buttons.pressedBackgroundColor
         property real width: units.gu(4)
+        property int fadeDuration: UbuntuAnimation.FastDuration
     }
 
     /*!
@@ -50,7 +51,6 @@ Style.ActionBarStyle {
     //  the focus inside the ListItem to the AbstractButton, see bug #1590005.
     // FIXME: Focus can go on disabled item. See bug #1611327.
     defaultDelegate: ListItem {
-        id: theItem
         width: units.gu(4)
         height: actionBarStyle.height
         enabled: modelData.enabled
@@ -58,7 +58,6 @@ Style.ActionBarStyle {
         AbstractButton {
             id: button
             anchors.fill: parent
-
             style: IconButtonStyle {
                 foregroundColor: button.pressed ?
                                      actionBarStyle.buttons.pressedForegroundColor :
@@ -71,15 +70,11 @@ Style.ActionBarStyle {
                                          actionBarStyle.buttons.backgroundColor :
                                          actionBarStyle.buttons.disabledBackgroundColor
             }
-            height: parent ? parent.height : undefined
             action: modelData
             activeFocusOnTab: false
         }
         divider.visible: false
     }
-
-    // The duration of the fade-in/out of the scroll buttons.
-    property int scrollButtonFadeDuration: UbuntuAnimation.FastDuration
 
     Rectangle {
         color: actionBarStyle.backgroundColor
@@ -153,12 +148,12 @@ Style.ActionBarStyle {
                 id: scrollButton
                 width: actionBarStyle.scrollButtons.width
                 enabled: opacity === 1.0
-                onClicked: actionsListView.scroll(scrollDirection);
+                onClicked: actionsListView.scroll(scrollDirection)
                 opacity: buttonOpacity
                 objectName: buttonName
                 Behavior on opacity {
                     UbuntuNumberAnimation {
-                        duration: actionBarStyle.scrollButtonFadeDuration
+                        duration: actionBarStyle.scrollButtons.fadeDuration
                     }
                 }
                 Rectangle {
@@ -167,9 +162,9 @@ Style.ActionBarStyle {
                                                 : actionBarStyle.scrollButtons.backgroundColor
                 }
                 Icon {
-                    // FIXME TIM: Use new theme icon from
+                    // FIXME: Use new theme icon from
                     //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
-                    //  after it lands in the image/archive.
+                    //  after it lands in overlay and archive.
                     anchors.centerIn: parent
                     width: units.gu(1)
                     height: units.gu(1)
