@@ -57,17 +57,16 @@ import Ubuntu.Components 1.3
 
                         ListItem {
                             // shall specify the height when Using ListItemLayout inside ListItem
-                            height: somethingLayout.height + (divider.visible ? divider.height : 0);
+                            height: somethingLayout.height + (divider.visible ? divider.height : 0)
                             ListItemLayout {
                                 id:somethingLayout
                                 title.text: "Do somethings"
                             }
                             onClicked: console.log("clicked on ListItem with onClicked implemented")
-
                         }
                         ListItem {
                             // shall specify the height when Using ListItemLayout inside ListItem
-                            height: somethingElseLayout.height + (divider.visible ? divider.height : 0);
+                            height: somethingElseLayout.height + (divider.visible ? divider.height : 0)
                             ListItemLayout {
                                 id:somethingElseLayout
                                 title.text: "Do somethings"
@@ -75,8 +74,8 @@ import Ubuntu.Components 1.3
                             }
                         }
                         ListItem {
- 			    // shall specify the height when Using ListItemLayout inside ListItem
-                            height: closeBtn.height + (divider.visible ? divider.height : 0);
+                            // shall specify the height when Using ListItemLayout inside ListItem
+                            height: closeBtn.height + (divider.visible ? divider.height : 0)
                             Button {
 				id: closeBtn
                                 text: "Close button"
