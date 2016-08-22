@@ -165,7 +165,6 @@ void UCAbstractButton::classBegin()
 void UCAbstractButtonPrivate::completeComponentInitialization()
 {
     UCActionItemPrivate::completeComponentInitialization();
-    Q_Q(UCAbstractButton);
 
     // adjust sensing area
     _q_adjustSensingArea();
