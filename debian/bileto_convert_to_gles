@@ -12,6 +12,8 @@ mv --verbose debian/rules.gles debian/rules
 
 sed --in-place 's/^ubuntu-ui-toolkit /ubuntu-ui-toolkit-gles /g' debian/changelog
 
-for gles in libubuntugestures5-gles.install libubuntugestures5-gles-dev.install libubuntutoolkit5-gles.install libubuntutoolkit5-gles-dev.install qml-module-ubuntu-components-gles.install qml-module-ubuntu-components-gles.lintian-overrides qml-module-ubuntu-performancemetrics-gles.install ; do
+patch -p1 < debian/gles-disable-documentation.patch
+
+for gles in libubuntugestures5-gles.install libubuntugestures5-gles-dev.install libubuntumetrics5-gles.install libubuntumetrics5-gles-dev.install libubuntutoolkit5-gles.install libubuntutoolkit5-gles-dev.install qml-module-ubuntu-components-gles.install qml-module-ubuntu-components-gles.lintian-overrides qml-module-ubuntu-performancemetrics-gles.install qml-module-ubuntu-metrics-gles.install ; do
     mv --verbose debian/"$(echo $gles | sed 's/-gles//')" debian/$gles
 done

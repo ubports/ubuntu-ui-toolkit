@@ -19,6 +19,7 @@
 #include "uclistitem_p_p.h"
 #include "ucunits_p.h"
 #include "i18n_p.h"
+#include <QtCore/QtMath>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -306,7 +307,7 @@ void ListItemDragArea::createDraggedItem(UCListItem *baseItem)
 
 void ListItemDragArea::updateDraggedItem()
 {
-    if (abs(fromIndex - toIndex) > 0) {
+    if (qFabs(fromIndex - toIndex) > 0) {
         UCListItem *targetItem = itemAt(item->x(), item->y() + item->height() / 2);
         UCListItemPrivate::get(item)->dragHandler->update(targetItem);
     }

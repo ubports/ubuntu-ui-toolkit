@@ -21,6 +21,9 @@
 #include "actionlist_p.h"
 #include "ubuntutoolkitglobal.h"
 
+#include <QMetaMethod>
+#include <QPointer>
+
 class QSignalMapper;
 
 UT_NAMESPACE_BEGIN

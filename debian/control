@@ -70,6 +70,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: libqt5svg5,
          libubuntugestures5 (= ${binary:Version}),
+         libubuntumetrics5 (= ${binary:Version}),
          libubuntutoolkit5 (= ${binary:Version}),
          qml-module-qtfeedback,
          qml-module-qtgraphicaleffects,
@@ -85,7 +86,7 @@ Depends: libqt5svg5,
          ${shlibs:Depends},
 Conflicts: qt-components-ubuntu,
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
-        unity8 (<< 8.13),
+        unity8 (<< 8.14),
 Replaces: qt-components-ubuntu,
           qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Provides: qt-components-ubuntu,
@@ -102,6 +103,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: libqt5svg5,
          libubuntugestures5 (= ${binary:Version}),
+         libubuntumetrics5 (= ${binary:Version}),
          libubuntutoolkit5 (= ${binary:Version}),
          qml-module-qtfeedback,
          qml-module-qtgraphicaleffects,
@@ -132,7 +134,7 @@ Pre-Depends: dpkg (>= 1.15.6~),
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
-        unity8 (<< 8.13),
+        unity8 (<< 8.14),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Layouts QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -150,7 +152,7 @@ Depends: qml-module-qttest | qtdeclarative5-test-plugin,
          ${misc:Depends},
          ${shlibs:Depends},
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
-        unity8 (<< 8.13),
+        unity8 (<< 8.14),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - Test QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
@@ -166,13 +168,29 @@ Pre-Depends: dpkg (>= 1.15.6~),
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
-        unity8 (<< 8.13),
+        unity8 (<< 8.14),
 Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
 Description: Qt Components for Ubuntu - PerformanceMetrics QML plugin
  Qt Components for Ubuntu offers a set of reusable user interface
  components for Qt Quick 2 / QML.
  .
  This package contains the Ubuntu PerformanceMetrics QML plugin.
+
+Package: qml-module-ubuntu-metrics
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+        unity8 (<< 8.14),
+Replaces: qtdeclarative5-ubuntu-ui-toolkit-plugin (<< ${source:Version}),
+Description: Qt Components for Ubuntu - Metrics QML plugin
+ Qt Components for Ubuntu offers a set of reusable user interface
+ components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Metrics QML plugin.
 
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
@@ -219,6 +237,41 @@ Depends: ${misc:Depends},
 Description: Ubuntu gestures library private development files
  This package contains the private development files for
  Ubuntu gestures library with SwipeArea
+
+Package: libubuntumetrics5
+Architecture: any
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             liblttng-ust0,
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library for Ubuntu UI Toolkit
+ Library for monitoring QtQuick 2 applications
+
+Package: libubuntumetrics5-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library development files
+ This package contains the development files for the
+ Ubuntu metrics library
+
+Package: libubuntumetrics5-private-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library private development files
+ This package contains the private development files for
+ the Ubuntu metrics library
 
 Package: libubuntutoolkit5
 Architecture: any
@@ -322,20 +375,20 @@ Depends: autopilot-qt5,
          dpkg-dev,
          libqt5test5,
          libqt5widgets5,
-         python3-autopilot (>= 1.4),
-         python3-autopilot-trace,
+         python3-autopilot (>= 1.4) [amd64 armhf arm64 i386 ppc64 ppc64el],
+         python3-autopilot-trace [amd64 armhf arm64 i386 ppc64 ppc64el],
          python3-fixtures,
          python3-gi,
          python3-testscenarios,
          python3-testtools,
          qml-module-qttest,
          qml-module-ubuntu-components (>= ${source:Version}) | qml-module-ubuntu-components-gles,
-         qttestability-autopilot,
+         qttestability-autopilot [amd64 armhf arm64 i386 ppc64 ppc64el],
          ubuntu-app-launch-profiler (>= ${source:Version}),
          ubuntu-keyboard-autopilot [amd64 armhf i386],
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          upstart [amd64 armhf arm64 i386 ppc64 ppc64el],
-         url-dispatcher-tools,
+         url-dispatcher-tools [amd64 armhf arm64 i386 ppc64 ppc64el],
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Test package for Ubuntu UI Toolkit

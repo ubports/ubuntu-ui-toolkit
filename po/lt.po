@@ -1,0 +1,283 @@
+# Lithuanian translation for ubuntu-ui-toolkit
+# Copyright (c) 2016 Rosetta Contributors and Canonical Ltd 2016
+# This file is distributed under the same license as the ubuntu-ui-toolkit package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu-ui-toolkit\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-11-05 10:05+0100\n"
+"PO-Revision-Date: 2016-07-03 16:07+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Lithuanian <lt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2016-08-17 05:45+0000\n"
+"X-Generator: Launchpad (build 18169)\n"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:29
+#: Ubuntu/Components/1.3/TextInputPopover.qml:29
+msgid "Select All"
+msgstr ""
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:36
+#: Ubuntu/Components/1.3/TextInputPopover.qml:36
+msgid "Cut"
+msgstr "Iškirpti"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:48
+#: Ubuntu/Components/1.3/TextInputPopover.qml:48
+msgid "Copy"
+msgstr "Kopijuoti"
+
+#: Ubuntu/Components/1.2/TextInputPopover.qml:57
+#: Ubuntu/Components/1.3/TextInputPopover.qml:57
+msgid "Paste"
+msgstr "Įdėti"
+
+#: Ubuntu/Components/1.2/ToolbarItems.qml:143
+#: Ubuntu/Components/1.3/ToolbarItems.qml:143
+msgid "Back"
+msgstr "Atgal"
+
+#: Ubuntu/Components/ListItems/1.2/Empty.qml:398
+#: Ubuntu/Components/ListItems/1.3/Empty.qml:398
+msgid "Delete"
+msgstr "Ištrinti"
+
+#: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
+msgid "No service/path specified"
+msgstr "Nenurodyta tarnyba/kelias"
+
+#: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
+#, qt-format
+msgid "Invalid bus type: %1."
+msgstr "Neteisingas magistralės tipas: %1."
+
+#. TRANSLATORS: Time based "this is happening/happened now"
+#: Ubuntu/Components/plugin/i18n.cpp:268
+msgid "Now"
+msgstr "Dabar"
+
+#: Ubuntu/Components/plugin/i18n.cpp:275
+#, qt-format
+msgid "%1 minute ago"
+msgid_plural "%1 minutes ago"
+msgstr[0] "Prieš %1 minutę"
+msgstr[1] "Prieš %1 minutes"
+msgstr[2] "Prieš %1 minučių"
+
+#: Ubuntu/Components/plugin/i18n.cpp:277
+#, qt-format
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:284
+msgid "h:mm ap"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:287
+msgid "HH:mm"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:293
+msgid "'Yesterday 'h:mm ap"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:296
+msgid "'Yesterday 'HH:mm"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:302
+msgid "'Tomorrow 'h:mm ap"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:305
+msgid "'Tomorrow 'HH:mm"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:312
+msgid "ddd' 'h:mm ap"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:315
+msgid "ddd' 'HH:mm"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:322
+msgid "ddd d MMM' 'h:mm ap"
+msgstr ""
+
+#. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
+#. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
+#: Ubuntu/Components/plugin/i18n.cpp:325
+msgid "ddd d MMM' 'HH:mm"
+msgstr ""
+
+#: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
+msgid ""
+"ListView has no ViewItems.dragUpdated() signal handler implemented. No "
+"dragging will be possible."
+msgstr ""
+
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
+#, qt-format
+msgid ""
+"property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
+"of type %5"
+msgstr ""
+
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
+#, qt-format
+msgid "property \"%1\" does not exist or is not writable for object %2"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucalarm.cpp:41
+#: Ubuntu/Components/plugin/ucalarm.cpp:643
+msgid "Alarm"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucalarm.cpp:635
+#: Ubuntu/Components/plugin/ucalarm.cpp:667
+msgid "Alarm has a pending operation."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucarguments.cpp:188
+msgid "Usage: "
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucarguments.cpp:209
+msgid "Options:"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucarguments.cpp:498
+#, qt-format
+msgid "%1 is expecting an additional argument: %2"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucarguments.cpp:503
+#, qt-format
+msgid "%1 is expecting a value for argument: %2"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucarguments.cpp:520
+#, qt-format
+msgid "%1 is expecting additional arguments: %2"
+msgstr ""
+
+#: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
+msgid "consider overriding swipeEvent() slot!"
+msgstr ""
+
+#: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
+msgid "consider overriding rebound() slot!"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
+msgid "Ignoring AfterItem priority for InverseMouse filters."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
+msgid "Changing connection parameters forbidden."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucserviceproperties.cpp:160
+#, qt-format
+msgid ""
+"Binding detected on property '%1' will be removed by the service updates."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:46
+msgid "Warning: attachee must have an ID. State will not be saved."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:56
+#, qt-format
+msgid ""
+"Warning: attachee's UUID is already registered, state won't be saved: %1"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:107
+#, qt-format
+msgid ""
+"All the parents must have an id.\n"
+"State saving disabled for %1, class %2"
+msgstr ""
+
+#: Ubuntu/Components/plugin/uctheme.cpp:208
+#, qt-format
+msgid "Theme not found: \"%1\""
+msgstr ""
+
+#: Ubuntu/Components/plugin/uctheme.cpp:539
+msgid "Not a Palette component."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
+msgid "Dragging mode requires ListView"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
+msgid ""
+"Dragging is only supported when using a QAbstractItemModel, ListModel or "
+"list."
+msgstr ""
+
+#: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
+#: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78
+msgid "Cancel"
+msgstr ""
+
+#: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:88
+#: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:88
+msgid "Confirm"
+msgstr ""
+
+#: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:85
+#: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:85
+msgid "Close"
+msgstr ""
+
+#: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:95
+#: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:95
+msgid "Done"
+msgstr ""
+
+#: Ubuntu/Components/Themes/Ambiance/1.2/ProgressBarStyle.qml:51
+#: Ubuntu/Components/Themes/Ambiance/1.3/ProgressBarStyle.qml:50
+msgid "In Progress"
+msgstr ""
+
+#: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
+msgid "Release to refresh..."
+msgstr ""
+
+#: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
+#: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
+msgid "Pull to refresh..."
+msgstr ""
