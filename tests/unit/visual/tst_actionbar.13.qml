@@ -402,26 +402,20 @@ Item {
         name: "ScrollingActionBarApi"
         when: windowShown
 
-        function get_scroll_button_visible(actionBar, name) {
-            compare(actionBar.styleName, "ScrollingActionBarStyle", "Only scrolling action bar has scroll buttons.");
+        function get_scroll_button(actionBar, name) {
+            compare(actionBar.styleName, "ScrollingActionBarStyle",
+                    "Only scrolling action bar has scroll buttons.");
             var button = findChild(actionBar, name);
             verify(button !== null, "Style has no button with objectName " + name);
-            var barStyle = actionBar.__styleInstance;
-            wait(barStyle.scrollButtonFadeDuration + 100); // wait for potential animation to finish.
-            if (button.opacity === 0.0) {
-                return false;
-            } else {
-                compare(button.opacity, 1.0, "Scroll button is semi-transparent.");
-                return true;
-            }
+            return button;
         }
 
-        function get_leading_scroll_button_visible(actionBar) {
-            return get_scroll_button_visible(actionBar, "leading_scroll_button");
+        function get_leading_scroll_button(actionBar) {
+            return get_scroll_button(actionBar, "leading_scroll_button");
         }
 
-        function get_trailing_scroll_button_visible(actionBar) {
-            return get_scroll_button_visible(actionBar, "trailing_scroll_button");
+        function get_trailing_scroll_button(actionBar) {
+            return get_scroll_button(actionBar, "trailing_scroll_button");
         }
 
         function get_number_of_visible_buttons(actionBar) {
@@ -429,7 +423,6 @@ Item {
             var listView = findChild(actionBar, "actions_listview");
             return listView.count;
         }
-
 
         function initTestCase() {
             scrollingSwitch.checked = true;
@@ -481,31 +474,35 @@ Item {
 
             var listView = findChild(data.bar, "actions_listview");
             listView.positionViewAtIndex(data.view_position, ListView.Center);
-            compare(get_leading_scroll_button_visible(data.bar), data.leading_scroll_button_visible,
-                    "Incorrect leading scroll button visibility.");
-            compare(get_trailing_scroll_button_visible(data.bar), data.trailing_scroll_button_visible,
-                    "Incorrect trailing scroll button visibility.");
+            var button = get_leading_scroll_button(data.bar);
+            var opacity = data.leading_scroll_button_visible ? 1.0 : 0.0
+            // use tryCompare() because the fade-in/out animation of the button may still be ongoing.
+            tryCompare(button, "opacity", opacity, 1000, "Incorrect leading scroll button visibility.");
+
+            button = get_trailing_scroll_button(data.bar);
+            opacity = data.trailing_scroll_button_visible ? 1.0 : 0.0;
+            tryCompare(button, "opacity", opacity, 1000, "Incorrect trailing scroll button visbility.");
 
             // revert to the initial position:
             listView.positionViewAtBeginning();
         }
 
         function test_scroll_buttons_functionality() {
-            var leadingScrollButton = findChild(bar, "leading_scroll_button");
-            var trailingScrollButton = findChild(bar, "trailing_scroll_button");
+            var leadingScrollButton = get_leading_scroll_button(bar);
+            var trailingScrollButton = get_trailing_scroll_button(bar);
 
             var listView = findChild(bar, "actions_listview");
             var x = listView.contentX;
-            compare(get_leading_scroll_button_visible(bar), true,
-                    "Leading scroll button is not visible initially.");
+            tryCompare(leadingScrollButton, "opacity", 1.0, 1000,
+                       "Leading scroll button is not visible initially.");
 
             mouseClick(leadingScrollButton, leadingScrollButton.width/2, leadingScrollButton.height/2);
             wait(UbuntuAnimation.FastDuration + 100); // wait for scrolling animation.
             verify(listView.contentX < x, "Clicking the leading scroll button does not scroll to the left.");
 
             x = listView.contentX;
-            compare(get_trailing_scroll_button_visible(bar), true,
-                    "Trailing scroll button is not visible after scrolling to the left.");
+            tryCompare(trailingScrollButton, "opacity", 1.0, 1000,
+                       "Trailing scroll button is not visible after scrolling to the left.");
 
             mouseClick(trailingScrollButton, trailingScrollButton.width/2, trailingScrollButton.height/2);
             wait(UbuntuAnimation.FastDuration + 100); // wait for scrolling animation.
