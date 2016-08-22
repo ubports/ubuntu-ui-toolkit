@@ -567,7 +567,9 @@ bool UMApplicationMonitor::logGenericEvent(quint32 id, const char* string, quint
         event.generic.id = id;
         // We don't bother fixing up non null-terminated string, just potential
         // overflows.
-        event.generic.stringSize = qMin(size, UMGenericEvent::maxStringSize);
+        // Note: GCC5 comoiler/linker cannot find UMGenericEvent::maxStringSize
+        // if used in qMin(); force type to satisfy it
+        event.generic.stringSize = qMin(size, quint32(UMGenericEvent::maxStringSize));
         memcpy(event.generic.string, string, event.generic.stringSize);
         d->m_loggingThread->push(&event);
         return true;
