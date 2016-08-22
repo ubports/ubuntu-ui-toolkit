@@ -541,7 +541,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *
  * MainView {
  *    width: units.gu(40)
- *    height: units.gu(68)
+ *    height: units.gu(71)
  *
  *    Column {
  *        anchors.fill: parent
@@ -573,7 +573,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *        }
  *        ListItem {
  *            // shall specify the height when Using ListItemLayout inside ListItem
- *            height: clickImplementedLayout.height + (divider.visible ? divider.height : 0);
+ *            height: clickImplementedLayout.height + (divider.visible ? divider.height : 0)
  *            ListItemLayout {
  *                id: clickImplementedLayout
  *                title.text: "onClicked implemented"
@@ -582,7 +582,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *        }
  *        ListItem {
  *            // shall specify the height when Using ListItemLayout inside ListItem
- *            height: pressHoldLayout.height + (divider.visible ? divider.height : 0);
+ *            height: pressHoldLayout.height + (divider.visible ? divider.height : 0)
  *            ListItemLayout {
  *                id: pressHoldLayout
  *                title.text: "onPressAndHold implemented"
@@ -591,7 +591,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *        }
  *        ListItem {
  *            // shall specify the height when Using ListItemLayout inside ListItem
- *            height: noHighlightLayout.height + (divider.visible ? divider.height : 0);
+ *            height: noHighlightLayout.height + (divider.visible ? divider.height : 0)
  *            ListItemLayout {
  *                id: noHighlightLayout
  *                title.text: "No highlight"
@@ -684,7 +684,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *
  * Flickable {
  *    width: units.gu(40)
- *    height: units.gu(68)
+ *    height: units.gu(71)
  *
  *    // this will not have any effect
  *    ViewItems.selectMode: true
