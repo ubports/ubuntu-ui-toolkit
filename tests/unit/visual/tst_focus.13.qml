@@ -325,6 +325,22 @@ Item {
             verify(!data.from.activeFocus, "Source component still keeps focus");
             verify(data.to.activeFocus, "Target component is not focused - focus is on %1"
                 .arg(String(window.activeFocusItem).split("(")[0]));
+            // No child focus movement via tab within the component
+            if (data.key != Qt.LeftButton) {
+                keyClick(data.key);
+                waitForRendering(data.to, 500);
+                verify(!has_child(data.to, window.activeFocusItem), "Target component keeps focus after second Tab");
+            }
+        }
+
+        function has_child (component, child) {
+            var c = child;
+            while (c) {
+                if (c == component)
+                    return true;
+                c = c.parent;
+            }
+            return false;
         }
 
         function test_hide_osk_when_pickerpanel_opens() {

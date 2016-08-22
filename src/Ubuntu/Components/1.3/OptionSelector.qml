@@ -270,6 +270,8 @@ ListItem.Empty {
         Toolkit.StyledItem {
             id: listContainer
             objectName: "listContainer"
+            property bool keyNavigationFocus: optionSelector.keyNavigationFocus
+            Component.onCompleted: activeFocusOnTab = false
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
