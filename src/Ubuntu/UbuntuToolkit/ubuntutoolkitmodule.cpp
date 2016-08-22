@@ -413,7 +413,7 @@ void UbuntuLabsModule::defineModule(const char *uri)
 {
     Q_UNUSED(uri);
 
-    qmlRegisterType<UCMainWindow>(uri, 1, 3, "MainWindow");
+    qmlRegisterType<UCMainWindow>(uri, 1, 0, "MainWindow");
     // a fake component so we can have the module types file created
     qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
 }
