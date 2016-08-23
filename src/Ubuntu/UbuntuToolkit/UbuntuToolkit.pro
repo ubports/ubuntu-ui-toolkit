@@ -149,7 +149,9 @@ HEADERS += \
     privates/appheaderbase_p.h \
     label_p.h \
     ucbottomedgeregion_p_p.h \
-    privates/ucscrollbarutils_p.h
+    privates/ucscrollbarutils_p.h \
+    actionlist_p.h \
+    exclusivegroup_p.h
 
 SOURCES += \
     uctheme.cpp \
@@ -226,7 +228,9 @@ SOURCES += \
     privates/ucpagewrapper.cpp \
     privates/ucpagewrapperincubator.cpp \
     privates/appheaderbase.cpp \
-    privates/ucscrollbarutils.cpp
+    privates/ucscrollbarutils.cpp \
+    actionlist.cpp \
+    exclusivegroup.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
