@@ -1,6 +1,7 @@
 TEMPLATE = app
 LIBS += -llttng-ust -ldl
 CONFIG += -I.
+QMAKE_CXXFLAGS += -Werror
 HEADERS += app-launch-tracepoints.h
 SOURCES += app-launch-tracepoints.c
 TARGET = app-launch-tracepoints

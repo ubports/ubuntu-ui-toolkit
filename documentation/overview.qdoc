@@ -129,13 +129,6 @@
      \endcode
      \annotatedlist ubuntu-services
 
-     \part Performance Metrics
-     Available through:
-     \code
-         import Ubuntu.PerformanceMetrics 1.0
-     \endcode
-     \annotatedlist ubuntu-performance-metrics
-
      \part Test extensions
      Available through:
      \code

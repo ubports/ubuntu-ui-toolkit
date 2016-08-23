@@ -34,6 +34,7 @@ ShaderEffect {
     property real progress
     property bool mirror: false
     property string texCoord: mirror ? "1.0 - qt_TexCoord0.x" : "qt_TexCoord0.x"
+    supportsAtlasTextures: true
 
     fragmentShader: "
             varying highp vec2 qt_TexCoord0;
