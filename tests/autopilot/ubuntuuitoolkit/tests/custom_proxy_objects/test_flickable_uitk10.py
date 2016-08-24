@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from unittest import mock
+import os
 
 import testtools
 import ubuntuuitoolkit
@@ -49,7 +50,7 @@ class FlickableTestCase(testtools.TestCase):
             self.assertFalse(element.is_flickable())
 
 
-class IsFlickableTestCase(tests.QMLStringAppTestCase):
+class IsFlickableTestCase(tests.QMLFileAppTestCase):
     """Functional test to check that is_flickable returns the right value.
 
     We already have tests for is_flickable with mocks, so here we just check
@@ -57,27 +58,10 @@ class IsFlickableTestCase(tests.QMLStringAppTestCase):
 
     """
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.ListItems 1.0 as ListItem
-
-MainView {
-    objectName: 'mainView'
-    width: units.gu(48)
-    height: units.gu(60)
-
-    Flickable {
-        objectName: 'flickable'
-    }
-    ListView {
-        objectName: 'listView'
-    }
-    Label {
-        objectName: 'label'
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_flickable_uitk10.IsFlickableTestCase.qml')
 
     scenarios = [
         ('main view', dict(object_name='mainView', is_flickable=False)),
@@ -92,56 +76,12 @@ MainView {
         self.assertEqual(element.is_flickable(), self.is_flickable)
 
 
-class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
+class SwipeFlickableTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Label {
-        id: clickedLabel
-        objectName: "clickedLabel"
-        text: "No element clicked."
-    }
-
-    Flickable {
-        anchors {
-            fill: parent
-            topMargin: clickedLabel.height
-            // It can't be at the bottom, or the toolbar will be opened
-            // when we try to click it.
-            bottomMargin: units.gu(10)
-        }
-        objectName: 'flickable'
-        height: units.gu(60)
-        contentHeight: bottomButton.y + bottomButton.height
-
-        Button {
-            id: topButton
-            objectName: 'topButton'
-            text: 'Top button'
-            onClicked: clickedLabel.text = objectName
-        }
-        Rectangle {
-            id: emptyRectangle
-            height: units.gu(80)
-            anchors.top: topButton.bottom
-        }
-        Button {
-            id: bottomButton
-            objectName: 'bottomButton'
-            text: 'Bottom button'
-            onClicked: clickedLabel.text = objectName
-            anchors.top: emptyRectangle.bottom
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_flickable_uitk10.SwipeFlickableTestCase.qml')
 
     def setUp(self):
         super().setUp()
@@ -271,24 +211,12 @@ MainView {
         self.assertEqual('Could not swipe in the flickable.', str(error))
 
 
-class UnityFlickableTestCase(tests.QMLStringAppTestCase):
+class UnityFlickableTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: 'mainView'
-
-    Flickable {
-        objectName: 'testFlickable'
-        width: 200; height: 200
-        contentWidth: image.width; contentHeight: image.height
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_flickable_uitk10.UnityFlickableTestCase.qml')
 
     def get_command_line(self, command_line):
         command_line.append('-engine')

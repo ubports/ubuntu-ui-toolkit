@@ -53,7 +53,7 @@ inline void invokeTrigger(T *object, const QVariant &value)
     }
 }
 
-class UCActionAttached;
+class ExclusiveGroup;
 class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
 {
     Q_OBJECT
@@ -67,6 +67,10 @@ class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
     Q_PROPERTY(QString keywords MEMBER m_keywords NOTIFY keywordsChanged)
     Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged)
     Q_PROPERTY(Type parameterType MEMBER m_parameterType NOTIFY parameterTypeChanged)
+
+    Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable NOTIFY checkableChanged REVISION 1)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled REVISION 1)
+    Q_PROPERTY(ExclusiveGroup* exclusiveGroup READ exclusiveGroup WRITE setExclusiveGroup NOTIFY exclusiveGroupChanged REVISION 1)
 
     // Toolkit Actions API
     Q_PROPERTY(QUrl iconSource MEMBER m_iconSource WRITE setIconSource NOTIFY iconSourceChanged)
@@ -113,6 +117,13 @@ public:
     void setItemHint(QQmlComponent *);
     void setShortcut(const QVariant&);
     void resetShortcut();
+    void setCheckable(bool checkable);
+    bool isCheckable() const { return m_checkable; }
+    void setChecked(bool checked);
+    bool isChecked() const { return m_checkable && m_checked; }
+
+    ExclusiveGroup *exclusiveGroup() const { return m_exclusiveGroup; }
+    void setExclusiveGroup(ExclusiveGroup *exclusiveGroup);
 
 Q_SIGNALS:
     void nameChanged();
@@ -125,13 +136,18 @@ Q_SIGNALS:
     void iconSourceChanged();
     void visibleChanged();
     void shortcutChanged();
+    Q_REVISION(1) void checkableChanged();
+    Q_REVISION(1) void exclusiveGroupChanged();
+
     void triggered(const QVariant &value);
+    Q_REVISION(1) void toggled(bool value);
 
 public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
 
 private:
     QPODVector<QQuickItem*, 4> m_owningItems;
+    ExclusiveGroup *m_exclusiveGroup;
     QString m_name;
     QString m_text;
     QString m_iconName;
@@ -146,6 +162,8 @@ private:
     bool m_enabled:1;
     bool m_visible:1;
     bool m_published:1;
+    bool m_checkable:1;
+    bool m_checked:1;
 
     friend class UCActionContext;
     friend class UCActionItem;

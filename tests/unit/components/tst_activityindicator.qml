@@ -27,6 +27,13 @@ TestCase {
         compare(activityIndicator.running,true,"can set/get running")
      }
 
+     function test_size() {
+        compare(activityIndicator.implicitWidth, units.gu(3), "Default implicitWidth is 3GUs")
+        compare(activityIndicator.implicitHeight, units.gu(3), "Default implicitHeight is 3GUs")
+        compare(activityIndicator.width, units.gu(3), "Default width is 3GUs")
+        compare(activityIndicator.height, units.gu(3), "Default height is 3GUs")
+     }
+
      ActivityIndicator {
          id: activityIndicator
      }

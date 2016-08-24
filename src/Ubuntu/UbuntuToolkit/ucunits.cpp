@@ -71,15 +71,14 @@ static float getenvFloat(const char* name, float defaultValue)
 */
 
 /*
- * Note on the interaction between GRID_UNIT_PX and QT_DEVICE_PIXEL_RATIO
+ * In Qt5.6 the following variables affect scaling in QWidget and QML:
+ *   1. QT_SCALE_FACTOR: global integer scale factor, including point-sized fonts
+ *   2. QT_SCREEN_SCALE_FACTORS: a list of scale factors
+ *   3. QT_AUTO_SCREEN_SCALE_FACTOR: enables automatic scaling heuristics
  *
  * In Qt5.4 there is a single means to scale the UI: the QT_DEVICE_PIXEL_RATIO environment
  * variable. This accepts only integer values, thus allowing a x2 or x3 scaling of any
  * Qt-based UI, that includes QWidget as well as any QML UI.
- *
- * Setting QT_DEVICE_PIXEL_RATIO=2 implies one density-independent pixel corresponds to 2
- * physical pixels. Developers describe their UI in terms of density-independent pixels.
- * Qt scales accordingly.
  *
  * The Ubuntu UI Toolkit has solved the scaling problem with the GRID_UNIT_PX variable.
  * It offers more flexibility, but only scales QML applications written to use the UITK
