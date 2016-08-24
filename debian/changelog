@@ -1,3 +1,43 @@
+ubuntu-ui-toolkit (1.3.2073+16.10) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * No need to check the setting anymore when vibrate. Fixes LP: #1433590.
+
+  [ Albert Astals Cid ]
+  * AbstractButton: Bind mouse area signals earlier. Otherwise it can happen that
+    someone clicks on button and the binding is still not done, i.e. 22911213 .
+    Fixes LP: #1610165.
+
+  [ Christian Dywan ]
+  * Fix build warnings.
+  * Remove unused Q_Q(UCAbtractButton) declaration.
+
+  [ Larry Price ]
+  * Address documentation issue in UbuntuListView - pullToRefresh has "enabled"
+    property. Fixes LP: #1387679
+
+  [ Loïc Molinari ]
+  * Added new C++ UbuntuMetrics library. 
+    This library allows the monitoring of various metrics in QtQuick 2 
+    applications. It allows the logging of different metrics as well as
+    overlaying these metrics on top of each QtQuick windows.
+  * Added LTTng support to UbuntuMetrics.
+  * Added support for logging generic events. Made use of it to log predefined
+    ApplicationMonitor events. Predefined events only define UserInterfaceReady
+    for now, as it's needed to track start-up time.
+  * Wrapped libUbuntuMetrics to QML.
+
+  [ Florian Boucault ]
+  * Icon, Switch and ProgressBar: enable use of texture atlas.
+  * ActivityIndicator: do not load the image until the ActivityIndicator is
+    made visible. Load it asynchronously.
+
+  [ Tim Peeters ]
+  * Remove unused CHANGES, CHANGES.syntax and NEWS files.
+ 
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 18 Aug 2016 19:52:52 +0300
+
 ubuntu-ui-toolkit (1.3.2060+16.10.20160814) yakkety; urgency=medium
 
   [ Zoltan Balogh ]

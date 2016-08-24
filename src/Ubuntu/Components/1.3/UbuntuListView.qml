@@ -91,7 +91,7 @@ ListView {
           }
           // let refresh control know when the refresh gets completed
           pullToRefresh {
-              enable: true
+              enabled: true
               refreshing: model.status === XmlListModel.Loading
               onRefresh: model.reload()
           }

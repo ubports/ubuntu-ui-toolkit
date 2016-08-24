@@ -23,7 +23,7 @@ if [ ! -e $BUILD_DIR/qml/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
     exit 1
 fi
 
-CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubuntu.Components.Pickers Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
+CPP="Ubuntu.Components Ubuntu.Components.ListItems Ubuntu.Components.Popups Ubuntu.Components.Pickers Ubuntu.Components.Styles Ubuntu.Components.Themes Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Metrics Ubuntu.Test"
 echo Dumping QML API of C++ components
 test -s $BUILD_DIR/components.api.new && rm $BUILD_DIR/components.api.new
 env ALARM_BACKEND=memory \
