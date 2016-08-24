@@ -16,29 +16,13 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Labs 1.3
-import QtQuick.LocalStorage 2.0
-import Qt.labs.settings 1.0
+import Ubuntu.Components.Labs 1.0
 
 MainWindow {
     objectName: "appName"
     applicationName: "org.gnu.wildebeest"
 
-    Settings {
-        property alias nickname: textField.text
-    }
-
-    TextField {
-        id: textField
-        objectName: "textfield"
-        text: "Red"
-    }
-
-    Component.onCompleted: {
-        var db = LocalStorage.openDatabaseSync("org.gnu.wildebeest", "1.0", "lorem ipsum", 1000)
-        db.transaction(function(tx){
-            tx.executeSql('CREATE TABLE IF NOT EXISTS Island(name TEXT)')
-            tx.executeSql('INSERT INTO Island VALUES(?)', ['Tuvalu'])
-        })
+    Label {
+        text: "Lorem ipsum dolor sit amet"
     }
 }

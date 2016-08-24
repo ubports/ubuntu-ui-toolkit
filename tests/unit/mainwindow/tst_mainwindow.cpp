@@ -60,7 +60,10 @@ public:
         // Can't use UbuntuTestCase: We need a Window root item
         QPointer<QQmlEngine> engine(new QQmlEngine());
         QString modulePath(UBUNTU_QML_IMPORT_PATH);
-        Q_ASSERT(QDir(modulePath).exists());
+        if (!QDir(modulePath).exists()) {
+            qWarning("'%s' doesn't exist", qPrintable(modulePath));
+            return 0;
+        }
         engine->addImportPath(modulePath);
         UbuntuToolkitModule::initializeContextProperties(engine);
         QPointer<QQmlComponent> component(new QQmlComponent(engine));
@@ -68,8 +71,10 @@ public:
         while (component->isLoading())
             QCoreApplication::processEvents();
         QObject *toplevel(component->create());
-        Q_ASSERT(toplevel);
-        Q_ASSERT("" != component->errorString());
+        if (component->errorString() != "") {
+            qWarning("%s", qPrintable(component->errorString()));
+            return 0;
+        }
         QQuickWindow* window(qobject_cast<QQuickWindow *>(toplevel));
         if (window)
             engine->setIncubationController(window->incubationController());
@@ -82,8 +87,6 @@ public:
                 view->setContent(document, component, rootItem);
             }
         }
-        window->show();
-        QTest::qWaitForWindowExposed(window);
         return window;
     }
 
@@ -110,53 +113,12 @@ private Q_SLOTS:
 
     void testCase_AppName()
     {
-        QQuickWindow *mainWindow(loadTest("AppName.qml"));
-        QVERIFY(mainWindow);
-        QString applicationName(mainWindow->property("applicationName").toString());
-        QCOMPARE(applicationName, QString("org.gnu.wildebeest"));
-        QCOMPARE(applicationName, QCoreApplication::applicationName());
-        QCOMPARE(QString(""), QCoreApplication::organizationName());
-    }
-
-    void testLocalStorage() {
         QString applicationName("org.gnu.wildebeest");
-        // Delete file if it exists to avoid false positives
-        QString dataFolder(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
-        QString databaseFolder(dataFolder + "/Databases");
-        QString hash(QCryptographicHash::hash(qPrintable(applicationName), QCryptographicHash::Md5).toHex());
-        QString database(databaseFolder + "/" + hash + ".sqlite");
-        QFile::remove(database);
-
         QQuickWindow *mainWindow(loadTest("AppName.qml"));
         QVERIFY(mainWindow);
         QCOMPARE(applicationName, mainWindow->property("applicationName").toString());
         QCOMPARE(applicationName, QCoreApplication::applicationName());
         QCOMPARE(QString(""), QCoreApplication::organizationName());
-        QVERIFY2(QFile::exists(databaseFolder), qPrintable(databaseFolder));
-        QVERIFY2(QFile::exists(database), qPrintable(database));
-    }
-
-    QString getConfFile(QString applicationName) {
-        QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
-        QString subFolder(configFolder + "/" + applicationName);
-        QString filename(subFolder + "/" + applicationName + ".conf");
-        return filename;
-    }
-
-    void testLabsSettings() {
-        QString applicationName("org.gnu.wildebeest");
-        // Delete file if it exists to avoid false positives
-        QString filename(getConfFile(applicationName));
-        QFile::remove(filename);
-
-        QQuickWindow *mainWindow(loadTest("AppName.qml"));
-        QCOMPARE(applicationName, mainWindow->property("applicationName").toString());
-        QCOMPARE(QString(applicationName), QCoreApplication::organizationDomain());
-        QQuickItem *textField(testItem(mainWindow->contentItem(), "textfield"));
-        QVERIFY(textField);
-        textField->setProperty("text", "Blue");
-        delete mainWindow;
-        QVERIFY(QFile::exists(filename));
     }
 };
 
