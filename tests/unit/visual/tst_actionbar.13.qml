@@ -159,6 +159,9 @@ Item {
             ActionBar {
                 id: bar
                 Layout.fillWidth: true
+                Layout.maximumWidth: scrollingSwitch.checked ?
+                                         units.gu(4) * Math.max(3, numberOfSlots) :
+                                         -1
                 numberOfSlots: numberOfActionsSlider.value.toFixed(0)
                 actions: root.actionList
                 styleName: root.actionBarStyleName
