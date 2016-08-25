@@ -33,7 +33,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         try:
             self.listview = self.select_single(objectName='actions_listview')
         except dbus.StateNotFoundError:
-            self.listview = ''
+            self.listview = None
 
     def _open_overflow(self):
         """Click the overflow button and return the overflow panel"""
