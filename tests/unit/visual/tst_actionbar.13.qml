@@ -132,7 +132,6 @@ Item {
             }
             text: "" + shortBar.numberOfSlots + " slot(s):"
         }
-
         ActionBar {
             // no numberOfSlots specified. Using default value.
             id: shortBar
@@ -147,7 +146,6 @@ Item {
             }
             text: "" + bar.numberOfSlots + " slot(s):"
         }
-
         ActionBar {
             id: bar
             Layout.fillWidth: true
@@ -155,6 +153,7 @@ Item {
             actions: root.actionList
             styleName: root.actionBarStyleName
         }
+
         Label {
             anchors {
                 verticalCenter: coloredBar.verticalCenter
