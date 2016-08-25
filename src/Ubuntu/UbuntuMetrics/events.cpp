@@ -21,6 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <cstdio>
 
 const int bufferSize = 128;
 const int bufferAlignment = 64;
@@ -130,8 +131,8 @@ void EventUtilsPrivate::updateProcStatMetrics(UMEvent* event)
     value = sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
     ASSERT(value == 2);
 #else
-    sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
-    sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
+    std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
+    std::sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
 #endif
 
     event->process.vszMemory = vsize >> 10;
