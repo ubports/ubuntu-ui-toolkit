@@ -116,7 +116,8 @@ Item {
                                             "ScrollingActionBarStyle" :
                                             "ActionBarStyle"
 
-    Column {
+    GridLayout {
+        columns: 2
         anchors {
             left: parent.left
             right: parent.right
@@ -125,79 +126,62 @@ Item {
         }
         height: childrenRect.height
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-
-            Label {
-                anchors {
-                    verticalCenter: shortBar.verticalCenter
-                }
-                text: "" + shortBar.numberOfSlots + " slot(s):"
+        Label {
+            anchors {
+                verticalCenter: shortBar.verticalCenter
             }
-
-            ActionBar {
-                // no numberOfSlots specified. Using default value.
-                id: shortBar
-                Layout.fillWidth: true
-                actions: root.shortActionList
-                styleName: root.actionBarStyleName
-            }
+            text: "" + shortBar.numberOfSlots + " slot(s):"
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-
-            Label {
-                anchors {
-                    verticalCenter: bar.verticalCenter
-                }
-                text: "" + bar.numberOfSlots + " slot(s):"
-            }
-
-            ActionBar {
-                id: bar
-                Layout.fillWidth: true
-                Layout.maximumWidth: scrollingSwitch.checked ?
-                                         units.gu(4) * Math.max(3, numberOfSlots) :
-                                         -1
-                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
-                actions: root.actionList
-                styleName: root.actionBarStyleName
-            }
+        ActionBar {
+            // no numberOfSlots specified. Using default value.
+            id: shortBar
+            Layout.fillWidth: true
+            actions: root.shortActionList
+            styleName: root.actionBarStyleName
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-            Label {
-                anchors {
-                    verticalCenter: coloredBar.verticalCenter
-                }
-                text: "colored:"
+        Label {
+            anchors {
+                verticalCenter: bar.verticalCenter
             }
-            ActionBar {
-                id: coloredBar
-                Layout.fillWidth: true
-                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
-                actions: root.actionList
-                styleName: root.actionBarStyleName
-                StyleHints {
-                    ignoreUnknownProperties: false
-                    backgroundColor: UbuntuColors.blue
-                    buttons {
-                        foregroundColor: "white"
-                        disabledForegroundColor: UbuntuColors.silk
-                        pressedBackgroundColor: UbuntuColors.ash
-                        disabledBackgroundColor: UbuntuColors.slate
-                    }
+            text: "" + bar.numberOfSlots + " slot(s):"
+        }
+
+        ActionBar {
+            id: bar
+            Layout.fillWidth: true
+            numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+            actions: root.actionList
+            styleName: root.actionBarStyleName
+        }
+        Label {
+            anchors {
+                verticalCenter: coloredBar.verticalCenter
+            }
+            text: "colored:"
+        }
+        ActionBar {
+            id: coloredBar
+            Layout.fillWidth: true
+            numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+            actions: root.actionList
+            styleName: root.actionBarStyleName
+            StyleHints {
+                ignoreUnknownProperties: false
+                backgroundColor: UbuntuColors.blue
+                buttons {
+                    foregroundColor: "white"
+                    disabledForegroundColor: UbuntuColors.silk
+                    pressedBackgroundColor: UbuntuColors.ash
+                    disabledBackgroundColor: UbuntuColors.slate
                 }
             }
         }
 
         Slider {
             id: numberOfActionsSlider
+            Layout.columnSpan: 2
             anchors {
                 left: parent.left
                 right: parent.right
@@ -208,55 +192,46 @@ Item {
             live: true
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-
-            Label {
-                anchors {
-                    verticalCenter: customDelegateBar.verticalCenter
-                }
-                text: "Custom delegate"
+        Label {
+            anchors {
+                verticalCenter: customDelegateBar.verticalCenter
             }
-            ActionBar {
-                id: customDelegateBar
-                Layout.fillWidth: true
-                actions: root.shortActionList
-                delegate: Button {
-                    action: modelData
-                    width: units.gu(14)
-                    strokeColor: UbuntuColors.purple
-                    objectName: "custom_delegate_button_" + index
-                }
-                styleName: root.actionBarStyleName
+            text: "Custom delegate"
+        }
+        ActionBar {
+            id: customDelegateBar
+            Layout.fillWidth: true
+            actions: root.shortActionList
+            delegate: Button {
+                action: modelData
+                width: units.gu(14)
+                strokeColor: UbuntuColors.purple
+                objectName: "custom_delegate_button_" + index
             }
+            styleName: root.actionBarStyleName
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-            Label {
-                anchors {
-                    verticalCenter: greenButtonsBar.verticalCenter
-                }
-                text: "Custom delegate 2"
+        Label {
+            anchors {
+                verticalCenter: greenButtonsBar.verticalCenter
             }
-            ActionBar {
-                // Note: The same result (green buttons) can be accomplished
-                //  by setting the foregroundColor in the style.
-                id: greenButtonsBar
-                Layout.fillWidth: true
-                actions: root.actionList
-                delegate: AbstractButton {
-                    styleName: "IconButtonStyle"
-                    action: modelData
-                    height: greenButtonsBar.height
-                    StyleHints {
-                        foregroundColor: UbuntuColors.green
-                    }
+            text: "Custom delegate 2"
+        }
+        ActionBar {
+            // Note: The same result (green buttons) can be accomplished
+            //  by setting the foregroundColor in the style.
+            id: greenButtonsBar
+            Layout.fillWidth: true
+            actions: root.actionList
+            delegate: AbstractButton {
+                styleName: "IconButtonStyle"
+                action: modelData
+                height: greenButtonsBar.height
+                StyleHints {
+                    foregroundColor: UbuntuColors.green
                 }
-                styleName: root.actionBarStyleName
             }
+            styleName: root.actionBarStyleName
         }
     }
 
