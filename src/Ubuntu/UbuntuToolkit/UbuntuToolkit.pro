@@ -44,12 +44,7 @@ HEADERS += \
     mousetouchadaptor_p.h \
     mousetouchadaptor_p_p.h \
     propertychange_p.h \
-    ubuntutoolkitmodule.h \
-    menu_p_p.h \
-    menubar_p_p.h \
-    menu_p.h \
-    menubar_p.h \
-    menugroup_p.h
+    ubuntutoolkitmodule.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -57,10 +52,7 @@ SOURCES += \
     asyncloader.cpp \
     mousetouchadaptor.cpp \
     propertychange.cpp \
-    ubuntutoolkitmodule.cpp \
-    menu.cpp \
-    menubar.cpp \
-    menugroup.cpp
+    ubuntutoolkitmodule.cpp
 
 HEADERS += \
     uctheme_p.h \
