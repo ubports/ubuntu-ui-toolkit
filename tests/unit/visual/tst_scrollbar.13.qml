@@ -250,7 +250,7 @@ Item {
             nullFlickableScrollbar.destroy()
         }
 
-        //no need to test the anchors values when flickable is not set because we already 
+        //no need to test the anchors values when flickable is not set because we already
         //test that the scrollbar is hidden when there's no flickable set
         function test_bottomAlign_anchors() {
             compare(scrollbar_bottomAlign_anchors.flickableItem,

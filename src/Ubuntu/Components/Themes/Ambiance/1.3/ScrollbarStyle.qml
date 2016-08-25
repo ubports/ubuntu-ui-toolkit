@@ -694,10 +694,10 @@ Item {
                     anchors {
                         fill: trough
                         // set margins adding 2 dp for error area
-                        leftMargin: (!isVertical || frontAligned) ? 0 : units.dp(-2)
-                        rightMargin: (!isVertical || rearAligned) ? 0 : units.dp(-2)
-                        topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
-                        bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
+                        leftMargin: rearAligned ? units.dp(-2) : 0
+                        rightMargin: frontAligned ? units.dp(-2) : 0
+                        topMargin: bottomAligned ? units.dp(-2) : 0
+                        bottomMargin: topAligned ? units.dp(-2) : 0
                     }
                     enabled: isScrollable && interactive && __canFitSteppersAndShorterThumb
                     onPressed: {
@@ -761,7 +761,8 @@ Item {
                         pressHoldTimer.stop()
                     }
                     onReleased: {
-                        handleHover(mouseX, mouseY)
+                        //don't call handleHover here as touch release also triggers this handler
+                        //see bug #1616868
                         resetDrag()
                         pressHoldTimer.stop()
                     }
@@ -797,13 +798,20 @@ Item {
 
                     //logic to support different colour on hovering
                     hoverEnabled: true
-                    Mouse.enabled: true
+                    //This means this mouse filter will only handle real mouse events!
+                    //i.e. the synthesized mouse events created when you use
+                    //touchscreen will not trigger it! This way we can have logic that
+                    //will not trigger when using touch
                     Mouse.ignoreSynthesizedEvents: true
+                    Mouse.enabled: true
                     Mouse.onEntered: {
                         hoveringThumb = false
                         handleHover(event.x, event.y)
                     }
                     Mouse.onPositionChanged: {
+                        //We need to update the hover state also onPosChanged because this area
+                        //covers the whole trough, not just the thumb, so entered/exited are not enough
+                        //e.g. when mouse moves from inside the thumb to inside the trough
                         handleHover(mouse.x, mouse.y)
                     }
                     Mouse.onExited: {
@@ -952,7 +960,7 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
-                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and 
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and
                         //the QML profiler showed it's relatively expensive
                         source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
                         asynchronous: true
@@ -998,7 +1006,7 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
-                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and     
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and
                         //the QML profiler showed it's relatively expensive
                         source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
                         asynchronous: true
