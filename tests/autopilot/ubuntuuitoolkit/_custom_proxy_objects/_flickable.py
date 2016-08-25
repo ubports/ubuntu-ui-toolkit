@@ -135,8 +135,10 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
            self.contentX == original_content_x):
             raise _common.ToolkitException('Could not swipe in the flickable.')
 
+
 class CannotSwipeMoreToolkitException(_common.ToolkitException):
-    """Exception raised when trying to swipe further when that is not possible."""
+    """Exception raised when trying to swipe more than is possible."""
+
 
 class QQuickFlickable(Scrollable):
 

@@ -79,7 +79,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
         buttonName = action_object_name + "_button"
         try:
             self.listview.click_element(buttonName)
-        except _flickable.CannotSwipeMoreToolkitException as e:
+        except _flickable.CannotSwipeMoreToolkitException:
             # The button was found, but is not inside the ListView. This
             # happens because at the beginning and end of the ListView
             # there are list items visible inside the extra margins. But
