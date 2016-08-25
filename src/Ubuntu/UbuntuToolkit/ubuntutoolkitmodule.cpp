@@ -91,6 +91,9 @@
 #include <privates/ucscrollbarutils_p.h>
 #include <actionlist_p.h>
 #include <exclusivegroup_p.h>
+#include <menu_p.h>
+#include <menubar_p.h>
+#include <menugroup_p.h>
 
 // styles
 #include <ucbottomedgestyle_p.h>
@@ -414,9 +417,9 @@ void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin 
 
 void UbuntuLabsModule::defineModule(const char *uri)
 {
-    Q_UNUSED(uri);
-    // a fake component so we can have the module types file created
-    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+    qmlRegisterType<Menu>(uri, 1, 0, "Menu");
+    qmlRegisterType<MenuBar>(uri, 1, 0, "MenuBar");
+    qmlRegisterType<MenuGroup>(uri, 1, 0, "MenuGroup");
 }
 
 void UbuntuLabsModule::undefineModule()

@@ -271,43 +271,6 @@ void UCAction::setMnemonicFromText(const QString &text)
  * \endqml
  */
 
-/*!
- * \qmlproperty enum Action::parameterType
- * Type of the parameter passed to \l trigger and \l triggered.
- * Type is an enumeration:
- * \list
- *  \li \b Action.None: No paramater. (default)
- *  \li \b Action.String: String parameter.
- *  \li \b Action.Integer: Integer parameter.
- *  \li \b Action.Bool: Boolean parameter.
- *  \li \b Action.Real: Single precision floating point parameter.
- *  \li \b Action.Object: The parameter is an object.
- * \endlist
- * \qml
- * Action {
- *     id: action
- *     parameterType: Action.String
- *     onTriggered: {
- *         // value arguments now contain strings
- *         console.log(value);
- *     }
- *     Component.onCompleted: action.trigger("Hello World")
- * }
- * \endqml
- */
-
-/*!
- * \qmlproperty bool Action::enabled
- * If set to false the action can not be triggered. Components visualizing the
- * action migth either hide the action or make it insensitive. However visibility
- * can be controlled separately using the \l visible property.
- */
-
-/*!
- * \qmlproperty bool Action::visible
- * Specifies whether the action is visible to the user. Defaults to true.
- */
-
 UCAction::UCAction(QObject *parent)
     : QObject(parent)
     , m_exclusiveGroup(Q_NULLPTR)
@@ -458,6 +421,68 @@ void UCAction::resetShortcut()
     QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, sequenceFromVariant(m_shortcut));
     m_shortcut = QVariant();
     Q_EMIT shortcutChanged();
+}
+
+/*!
+ * \qmlproperty bool Action::visible
+ * Specifies whether the action is visible to the user. Defaults to true.
+ */
+void UCAction::setVisible(bool visible)
+{
+    if (m_visible == visible) {
+        return;
+    }
+    m_visible = visible;
+    Q_EMIT visibleChanged();
+}
+
+/*!
+ * \qmlproperty bool Action::enabled
+ * If set to false the action can not be triggered. Components visualizing the
+ * action migth either hide the action or make it insensitive. However visibility
+ * can be controlled separately using the \l visible property.
+ */
+void UCAction::setEnabled(bool enabled)
+{
+    if (m_enabled == enabled) {
+        return;
+    }
+    m_enabled = enabled;
+    Q_EMIT enabledChanged();
+
+}
+
+/*!
+ * \qmlproperty enum Action::parameterType
+ * Type of the parameter passed to \l trigger and \l triggered.
+ * Type is an enumeration:
+ * \list
+ *  \li \b Action.None: No paramater. (default)
+ *  \li \b Action.String: String parameter.
+ *  \li \b Action.Integer: Integer parameter.
+ *  \li \b Action.Bool: Boolean parameter.
+ *  \li \b Action.Real: Single precision floating point parameter.
+ *  \li \b Action.Object: The parameter is an object.
+ * \endlist
+ * \qml
+ * Action {
+ *     id: action
+ *     parameterType: Action.String
+ *     onTriggered: {
+ *         // value arguments now contain strings
+ *         console.log(value);
+ *     }
+ *     Component.onCompleted: action.trigger("Hello World")
+ * }
+ * \endqml
+ */
+void UCAction::setParameterType(UCAction::Type type)
+{
+    if (m_parameterType == type) {
+        return;
+    }
+    m_parameterType = type;
+    Q_EMIT parameterTypeChanged();
 }
 
 /*!
