@@ -21,6 +21,7 @@
 // Qt
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QLoggingCategory>
 #include <private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformtheme.h>
 #include <QtGui/qpa/qplatformmenu.h>
@@ -272,7 +273,7 @@ PlatformMenuWrapper::~PlatformMenuWrapper()
 void PlatformMenuWrapper::insert(QPlatformMenu *before)
 {
     if (m_inserted) return;
-    qCInfo(ucMenu).nospace() << " PlatformMenuWrapper::insert(bar=" << m_bar
+    qCDebug(ucMenu).nospace() << " PlatformMenuWrapper::insert(bar=" << m_bar
                                                         << ", before=" << before
                                                         << ", menu=" << m_target << ")";
 
@@ -288,7 +289,7 @@ void PlatformMenuWrapper::insert(QPlatformMenu *before)
 void PlatformMenuWrapper::remove()
 {
     if (!m_inserted) return;
-    qCInfo(ucMenu).nospace() << " PlatformMenuWrapper::remove(bar=" << m_bar
+    qCDebug(ucMenu).nospace() << " PlatformMenuWrapper::remove(bar=" << m_bar
                                                         << ", menu=" << m_target << ")";
 
     auto platformBar = m_bar->platformMenuBar();

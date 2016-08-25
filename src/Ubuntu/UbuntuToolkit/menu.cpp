@@ -21,12 +21,14 @@
 #include "menugroup_p.h"
 
 // Qt
+#include <QPointer>
+#include <QQuickItem>
+#include <QLoggingCategory>
 #include <QtGui/qpa/qplatformtheme.h>
 #include <QtGui/qpa/qplatformmenu.h>
-#include <QQuickItem>
 #include <private/qguiapplication_p.h>
 #include <private/qquickitem_p.h>
-#include <QPointer>
+
 #include <functional>
 
 Q_LOGGING_CATEGORY(ucMenu, "ubuntu.components.Menu", QtMsgType::QtWarningMsg)
@@ -105,7 +107,7 @@ void MenuPrivate::insertObject(int index, QObject *o)
 {
     Q_Q(Menu);
     if (!o) return;
-    qCInfo(ucMenu).nospace() << "Menu::insertObject(index="<< index << ", object=" << o << ")";
+    qCDebug(ucMenu).nospace() << "Menu::insertObject(index="<< index << ", object=" << o << ")";
 
     if (!m_platformMenu) {
         m_data.insert(m_data.count() > index ? index : m_data.count(), o);
@@ -212,7 +214,7 @@ void MenuPrivate::removeObject(QObject *o)
 {
     Q_Q(Menu);
     m_data.removeOne(o);
-    qCInfo(ucMenu).nospace() << "Menu::removeObject(" << o << ")";
+    qCDebug(ucMenu).nospace() << "Menu::removeObject(" << o << ")";
 
     if (m_platformMenu) {
         if (auto menuGroup = qobject_cast<MenuGroup*>(o)) {
@@ -410,7 +412,7 @@ void Menu::insertObject(int index, QObject *o)
 void Menu::removeObject(QObject *o)
 {
     Q_D(Menu);
-    qCInfo(ucMenu) << "Menu::removeObject" << o;
+    qCDebug(ucMenu) << "Menu::removeObject" << o;
 
     d->removeObject(o);
 }
@@ -428,7 +430,7 @@ QPlatformMenu* Menu::platformMenu() const
 void Menu::show(const QPoint &point)
 {
     Q_D(Menu);
-    qCInfo(ucMenu, "Menu::popup(%s, point(%d,%d))", qPrintable(text()), point.x(), point.y());
+    qCDebug(ucMenu, "Menu::popup(%s, point(%d,%d))", qPrintable(text()), point.x(), point.y());
 
     if (d->m_platformMenu) {
         d->m_platformMenu->showPopup(findWindowForObject(this), QRect(point, QSize()), Q_NULLPTR);
@@ -442,7 +444,7 @@ void Menu::show(const QPoint &point)
 void Menu::dismiss()
 {
     Q_D(Menu);
-    qCInfo(ucMenu, "Menu::dismiss(%s)", qPrintable(text()));
+    qCDebug(ucMenu, "Menu::dismiss(%s)", qPrintable(text()));
 
     if (d->m_platformMenu) {
         d->m_platformMenu->dismiss();
@@ -506,7 +508,7 @@ PlatformItemWrapper::~PlatformItemWrapper()
 void PlatformItemWrapper::insert(int index, bool withSeparator)
 {
     if (m_inserted) return;
-    qCInfo(ucMenu).nospace() << " PlatformItemWrapper::insert(menu=" << m_menu
+    qCDebug(ucMenu).nospace() << " PlatformItemWrapper::insert(menu=" << m_menu
                                                         << ", index=" << index
                                                         << ", object=" << m_target << ")";
 
@@ -524,7 +526,7 @@ void PlatformItemWrapper::insert(int index, bool withSeparator)
 void PlatformItemWrapper::remove()
 {
     if (!m_inserted) return;
-    qCInfo(ucMenu).nospace() << " PlatformItemWrapper::remove(menu=" << m_menu
+    qCDebug(ucMenu).nospace() << " PlatformItemWrapper::remove(menu=" << m_menu
                                                         << ", object=" << m_target << ")";
 
     auto platformMenu = m_menu->platformMenu();
@@ -535,7 +537,7 @@ void PlatformItemWrapper::remove()
     m_inserted = false;
 
     if (m_platformItemSeparator) {
-        qCInfo(ucMenu).nospace() << " PlatformItemWrapper::removeSeparator(menu=" << m_menu
+        qCDebug(ucMenu).nospace() << " PlatformItemWrapper::removeSeparator(menu=" << m_menu
                                                             << ", object=" << m_target << ")";
         platformMenu->removeMenuItem(m_platformItemSeparator);
         delete m_platformItemSeparator;
@@ -556,7 +558,7 @@ void PlatformItemWrapper::setSeparator()
     // insert separator before?
     m_platformItemSeparator = platformMenu->createMenuItem();
     if (m_platformItemSeparator) {
-        qCInfo(ucMenu).nospace() << " PlatformItemWrapper::setSeparator(menu=" << m_menu
+        qCDebug(ucMenu).nospace() << " PlatformItemWrapper::setSeparator(menu=" << m_menu
                                                             << ", object=" << m_target << ")";
 
         m_platformItemSeparator->setIsSeparator(true);
