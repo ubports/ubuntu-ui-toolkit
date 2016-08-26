@@ -92,6 +92,8 @@
 #include <actionlist_p.h>
 #include <exclusivegroup_p.h>
 
+#include <splitview_p.h>
+
 // styles
 #include <ucbottomedgestyle_p.h>
 
@@ -417,6 +419,9 @@ void UbuntuLabsModule::defineModule(const char *uri)
     Q_UNUSED(uri);
     // a fake component so we can have the module types file created
     qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
+    qmlRegisterType<SplitView>(uri, 1, 0, "SplitView");
+    qmlRegisterType<SplitViewLayout>(uri, 1, 0, "SplitViewLayout");
+    qmlRegisterType<ViewColumn>(uri, 1, 0, "ViewColumn");
 }
 
 void UbuntuLabsModule::undefineModule()
