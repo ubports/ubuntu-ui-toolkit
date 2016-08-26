@@ -646,8 +646,9 @@ Item {
             mouseRelease(secondStepper, secondStepper.width/2, secondStepper.height/2)
         }
 
-        //test dragging the thumb and relative visual changes due to hover/pressed states
-        function test_dragThumbAndCheckStyling(data) {
+
+        //test that moving the mouse inside and outside any of the hover area borders has the expected effect
+        function test_thumbHoverArea(data) {
             var freshTestItem = getFreshFlickable(data.alignment)
             var flickable = freshTestItem.flickable
             var scrollbar = freshTestItem.scrollbar
@@ -673,7 +674,7 @@ Item {
             //check colour of the thumb in normal state
             compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong thumb color in normal state.")
 
-            //check hovered colour
+            //hover on the middle
             mouseMove(thumb, thumb.width/2, thumb.height/2)
             compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true, "Wrong thumb color in hover state.")
 
@@ -694,6 +695,102 @@ Item {
             //(assuming the mouse is still inside it, which it is)
             compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
                     "Thumb does not show as hovered after mouse press-release inside it.")
+
+            //depending on how the implementation of the scrollbar evolves, the input area
+            //may become bigger than the trough on one or both sides, so we map the coords
+            //to know where to send events relative to the thumb so that they hit the trough
+            //(which is part of the hover area, along the scrolling axis, i.e. x-axis for vert.scrollbar)
+            var mappedCoords = thumb.mapToItem(trough, 0, 0)
+
+            //mouseMove seem to deliver events at pixel bound, so we have to take the floor of the sizes
+            //otherwise if thumb has width 50.6, mouseMove(thumb, 50.6, 0) will send an event to x==51 and that
+            //will cause the logic to assume the mouse is outside the hover area while it's on the border
+            var floorThumbWidth = Math.floor(thumb.width)
+            var floorThumbHeight = Math.floor(thumb.height)
+            var floorTroughWidth = Math.floor(trough.width)
+            var floorTroughHeight = Math.floor(trough.height)
+
+            //top-left and bottom-right coords of the rectangle defining the thumb hover area
+            //we need different handling of vertical/horizontal because the hover area is defined
+            //as the whole trough along the scrolling axis (e.g. whole trough width for the vert. scrollbar)
+            //and exactly the thumb along the non-scrolling axis (e.g. thumb's height for vert. scrollbar
+            if (style.isVertical) {
+                var insideTopLeft     = [-mappedCoords.x                   , 0               ]
+                var insideBottomRight = [-mappedCoords.x + floorTroughWidth, floorThumbHeight]
+            } else {
+                var insideTopLeft     = [0              , -mappedCoords.y                    ]
+                var insideBottomRight = [floorThumbWidth, -mappedCoords.y + floorTroughHeight]
+            }
+            mouseMove(thumb, insideTopLeft[0], insideTopLeft[1])
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                    "Thumb does not show as hovered after mouse moved to the top-left corner of the hover area.")
+            mouseMove(thumb, insideBottomRight[0], insideBottomRight[1])
+            compare(Qt.colorEqual(thumb.color, thumbHoveredColor), true,
+                    "Thumb does not show as hovered after mouse moved to the bottom-right corner of the hover area.")
+
+            //right outside the hover area
+            var outsideTopBorder    = [insideTopLeft[0]           , insideTopLeft[1] - 1] //move 1 up
+            var outsideLeftBorder   = [insideTopLeft[0] - 1       , insideTopLeft[1]] //move 1 left
+            var outsideBottomBorder = [insideBottomRight[0]       , insideBottomRight[1] + 1] //move 1 down
+            var outsideRightBorder  = [insideBottomRight[0] + 1   , insideBottomRight[1]] //move 1 right
+
+            //check that when the mouse is right outside the borders of the hover area the thumb will use the non-hover colour
+            mouseMove(thumb, outsideTopBorder[0], outsideTopBorder[1])
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true,
+                    "Thumb does not show as NOT-hovered after mouse moved outside the top border of the hover area.")
+            mouseMove(thumb, outsideBottomBorder[0], outsideBottomBorder[1])
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true,
+                    "Thumb does not show as NOT-hovered after mouse moved outside the bottom border of the hover area.")
+            mouseMove(thumb, outsideLeftBorder[0], outsideLeftBorder[1])
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true,
+                    "Thumb does not show as NOT-hovered after mouse moved outside the left border of the hover area.")
+            mouseMove(thumb, outsideRightBorder[0], outsideRightBorder[1])
+            compare(Qt.colorEqual(thumb.color, thumbNormalColor), true,
+                    "Thumb does not show as NOT-hovered after mouse moved outside the right border of the hover area.")
+
+            //BUG #1616926
+            //check pressind on the THUMB and releasing mouse outside the TROUGH resets it to normal state
+            //press thumb, move mouse outside the trough and check that the thumb is not showing as hovered
+            //The broken logic was just checking if mouse was inside the thumb
+            //on the same axis as the scrolling one (so y for vertical scrollbar, x for horizontal) so we move
+            //mouse in the opposite axis (i.e. along x if vertical scrollbar) to check that the bug is fixed
+            mousePress(thumb, thumb.width/2, thumb.height/2)
+            if (style.isVertical) {
+                mouseMove(thumb, outsideLeftBorder[0], outsideLeftBorder[1])
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true, "Wrong THUMB color in pressed state.")
+                mouseRelease(thumb, outsideLeftBorder[0], outsideLeftBorder[1])
+                compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong THUMB color after releasing mouse with x outside TROUGH.")
+            } else {
+                mouseMove(thumb, outsideTopBorder[0], outsideTopBorder[1])
+                compare(Qt.colorEqual(thumb.color, thumbPressedColor), true, "Wrong THUMB color in pressed state.")
+                mouseRelease(thumb, outsideTopBorder[0], outsideTopBorder[1])
+                compare(Qt.colorEqual(thumb.color, thumbNormalColor), true, "Wrong THUMB color after releasing mouse with y outside TROUGH.")
+            }
+        }
+
+        //test dragging the thumb and relative visual changes due to hover/pressed states
+        function test_dragThumbAndCheckStyling(data) {
+            var freshTestItem = getFreshFlickable(data.alignment)
+            var flickable = freshTestItem.flickable
+            var scrollbar = freshTestItem.scrollbar
+            var thumb = getThumb(scrollbar)
+            var thumbArea = getThumbArea(scrollbar)
+            var trough = getTrough(scrollbar)
+            var style = freshTestItem.scrollbar.__styleInstance
+            var scrollbarUtils = getScrollbarUtils(scrollbar)
+            var secondStepper = getSecondStepper(scrollbar)
+            var thumbNormalColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 0.4)
+            var thumbHoveredColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 0.7)
+            var thumbPressedColor = Qt.rgba(style.sliderColor.r, style.sliderColor.g, style.sliderColor.b,
+                                           style.sliderColor.a * 1.0)
+
+            addContentMargins(flickable)
+
+            setContentPositionToTopLeft(flickable)
+
+            triggerSteppersMode(scrollbar)
 
             if (style.isVertical) {
                 mouseDrag(thumb, thumb.width/2, thumb.height/2, 0, trough.height)
