@@ -411,8 +411,10 @@ void UbuntuStylesModule::undefineModule()
  */
 void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin *plugin)
 {
-    Q_UNUSED(engine);
     Q_UNUSED(plugin);
+
+    // qmlplugindump requires that quickutils is initialized.
+    QuickUtils::instance(engine);
 }
 
 void UbuntuLabsModule::defineModule(const char *uri)
