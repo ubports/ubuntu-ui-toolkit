@@ -691,14 +691,8 @@ Item {
                         previousY = mouse.y
                     }
 
-                    anchors {
-                        fill: trough
-                        // set margins adding 2 dp for error area
-                        leftMargin: rearAligned ? units.dp(-2) : 0
-                        rightMargin: frontAligned ? units.dp(-2) : 0
-                        topMargin: bottomAligned ? units.dp(-2) : 0
-                        bottomMargin: topAligned ? units.dp(-2) : 0
-                    }
+                    anchors.fill: trough
+
                     enabled: isScrollable && interactive && __canFitSteppersAndShorterThumb
                     onPressed: {
                         cacheMousePosition(mouse)
