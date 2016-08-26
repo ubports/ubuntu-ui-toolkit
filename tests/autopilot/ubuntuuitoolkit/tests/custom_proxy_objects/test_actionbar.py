@@ -23,8 +23,15 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
-    test_qml_file_path = os.path.join(
+    overflow_test_qml_file_path = os.path.join(
         dir_path, 'test_actionbar.ActionBarTestCase.qml')
+    scrolling_test_qml_file_path = os.path.join(
+        dir_path, 'test_actionbar.ScrollingActionBarTestCase.qml')
+
+    scenarios = [
+        ('overflow', dict(test_qml_file_path=overflow_test_qml_file_path)),
+        ('scrolling', dict(test_qml_file_path=scrolling_test_qml_file_path))
+    ]
 
     def setUp(self):
         super().setUp()
@@ -38,14 +45,17 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
         self.assertTrue(self.actionbar.visible)
 
     def test_click_action_button(self):
-        self.actionbar.click_action_button('Action1')
-        self.assertEqual(self.label.text, 'Action 1 triggered.')
+        for i in range(1, 4):
+            self.actionbar.click_action_button('Action' + str(i))
+            self.assertEqual(self.label.text, 'Action ' + str(i) +
+                             ' triggered.')
 
     def test_click_overflow_action_button(self):
-        # Action1 is directly the ActionBar, Action2 and Action3
-        #   are in the overflow panel.
-        self.actionbar.click_action_button('Action3')
-        self.assertEqual(self.label.text, 'Action 3 triggered.')
+        # Action1-3 are directly the ActionBar, Action4-5 are in the overflow
+        for i in range(4, 6):
+            self.actionbar.click_action_button('Action' + str(i))
+            self.assertEqual(self.label.text, 'Action ' + str(i) +
+                             ' triggered.')
 
     def test_click_unexisting_action_button(self):
         error = self.assertRaises(
@@ -53,4 +63,4 @@ class ActionBarTestCase(tests.QMLFileAppTestCase):
             self.actionbar.click_action_button, 'unexisting')
         self.assertEqual(
             str(error),
-            'Button not found in ActionBar or overflow')
+            'Button not found')
