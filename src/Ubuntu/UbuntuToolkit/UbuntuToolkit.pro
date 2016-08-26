@@ -45,6 +45,9 @@ HEADERS += \
     mousetouchadaptor_p_p.h \
     propertychange_p.h \
     ubuntutoolkitmodule.h \
+    splitview_p.h \
+    splitview_p_p.h \
+    privates/splitviewhandler_p_p.h \
     menu_p_p.h \
     menubar_p_p.h \
     menu_p.h \
@@ -58,6 +61,9 @@ SOURCES += \
     mousetouchadaptor.cpp \
     propertychange.cpp \
     ubuntutoolkitmodule.cpp \
+    splitview.cpp \
+    privates/splitviewhandler.cpp \
+    splitviewlayout.cpp \
     menu.cpp \
     menubar.cpp \
     menugroup.cpp
