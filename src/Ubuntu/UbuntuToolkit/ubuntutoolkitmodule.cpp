@@ -91,6 +91,9 @@
 #include <privates/ucscrollbarutils_p.h>
 #include <actionlist_p.h>
 #include <exclusivegroup_p.h>
+#include <menu_p.h>
+#include <menubar_p.h>
+#include <menugroup_p.h>
 
 #include <splitview_p.h>
 
@@ -410,18 +413,20 @@ void UbuntuStylesModule::undefineModule()
  */
 void UbuntuLabsModule::initializeModule(QQmlEngine *engine, QQmlExtensionPlugin *plugin)
 {
-    Q_UNUSED(engine);
     Q_UNUSED(plugin);
+
+    // qmlplugindump requires that quickutils is initialized.
+    QuickUtils::instance(engine);
 }
 
 void UbuntuLabsModule::defineModule(const char *uri)
 {
-    Q_UNUSED(uri);
-    // a fake component so we can have the module types file created
-    qmlRegisterType<QObject>(uri, 1, 0, "ZiObject");
     qmlRegisterType<SplitView>(uri, 1, 0, "SplitView");
     qmlRegisterType<SplitViewLayout>(uri, 1, 0, "SplitViewLayout");
     qmlRegisterType<ViewColumn>(uri, 1, 0, "ViewColumn");
+    qmlRegisterType<Menu>(uri, 1, 0, "Menu");
+    qmlRegisterType<MenuBar>(uri, 1, 0, "MenuBar");
+    qmlRegisterType<MenuGroup>(uri, 1, 0, "MenuGroup");
 }
 
 void UbuntuLabsModule::undefineModule()

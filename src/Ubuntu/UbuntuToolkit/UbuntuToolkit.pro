@@ -47,7 +47,12 @@ HEADERS += \
     ubuntutoolkitmodule.h \
     splitview_p.h \
     splitview_p_p.h \
-    privates/splitviewhandler_p_p.h
+    privates/splitviewhandler_p_p.h \
+    menu_p_p.h \
+    menubar_p_p.h \
+    menu_p.h \
+    menubar_p.h \
+    menugroup_p.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -58,7 +63,10 @@ SOURCES += \
     ubuntutoolkitmodule.cpp \
     splitview.cpp \
     privates/splitviewhandler.cpp \
-    splitviewlayout.cpp
+    splitviewlayout.cpp \
+    menu.cpp \
+    menubar.cpp \
+    menugroup.cpp
 
 HEADERS += \
     uctheme_p.h \
