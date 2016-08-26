@@ -21,6 +21,7 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickevents_p_p.h>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 #include <splitview_p_p.h>
 
 UT_NAMESPACE_BEGIN

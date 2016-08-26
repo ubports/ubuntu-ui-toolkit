@@ -19,7 +19,8 @@
 #ifndef SPLITVIEWHANDLER_H
 #define SPLITVIEWHANDLER_H
 
-#include <QQuickItem>
+#include <QtQuick/QQuickItem>
+#include <QtCore/QPointer>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <ubuntutoolkitglobal.h>
 
