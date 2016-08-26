@@ -287,6 +287,7 @@ Style.SectionsStyle {
             width: units.gu(1)
             height: units.gu(1)
             visible: false
+            asynchronous: true
             rotation: 180
             opacity: visible
                      ? sectionsListView.atXBeginning ? hoveringArea.iconsDisabledOpacity : 1.0
@@ -316,6 +317,7 @@ Style.SectionsStyle {
             width: units.gu(1)
             height: units.gu(1)
             visible: false
+            asynchronous: true
             opacity: visible
                      ? sectionsListView.atXEnd ? hoveringArea.iconsDisabledOpacity : 1.0
                      : 0.0

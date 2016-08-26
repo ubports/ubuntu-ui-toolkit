@@ -1,0 +1,3 @@
+module Ubuntu.Metrics
+plugin UbuntuMetrics
+typeinfo plugins.qmltypes

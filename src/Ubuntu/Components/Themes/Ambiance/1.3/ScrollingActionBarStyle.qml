@@ -16,18 +16,18 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Styles 1.3 as Style
-//import QtGraphicalEffects 1.0
 
 Style.ActionBarStyle {
     id: actionBarStyle
     implicitHeight: units.gu(5)
 
+    clip: true // avoid showing the icons that are scrolled out of the view.
     backgroundColor: theme.palette.normal.background
     buttons {
         foregroundColor: theme.palette.normal.backgroundText
         pressedForegroundColor: buttons.foregroundColor
         disabledForegroundColor: theme.palette.disabled.backgroundText
-        backgroundColor: "transparent" // action bar background is already colored
+        backgroundColor: "transparent" // background is already colored
         pressedBackgroundColor: theme.palette.highlighted.background
         disabledBackgroundColor: buttons.backgroundColor
     }
@@ -37,6 +37,8 @@ Style.ActionBarStyle {
         pressedForegroundColor: actionBarStyle.buttons.pressedForegroundColor
         backgroundColor: actionBarStyle.backgroundColor // must be opaque to hide the icon buttons
         pressedBackgroundColor: actionBarStyle.buttons.pressedBackgroundColor
+        property real width: units.gu(4)
+        property int fadeDuration: UbuntuAnimation.FastDuration
     }
 
     /*!
@@ -44,12 +46,15 @@ Style.ActionBarStyle {
       not provide a delegate.
      */
     // FIXME: This ListItem { AbstractButton { } } construction can be avoided
-    //  when StyledItem supports cursor keys navigation, see bug #1573616
+    //  when StyledItem supports cursor keys navigation, see bug #1573616.
+    // FIXME: For the first and last item in the list, it is possible to move
+    //  the focus inside the ListItem to the AbstractButton, see bug #1590005.
+    // FIXME: Focus can go on disabled item. See bug #1611327.
     defaultDelegate: ListItem {
         width: units.gu(4)
         height: actionBarStyle.height
         enabled: modelData.enabled
-        onClicked: button.trigger()
+        objectName: modelData.objectName + "_button"
         AbstractButton {
             id: button
             anchors.fill: parent
@@ -65,23 +70,16 @@ Style.ActionBarStyle {
                                          actionBarStyle.buttons.backgroundColor :
                                          actionBarStyle.buttons.disabledBackgroundColor
             }
-            objectName: action.objectName + "_button"
-            height: parent ? parent.height : undefined
             action: modelData
             activeFocusOnTab: false
         }
         divider.visible: false
     }
 
-    // The duration of the fade-in/out of the scroll buttons.
-    property int scrollButtonFadeDuration: UbuntuAnimation.FastDuration
-
     Rectangle {
         color: actionBarStyle.backgroundColor
         id: listViewContainer
         anchors.fill: parent
-
-        property real listViewMargins: units.gu(2)
 
         property var visibleActions: getVisibleActions(styledItem.actions)
         function getVisibleActions(actions) {
@@ -102,15 +100,23 @@ Style.ActionBarStyle {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
+                rightMargin: scrollButtons.width
             }
-            width: listViewContainer.width //Math.min(listViewContainer.width, contentWidth)
+            displayMarginBeginning: scrollButtons.width
+            displayMarginEnd: scrollButtons.width
+            leftMargin: -scrollButtons.width
+            rightMargin: -scrollButtons.width
+            width: listViewContainer.width - 2*scrollButtons.width
             layoutDirection: Qt.RightToLeft
 
-            clip: true
             orientation: ListView.Horizontal
             boundsBehavior: Flickable.StopAtBounds
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
+
+            // This gives the correct behavior when scrollButtons.width is
+            //  larger/smaller/equal compared to the width of the delegate.
+            onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
 
             SmoothedAnimation {
                 objectName: "actions_scroll_animation"
@@ -129,8 +135,9 @@ Style.ActionBarStyle {
                 // make sure we don't overshoot bounds
                 contentXAnim.to = MathUtils.clamp(
                             newContentX,
-                            originX,
-                            actionsListView.originX + actionsListView.contentWidth - actionsListView.width);
+                            originX + scrollButtons.width,
+                            actionsListView.originX + actionsListView.contentWidth
+                            - actionsListView.width - scrollButtons.width);
                 contentXAnim.start();
             }
         }
@@ -139,14 +146,14 @@ Style.ActionBarStyle {
             id: scrollButtonComponent
             AbstractButton {
                 id: scrollButton
-                width: units.gu(4)
+                width: actionBarStyle.scrollButtons.width
                 enabled: opacity === 1.0
-                onClicked: actionsListView.scroll(scrollDirection);
+                onClicked: actionsListView.scroll(scrollDirection)
                 opacity: buttonOpacity
                 objectName: buttonName
                 Behavior on opacity {
                     UbuntuNumberAnimation {
-                        duration: actionBarStyle.scrollButtonFadeDuration
+                        duration: actionBarStyle.scrollButtons.fadeDuration
                     }
                 }
                 Rectangle {
@@ -155,9 +162,9 @@ Style.ActionBarStyle {
                                                 : actionBarStyle.scrollButtons.backgroundColor
                 }
                 Icon {
-                    // FIXME TIM: Use new theme icon from
+                    // FIXME: Use new theme icon from
                     //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
-                    //  after it lands in the image/archive.
+                    //  after it lands in overlay and archive.
                     anchors.centerIn: parent
                     width: units.gu(1)
                     height: units.gu(1)

@@ -96,7 +96,6 @@ Item {
         }
     ]
 
-
     Row {
         id: scrollingSwitchRow
         anchors {
@@ -117,7 +116,8 @@ Item {
                                             "ScrollingActionBarStyle" :
                                             "ActionBarStyle"
 
-    Column {
+    GridLayout {
+        columns: 2
         anchors {
             left: parent.left
             right: parent.right
@@ -126,76 +126,61 @@ Item {
         }
         height: childrenRect.height
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-
-            Label {
-                anchors {
-                    verticalCenter: shortBar.verticalCenter
-                }
-                text: "" + shortBar.numberOfSlots + " slot(s):"
+        Label {
+            anchors {
+                verticalCenter: shortBar.verticalCenter
             }
-
-            ActionBar {
-                // no numberOfSlots specified. Using default value.
-                id: shortBar
-                Layout.fillWidth: true
-                actions: root.shortActionList
-                styleName: root.actionBarStyleName
-            }
+            text: "" + shortBar.numberOfSlots + " slot(s):"
+        }
+        ActionBar {
+            // no numberOfSlots specified. Using default value.
+            id: shortBar
+            Layout.fillWidth: true
+            actions: root.shortActionList
+            styleName: root.actionBarStyleName
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-
-            Label {
-                anchors {
-                    verticalCenter: bar.verticalCenter
-                }
-                text: "" + bar.numberOfSlots + " slot(s):"
+        Label {
+            anchors {
+                verticalCenter: bar.verticalCenter
             }
-
-            ActionBar {
-                id: bar
-                Layout.fillWidth: true
-                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
-                actions: root.actionList
-                styleName: root.actionBarStyleName
-            }
+            text: "" + bar.numberOfSlots + " slot(s):"
+        }
+        ActionBar {
+            id: bar
+            Layout.fillWidth: true
+            numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+            actions: root.actionList
+            styleName: root.actionBarStyleName
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-            Label {
-                anchors {
-                    verticalCenter: coloredBar.verticalCenter
-                }
-                text: "colored:"
+        Label {
+            anchors {
+                verticalCenter: coloredBar.verticalCenter
             }
-            ActionBar {
-                id: coloredBar
-                Layout.fillWidth: true
-                numberOfSlots: numberOfActionsSlider.value.toFixed(0)
-                actions: root.actionList
-                styleName: root.actionBarStyleName
-                StyleHints {
-                    ignoreUnknownProperties: false
-                    backgroundColor: UbuntuColors.blue
-                    buttons {
-                        foregroundColor: "white"
-                        disabledForegroundColor: UbuntuColors.silk
-                        pressedBackgroundColor: UbuntuColors.ash
-                        disabledBackgroundColor: UbuntuColors.slate
-                    }
+            text: "colored:"
+        }
+        ActionBar {
+            id: coloredBar
+            Layout.fillWidth: true
+            numberOfSlots: numberOfActionsSlider.value.toFixed(0)
+            actions: root.actionList
+            styleName: root.actionBarStyleName
+            StyleHints {
+                ignoreUnknownProperties: false
+                backgroundColor: UbuntuColors.blue
+                buttons {
+                    foregroundColor: "white"
+                    disabledForegroundColor: UbuntuColors.silk
+                    pressedBackgroundColor: UbuntuColors.ash
+                    disabledBackgroundColor: UbuntuColors.slate
                 }
             }
         }
 
         Slider {
             id: numberOfActionsSlider
+            Layout.columnSpan: 2
             anchors {
                 left: parent.left
                 right: parent.right
@@ -206,55 +191,46 @@ Item {
             live: true
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-
-            Label {
-                anchors {
-                    verticalCenter: customDelegateBar.verticalCenter
-                }
-                text: "Custom delegate"
+        Label {
+            anchors {
+                verticalCenter: customDelegateBar.verticalCenter
             }
-            ActionBar {
-                id: customDelegateBar
-                Layout.fillWidth: true
-                actions: root.shortActionList
-                delegate: Button {
-                    action: modelData
-                    width: units.gu(14)
-                    strokeColor: UbuntuColors.purple
-                    objectName: "custom_delegate_button_" + index
-                }
-                styleName: root.actionBarStyleName
+            text: "Custom delegate"
+        }
+        ActionBar {
+            id: customDelegateBar
+            Layout.fillWidth: true
+            actions: root.shortActionList
+            delegate: Button {
+                action: modelData
+                width: units.gu(14)
+                strokeColor: UbuntuColors.purple
+                objectName: "custom_delegate_button_" + index
             }
+            styleName: root.actionBarStyleName
         }
 
-        RowLayout {
-            width: parent.width
-            height: childrenRect.height
-            Label {
-                anchors {
-                    verticalCenter: greenButtonsBar.verticalCenter
-                }
-                text: "Custom delegate 2"
+        Label {
+            anchors {
+                verticalCenter: greenButtonsBar.verticalCenter
             }
-            ActionBar {
-                // Note: The same result (green buttons) can be accomplished
-                //  by setting the foregroundColor in the style.
-                id: greenButtonsBar
-                Layout.fillWidth: true
-                actions: root.actionList
-                delegate: AbstractButton {
-                    styleName: "IconButtonStyle"
-                    action: modelData
-                    height: greenButtonsBar.height
-                    StyleHints {
-                        foregroundColor: UbuntuColors.green
-                    }
+            text: "Custom delegate 2"
+        }
+        ActionBar {
+            // Note: The same result (green buttons) can be accomplished
+            //  by setting the foregroundColor in the style.
+            id: greenButtonsBar
+            Layout.fillWidth: true
+            actions: root.actionList
+            delegate: AbstractButton {
+                styleName: "IconButtonStyle"
+                action: modelData
+                height: greenButtonsBar.height
+                StyleHints {
+                    foregroundColor: UbuntuColors.green
                 }
-                styleName: root.actionBarStyleName
             }
+            styleName: root.actionBarStyleName
         }
     }
 
@@ -403,26 +379,20 @@ Item {
         name: "ScrollingActionBarApi"
         when: windowShown
 
-        function get_scroll_button_visible(actionBar, name) {
-            compare(actionBar.styleName, "ScrollingActionBarStyle", "Only scrolling action bar has scroll buttons.");
+        function get_scroll_button(actionBar, name) {
+            compare(actionBar.styleName, "ScrollingActionBarStyle",
+                    "Only scrolling action bar has scroll buttons.");
             var button = findChild(actionBar, name);
             verify(button !== null, "Style has no button with objectName " + name);
-            var barStyle = actionBar.__styleInstance;
-            wait(barStyle.scrollButtonFadeDuration + 100); // wait for potential animation to finish.
-            if (button.opacity === 0.0) {
-                return false;
-            } else {
-                compare(button.opacity, 1.0, "Scroll button is semi-transparent.");
-                return true;
-            }
+            return button;
         }
 
-        function get_leading_scroll_button_visible(actionBar) {
-            return get_scroll_button_visible(actionBar, "leading_scroll_button");
+        function get_leading_scroll_button(actionBar) {
+            return get_scroll_button(actionBar, "leading_scroll_button");
         }
 
-        function get_trailing_scroll_button_visible(actionBar) {
-            return get_scroll_button_visible(actionBar, "trailing_scroll_button");
+        function get_trailing_scroll_button(actionBar) {
+            return get_scroll_button(actionBar, "trailing_scroll_button");
         }
 
         function get_number_of_visible_buttons(actionBar) {
@@ -430,7 +400,6 @@ Item {
             var listView = findChild(actionBar, "actions_listview");
             return listView.count;
         }
-
 
         function initTestCase() {
             scrollingSwitch.checked = true;
@@ -482,31 +451,35 @@ Item {
 
             var listView = findChild(data.bar, "actions_listview");
             listView.positionViewAtIndex(data.view_position, ListView.Center);
-            compare(get_leading_scroll_button_visible(data.bar), data.leading_scroll_button_visible,
-                    "Incorrect leading scroll button visibility.");
-            compare(get_trailing_scroll_button_visible(data.bar), data.trailing_scroll_button_visible,
-                    "Incorrect trailing scroll button visibility.");
+            var button = get_leading_scroll_button(data.bar);
+            var opacity = data.leading_scroll_button_visible ? 1.0 : 0.0
+            // use tryCompare() because the fade-in/out animation of the button may still be ongoing.
+            tryCompare(button, "opacity", opacity, 1000, "Incorrect leading scroll button visibility.");
+
+            button = get_trailing_scroll_button(data.bar);
+            opacity = data.trailing_scroll_button_visible ? 1.0 : 0.0;
+            tryCompare(button, "opacity", opacity, 1000, "Incorrect trailing scroll button visbility.");
 
             // revert to the initial position:
             listView.positionViewAtBeginning();
         }
 
         function test_scroll_buttons_functionality() {
-            var leadingScrollButton = findChild(bar, "leading_scroll_button");
-            var trailingScrollButton = findChild(bar, "trailing_scroll_button");
+            var leadingScrollButton = get_leading_scroll_button(bar);
+            var trailingScrollButton = get_trailing_scroll_button(bar);
 
             var listView = findChild(bar, "actions_listview");
             var x = listView.contentX;
-            compare(get_leading_scroll_button_visible(bar), true,
-                    "Leading scroll button is not visible initially.");
+            tryCompare(leadingScrollButton, "opacity", 1.0, 1000,
+                       "Leading scroll button is not visible initially.");
 
             mouseClick(leadingScrollButton, leadingScrollButton.width/2, leadingScrollButton.height/2);
             wait(UbuntuAnimation.FastDuration + 100); // wait for scrolling animation.
             verify(listView.contentX < x, "Clicking the leading scroll button does not scroll to the left.");
 
             x = listView.contentX;
-            compare(get_trailing_scroll_button_visible(bar), true,
-                    "Trailing scroll button is not visible after scrolling to the left.");
+            tryCompare(trailingScrollButton, "opacity", 1.0, 1000,
+                       "Trailing scroll button is not visible after scrolling to the left.");
 
             mouseClick(trailingScrollButton, trailingScrollButton.width/2, trailingScrollButton.height/2);
             wait(UbuntuAnimation.FastDuration + 100); // wait for scrolling animation.

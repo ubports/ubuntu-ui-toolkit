@@ -1,0 +1,14 @@
+usr/include/*/qt5/UbuntuMetrics/UbuntuMetrics
+usr/include/*/qt5/UbuntuMetrics/UbuntuMetricsDepends
+usr/include/*/qt5/UbuntuMetrics/UbuntuMetricsVersion
+usr/include/*/qt5/UbuntuMetrics/applicationmonitor.h
+usr/include/*/qt5/UbuntuMetrics/events.h
+usr/include/*/qt5/UbuntuMetrics/logger.h
+usr/include/*/qt5/UbuntuMetrics/ubuntumetricsglobal.h
+usr/include/*/qt5/UbuntuMetrics/ubuntumetricsversion.h
+usr/lib/*/libUbuntuMetrics.la
+usr/lib/*/libUbuntuMetrics.prl
+usr/lib/*/libUbuntuMetrics.so
+usr/lib/*/pkgconfig/UbuntuMetrics.pc
+usr/lib/*/qt5/mkspecs/modules/qt_lib_UbuntuMetrics.pri
+usr/lib/*/qt5/mkspecs/modules/qt_lib_UbuntuMetrics_private.pri

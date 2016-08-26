@@ -25,6 +25,7 @@
 //     the trade-off between shader cycles and bandwidth requirements needs to be precisely
 //     evaluated.
 
+#include <math.h>
 #include "ucubuntushape_p.h"
 #include "ucunits_p.h"
 #include "ubuntutoolkitglobal.h"
@@ -1109,7 +1110,7 @@ void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& old
 }
 
 // Gets the nearest boundary to coord in the texel grid of the given size.
-static Q_DECL_CONSTEXPR float roundTextureCoord(float coord, float size)
+static float roundTextureCoord(float coord, float size)
 {
     return roundf(coord * size) / size;
 }
