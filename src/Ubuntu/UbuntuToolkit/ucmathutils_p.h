@@ -32,10 +32,10 @@ class UBUNTUTOOLKIT_EXPORT UCMathUtils : public QObject
 public:
     explicit UCMathUtils(QObject *parent = 0);
 
-    Q_INVOKABLE double clamp(double x, double min, double max);
-    Q_INVOKABLE double lerp(double delta, double from, double to);
-    Q_INVOKABLE double projectValue(double x, double xmin, double xmax, double ymin, double ymax);
-    Q_INVOKABLE double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax);
+    Q_INVOKABLE static double clamp(double x, double min, double max);
+    Q_INVOKABLE static double lerp(double delta, double from, double to);
+    Q_INVOKABLE static double projectValue(double x, double xmin, double xmax, double ymin, double ymax);
+    Q_INVOKABLE static double clampAndProject(double x, double xmin, double xmax, double ymin, double ymax);
 };
 
 UT_NAMESPACE_END
