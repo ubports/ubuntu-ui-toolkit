@@ -42,7 +42,7 @@ Page {
         }
 
         OptionSelector {
-            id: selector
+            id: defaultSelector
 
             text: "Pick your poison"
             property int sectionIndex: sections.selectedIndex
@@ -51,32 +51,33 @@ Page {
                 State {
                     name: 'default'
                     PropertyChanges {
-                        target: selector;
+                        target: defaultSelector;
                         model: [
                             'Gin and Tonic',
                             'White Russian',
                             'Sex on the Beach',
                             'Strawberry Mojito'
                         ];
-                        delegate: defaultDelegate
                     }
                 },
                 State {
                     name: 'expanded'
                     extend: 'default'
-                    PropertyChanges { target: selector; expanded: true; currentlyExpanded: true }
+                    PropertyChanges { target: defaultSelector; expanded: true; currentlyExpanded: true }
                 },
                 State {
                     name: 'custom'
-                    PropertyChanges { target: selector; model: customModel; delegate: selectorDelegate; }
+                    PropertyChanges { target: defaultSelector; visible: false; }
+                    PropertyChanges { target: customSelector; visible: true; }
                 }
             ]
         }
-    }
 
-    Component {
-        id: defaultDelegate
-        OptionSelectorDelegate {
+        OptionSelector {
+            id: customSelector
+            model: customModel
+            delegate: selectorDelegate
+            visible: false
         }
     }
 
@@ -97,24 +98,6 @@ Page {
         ListElement { name: "Shirley Temple"; description: "Grenadine for the color"; image: "../../resources/optionselector/test.png" }
         ListElement { name: "Ipanema"; description: "Non-alcoholic version of Caipirinha"; image: "../../resources/optionselector/test.png" }
         ListElement { name: "Millionaire Sour"; description: "Swaps ginger ale for Irish whiskey"; image: "../../resources/optionselector/test.png" }
-    }
-
-    SignalSpy {
-        id: clickedSignal
-        target: selector
-        signalName: "delegateClicked"
-    }
-
-    SignalSpy {
-        id: triggeredSignal
-        target: selector
-        signalName: "triggered"
-    }
-
-    SignalSpy {
-        id: expansionSignal
-        target: selector
-        signalName: "expansionCompleted"
     }
 
     UbuntuTestCase {
@@ -140,7 +123,12 @@ Page {
                 { 'tag': 'Collapse(Space)', key: Qt.Key_Space, index: 0, expanded: true, newExpanded: false },
             ]
         }
-        function test_arrow_select(data) {
+        function test_arrow_select(data, selector, sectionIndex) {
+            if (!selector) {
+                selector = defaultSelector;
+                sectionIndex = 0;
+            }
+            sections.selectedIndex = sectionIndex;
             selector.forceActiveFocus();
             selector.currentlyExpanded = data.expanded;
             selector.selectedIndex = data.index;
@@ -151,6 +139,41 @@ Page {
                 compare(selector.selectedIndex, data.newIndex, 'Wrong index after key press');
             if (data.newExpanded)
                 compare(selector.currentlyExpanded, data.newExpanded, data.newExpanded ? 'Not expanded' : 'Not collapsed');
+        }
+
+        function test_expanded() {
+            var selector = defaultSelector;
+            sections.selectedIndex = 0;
+            selector.forceActiveFocus();
+            waitForRendering(selector);
+            compare(selector.currentlyExpanded, false);
+            compare(selector.expanded, false);
+            keyClick(Qt.Key_Return);
+            waitForRendering(selector);
+            compare(selector.currentlyExpanded, true);
+            compare(selector.expanded, false);
+
+            sections.selectedIndex = 1;
+            waitForRendering(selector);
+            compare(selector.currentlyExpanded, true);
+            compare(selector.expanded, true);
+
+            sections.selectedIndex = 0;
+            waitForRendering(selector);
+            compare(selector.expanded, false);
+            compare(selector.currentlyExpanded, false);
+            compare(selector.selectedIndex, 0);
+            selector.forceActiveFocus();
+            waitForRendering(selector);
+            keyClick(Qt.Key_Down);
+            compare(selector.selectedIndex, 0);
+        }
+
+        function test_custom_data() {
+            return test_arrow_select_data()
+        }
+        function test_custom(data) {
+            test_arrow_select(data, customSelector, 2);
         }
     }
 }
