@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,9 +36,12 @@ MainView {
         }
 
         ActionBar {
+            styleName: "ScrollingActionBarStyle"
             objectName: "ActionBar"
+
+            width: units.gu(15)
             anchors.centerIn: parent
-            numberOfSlots: 4
+
             actions: [
                 Action {
                     iconName: "share"
