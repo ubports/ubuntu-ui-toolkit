@@ -6,7 +6,6 @@ usr/include/*/qt5/UbuntuMetrics/events.h
 usr/include/*/qt5/UbuntuMetrics/logger.h
 usr/include/*/qt5/UbuntuMetrics/ubuntumetricsglobal.h
 usr/include/*/qt5/UbuntuMetrics/ubuntumetricsversion.h
-usr/lib/*/libUbuntuMetrics.la
 usr/lib/*/libUbuntuMetrics.prl
 usr/lib/*/libUbuntuMetrics.so
 usr/lib/*/pkgconfig/UbuntuMetrics.pc
