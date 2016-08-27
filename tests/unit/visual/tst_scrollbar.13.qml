@@ -1168,6 +1168,22 @@ Item {
 
         }
 
+        //check that the mouse filters handling the interactions with the thumb and steppers
+        //ignore the synthesized events. This is required to have the correct hover handling,
+        //because it's the way we make sure that the hover logic is only called for real mouse
+        //events, and not touch-to-mouse synthesized events
+        function test_ignoreSynthesizedEventsInMouseFilters() {
+            var scrollbar = defaultValuesScrollbar
+            var style = scrollbar.__styleInstance
+            var thumbArea = getThumbArea(scrollbar)
+            var steppersMouseArea = getSteppersMouseArea(scrollbar)
+
+            compare(thumbArea.Mouse.ignoreSynthesizedEvents, true,
+                    "The mouse filter in the thumb MouseArea does not ignore synthesized events. Hover state logic may be affected.")
+            compare(steppersMouseArea.Mouse.ignoreSynthesizedEvents, true,
+                    "The mouse filter in the steppers MouseArea does not ignore synthesized events. Hover state logic may be affected.")
+        }
+
         function test_defaultStylingValues() {
             var scrollbar = defaultValuesScrollbar
             var style = scrollbar.__styleInstance

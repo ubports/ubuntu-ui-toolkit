@@ -861,6 +861,7 @@ Item {
 
             MouseArea {
                 id: steppersMouseArea
+                objectName: "steppersMouseArea"
                 //size is handled by the states
 
                 property bool hoveringFirstStepper: false
