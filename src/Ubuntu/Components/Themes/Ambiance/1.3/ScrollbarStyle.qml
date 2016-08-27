@@ -913,12 +913,7 @@ Item {
                     hoveringFirstStepper = false
                     hoveringSecondStepper = false
                 }
-
-                //We don't change the size of the images because we let the image reader figure the size out,
-                //though that means we have to hide the images somehow while the mousearea is visible but has
-                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
-                clip: true
-                onPressed: {
+                Mouse.onPressed: {
                     //This additional trigger of the hovering logic is useful especially in testing
                     //environments, where simulating a click on the first stepper will generate onEntered,
                     //but then clicking on the second one (without a mouseMove) won't, because they're
@@ -926,7 +921,16 @@ Item {
                     //we ensure that the hovering logic is correct even when there are no mouse moves between
                     //clicks on different steppers (like it happens in tst_actionSteppers test).
                     handleHover(mouse)
+                }
+                Mouse.onReleased: {
+                    handleHover(mouse)
+                }
 
+                //We don't change the size of the images because we let the image reader figure the size out,
+                //though that means we have to hide the images somehow while the mousearea is visible but has
+                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
+                clip: true
+                onPressed: {
                     handlePress()
                     pressHoldTimer.startTimer(steppersMouseArea)
                 }
