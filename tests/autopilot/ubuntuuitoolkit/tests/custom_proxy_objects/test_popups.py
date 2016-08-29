@@ -21,6 +21,22 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import popups, tests
 
 
+class WindowTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_popups.WindowTestCase.qml')
+
+    def _open_dialog(self):
+        open_button = self.main_view.select_single(
+            'Button', objectName='open_dialog')
+        self.pointing_device.click_object(open_button)
+
+    def test_can_open_dialog(self):
+        self._open_dialog()
+
+
 class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
 
     # FIXME: Currently we are only testing UITK 1.0 Popups,
