@@ -43,6 +43,7 @@ override_dh_install:
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
 	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
+	rm -f debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/*.la
 	# FIXME: Due to autopilot not being in the archive we ship docs for now
 	# sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
 	# sphinx-build -b json documentation/autopilot-helpers documentation/autopilot-helpers/_build/json

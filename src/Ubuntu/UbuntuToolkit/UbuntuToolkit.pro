@@ -7,7 +7,7 @@ unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
 }
-QT *= dbus svg UbuntuGestures UbuntuGestures_private
+QT *= dbus svg UbuntuGestures UbuntuGestures_private UbuntuMetrics
 
 # QOrganizer for Alarm API
 QT *= organizer
@@ -44,7 +44,15 @@ HEADERS += \
     mousetouchadaptor_p.h \
     mousetouchadaptor_p_p.h \
     propertychange_p.h \
-    ubuntutoolkitmodule.h
+    ubuntutoolkitmodule.h \
+    splitview_p.h \
+    splitview_p_p.h \
+    privates/splitviewhandler_p_p.h \
+    menu_p_p.h \
+    menubar_p_p.h \
+    menu_p.h \
+    menubar_p.h \
+    menugroup_p.h
 
 SOURCES += \ 
     colorutils.cpp \
@@ -52,7 +60,13 @@ SOURCES += \
     asyncloader.cpp \
     mousetouchadaptor.cpp \
     propertychange.cpp \
-    ubuntutoolkitmodule.cpp
+    ubuntutoolkitmodule.cpp \
+    splitview.cpp \
+    privates/splitviewhandler.cpp \
+    splitviewlayout.cpp \
+    menu.cpp \
+    menubar.cpp \
+    menugroup.cpp
 
 HEADERS += \
     uctheme_p.h \
@@ -149,7 +163,9 @@ HEADERS += \
     privates/appheaderbase_p.h \
     label_p.h \
     ucbottomedgeregion_p_p.h \
-    privates/ucscrollbarutils_p.h
+    privates/ucscrollbarutils_p.h \
+    actionlist_p.h \
+    exclusivegroup_p.h
 
 SOURCES += \
     uctheme.cpp \
@@ -226,7 +242,9 @@ SOURCES += \
     privates/ucpagewrapper.cpp \
     privates/ucpagewrapperincubator.cpp \
     privates/appheaderbase.cpp \
-    privates/ucscrollbarutils.cpp
+    privates/ucscrollbarutils.cpp \
+    actionlist.cpp \
+    exclusivegroup.cpp
 
 # adapters
 SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp

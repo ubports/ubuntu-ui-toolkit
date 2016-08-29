@@ -135,6 +135,8 @@ private Q_SLOTS:
 int main(int argc, char *argv[])
 {
     qputenv("QT_DEVICE_PIXEL_RATIO", "2");
+    qputenv("QT_SCALE_FACTOR", "2");
+    qunsetenv("GRID_UNIT_PX");
 
     QGuiApplication app(argc, argv);
     app.setAttribute(Qt::AA_Use96Dpi, true);

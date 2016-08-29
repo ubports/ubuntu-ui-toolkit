@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 
 TestCase {
      name: "ActionAPI"
@@ -39,6 +39,12 @@ TestCase {
          triggeredSignalSpy.clear();
          context1.active = false;
          context2.active = false;
+
+         checkableAction.checkable = true;
+         checkableAction.checked = false;
+         action1.checked = true;
+         currentActionSpy.clear();
+         checkableSpy.clear();
      }
 
      function initTestCase() {
@@ -166,6 +172,60 @@ TestCase {
          compare(data.action.invoked, data.invoked);
      }
 
+     function test_checkable() {
+         checkableAction.checkable = true;
+         checkableAction.checked = true;
+         checkableSpy.wait();
+         compare(checkableAction.checked, true, "Checkable action should be checked");
+     }
+
+     function test_not_checkable() {
+         checkableAction.checkable = false;
+         checkableAction.checked = true;
+         compare(checkableAction.checked, false, "Non-checkable action should never be checked");
+     }
+
+     function test_actionlist() {
+         verify(actionList.actions.length, 2, "Default actions not added to actionList");
+     }
+
+     function test_actionlist_dynamic_actions() {
+         actionList.addAction(dynamicListAction);
+         verify(actionList.actions.length, 3, "Dynamic action not added to actionList");
+         actionList.removeAction(dynamicListAction);
+         verify(actionList.actions.length, 2, "Dynamic action not remove from actionList");
+     }
+
+     function test_exclusive_group() {
+         compare(exclusiveGroup.actions.length, 3, "Incorrect number of actions");
+     }
+
+     function test_exclusive_group_activation_data() {
+         return [
+             {tag: "Activate action2", active: [action2], inactive: [action1, action3], current: action2},
+             {tag: "Activate action3", active: [action3], inactive: [action1, action2], current: action3},
+             {tag: "Activate action2, action3", active: [action2, action3], inactive: [action1, action2], current: action3},
+         ];
+     }
+     function test_exclusive_group_activation(data) {
+         for (var i = 0; i < data.active.length; i++) {
+             data.active[i].trigger();
+             compare(data.active[i].checked, true, "Active action checked property should be 'true'");
+         }
+         for (var i = 0; i < data.inactive.length; i++) {
+            compare(data.inactive[i].checked, false, "Inactive action checked property should be 'false'");
+         }
+         currentActionSpy.wait();
+         compare(exclusiveGroup.current, data.current, "Current action in exclusiveGroup does not match");
+     }
+
+     function test_always_one_action_selected() {
+         action1.trigger();
+         compare(action1.checked, true, "Triggering an exclusive group action should check the action");
+         action1.trigger();
+         compare(action1.checked, true, "Triggering an exclusive group action again will not uncheck the action.");
+     }
+
      Action {
          id: action
      }
@@ -196,6 +256,16 @@ TestCase {
          id: textSpy
          target: action
          signalName: "textChanged"
+     }
+     SignalSpy {
+         id: checkableSpy
+         target: checkableAction
+         signalName: "toggled"
+     }
+     SignalSpy {
+         id: currentActionSpy
+         target: exclusiveGroup
+         signalName: "currentChanged"
      }
 
      ActionManager {
@@ -234,6 +304,42 @@ TestCase {
 
      ActionItem {
          id: testItem
+     }
+
+     Action {
+         id: checkableAction
+         checkable: true
+     }
+
+     ActionList {
+         id: actionList
+         Action {
+         }
+         Action {
+         }
+     }
+
+     Action {
+         id: dynamicListAction
+     }
+
+     ExclusiveGroup {
+         id: exclusiveGroup
+         Action {
+             id: action1
+             checkable: true
+             checked: true
+         }
+         Action {
+             id: action2
+             checkable: true
+             checked: false
+         }
+         Action {
+             id: action3
+             checkable: true
+             checked: false
+         }
      }
 
 }

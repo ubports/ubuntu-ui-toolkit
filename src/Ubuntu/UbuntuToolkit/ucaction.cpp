@@ -17,6 +17,7 @@
 #include "ucaction_p.h"
 #include "quickutils_p.h"
 #include "ucactioncontext_p.h"
+#include "exclusivegroup_p.h"
 
 #include <QtDebug>
 #include <QtQml/QQmlInfo>
@@ -149,6 +150,18 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
  *     text: "&Call"
  * }
  * \endqml
+ *
+ * \section2 Checkable property
+ * Since Ubuntu.Components 1.3 Action supports the checkable/checked properties.
+ * \qml
+ * Button {
+ *     action: Action {
+ *         checkable: true
+ *         checked: false
+ *     }
+ *     color: action.checked ? UbuntuColor.green : UbuntuColor.red
+ * }
+ * \endqml
  */
 
 /*!
@@ -157,6 +170,14 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
  * the action when emitted by components. Custom implementations must make sure
  * this rule is followed, therefore instead of emitting the signal the \l trigger
  * function should be called.
+ */
+
+/*!
+ * \qmlsignal Action::toggled(bool value)
+ * Signal called when the action's checked property changes.
+ * \note The toggled signal should be used for checkable actions rather than the
+ * triggered signal.
+ * \sa Action::checkable, Action::checked, ExclusiveGroup
  */
 
 /*!
@@ -250,51 +271,17 @@ void UCAction::setMnemonicFromText(const QString &text)
  * \endqml
  */
 
-/*!
- * \qmlproperty enum Action::parameterType
- * Type of the parameter passed to \l trigger and \l triggered.
- * Type is an enumeration:
- * \list
- *  \li \b Action.None: No paramater. (default)
- *  \li \b Action.String: String parameter.
- *  \li \b Action.Integer: Integer parameter.
- *  \li \b Action.Bool: Boolean parameter.
- *  \li \b Action.Real: Single precision floating point parameter.
- *  \li \b Action.Object: The parameter is an object.
- * \endlist
- * \qml
- * Action {
- *     id: action
- *     parameterType: Action.String
- *     onTriggered: {
- *         // value arguments now contain strings
- *         console.log(value);
- *     }
- *     Component.onCompleted: action.trigger("Hello World")
- * }
- * \endqml
- */
-
-/*!
- * \qmlproperty bool Action::enabled
- * If set to false the action can not be triggered. Components visualizing the
- * action migth either hide the action or make it insensitive. However visibility
- * can be controlled separately using the \l visible property.
- */
-
-/*!
- * \qmlproperty bool Action::visible
- * Specifies whether the action is visible to the user. Defaults to true.
- */
-
 UCAction::UCAction(QObject *parent)
     : QObject(parent)
+    , m_exclusiveGroup(Q_NULLPTR)
     , m_itemHint(Q_NULLPTR)
     , m_parameterType(None)
     , m_factoryIconSource(true)
     , m_enabled(true)
     , m_visible(true)
     , m_published(false)
+    , m_checkable(false)
+    , m_checked(false)
 {
     generateName();
     // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
@@ -436,6 +423,163 @@ void UCAction::resetShortcut()
     Q_EMIT shortcutChanged();
 }
 
+/*!
+ * \qmlproperty bool Action::visible
+ * Specifies whether the action is visible to the user. Defaults to true.
+ */
+void UCAction::setVisible(bool visible)
+{
+    if (m_visible == visible) {
+        return;
+    }
+    m_visible = visible;
+    Q_EMIT visibleChanged();
+}
+
+/*!
+ * \qmlproperty bool Action::enabled
+ * If set to false the action can not be triggered. Components visualizing the
+ * action migth either hide the action or make it insensitive. However visibility
+ * can be controlled separately using the \l visible property.
+ */
+void UCAction::setEnabled(bool enabled)
+{
+    if (m_enabled == enabled) {
+        return;
+    }
+    m_enabled = enabled;
+    Q_EMIT enabledChanged();
+
+}
+
+/*!
+ * \qmlproperty enum Action::parameterType
+ * Type of the parameter passed to \l trigger and \l triggered.
+ * Type is an enumeration:
+ * \list
+ *  \li \b Action.None: No paramater. (default)
+ *  \li \b Action.String: String parameter.
+ *  \li \b Action.Integer: Integer parameter.
+ *  \li \b Action.Bool: Boolean parameter.
+ *  \li \b Action.Real: Single precision floating point parameter.
+ *  \li \b Action.Object: The parameter is an object.
+ * \endlist
+ * \qml
+ * Action {
+ *     id: action
+ *     parameterType: Action.String
+ *     onTriggered: {
+ *         // value arguments now contain strings
+ *         console.log(value);
+ *     }
+ *     Component.onCompleted: action.trigger("Hello World")
+ * }
+ * \endqml
+ */
+void UCAction::setParameterType(UCAction::Type type)
+{
+    if (m_parameterType == type) {
+        return;
+    }
+    m_parameterType = type;
+    Q_EMIT parameterTypeChanged();
+}
+
+/*!
+ * \qmlproperty bool Action::checkable
+ * \since Ubuntu.Components 1.3
+ * Whether the action can be checked. Defaults to false.
+ * \sa Action::checked, Action::toggled, ExclusiveGroup
+ */
+void UCAction::setCheckable(bool checkable)
+{
+    if (m_checkable == checkable) {
+        return;
+    }
+    m_checkable = checkable;
+    Q_EMIT checkableChanged();
+
+    // If the Action is already checked, assert the check state.
+    if (m_checked)
+        Q_EMIT toggled(m_checkable);
+}
+
+/*!
+ * \qmlproperty bool Action::checked
+ * \since Ubuntu.Components 1.3
+ * If the action is checkable, this property reflects its checked state. Defaults to false.
+ * Its value is also false while checkable is false.
+ * \sa Action::checkable, Action::toggled, ExclusiveGroup
+ */
+void UCAction::setChecked(bool checked)
+{
+    if (m_checked == checked) {
+        return;
+    }
+    m_checked = checked;
+
+    if (m_checkable) {
+        Q_EMIT toggled(checked);
+    }
+}
+
+/*!
+ * \qmlproperty ExclusiveGroup Action::exclusiveGroup
+ * \since Ubuntu.Components 1.3
+ * The \l ExclusiveGroup associated with this action.
+ * An exclusive group allows the \l checked property to belinked to other actions,
+ * as in radio controls.
+ * \qml
+ * Column {
+ *     ExclusiveGroup {
+ *         Action {
+ *             id: action1
+ *             checkable: true
+ *             checked: true
+ *         }
+ *         Action {
+ *             id: action2
+ *             checkable: true
+ *         }
+ *         Action {
+ *             id: action3
+ *             checkable: true
+ *         }
+ *     }
+ *
+ *     Button {
+ *         action: action1
+ *         color: action.checked ? UbuntuColor.green : UbuntuColor.red
+ *     }
+ *     Button {
+ *         action: action2
+ *         color: action.checked ? UbuntuColor.green : UbuntuColor.red
+ *     }
+ *     Button {
+ *         action: action3
+ *         color: action.checked ? UbuntuColor.green : UbuntuColor.grey
+ *     }
+ * }
+ * \endqml
+ */
+void UCAction::setExclusiveGroup(ExclusiveGroup *exclusiveGroup)
+{
+    if (m_exclusiveGroup == exclusiveGroup) {
+        return;
+    }
+
+    if (m_exclusiveGroup) {
+        m_exclusiveGroup->unbindCheckable(this);
+    }
+
+    m_exclusiveGroup = exclusiveGroup;
+
+    if (m_exclusiveGroup) {
+        m_exclusiveGroup->bindCheckable(this);
+    }
+    Q_EMIT exclusiveGroupChanged();
+}
+
 bool UCAction::event(QEvent *event)
 {
     if (event->type() != QEvent::Shortcut)
@@ -475,6 +619,11 @@ void UCAction::trigger(const QVariant &value)
     if (!m_enabled) {
         return;
     }
+
+    if (m_checkable && !(m_checked && m_exclusiveGroup)) {
+        setChecked(!m_checked);
+    }
+
     if (!isValidType(value.type())) {
         Q_EMIT triggered(QVariant());
     } else {
