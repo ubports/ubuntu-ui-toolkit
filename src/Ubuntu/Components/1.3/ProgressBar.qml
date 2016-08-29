@@ -66,6 +66,7 @@ AnimatedItem {
 
     /*!
       \since Ubuntu.Components 1.1
+      \deprecated
       Specifies if the value of the progress is visible. The current visuals in
       Ubuntu Components 1.3 do not support this feature.
     */

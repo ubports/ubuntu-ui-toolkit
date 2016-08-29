@@ -55,6 +55,12 @@ Rectangle {
             && animated && !reverseAnimate
         property bool reverseAnimate: false
 
+        NumberAnimation on width {
+            duration: UbuntuAnimation.SlowDuration
+            easing.type: strip.easing
+            running: !styledItem.indeterminate
+        }
+
         state: animateStrip ? "animate" : ""
 
         // reversible doesn't work, so we need animatiomns for both transitions
