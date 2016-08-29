@@ -85,6 +85,7 @@ protected:
 
 private:
     explicit QuickUtils(QObject *parent = 0);
+    QPointer<QQuickWindow> m_rootWindow;
     QPointer<QQuickView> m_rootView;
     QStringList m_omitIM;
     bool m_mouseAttached;
