@@ -32,9 +32,12 @@ class WindowTestCase(tests.QMLFileAppTestCase):
         open_button = self.main_view.select_single(
             'Button', objectName='open_dialog')
         self.pointing_device.click_object(open_button)
+        return self.main_view.wait_select_single(
+            popups.Dialog, objectName='test_dialog')
 
     def test_can_open_dialog(self):
-        self._open_dialog()
+        popover = self._open_dialog()
+        self.assertIsInstance(popover, popups.Dialog)
 
 
 class ActionSelectionPopoverTestCase(tests.QMLFileAppTestCase):
