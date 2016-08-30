@@ -60,6 +60,11 @@ function open(popup, caller, params) {
         return null;
     }
 
+    if (!rootObject) {
+        print("PopupUtils.open(): Failed to get the root object.");
+        return null;
+    }
+
     var popupObject;
     if (params !== undefined) {
         popupObject = popupComponent.createObject(rootObject, params);
