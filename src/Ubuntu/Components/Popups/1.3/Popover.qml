@@ -33,9 +33,8 @@ import Ubuntu.Components 1.3
     \qml
         import QtQuick 2.4
         import Ubuntu.Components 1.3
-        import Ubuntu.Components.ListItems 1.3 as ListItem
         import Ubuntu.Components.Popups 1.3
-
+        import Ubuntu.Components.ListItems 1.3 as Old_ListItem
         Rectangle {
             color: theme.palette.normal.background
             width: units.gu(80)
@@ -52,29 +51,35 @@ import Ubuntu.Components 1.3
                             top: parent.top
                             right: parent.right
                         }
-                        ListItem.Header { text: "Standard list items" }
-                        ListItem.Standard { text: "Do something" }
-                        ListItem.Standard { text: "Do something else" }
-                        ListItem.Header { text: "Buttons" }
-                        ListItem.SingleControl {
-                            highlightWhenPressed: false
-                            control: Button {
-                                text: "Do nothing"
-                                anchors {
-                                    fill: parent
-                                    margins: units.gu(1)
-                                }
+
+                        // there is no equivalent yet to ListItem.Header
+                        Old_ListItem.Header { text: "Standard list items" }
+
+                        ListItem {
+                            // shall specify the height when Using ListItemLayout inside ListItem
+                            height: somethingLayout.height + (divider.visible ? divider.height : 0)
+                            ListItemLayout {
+                                id: somethingLayout
+                                title.text: "Do somethings"
+                            }
+                            onClicked: console.log("clicked on ListItem with onClicked implemented")
+                        }
+                        ListItem {
+                            // shall specify the height when Using ListItemLayout inside ListItem
+                            height: somethingElseLayout.height + (divider.visible ? divider.height : 0)
+                            ListItemLayout {
+                                id: somethingElseLayout
+                                title.text: "Do somethings"
+                                subtitle.text: "else"
                             }
                         }
-                        ListItem.SingleControl {
-                            highlightWhenPressed: false
-                            control: Button {
-                                text: "Close"
-                                anchors {
-                                    fill: parent
-                                    margins: units.gu(1)
-                                }
-                                onClicked: PopupUtils.close(popover)
+                        ListItem {
+                            // shall specify the height when Using ListItemLayout inside ListItem
+                            height: closeBtn.height + (divider.visible ? divider.height : 0)
+                            Button {
+                                id: closeBtn
+                                text: "Close button"
+                                onClicked: PopupUtils.close(popover);
                             }
                         }
                     }

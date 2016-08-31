@@ -20,8 +20,6 @@ import Ubuntu.Components 1.3
 Image {
     id: container
 
-    implicitWidth: units.gu(3)
-    implicitHeight: units.gu(3)
     smooth: true
     visible: styledItem.running && styledItem.visible
     fillMode: Image.PreserveAspectFit

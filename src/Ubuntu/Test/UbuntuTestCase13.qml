@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import QtTest 1.0
+import QtTest 1.1
 import Ubuntu.Components 1.3
 
 /*!
