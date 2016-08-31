@@ -242,6 +242,9 @@ UbuntuTestCase {
     function getThumbArea(scrollbar) {
         return findChildAndCheckValidInstance(scrollbar.__styleInstance, "thumbArea")
     }
+    function getSteppersMouseArea(scrollbar) {
+        return findChildAndCheckValidInstance(scrollbar.__styleInstance, "steppersMouseArea")
+    }
     function getScrollAnimation(scrollbar) {
         var anim = findInvisibleChild(scrollbar.__styleInstance, "scrollAnimation")
         verify(anim !== null, "Returning a valid reference to scrollAnimation.")

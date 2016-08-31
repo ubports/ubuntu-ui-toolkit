@@ -148,7 +148,7 @@ class QQuickFlickable(Scrollable):
     margin_to_swipe_from_bottom = units.gu(2)
     # Swiping from above can open the indicators or resize the window. Use this
     # margin to start a swipe that will not be that close to the top edge.
-    margin_to_swipe_from_top = units.gu(1)
+    margin_to_swipe_from_top = units.gu(2)
     # Swiping from left and right can show the launcher or open app switcher.
     margin_to_swipe_from_left = units.gu(3)
     margin_to_swipe_from_right = units.gu(3)
