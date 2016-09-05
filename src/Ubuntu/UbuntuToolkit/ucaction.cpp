@@ -364,8 +364,16 @@ void UCAction::setIconSource(const QUrl &url)
     if (m_iconSource == url) {
         return;
     }
-    m_iconSource = url;
-    m_factoryIconSource = false;
+    if (url.isEmpty()) {
+        // When iconSource is initialized empty, its value should not depend on the order of
+        //  which iconSource and iconName are set, so reset the icon source properties below.
+        //  Fixes bug #1616858.
+        m_factoryIconSource = true;
+        m_iconSource = m_iconName.isEmpty() ? QUrl() : QUrl("image://theme/" + m_iconName);
+    } else {
+        m_iconSource = url;
+        m_factoryIconSource = false;
+    }
     Q_EMIT iconSourceChanged();
 }
 
