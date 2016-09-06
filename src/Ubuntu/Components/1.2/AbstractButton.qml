@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 
 /*!
     \qmlabstract AbstractButton
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
 

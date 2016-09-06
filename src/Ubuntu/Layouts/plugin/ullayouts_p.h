@@ -42,8 +42,8 @@ public:
     static void warning(QObject *item, const QString &message);
 
 protected: // QQmlIncubator stuff
-    void setInitialState(QObject *object);
-    void statusChanged(Status status);
+    void setInitialState(QObject *object) override;
+    void statusChanged(Status status) override;
 
 private:
     ULLayouts *q_ptr;

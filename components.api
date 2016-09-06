@@ -10,13 +10,17 @@ Ubuntu.Components.AbstractButton 1.3 UCAbstractButton: ActionItem
     readonly property bool pressed
     readonly property UCMargins sensingMargins
 Ubuntu.Components.Action 1.3 1.0 0.1 UCAction: QtObject
+    property bool checkable 1.3
+    property bool checked 1.3
     property string description
     property bool enabled
+    property ExclusiveGroup exclusiveGroup 1.3
     property string iconName
     property url iconSource
     property Component itemHint
     property string keywords
     signal triggered(var value)
+    signal toggled(bool value) 1.3
     function trigger(var value)
     function trigger()
     property string name
@@ -24,18 +28,13 @@ Ubuntu.Components.Action 1.3 1.0 0.1 UCAction: QtObject
     property var shortcut 1.3
     property string text
     property bool visible
-Ubuntu.Components.Action.Type: Enum
-    Bool
-    Integer
-    None
-    Object
-    Real
-    String
 Ubuntu.Components.ActionBar 1.3: StyledItem
     property list<Action> actions
     property Component delegate
     property int numberOfSlots
 Ubuntu.Components.Styles.ActionBarStyle 1.3: Item
+    property color backgroundColor
+    readonly property ActionItemProperties buttons
     property Component defaultDelegate
     property int defaultNumberOfSlots
     property string overflowIconName
@@ -54,12 +53,22 @@ Ubuntu.Components.ActionItem 1.0 0.1 UCActionItem: StyledItem
     function trigger(var value)
     function trigger()
     property string text
+Ubuntu.Components.Styles.ActionItemProperties 1.3: QtObject
+    property color backgroundColor
+    property color disabledBackgroundColor
+    property color disabledForegroundColor
+    property color foregroundColor
+    property color pressedBackgroundColor
+    property color pressedForegroundColor
 Ubuntu.Components.ActionList 1.0 0.1: QtObject
     property list<Action> actions
     default property list<Action> children
-Ubuntu.Components.ActionList 1.3: QtObject
-    property list<Action> actions
-    default property list<Action> children
+Ubuntu.Components.ActionList 1.3 ActionList: QtObject
+    default property list<Action> actions
+    signal added(Action action)
+    signal removed(Action action)
+    function addAction(Action action)
+    function removeAction(Action action)
 Ubuntu.Components.ActionManager 1.0 0.1 UCActionManager: QtObject
     default property list<Action> actions
     readonly property ActionContext globalContext
@@ -86,7 +95,7 @@ Ubuntu.Components.ActivityIndicator 1.3: AnimatedItem
 Ubuntu.Components.AdaptivePageLayout 1.3: PageTreeNode
     property bool asynchronous
     readonly property int columns
-    property list<PageColumnsLayou> layouts
+    property list<PageColumnsLayout> layouts
     function var addPageToCurrentColumn(var sourcePage, var page, var properties)
     function var addPageToNextColumn(var sourcePage, var page, var properties)
     function var removePages(var page)
@@ -105,51 +114,19 @@ Ubuntu.Components.Alarm 1.0 0.1 UCAlarm: QtObject
     property url sound
     readonly property Status status
     property AlarmType type
-Ubuntu.Components.Alarm.AlarmType: Enum
-    OneTime
-    Repeating
-Ubuntu.Components.Alarm.DayOfWeek: Enum
-    AutoDetect
-    Daily
-    Friday
-    Monday
-    Saturday
-    Sunday
-    Thursday
-    Tuesday
-    Wednesday
-Ubuntu.Components.Alarm.DaysOfWeek: Flag
-    AutoDetect
-    Daily
-    Friday
-    Monday
-    Saturday
-    Sunday
-    Thursday
-    Tuesday
-    Wednesday
-Ubuntu.Components.Alarm.Error: Enum
-    AdaptationError
-    EarlyDate
-    InvalidDate
-    InvalidEvent
-    NoDaysOfWeek
-    NoError
-    OneTimeOnMoreDays
-    OperationPending
-Ubuntu.Components.Alarm.Operation: Enum
-    Canceling
-    NoOperation
-    Reseting
-    Saving
-Ubuntu.Components.Alarm.Status: Enum
-    Fail
-    InProgress
-    Ready
 Ubuntu.Components.AlarmModel 1.0 0.1 UCAlarmModel: QAbstractListModel
     readonly property int count
     function refresh() 1.0
-    function UCAlarm* get(int index)
+    function Alarm get(int index)
+Ubuntu.Components.AlarmType: Enum
+    OneTime
+    Repeating
+Ubuntu.Metrics.ApplicationMonitor 1.0: QtObject singleton
+    property bool logging
+    property LoggingFilters loggingFilter
+    function bool logEvent(Event event)
+    property bool overlay
+    property int processUpdateInterval
 Ubuntu.Components.Argument 1.0 0.1 UCArgument: QtObject
     property string help
     function var at(int i)
@@ -165,6 +142,13 @@ Ubuntu.Components.Arguments 1.0 0.1 UCArguments: QtObject
     function quitWithError(string errorMessage)
     function quitWithError()
     readonly property QQmlPropertyMap values
+Ubuntu.Components.Aspect: Enum
+    DropShadow
+    Flat
+    Inset
+Ubuntu.Components.BackgroundMode: Enum
+    SolidColor
+    VerticalGradient
 Ubuntu.Components.ListItems.Base 1.0 0.1: Empty
     property string fallbackIconName
     property url fallbackIconSource
@@ -186,8 +170,8 @@ Ubuntu.Components.BottomEdge 1.3 UCBottomEdge: StyledItem
     readonly property double dragProgress
     readonly property BottomEdgeHint hint
     signal dragProgressChanged(double dragProgress)
-    signal dragDirectionChanged(BottomEdge.DragDirection direction)
-    signal statusChanged(BottomEdge.Status status)
+    signal dragDirectionChanged(DragDirection direction)
+    signal statusChanged(Status status)
     signal contentChanged(url url)
     signal contentComponentChanged(Component component)
     signal activeRegionChanged(BottomEdgeRegion activeRegion)
@@ -200,25 +184,12 @@ Ubuntu.Components.BottomEdge 1.3 UCBottomEdge: StyledItem
     property bool preloadContent
     property list<BottomEdgeRegion> regions
     readonly property Status status
-Ubuntu.Components.BottomEdge.DragDirection: Enum
-    Downwards
-    Undefined
-    Upwards
-Ubuntu.Components.BottomEdge.Status: Enum
-    Committed
-    Hidden
-    Revealed
 Ubuntu.Components.BottomEdgeHint 1.3 UCBottomEdgeHint: ActionItem
     property int deactivateTimeout
     property Flickable flickable
     signal clicked()
     property Status status
     readonly property SwipeArea swipeArea
-Ubuntu.Components.BottomEdgeHint.Status: Enum
-    Active
-    Hidden
-    Inactive
-    Locked
 Ubuntu.Components.BottomEdgeRegion 1.3 UCBottomEdgeRegion: QtObject
     property Component contentComponent
     property url contentUrl
@@ -264,6 +235,9 @@ Ubuntu.Components.Captions 1.3: ColumnLayout
     property int captionStyle
     readonly property Label subtitle
     readonly property Label title
+Ubuntu.Components.CaptionsStyle: Enum
+    SummaryCaptionStyle
+    TitleCaptionStyle
 Ubuntu.Components.CheckBox 1.0 0.1: AbstractButton
     property bool checked
 Ubuntu.Components.CheckBox 1.3: AbstractButton
@@ -272,7 +246,7 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
     readonly property MimeData data
     function push(var data)
     function clear()
-    function QQuickMimeData* newData()
+    function MimeData newData()
 Ubuntu.Components.ColorUtils 1.0 0.1: QtObject singleton
     function double luminance(color color)
 Ubuntu.Components.ComboButton 1.1: Button
@@ -370,6 +344,26 @@ Ubuntu.Components.Pickers.DatePicker 1.3: StyledItem
     readonly property int week
     readonly property int year
 Ubuntu.Components.DateUtils 0.1 1.0 1.3
+Ubuntu.Components.DayOfWeek: Enum
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
+Ubuntu.Components.DaysOfWeek: Flag
+    AutoDetect
+    Daily
+    Friday
+    Monday
+    Saturday
+    Sunday
+    Thursday
+    Tuesday
+    Wednesday
 Ubuntu.Components.Popups.DefaultSheet 1.0 0.1: SheetBase
     property bool doneButton
     signal closeClicked()
@@ -432,6 +426,10 @@ Ubuntu.Components.Popups.Dialog 1.3: PopupBase
     property string title
 Ubuntu.Components.ListItems.Divider 1.0 0.1: QQuickImageBase
 Ubuntu.Components.ListItems.Divider 1.3: QQuickImageBase
+Ubuntu.Components.DragDirection: Enum
+    Downwards
+    Undefined
+    Upwards
 Ubuntu.Components.ListItems.Empty 1.0 0.1: AbstractButton
     property list<Item> backgroundIndicator
     property bool confirmRemoval
@@ -456,6 +454,21 @@ Ubuntu.Components.ListItems.Empty 1.3: AbstractButton
     property bool showDivider
     readonly property string swipingState
     readonly property bool waitingConfirmationForRemoval
+Ubuntu.Components.Error: Enum
+    AdaptationError
+    EarlyDate
+    InvalidDate
+    InvalidEvent
+    NoDaysOfWeek
+    NoError
+    OneTimeOnMoreDays
+    OperationPending
+Ubuntu.Metrics.Event: Enum
+    UserInterfaceReady
+Ubuntu.Components.ExclusiveGroup 1.3 ExclusiveGroup: ActionList
+    readonly property QtObject current
+    function bindCheckable(QtObject object)
+    function unbindCheckable(QtObject object)
 Ubuntu.Components.ListItems.Expandable 1.0 0.1: Empty
     property bool collapseOnClick
     property double collapsedHeight
@@ -474,9 +487,28 @@ Ubuntu.Components.ListItems.ExpandablesColumn 1.3: Flickable
     readonly property var expandedItem
     function var expandItem(var item)
     function var collapse()
+Ubuntu.Components.ExpansionFlag: Enum
+    CollapseOnOutsidePress
+    Exclusive
+    UnlockExpanded
+Ubuntu.Components.FillMode: Enum
+    Pad
+    PreserveAspectCrop
+    PreserveAspectFit
+    Stretch
 Ubuntu.Components.FilterBehavior 1.1: QtObject
     property QRegExp pattern
     property string property
+Ubuntu.Components.Frequency: Enum
+    Disabled
+    Hour
+    Minute
+    Relative
+    Second
+Ubuntu.Components.HAlignment: Enum
+    AlignHCenter
+    AlignLeft
+    AlignRight
 Ubuntu.Components.Haptics 1.0 0.1: QtObject singleton
     readonly property QtObject effect
     readonly property bool enabled
@@ -503,6 +535,7 @@ Ubuntu.Components.Header 1.0 0.1: AppHeader
 Ubuntu.Components.ListItems.Header 1.3 ListItemHeader: Item
     property string text
 Ubuntu.Components.Header 1.3 UCHeader: StyledItem
+    property bool automaticHeight
     property bool exposed
     property Flickable flickable
     readonly property bool moving
@@ -554,13 +587,6 @@ Ubuntu.Components.Label 1.0 0.1: Text
 Ubuntu.Components.Label 1.3 UCLabel: Text
     property string fontSize
     property TextSize textSize
-Ubuntu.Components.Label.TextSize: Enum
-    Large
-    Medium
-    Small
-    XLarge
-    XSmall
-    XxSmall
 Ubuntu.Layouts.Layouts 1.0 0.1 ULLayouts: Item
     readonly property string currentLayout
     property list<ConditionalLayout> layouts
@@ -598,10 +624,6 @@ Ubuntu.Components.ListItemDrag 1.2: QtObject
     property int minimumIndex
     readonly property Status status
     readonly property int to
-Ubuntu.Components.ListItemDrag.Status: Enum
-    Dropped
-    Moving
-    Started
 Ubuntu.Components.ListItemLayout 1.3 UCListItemLayout: SlotsLayout
     readonly property Label subtitle
     readonly property Label summary
@@ -619,12 +641,12 @@ Ubuntu.Components.LiveTimer 1.3 LiveTimer: QtObject
     property Frequency frequency
     signal trigger()
     property QDateTime relativeTime
-Ubuntu.Components.LiveTimer.Frequency: Enum
-    Disabled
-    Hour
-    Minute
-    Relative
-    Second
+Ubuntu.Metrics.LoggingFilters: Flag
+    AllEvents
+    FrameEvent
+    GenericEvent
+    ProcessEvent
+    WindowEvent
 Ubuntu.Components.MainView 1.0 0.1: MainViewBase
     property bool automaticOrientation
     default property list<QtObject> contentsItem
@@ -679,9 +701,6 @@ Ubuntu.Components.Mouse 1.0 0.1 UCMouse: QtObject
     signal entered(QQuickMouseEvent event, Item host)
     signal exited(QQuickMouseEvent event, Item host)
     property Priority priority
-Ubuntu.Components.Mouse.Priority: Enum
-    AfterItem
-    BeforeItem
 Ubuntu.Test.MouseTouchAdaptor 1.0: QtObject singleton
     property bool enabled
     signal enabledChanged(bool value)
@@ -691,6 +710,11 @@ Ubuntu.Components.ListItems.MultiValue 1.3: Base
     property var values
 Ubuntu.Components.Object 1.0 0.1: QtObject
     default property list<QtObject> children
+Ubuntu.Components.Operation: Enum
+    Canceling
+    NoOperation
+    Reseting
+    Saving
 Ubuntu.Components.OptionSelector 1.0 0.1: Empty
     property bool colourImage
     property double containerHeight
@@ -762,7 +786,7 @@ Ubuntu.Components.PageColumn 1.3: QtObject
     property double minimumWidth
     property double preferredWidth
 Ubuntu.Components.PageColumnsLayout 1.3: QtObject
-    default property list<PageColum> data
+    default property list<PageColumn> data
     property bool when
 Ubuntu.Components.PageHeadConfiguration 1.1: Object
     property list<Action> actions
@@ -831,6 +855,7 @@ Ubuntu.Components.PageHeader 1.3: Header
     readonly property ActionBar trailingActionBar
 Ubuntu.Components.Styles.PageHeaderStyle 1.3: Item
     property color backgroundColor
+    readonly property ActionItemProperties buttons
     property double contentHeight
     property Component defaultActionDelegate
     property color disabledForegroundColor
@@ -1014,6 +1039,9 @@ Ubuntu.Components.Popups.PopupBase 1.3: OrientationHelper
     function var hide()
 Ubuntu.Components.PopupContext 1.3 UCPopupContext: ActionContext
 Ubuntu.Components.Popups.PopupUtils 0.1 1.0 1.3
+Ubuntu.Components.Priority: Enum
+    AfterItem
+    BeforeItem
 Ubuntu.Components.ProgressBar 1.0 0.1: AnimatedItem
     property bool indeterminate
     property double maximumValue
@@ -1076,6 +1104,12 @@ Ubuntu.Components.Sections 1.3: StyledItem
     property list<Action> actions
     property var model
     property int selectedIndex
+Ubuntu.Components.Styles.SectionsStyle 1.3: Item
+    property color pressedBackgroundColor
+    property color sectionColor
+    property color selectedSectionColor
+    property int textSize
+    property color underlineColor
 Ubuntu.Components.ServiceProperties 1.1 UCServiceProperties: QtObject
     property string adaptorInterface 1.1
     readonly property string error 1.1
@@ -1084,15 +1118,10 @@ Ubuntu.Components.ServiceProperties 1.1 UCServiceProperties: QtObject
     property string serviceInterface 1.1
     readonly property Status status 1.1
     property ServiceType type 1.1
-Ubuntu.Components.ServiceProperties.ServiceType: Enum
+Ubuntu.Components.ServiceType: Enum
     Session
     System
     Undefined
-Ubuntu.Components.ServiceProperties.Status: Enum
-    Active
-    ConnectionError
-    Inactive
-    Synchronizing
 Ubuntu.Components.Popups.SheetBase 1.0 0.1: PopupBase
     default property list<QtObject> container
     property double contentsHeight
@@ -1134,15 +1163,10 @@ Ubuntu.Components.SliderUtils 0.1 1.0
 Ubuntu.Components.SlotsAttached 1.3: QtObject
     property bool overrideVerticalPositioning
     readonly property SlotsLayoutPadding padding
-    property SlotsLayout.UCSlotPosition position
+    property UCSlotPosition position
 Ubuntu.Components.SlotsLayout 1.3 UCSlotsLayout: Item
     property Item mainSlot
     readonly property SlotsLayoutPadding padding
-Ubuntu.Components.SlotsLayout.UCSlotPosition: Enum
-    First
-    Last
-    Leading
-    Trailing
 Ubuntu.Components.SlotsLayoutPadding 1.3: QtObject
     property double bottom
     property double leading
@@ -1173,6 +1197,32 @@ Ubuntu.Components.ListItems.Standard 1.3: Empty
     property bool iconFrame
     property bool progression
 Ubuntu.Components.StateSaver 1.0 0.1 UCStateSaver: QtObject
+Ubuntu.Components.Status: Enum
+    Finished
+    Started
+    Updated
+Ubuntu.Components.Status: Enum
+    Active
+    ConnectionError
+    Inactive
+    Synchronizing
+Ubuntu.Components.Status: Enum
+    Dropped
+    Moving
+    Started
+Ubuntu.Components.Status: Enum
+    Active
+    Hidden
+    Inactive
+    Locked
+Ubuntu.Components.Status: Enum
+    Committed
+    Hidden
+    Revealed
+Ubuntu.Components.Status: Enum
+    Fail
+    InProgress
+    Ready
 Ubuntu.Components.StyleHints 1.3 UCStyleHints: QtObject
     property bool ignoreUnknownProperties
 Ubuntu.Components.StyledItem 1.3 1.3 1.1 1.0 0.1 UCStyledItemBase: Item
@@ -1188,7 +1238,7 @@ Ubuntu.Components.ListItems.Subtitled 1.0 0.1: Base
     property string subText
 Ubuntu.Components.ListItems.Subtitled 1.3: Base
     property string subText
-Ubuntu.Components.SwipeArea 1.3 UCSwipeArea: Item
+Ubuntu.Components.SwipeArea 1.3 UbuntuGestures::UCSwipeArea: Item
     property Direction direction
     readonly property double distance
     readonly property bool dragging
@@ -1215,10 +1265,6 @@ Ubuntu.Components.SwipeEvent 1.2: QtObject
     readonly property QPointF from
     readonly property Status status
     readonly property QPointF to
-Ubuntu.Components.SwipeEvent.Status: Enum
-    Finished
-    Started
-    Updated
 Ubuntu.Components.Switch 1.0 0.1: AbstractButton
     property bool checked
 Ubuntu.Components.Switch 1.3: AbstractButton
@@ -1523,6 +1569,13 @@ Ubuntu.Components.TextField 1.3: ActionItem
     readonly property int selectionStart
     property QValidator validator
     property int verticalAlignment
+Ubuntu.Components.TextSize: Enum
+    Large
+    Medium
+    Small
+    XLarge
+    XSmall
+    XxSmall
 Ubuntu.PerformanceMetrics.TextureFromImage 1.0 0.1 UPMTextureFromImage: Item
     property QImage image
 Ubuntu.Components.ThemeSettings 1.3 UCTheme: QtObject
@@ -1566,6 +1619,13 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property Item pageStack
 Ubuntu.Components.Styles.ToolbarStyle 1.3: Item
     property Component defaultDelegate
+Ubuntu.Components.Type: Enum
+    Bool
+    Integer
+    None
+    Object
+    Real
+    String
 UCActionContextAttached: QtObject
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
@@ -1585,6 +1645,11 @@ UCMargins: QtObject
     property double left
     property double right
     property double top
+Ubuntu.Components.UCSlotPosition: Enum
+    First
+    Last
+    Leading
+    Trailing
 UCStateSaverAttached: QtObject
     property bool enabled
     property string properties
@@ -1605,9 +1670,6 @@ Ubuntu.Components.Ubuntu 1.3: Ubuntu singleton
     readonly property ushort toolkitVersion
     readonly property ushort toolkitVersionMajor
     readonly property ushort toolkitVersionMinor
-Ubuntu.Components.Ubuntu.CaptionsStyle: Enum
-    SummaryCaptionStyle
-    TitleCaptionStyle
 Ubuntu.Components.UbuntuAnimation 1.0 0.1: QtObject singleton
     readonly property int BriskDuration
     readonly property int FastDuration
@@ -1694,29 +1756,6 @@ Ubuntu.Components.UbuntuShape 1.3 1.2 1.0 0.1 Shape 1.0 0.1 UCUbuntuShape: Item
     property WrapMode sourceVerticalWrapMode 1.3
     property bool stretched
     property VAlignment verticalAlignment
-Ubuntu.Components.UbuntuShape.Aspect: Enum
-    DropShadow
-    Flat
-    Inset
-Ubuntu.Components.UbuntuShape.BackgroundMode: Enum
-    SolidColor
-    VerticalGradient
-Ubuntu.Components.UbuntuShape.FillMode: Enum
-    Pad
-    PreserveAspectCrop
-    PreserveAspectFit
-    Stretch
-Ubuntu.Components.UbuntuShape.HAlignment: Enum
-    AlignHCenter
-    AlignLeft
-    AlignRight
-Ubuntu.Components.UbuntuShape.VAlignment: Enum
-    AlignBottom
-    AlignTop
-    AlignVCenter
-Ubuntu.Components.UbuntuShape.WrapMode: Enum
-    Repeat
-    Transparent
 Ubuntu.Components.UbuntuShapeOverlay 1.2 UCUbuntuShapeOverlay: UbuntuShape
     property color overlayColor
     property QRectF overlayRect
@@ -1748,6 +1787,10 @@ Ubuntu.Test.UbuntuTestCase 1.3 UbuntuTestCase13: TestCase
     readonly property QuickTestUtil testUtil
 Ubuntu.Components.UriHandler 1.0 0.1: QtObject singleton
     signal opened(QStringList uris)
+Ubuntu.Components.VAlignment: Enum
+    AlignBottom
+    AlignTop
+    AlignVCenter
 Ubuntu.Components.ListItems.ValueSelector 1.0 0.1: Empty
     property bool expanded
     property string fallbackIconName
@@ -1773,10 +1816,9 @@ Ubuntu.Components.ViewItems 1.2: QtObject
     signal expandedIndicesChanged(list<int> indices)
     property bool selectMode
     property list<int> selectedIndices
-Ubuntu.Components.ViewItems.ExpansionFlag: Enum
-    CollapseOnOutsidePress
-    Exclusive
-    UnlockExpanded
+Ubuntu.Components.WrapMode: Enum
+    Repeat
+    Transparent
 Ubuntu.Components.i18n 1.0 0.1: QtObject
     property string domain
     property string language

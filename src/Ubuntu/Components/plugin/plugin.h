@@ -21,8 +21,7 @@
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
-
-class QWindow;
+#include <ubuntutoolkitglobal.h>
 
 class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 {
@@ -30,22 +29,10 @@ class UbuntuComponentsPlugin : public QQmlExtensionPlugin
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QQmlEngine *engine, const char *uri);
-    static const QUrl &pluginUrl()
-    {
-        return m_baseUrl;
-    }
-    static void initializeContextProperties(QQmlEngine*);
+    ~UbuntuComponentsPlugin();
+    void registerTypes(const char *uri) override;
+    void initializeEngine(QQmlEngine *engine, const char *uri) override;
 
-private Q_SLOTS:
-    void registerWindowContextProperty();
-    void setWindowContextProperty(QWindow* focusWindow);
-
-private:
-    static QUrl m_baseUrl;
-    void initializeBaseUrl();
-    void registerTypesToVersion(const char *uri, int major, int minor);
 };
-#endif // UBUNTU_COMPONENTS_PLUGIN_H
 
+#endif // UBUNTU_COMPONENTS_PLUGIN_H

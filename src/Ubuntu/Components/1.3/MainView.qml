@@ -21,7 +21,7 @@ import QtQuick.Window 2.2
 
 /*!
     \qmltype MainView
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \inherits StyledItem
     \brief MainView is the root Item that should be used for all applications.
@@ -235,9 +235,4 @@ Toolkit.MainViewBase {
     }
 
     backgroundColor: theme.palette.normal.background
-
-    PerformanceOverlay {
-        id: performanceOverlay
-        active: false
-    }
 }

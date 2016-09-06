@@ -17,7 +17,7 @@
  *              Zsombor Egri <zsomboir.egri@canonical.com>
  */
 
-#include "mousetouchadaptor_p.h"
+#include "mousetouchadaptor_p_p.h"
 
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qwindowsysteminterface.h>
@@ -30,7 +30,7 @@
     #define ENABLE_TOUCH_EMULATION
 #endif
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 QTouchDevice *MouseTouchAdaptor::m_touchDevice = nullptr;
 
@@ -133,6 +133,6 @@ void MouseTouchAdaptorPrivate::setEnabled(bool value)
     qWarning() << "MouseTouchAdaptor not available on this architecture, thus cannot be enabled.";
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
 
-#include "moc_mousetouchadaptor.cpp"
+#include "moc_mousetouchadaptor_p.cpp"

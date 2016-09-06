@@ -20,7 +20,7 @@ import Ubuntu.Components 1.2 as Toolkit
 
 /*!
     \qmltype ComboButton
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief Ubuntu button providing a drop-down panel visualizing custom options.
 

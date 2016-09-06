@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype OptionSelector
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu-components
     \brief Component displaying either a single selected value or expanded multiple choice with an optional image and subtext when not expanded, when expanding it opens a
     listing of all the possible values for selection with an additional option of always being expanded. If multiple choice is selected the list is expanded automatically.

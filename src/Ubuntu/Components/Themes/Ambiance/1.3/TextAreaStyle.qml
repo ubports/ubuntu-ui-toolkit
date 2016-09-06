@@ -72,9 +72,16 @@ Item {
 
         UbuntuShape {
             anchors.fill: parent
-            anchors.margins: parent.visible ? units.gu(0.2) : 0
+            anchors.margins: parent.visible ? units.dp(0.5) : 0
+            radius: units.gu(1.7)
             backgroundColor: visuals.backgroundColor
             aspect: UbuntuShape.Flat
+            source: ShaderEffectSource {
+                sourceItem: styledItem.__rightScrollbar ? styledItem.__rightScrollbar : null
+                hideSource: true
+            }
+            sourceFillMode: UbuntuShape.Pad
+            sourceHorizontalAlignment: UbuntuShape.AlignRight
         }
     }
 

@@ -16,10 +16,11 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3 as Toolkit
+import Ubuntu.Components.Private 1.3 as Private
 
 /*!
     \qmltype Scrollbar
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief The Scrollbar component provides scrolling functionality for
     scrollable views (i.e. Flickable, ListView).
@@ -141,14 +142,6 @@ Toolkit.StyledItem {
     */
     property bool __interactive: __styleInstance !== null && __styleInstance.interactive
 
-
-    /*!
-      \internal
-      This trough of the scrollbar, it is used to define the position of the slider.
-    */
-    property Item __trough: __styleInstance !== null && __styleInstance.trough
-
-
     /*!
       \internal
       simulate the system setting (which will be implemented in unity8, I guess)
@@ -167,33 +160,54 @@ Toolkit.StyledItem {
     //Disable the input handling to let the events pass through in case we have an
     //interactive scrollbar right below us (can happen with nested views)
     enabled: __interactive//&& __alwaysOnScrollbars
+    visible: __initializedFlickable !== null
 
-    implicitWidth: internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.width : 0)
-    implicitHeight: !internals.vertical ? units.gu(3) : (flickableItem ? flickableItem.height : 0)
+    implicitWidth: internals.vertical ? units.gu(3) : (__initializedFlickable ? __initializedFlickable.width : 0)
+    implicitHeight: !internals.vertical ? units.gu(3) : (__initializedFlickable ? __initializedFlickable.height : 0)
 
     anchors {
-        left: (__viewport || flickableItem)
-              ? internals.leftAnchor(__viewport ? __viewport : flickableItem)
+        left: (__viewport || __initializedFlickable)
+              ? internals.leftAnchor(__viewport ? __viewport : __initializedFlickable)
               : undefined
         leftMargin: internals.leftAnchorMargin()
-        right: (__viewport || flickableItem)
-               ? internals.rightAnchor(__viewport ? __viewport : flickableItem)
+        right: (__viewport || __initializedFlickable)
+               ? internals.rightAnchor(__viewport ? __viewport : __initializedFlickable)
                : undefined
         rightMargin: internals.rightAnchorMargin()
-        top: (__viewport || flickableItem)
-             ? internals.topAnchor(__viewport ? __viewport : flickableItem)
+        top: (__viewport || __initializedFlickable)
+             ? internals.topAnchor(__viewport ? __viewport : __initializedFlickable)
              : undefined
-        topMargin: (flickableItem ? flickableItem.topMargin : 0) + internals.topAnchorMargin()
-        bottom: (__viewport || flickableItem)
-                ? internals.bottomAnchor(__viewport ? __viewport : flickableItem)
+        topMargin: (__initializedFlickable ? __initializedFlickable.topMargin : 0) + internals.topAnchorMargin()
+        bottom: (__viewport || __initializedFlickable)
+                ? internals.bottomAnchor(__viewport ? __viewport : __initializedFlickable)
                 : undefined
-        bottomMargin: (flickableItem ? flickableItem.bottomMargin : 0) + internals.bottomAnchorMargin()
+        bottomMargin: (__initializedFlickable ? __initializedFlickable.bottomMargin : 0) + internals.bottomAnchorMargin()
     }
 
     /*!
       \internal
       */
     onAlignChanged: if (!internals.checkAlign()) console.log("Wrong alignment set to Scrollbar: "+align)
+
+    //Don't do anything with flickableItem until its creation is complete, it would be a waste of cpu cycles
+    //and it would block the rendering thread for much longer
+    property var __initializedFlickable: null
+    Connections {
+        target: flickableItem
+        Component.onCompleted: __initializedFlickable = flickableItem
+    }
+    onFlickableItemChanged: {
+        if (!flickableItem) __initializedFlickable = null
+        else {
+            //can't use a binding for this, because the "completeness" of a component is
+            //not esposed to QML, QML just gets Component.onCompleted when a component is
+            //completed, but you won't get that if we're assigned a Flickable which is
+            //already "complete"
+            if (Private.PrivateScrollbarUtils.isComponentComplete(flickableItem)) {
+                __initializedFlickable = flickableItem
+            }
+        }
+    }
 
     /*!
       \internal
@@ -204,7 +218,7 @@ Toolkit.StyledItem {
     QtObject {
         id: internals
         property bool vertical: (align === Qt.AlignLeading) || (align === Qt.AlignTrailing)
-        property bool scrollable: flickableItem && flickableItem.interactive && checkAlign()
+        property bool scrollable: __initializedFlickable && __initializedFlickable.interactive && checkAlign()
         property real nonOverlayScrollbarMargin: __styleInstance ? __styleInstance.nonOverlayScrollbarMargin : 0
 
         function checkAlign()

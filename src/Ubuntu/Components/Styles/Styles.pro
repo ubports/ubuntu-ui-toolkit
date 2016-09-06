@@ -1,6 +1,9 @@
+CXX_MODULE = qml
+TARGET  = UbuntuComponentsStyles
 TARGETPATH = Ubuntu/Components/Styles
+IMPORT_VERSION = 1.1
 
-ARTWORK_FILES = $$system(find artwork -type f)
+include(plugin/plugin.pri)
 
 QML_FILES += 1.2/ComboButtonStyle.qml \
              1.2/PageHeadStyle.qml \
@@ -9,8 +12,9 @@ QML_FILES += 1.2/ComboButtonStyle.qml \
 	     1.3/ActionBarStyle.qml \
 	     1.3/PageHeaderStyle.qml \
 	     1.3/ToolbarStyle.qml \
-             $$ARTWORK_FILES
+	     1.3/SectionsStyle.qml \
+	     1.3/ActionItemProperties.qml \
 
-load(ubuntu_qml_module)
+load(ubuntu_qml_plugin)
 
 OTHER_FILES+=qmldir

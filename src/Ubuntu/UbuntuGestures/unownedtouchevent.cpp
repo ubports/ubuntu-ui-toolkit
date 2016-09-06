@@ -14,7 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "unownedtouchevent.h"
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
+
+UG_NAMESPACE_BEGIN
 
 QEvent::Type UnownedTouchEvent::m_unownedTouchEventType = (QEvent::Type)-1;
 
@@ -37,3 +39,5 @@ QTouchEvent *UnownedTouchEvent::touchEvent()
 {
     return m_touchEvent.data();
 }
+
+UG_NAMESPACE_END

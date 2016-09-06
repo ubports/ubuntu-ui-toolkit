@@ -18,12 +18,13 @@ import QtQuick 2.4
 
 /*!
     \qmltype ToolbarItems
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \deprecated
     \brief Row of Items to be placed in a toolbar.
 
     \b DEPRECATED: DO NOT USE THIS. USE \b head.actions IN \l Page INSTEAD.
+    \deprecated
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarItems consists of a set of

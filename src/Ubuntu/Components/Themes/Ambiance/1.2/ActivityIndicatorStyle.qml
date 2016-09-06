@@ -20,13 +20,13 @@ import Ubuntu.Components 1.2
 Image {
     id: container
 
-    anchors.fill: parent
     smooth: true
     visible: styledItem.running
     fillMode: Image.PreserveAspectFit
     horizontalAlignment: Image.AlignHCenter
     verticalAlignment: Image.AlignVCenter
-    source: Qt.resolvedUrl("../artwork/spinner.png")
+    source: visible ? Qt.resolvedUrl("../artwork/spinner.png") : ""
+    asynchronous: true
 
     RotationAnimator on rotation {
         running: styledItem.running

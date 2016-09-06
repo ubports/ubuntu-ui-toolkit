@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "timer.h"
+#include <UbuntuGestures/private/timer_p.h>
 
-namespace UbuntuGestures {
+UG_NAMESPACE_BEGIN
 
 Timer::Timer(QObject *parent) : AbstractTimer(parent)
 {
@@ -59,10 +59,11 @@ void Timer::setSingleShot(bool value)
 /////////////////////////////////// FakeTimer //////////////////////////////////
 
 FakeTimer::FakeTimer(const SharedTimeSource &timeSource, QObject *parent)
-    : UbuntuGestures::AbstractTimer(parent)
+    : UG_PREPEND_NAMESPACE(AbstractTimer(parent))
     , m_interval(0)
     , m_singleShot(false)
     , m_timeSource(timeSource)
+    , m_nextTimeoutTime(0)
 {
 }
 
@@ -149,4 +150,4 @@ AbstractTimer *FakeTimerFactory::createTimer(QObject *parent)
     return fakeTimer;
 }
 
-} // namespace UbuntuGestures
+UG_NAMESPACE_END

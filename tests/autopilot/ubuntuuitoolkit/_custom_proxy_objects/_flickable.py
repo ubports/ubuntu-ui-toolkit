@@ -136,6 +136,10 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException('Could not swipe in the flickable.')
 
 
+class CannotSwipeMoreToolkitException(_common.ToolkitException):
+    """Exception raised when trying to swipe more than is possible."""
+
+
 class QQuickFlickable(Scrollable):
 
     # Swiping from below can open the deprecated toolbar or trigger the bottom
@@ -144,7 +148,7 @@ class QQuickFlickable(Scrollable):
     margin_to_swipe_from_bottom = units.gu(2)
     # Swiping from above can open the indicators or resize the window. Use this
     # margin to start a swipe that will not be that close to the top edge.
-    margin_to_swipe_from_top = units.gu(1)
+    margin_to_swipe_from_top = units.gu(2)
     # Swiping from left and right can show the launcher or open app switcher.
     margin_to_swipe_from_left = units.gu(3)
     margin_to_swipe_from_right = units.gu(3)
@@ -179,36 +183,32 @@ class QQuickFlickable(Scrollable):
     @autopilot_logging.log_action(logger.info)
     def swipe_to_show_more_above(self, containers=None):
         if self.atYBeginning:
-            raise _common.ToolkitException(
-                "Can't swipe more, we are already at the top of the "
-                "container.")
+            raise CannotSwipeMoreToolkitException(
+                "We are already at the top of the container.")
         else:
             self._swipe_to_show_more('above', containers)
 
     @autopilot_logging.log_action(logger.info)
     def swipe_to_show_more_below(self, containers=None):
         if self.atYEnd:
-            raise _common.ToolkitException(
-                "Can't swipe more, we are already at the bottom of the "
-                "container.")
+            raise CannotSwipeMoreToolkitException(
+                "We are already at the bottom of the container.")
         else:
             self._swipe_to_show_more('below', containers)
 
     @autopilot_logging.log_action(logger.info)
     def swipe_to_show_more_left(self, containers=None):
         if self.atXBeginning:
-            raise _common.ToolkitException(
-                "Can't swipe more, we are already at the left of the "
-                "container.")
+            raise CannotSwipeMoreToolkitException(
+                "We are already at the left of the container.")
         else:
             self._swipe_to_show_more('left', containers)
 
     @autopilot_logging.log_action(logger.info)
     def swipe_to_show_more_right(self, containers=None):
         if self.atXEnd:
-            raise _common.ToolkitException(
-                "Can't swipe more, we are already at the right of the "
-                "container.")
+            raise CannotSwipeMoreToolkitException(
+                "We are already at the right of the container.")
         else:
             self._swipe_to_show_more('right', containers)
 

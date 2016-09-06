@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,14 @@ Style.PageHeaderStyle {
     subtitleColor: theme.palette.normal.backgroundTertiaryText
     backgroundColor: theme.palette.normal.background
     dividerColor: theme.palette.normal.base
+    buttons {
+        foregroundColor: pageHeaderStyle.foregroundColor
+        disabledForegroundColor: pageHeaderStyle.disabledForegroundColor
+        pressedForegroundColor: buttons.foregroundColor
+        backgroundColor: "transparent"
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
 
     // Font weight for the title and subtitle
     property int fontWeight: Font.Light
@@ -84,13 +92,22 @@ Style.PageHeaderStyle {
     }
 
     defaultActionDelegate: AbstractButton {
+        id: button
         style: IconButtonStyle { }
         objectName: action.objectName + "_button"
         height: internal.titleAreaHeight
         action: modelData
         StyleHints {
-            foregroundColor: enabled ? pageHeaderStyle.foregroundColor
-                                     : pageHeaderStyle.disabledForegroundColor
+            foregroundColor: button.pressed ?
+                                 pageHeaderStyle.buttons.pressedForegroundColor :
+                                 button.enabled ?
+                                     pageHeaderStyle.buttons.foregroundColor :
+                                     pageHeaderStyle.buttons.disabledForegroundColor
+            backgroundColor: button.pressed ?
+                                 pageHeaderStyle.buttons.pressedBackgroundColor :
+                                 button.enabled ?
+                                     pageHeaderStyle.buttons.backgroundColor :
+                                     pageHeaderStyle.buttons.disabledBackgroundColor
         }
     }
 

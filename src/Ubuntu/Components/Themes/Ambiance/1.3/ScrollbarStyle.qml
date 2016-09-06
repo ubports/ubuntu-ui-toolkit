@@ -114,7 +114,7 @@ Item {
      *      HELPER PROPERTIES                            *
      *****************************************************/
     property alias thumb: slider
-    property Item trough: trough
+    property alias trough: trough
 
     //helper properties to ease code readability
     property bool isScrollable: styledItem.__private.scrollable && pageSize > 0.0
@@ -126,7 +126,8 @@ Item {
     property bool bottomAligned: (styledItem.align === Qt.AlignBottom)
 
     //flickable helper properties
-    property Flickable flickableItem: styledItem.flickableItem
+    //Don't do anything with the flickable until its Component.onCompleted is called, it's a waste of cycles
+    property Flickable flickableItem: styledItem.__initializedFlickable
     property real pageSize: flickableItem
                             ? (isVertical ? flickableItem.height : flickableItem.width)
                             : 0
@@ -233,14 +234,18 @@ Item {
             scrollAnimation.restart()
         } else {
             if (scrollAnimation.running) scrollAnimation.stop()
-            styledItem.flickableItem[scrollbarUtils.propContent] = value
-            styledItem.flickableItem.returnToBounds()
+            if (flickableItem) {
+                flickableItem[scrollbarUtils.propContent] = value
+                flickableItem.returnToBounds()
+            }
         }
     }
     function scrollToBeginning(animate) {
+        if (!flickableItem) return
         scrollTo(flickableItem[scrollbarUtils.propOrigin] - visuals.leadingContentMargin, animate)
     }
     function scrollToEnd(animate) {
+        if (!flickableItem) return
         scrollTo((flickableItem[scrollbarUtils.propOrigin]
                   + totalContentSize - visuals.leadingContentMargin - pageSize), animate)
     }
@@ -311,7 +316,9 @@ Item {
         property string propPosRatio: (isVertical) ? "yPosition" : "xPosition"
         property string propSizeRatio: (isVertical) ? "heightRatio" : "widthRatio"
         property string propCoordinate: (isVertical) ? "y" : "x"
+        property string otherPropCoordinate: (isVertical) ? "x" : "y"
         property string propSize: (isVertical) ? "height" : "width"
+        property string otherPropSize: (isVertical) ? "width" : "height"
         property string propAtBeginning: (isVertical) ? "atYBeginning" : "atXBeginning"
         property string propAtEnd: (isVertical) ? "atYEnd" : "atXEnd"
 
@@ -319,12 +326,14 @@ Item {
           Calculates the slider position based on the visible area's ratios.
           */
         function sliderPos(scrollbar, min, max) {
+            if (!scrollbar.__initializedFlickable) return min
+
             //the margin between the trough and the thumb min and max values
             var margin = scrollbar.__styleInstance.thumbsExtremesMargin
 
             //The total length of the path where the thumb can be positioned, from its min to its max value
-            var draggableLength = scrollbar.__trough[propSize] - margin*2
-            var maxPosRatio = 1.0 - (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0)
+            var draggableLength = visuals.trough[propSize] - margin*2
+            var maxPosRatio = 1.0 - (scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propSizeRatio] : 1.0)
 
             //Example with x/width, same applies to y/height
             //xPosition is in the range [0...1 - widthRatio]
@@ -335,7 +344,7 @@ Item {
             //the maxPosition is reached when xPosition becomes 1, and that never happens. To compensate that, we
             //scale xPosition by ( 1 / ( 1 - widthRatio) ). This way, when xPosition reaches its max ( 1 - widthRatio )
             //we get a multiplication factor of 1
-            return MathUtils.clamp(1.0 / maxPosRatio * (scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propPosRatio] : 1.0)
+            return MathUtils.clamp(1.0 / maxPosRatio * (scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propPosRatio] : 1.0)
                                    * (draggableLength - scrollbar.__styleInstance.thumb[propSize]) + margin, min, max);
         }
 
@@ -349,8 +358,10 @@ Item {
           THUMB CAN MOVE INTO! (which is what you want in 99.9% of the cases, for a scrollbar)
           */
         function sliderSize(scrollbar, min, max) {
-            var sizeRatio = scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propSizeRatio] : 1.0;
-            var posRatio = scrollbar.flickableItem ? scrollbar.flickableItem.visibleArea[propPosRatio] : 0.0;
+            if (!scrollbar.__initializedFlickable) return min
+
+            var sizeRatio = scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propSizeRatio] : 1.0;
+            var posRatio = scrollbar.__initializedFlickable ? scrollbar.__initializedFlickable.visibleArea[propPosRatio] : 0.0;
 
             //(sizeRatio * max) is the current ideal size, as recommended by Flickable visibleArea props
             var sizeUnderflow = (sizeRatio * max) < min ? min - (sizeRatio * max) : 0
@@ -385,9 +396,11 @@ Item {
           using an invisible cursor to drag the slider and the ListView position.
           */
         function scrollAndClamp(scrollbar, amount, min, max) {
-            return scrollbar.flickableItem[propOrigin] +
-                    MathUtils.clamp(scrollbar.flickableItem[propContent]
-                                    - scrollbar.flickableItem[propOrigin] + amount,
+            if (!scrollbar.__initializedFlickable) return
+
+            return scrollbar.__initializedFlickable[propOrigin] +
+                    MathUtils.clamp(scrollbar.__initializedFlickable[propContent]
+                                    - scrollbar.__initializedFlickable[propOrigin] + amount,
                                     min, max);
         }
 
@@ -402,8 +415,10 @@ Item {
           NOTE: when flickable.topMargin is 5GU, contentY has to be -5GU (not 0!) to be at the top of the scrollable!!
           */
         function dragAndClamp(scrollbar, relThumbPosition, contentSize, pageSize) {
-            scrollbar.flickableItem[propContent] =
-                    scrollbar.flickableItem[propOrigin] + relThumbPosition * (contentSize - scrollbar.flickableItem[propSize]) - leadingContentMargin; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
+            if (!scrollbar.__initializedFlickable) return
+
+            scrollbar.__initializedFlickable[propContent] =
+                    scrollbar.__initializedFlickable[propOrigin] + relThumbPosition * (contentSize - scrollbar.__initializedFlickable[propSize]) - leadingContentMargin; //don't use pageSize, we don't know if the scrollbar is edge to edge!;
         }
     }
 
@@ -424,7 +439,7 @@ Item {
         //duration and easing coming from UX spec
         duration: UbuntuAnimation.SlowDuration
         easing.type: Easing.InOutCubic
-        target: styledItem.flickableItem
+        target: flickableItem
         property: scrollbarUtils.propContent
         //when the listview has variable size delegates the contentHeight estimation done by ListView
         //could make us overshoot, especially when going from top to bottom of the list or viceversa.
@@ -609,8 +624,6 @@ Item {
                     property bool lockDrag: false
 
                     property bool hoveringThumb: false
-                    property string scrollingProp: isVertical ? "y" : "x"
-                    property string sizeProp: isVertical ? "height" : "width"
 
                     function initDrag(isMouse) {
                         __disableStateBinding = true
@@ -635,20 +648,29 @@ Item {
                         if (!thumbArea.pressed) return
 
                         var mouseScrollingProp = isVertical ? mouseY : mouseX
-                        if (mouseScrollingProp < slider[scrollingProp]) {
+                        if (mouseScrollingProp < slider[scrollbarUtils.propCoordinate]) {
                             scrollBy(-pageSize*visuals.longScrollingRatio, true)
-                        } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
+                        } else if (mouseScrollingProp > slider[scrollbarUtils.propCoordinate] + slider[scrollbarUtils.propSize]) {
                             scrollBy(pageSize*visuals.longScrollingRatio, true)
                         }
                     }
 
+                    //we consider hover if it's inside the TROUGH along the scrolling axis
+                    //and inside the THUMB along the non-scrolling axis
+                    //NOTE: mouseX and mouseY are assumed to be relative to thumbArea
                     function handleHover(mouseX, mouseY) {
+                        //NOTE: we're assuming thumbArea has same size/position as the trough.
+                        //Use mapToItem to map the coordinates if that assumption falls (i.e. to implement
+                        //a larger touch detection area around the thumb)
                         var mouseScrollingProp = isVertical ? mouseY : mouseX
-                        //don't count as hover if the user is already press-and-holding the trough to
-                        //scroll page by page
+                        var otherProp = isVertical ? mouseX : mouseY
+
+                        //don't count as hover if the user is already press-and-holding
+                        //the trough to scroll page by page
                         hoveringThumb = !(pressHoldTimer.running && pressHoldTimer.startedBy === thumbArea)
-                                && mouseScrollingProp >= slider[scrollingProp] &&
-                                mouseScrollingProp <= slider[scrollingProp] + slider[sizeProp]
+                                && mouseScrollingProp >= slider[scrollbarUtils.propCoordinate] &&
+                                mouseScrollingProp <= slider[scrollbarUtils.propCoordinate] + slider[scrollbarUtils.propSize] &&
+                                otherProp >= 0 && otherProp <= trough[scrollbarUtils.otherPropSize]
                     }
 
                     function saveFlickableScrollingState() {
@@ -678,14 +700,9 @@ Item {
                         previousY = mouse.y
                     }
 
-                    anchors {
-                        fill: trough
-                        // set margins adding 2 dp for error area
-                        leftMargin: (!isVertical || frontAligned) ? 0 : units.dp(-2)
-                        rightMargin: (!isVertical || rearAligned) ? 0 : units.dp(-2)
-                        topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
-                        bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
-                    }
+                    //NOTE: remember to update the handleHover check if you add anchor margins
+                    anchors.fill: trough
+
                     enabled: isScrollable && interactive && __canFitSteppersAndShorterThumb
                     onPressed: {
                         cacheMousePosition(mouse)
@@ -697,8 +714,8 @@ Item {
                         if (firstStepper.visible) {
                             var mouseScrollingProp = isVertical ? mouseY : mouseX
                             //don't start the press and hold timer to avoid conflicts with the drag
-                            if (mouseScrollingProp < slider[scrollingProp] ||
-                                    mouseScrollingProp > (slider[scrollingProp] + slider[sizeProp])) {
+                            if (mouseScrollingProp < slider[scrollbarUtils.propCoordinate] ||
+                                    mouseScrollingProp > (slider[scrollbarUtils.propCoordinate] + slider[scrollbarUtils.propSize])) {
                                 handlePress(mouseX, mouseY)
                                 pressHoldTimer.startTimer(thumbArea)
                             } else {
@@ -748,7 +765,8 @@ Item {
                         pressHoldTimer.stop()
                     }
                     onReleased: {
-                        hoveringThumb = false
+                        //don't call handleHover here as touch release also triggers this handler
+                        //see bug #1616868
                         resetDrag()
                         pressHoldTimer.stop()
                     }
@@ -784,17 +802,28 @@ Item {
 
                     //logic to support different colour on hovering
                     hoverEnabled: true
-                    Mouse.enabled: true
+                    //This means this mouse filter will only handle real mouse events!
+                    //i.e. the synthesized mouse events created when you use
+                    //touchscreen will not trigger it! This way we can have logic that
+                    //will not trigger when using touch
                     Mouse.ignoreSynthesizedEvents: true
+                    Mouse.enabled: true
                     Mouse.onEntered: {
                         hoveringThumb = false
                         handleHover(event.x, event.y)
                     }
                     Mouse.onPositionChanged: {
+                        //We need to update the hover state also onPosChanged because this area
+                        //covers the whole trough, not just the thumb, so entered/exited are not enough
+                        //e.g. when mouse moves from inside the thumb to inside the trough, or when you
+                        //click on the trough and the thumb scrolls and goes under the mouse cursor
                         handleHover(mouse.x, mouse.y)
                     }
                     Mouse.onExited: {
                         hoveringThumb = false
+                    }
+                    Mouse.onReleased: {
+                        handleHover(mouse.x, mouse.y)
                     }
 
                     Timer {
@@ -832,6 +861,7 @@ Item {
 
             MouseArea {
                 id: steppersMouseArea
+                objectName: "steppersMouseArea"
                 //size is handled by the states
 
                 property bool hoveringFirstStepper: false
@@ -884,12 +914,7 @@ Item {
                     hoveringFirstStepper = false
                     hoveringSecondStepper = false
                 }
-
-                //We don't change the size of the images because we let the image reader figure the size out,
-                //though that means we have to hide the images somehow while the mousearea is visible but has
-                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
-                clip: true
-                onPressed: {
+                Mouse.onPressed: {
                     //This additional trigger of the hovering logic is useful especially in testing
                     //environments, where simulating a click on the first stepper will generate onEntered,
                     //but then clicking on the second one (without a mouseMove) won't, because they're
@@ -897,7 +922,16 @@ Item {
                     //we ensure that the hovering logic is correct even when there are no mouse moves between
                     //clicks on different steppers (like it happens in tst_actionSteppers test).
                     handleHover(mouse)
+                }
+                Mouse.onReleased: {
+                    handleHover(mouse)
+                }
 
+                //We don't change the size of the images because we let the image reader figure the size out,
+                //though that means we have to hide the images somehow while the mousearea is visible but has
+                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
+                clip: true
+                onPressed: {
                     handlePress()
                     pressHoldTimer.startTimer(steppersMouseArea)
                 }
@@ -939,7 +973,10 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
-                        source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and
+                        //the QML profiler showed it's relatively expensive
+                        source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
+                        asynchronous: true
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtBeginning])
                                                         ? __stepperImgOpacityDisabled
@@ -982,7 +1019,10 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
-                        source: Qt.resolvedUrl("../artwork/toolkit_scrollbar-stepper.svg")
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and
+                        //the QML profiler showed it's relatively expensive
+                        source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
+                        asynchronous: true
                         color: Qt.rgba(sliderColor.r, sliderColor.g, sliderColor.b,
                                        sliderColor.a * ((flickableItem && flickableItem[scrollbarUtils.propAtEnd])
                                                         ? __stepperImgOpacityDisabled
@@ -997,6 +1037,9 @@ Item {
         //just a hack: a rectangle which covers the corner where scrollbars meet, when they're in steppers style
         Rectangle {
             id: cornerRect
+            //NOTE: I tried grouping styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
+            //    && styledItem.__buddyScrollbar.__styleInstance.isScrollable in 1 property and use that for
+            //all the anchors, but it turned out it makes the instantiation 2-3% slower!!!
             anchors.left: {
                 if (styledItem.__buddyScrollbar && styledItem.__buddyScrollbar.__styleInstance
                         && styledItem.__buddyScrollbar.__styleInstance.isScrollable) {

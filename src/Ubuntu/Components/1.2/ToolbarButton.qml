@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 
 /*!
     \qmltype ToolbarButton
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief An \l ActionItem that represents a button in the toolbar.
         ToolbarButtons should be included in \l ToolbarItems to define the tools of a \l Page.

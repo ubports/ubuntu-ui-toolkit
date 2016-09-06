@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype UbuntuListView
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \inherits ListView
     \brief A ListView with special features tailored for a look and feel fitting the
@@ -91,7 +91,7 @@ ListView {
           }
           // let refresh control know when the refresh gets completed
           pullToRefresh {
-              enable: true
+              enabled: true
               refreshing: model.status === XmlListModel.Loading
               onRefresh: model.reload()
           }

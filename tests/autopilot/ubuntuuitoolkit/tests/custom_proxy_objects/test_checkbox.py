@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import time
+import os
 
 from autopilot import input
 from testtools.matchers import GreaterThan, LessThan
@@ -24,51 +25,22 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-TEST_QML_WITH_CHECKBOX = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+class ToggleTestCase(tests.QMLFileAppTestCase):
 
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Item {
-        CheckBox {
-            checked: false
-            objectName: "test_checkbox"
-        }
-    }
-}
-""")
-
-
-TEST_QML_WITH_SWITCH = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Item {
-        Switch {
-            checked: false
-            objectName: "test_switch"
-        }
-    }
-}
-""")
-
-
-class ToggleTestCase(tests.QMLStringAppTestCase):
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    switch_test_qml_file_path = os.path.join(
+        dir_path, 'test_checkbox.ToggleTestCase.test_with_switch.qml')
+    checkbox_test_qml_file_path = os.path.join(
+        dir_path, 'test_checkbox.ToggleTestCase.test_with_checkbox.qml')
 
     scenarios = [
         ('checkbox', dict(
-            test_qml=TEST_QML_WITH_CHECKBOX, objectName='test_checkbox')),
+            test_qml_file_path=checkbox_test_qml_file_path,
+            objectName='test_checkbox')),
         ('switch', dict(
-            test_qml=TEST_QML_WITH_SWITCH, objectName='test_switch'))
+            test_qml_file_path=switch_test_qml_file_path,
+            objectName='test_switch'))
     ]
 
     def setUp(self):

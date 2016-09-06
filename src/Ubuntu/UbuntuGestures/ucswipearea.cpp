@@ -25,11 +25,11 @@
 #include <private/qquickwindow_p.h>
 
 // local
-#include <UbuntuGestures/TouchOwnershipEvent>
-#include <UbuntuGestures/TouchRegistry>
-#include <UbuntuGestures/UnownedTouchEvent>
+#include <UbuntuGestures/private/touchownershipevent_p.h>
+#include <UbuntuGestures/private/touchregistry_p.h>
+#include <UbuntuGestures/private/unownedtouchevent_p.h>
 
-using namespace UbuntuGestures;
+UG_NAMESPACE_BEGIN
 
 Q_LOGGING_CATEGORY(ucSwipeArea, "ubuntu.components.SwipeArea", QtMsgType::QtWarningMsg)
 Q_LOGGING_CATEGORY(ucActiveTouchInfo, "ubuntu.components.SwipeArea.ActiveTouchInfo", QtMsgType::QtWarningMsg)
@@ -130,7 +130,7 @@ public:
  * \qmltype SwipeArea
  * \instantiates UCSwipeArea
  * \inherits Item
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components
  * \since Ubuntu.Components 1.3
  * \ingroup ubuntu-gestures
  * \brief An area which detects axis-aligned single-finger drag gestures.
@@ -253,7 +253,7 @@ void UCSwipeAreaPrivate::setMaxTime(int value)
     }
 }
 
-void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *timer)
+void UCSwipeAreaPrivate::setRecognitionTimer(UG_PREPEND_NAMESPACE(AbstractTimer) *timer)
 {
     int interval = 0;
     bool timerWasRunning = false;
@@ -273,7 +273,7 @@ void UCSwipeAreaPrivate::setRecognitionTimer(UbuntuGestures::AbstractTimer *time
     recognitionTimer = timer;
     timer->setInterval(interval);
     timer->setSingleShot(wasSingleShot);
-    QObject::connect(timer, &UbuntuGestures::AbstractTimer::timeout,
+    QObject::connect(timer, &UG_PREPEND_NAMESPACE(AbstractTimer)::timeout,
             q, &UCSwipeArea::rejectGesture);
     if (timerWasRunning) {
         recognitionTimer->start();
@@ -1055,3 +1055,5 @@ void UCSwipeAreaPrivate::removeStatusChangeListener(UCSwipeAreaStatusListener *l
 {
     statusChangeListeners.removeAll(listener);
 }
+
+UG_NAMESPACE_END

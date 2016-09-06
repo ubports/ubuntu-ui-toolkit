@@ -28,6 +28,8 @@
 
 int main (int argc, char* argv[])
 {
+    (void)argc;
+    (void)argv;
     tracepoint(app,invokeApplauncher);
     return 0;
 }

@@ -52,7 +52,7 @@ Q_SIGNALS:
     void samplingIntervalChanged();
 
 protected:
-    void itemChange(ItemChange change, const ItemChangeData & value);
+    void itemChange(ItemChange change, const ItemChangeData & value) override;
 
 private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);

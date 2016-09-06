@@ -48,74 +48,12 @@ class ListItemsTestCase(testtools.TestCase):
             listitems.Subtitled, listitems.Base))
 
 
-class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
+class SwipeToDeleteTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.ListItems 1.0
-
-
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    objectName: "mainView"
-
-    Page {
-
-        ListModel {
-            id: testModel
-
-            ListElement {
-                name: "listitem_destroyed_on_remove_with_confirm"
-                label: "Item destroyed on remove with confirmation"
-                confirm: true
-            }
-            ListElement {
-                name: "listitem_destroyed_on_remove_without_confirm"
-                label: "Item destroyed on remove without confirmation"
-                confirm: false
-            }
-        }
-
-        Column {
-            anchors { fill: parent }
-
-            Standard {
-                objectName: "listitem_standard"
-                confirmRemoval: true
-                removable: true
-                text: 'Slide to remove'
-            }
-
-            Empty {
-                objectName: "listitem_empty"
-            }
-
-            Standard {
-                objectName: "listitem_without_confirm"
-                confirmRemoval: false
-                removable: true
-                text: "Item without delete confirmation"
-            }
-
-            ListView {
-                anchors { left: parent.left; right: parent.right }
-                height: childrenRect.height
-                model: testModel
-
-                delegate: Standard {
-                    removable: true
-                    confirmRemoval: confirm
-                    onItemRemoved: testModel.remove(index)
-                    text: label
-                    objectName: name
-                }
-            }
-        }
-    }
-}
-""")
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_listitems.SwipeToDeleteTestCase.qml')
 
     def setUp(self):
         super().setUp()

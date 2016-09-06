@@ -32,6 +32,7 @@ Build-Depends: accountsservice,
                libxkbcommon-dev,
                libxrender-dev,
                locales,
+               lsb-release,
                pep8,
                python-autopilot (>= 1.4),
                python3-sphinx,
@@ -82,6 +83,7 @@ Description: Transitional package for Qt Components for Ubuntu, OpenGLES
 Package: qml-module-ubuntu-components-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+        unity8 (<< 8.13),
 Conflicts: qml-module-ubuntu-components,
            qtdeclarative5-ubuntu-ui-toolkit-plugin,
 Replaces: qml-module-ubuntu-components,
@@ -94,12 +96,15 @@ Pre-Depends: dpkg (>= 1.15.6~),
              ${misc:Pre-Depends},
 Depends: libqt5svg5,
          libubuntugestures5-gles (= ${binary:Version}),
+         libubuntumetrics5-gles (= ${binary:Version}),
          libubuntutoolkit5-gles (= ${binary:Version}),
          qml-module-qtfeedback,
          qml-module-qtgraphicaleffects,
          qml-module-qtquick-layouts,
          qml-module-qtquick-window2,
          qml-module-qtquick2,
+         qml-module-ubuntu-components-labs,
+         qml-module-ubuntu-performancemetrics-gles,
          qtdeclarative5-unity-action-plugin (>= 1.1.0),
          suru-icon-theme,
          ttf-ubuntu-font-family,
@@ -113,9 +118,42 @@ Description: Qt Components for Ubuntu - QML plugin - GLES
  This package contains the Ubuntu Components QML plugin (built with
  the OpenGLES backend).
 
+Package: qml-module-ubuntu-components-labs-gles
+Architecture: amd64 i386
+Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+        unity8 (<< 8.13),
+Conflicts: qml-module-ubuntu-components-labs,
+Replaces: qml-module-ubuntu-components-labs,
+Provides: qml-module-ubuntu-components-labs,
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: libqt5svg5,
+         libubuntugestures5-gles (= ${binary:Version}),
+         libubuntumetrics5-gles (= ${binary:Version}),
+         libubuntutoolkit5-gles (= ${binary:Version}),
+         qml-module-qtfeedback,
+         qml-module-qtgraphicaleffects,
+         qml-module-qtquick-layouts,
+         qml-module-qtquick-window2,
+         qml-module-qtquick2,
+         qtdeclarative5-unity-action-plugin (>= 1.1.0),
+         suru-icon-theme,
+         ttf-ubuntu-font-family,
+         ubuntu-ui-toolkit-theme,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: Qt Components Labs for Ubuntu - QML plugin - GLES
+ Qt Components Labs for Ubuntu offers a set of non-released and mostly
+ unstable user interface components for Qt Quick 2 / QML.
+ .
+ This package contains the Ubuntu Components Labs QML plugin (built with
+ the OpenGLES backend).
+
 Package: qml-module-ubuntu-performancemetrics-gles
 Architecture: amd64 i386
 Breaks: qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
+        unity8 (<< 8.13),
 Conflicts: qml-module-ubuntu-performancemetrics,
 Replaces: qml-module-ubuntu-performancemetrics,
           qtdeclarative5-ubuntu-ui-toolkit-plugin-gles (<< ${source:Version}),
@@ -163,6 +201,38 @@ Depends: ${misc:Depends},
 Description: Ubuntu gestures library development files - GLES
  This package contains the development files for
  Ubuntu gestures library with SwipeArea
+ .
+ This is the OpenGL ES version for amd64 and i386.
+
+Package: libubuntumetrics5-gles
+Architecture: amd64 i386
+Conflicts: libubuntumetrics5,
+Replaces: libubuntumetrics5,
+Provides: libubuntumetrics5,
+Multi-Arch: same
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Metrics library for Ubuntu UI Toolkit - GLES
+ Library for monitoring QtQuick 2 applications
+ .
+ This is the OpenGL ES version for amd64 and i386.
+
+Package: libubuntumetrics5-gles-dev
+Architecture: amd64 i386
+Conflicts: libubuntumetrics5-dev,
+Replaces: libubuntumetrics5-dev,
+Provides: libubuntumetrics5-dev,
+Multi-Arch: same
+Section: libdevel
+Pre-Depends: dpkg (>= 1.15.6~),
+             ${misc:Pre-Depends},
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Ubuntu metrics library development files - GLES
+ This package contains the development files for the
+ Ubuntu metrics library
  .
  This is the OpenGL ES version for amd64 and i386.
 

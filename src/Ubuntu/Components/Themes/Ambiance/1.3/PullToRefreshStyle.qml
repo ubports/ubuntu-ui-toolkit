@@ -143,7 +143,7 @@ Style.PullToRefreshStyle {
         if (visible) {
             // Make sure the flickable is back inside its bounds when
             //  the Page becomes visible again:
-            view.returnToBounds();
+            control.target.returnToBounds();
         }
     }
 

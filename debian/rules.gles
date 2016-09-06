@@ -7,6 +7,9 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 export QMAKEFEATURES=$(CURDIR)/features
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_HOST_SERIES ?= $(shell lsb_release -c -s)
+
+testskip_series := yakkety
 
 CONFIGURE_SWITCHES = "-r" \
                      "ROOT_SOURCE_DIR=$(CURDIR)" \
@@ -20,10 +23,12 @@ override_dh_auto_configure:
 	#dh_auto_configure -- $(CONFIGURE_SWITCHES)
 
 override_dh_auto_test:
+ifneq ($(DEB_HOST_SERIES),$(findstring $(DEB_HOST_SERIES), $(testskip_series)))
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
 	chmod +x tests/xvfb.sh
 	tests/xvfb.sh dh_auto_test || exit $?
+endif
 endif
 
 override_dh_auto_install:

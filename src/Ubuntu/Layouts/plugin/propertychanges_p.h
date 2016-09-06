@@ -116,7 +116,7 @@ class ParentChange : public PropertyChange
 public:
     ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topmostChild);
 
-    void apply();
+    void apply() override;
 private:
     QQuickItem *newParent;
     bool topmostChild;
@@ -128,8 +128,8 @@ class AnchorChange : public PropertyChange
 public:
     AnchorChange(QQuickItem *item, const QString &anchor, QQuickItem *target, const QString &targetAnchor = QString());
 
-    void apply();
-    void revert();
+    void apply() override;
+    void revert() override;
 private:
     bool active;
 };
@@ -139,11 +139,11 @@ class ItemStackBackup : public PropertyChange
 {
 public:
     ItemStackBackup(QQuickItem *item);
-    void apply() {}
-    void revert();
+    void apply() override {}
+    void revert() override;
 
 protected:
-    virtual void saveState();
+    void saveState() override;
     QQuickItem *target;
     QQuickItem *prevItem;
 private:
@@ -157,10 +157,10 @@ class AnchorBackup : public PropertyChange
 public:
     AnchorBackup(QQuickItem *item);
 
-    void apply();
-    void revert();
+    void apply() override;
+    void revert() override;
 protected:
-    virtual void saveState();
+    void saveState() override;
 
     enum Anchor{
         Left = 0,

@@ -50,8 +50,18 @@ Style.PageHeadStyle {
      */
     property color backgroundColor: styledItem.backgroundColor
     Rectangle {
+        id: background
         anchors.fill: parent
         color: headerStyle.backgroundColor
+
+        // The border is shown to warn the developer that the AppHeader
+        //  is deprecated. See bug #1583636
+        property bool showBorder: styledItem.hasOwnProperty("showDeprecatedWarning") &&
+                                  styledItem.showDeprecatedWarning
+        border {
+            width: background.showBorder ? units.gu(0.5) : 0
+            color: background.showBorder ? UbuntuColors.red : "transparent"
+        }
     }
 
     // FIXME: When the three panel color properties below are removed,

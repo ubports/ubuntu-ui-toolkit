@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2 as Toolkit
 
 /*!
     \qmltype Panel
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \brief A panel that can be swiped in and out from an edge of the window by the user.
     For most applications, it is highly recommended to use the \l MainView instead which includes

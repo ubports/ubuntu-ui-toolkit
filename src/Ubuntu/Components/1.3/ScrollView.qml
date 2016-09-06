@@ -19,7 +19,7 @@ import Ubuntu.Components 1.3
 
 /*!
     \qmltype ScrollView
-    \inqmlmodule Ubuntu.Components 1.3
+    \inqmlmodule Ubuntu.Components
     \ingroup ubuntu
     \inherits StyledItem
     \brief ScrollView is a scrollable view that features scrollbars and scrolling via keyboard keys.

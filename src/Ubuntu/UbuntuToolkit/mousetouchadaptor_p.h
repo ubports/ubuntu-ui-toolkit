@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Canonical, Ltd.
+ * Copyright (C) 2013,2016 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,65 +13,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Authored by: Zsombor Egri <zsombor.egri@canonical.com>
+ * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
+ *              Zsombor Egri <zsomboir.egri@canonical.com>
  */
 
-#ifndef MOUSETOUCHADAPTOR_P
-#define MOUSETOUCHADAPTOR_P
+#ifndef MOUSE_TOUCH_ADAPTOR_H
+#define MOUSE_TOUCH_ADAPTOR_H
 
-#include "mousetouchadaptor.h"
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/QAbstractNativeEventFilter>
-#include <QWindow>
-#include <xcb/xcb.h>
+#include "ubuntutoolkitglobal.h"
 
-namespace UbuntuToolkit {
+#include <QtCore/QObject>
 
-class MouseTouchAdaptorPrivate : public QObjectPrivate, public QAbstractNativeEventFilter
+class QMouseEvent;
+class QTouchDevice;
+class QQmlEngine;
+class QJSEngine;
+
+UT_NAMESPACE_BEGIN
+
+// Transforms QMouseEvents into single-finger QTouchEvents.
+class MouseTouchAdaptorPrivate;
+class UBUNTUTOOLKIT_EXPORT MouseTouchAdaptor : public QObject
 {
-    Q_DECLARE_PUBLIC(MouseTouchAdaptor)
+    Q_OBJECT
+    Q_PRIVATE_PROPERTY(MouseTouchAdaptor::d_func(), bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    MouseTouchAdaptorPrivate() : QObjectPrivate() {}
-    ~MouseTouchAdaptorPrivate();
+    explicit MouseTouchAdaptor(QObject *parent = Q_NULLPTR);
 
-    virtual void init() {}
-    virtual bool nativeEventFilter(const QByteArray & eventType, void *message, long *result)
-            { Q_UNUSED(eventType); Q_UNUSED(message); Q_UNUSED(result); return false; }
-    bool isEnabled() const;
-    virtual void setEnabled(bool enabled);
+    static bool registerTouchDevice();
+    inline static QTouchDevice *touchDevice()
+    {
+        return m_touchDevice;
+    }
+    static QObject *registerQmlSingleton(QQmlEngine*, QJSEngine*)
+    {
+        return new MouseTouchAdaptor;
+    }
 
-    QWindow *findQWindowWithXWindowID(WId windowId);
+Q_SIGNALS:
+    void enabledChanged(bool value);
 
-    // fields
-    bool enabled{false};
+private:
+    Q_DECLARE_PRIVATE(MouseTouchAdaptor)
+    static QTouchDevice *m_touchDevice;
 };
 
-#ifdef UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
-class X11MouseTouchAdaptorPrivate : public MouseTouchAdaptorPrivate
-{
-    Q_DECLARE_PUBLIC(MouseTouchAdaptor)
-public:
-    X11MouseTouchAdaptorPrivate();
+UT_NAMESPACE_END
 
-    void init() Q_DECL_OVERRIDE;
-    bool nativeEventFilter(const QByteArray & eventType, void *message, long *result) Q_DECL_OVERRIDE;
-    void setEnabled(bool value);
-
-    bool xi2HandleEvent(xcb_ge_event_t *event);
-    bool handleButtonPress(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
-    bool handleButtonRelease(WId windowId, uint32_t detail, uint32_t modifiers, int x, int y);
-    bool handleMotionNotify(WId windowId, uint32_t modifiers, int x, int y);
-
-    bool m_leftButtonIsPressed;
-    bool m_triPressModifier;
-
-    bool m_xi2Enabled{false};
-    int m_xi2Minor{-1};
-    int m_xiOpCode, m_xiEventBase, m_xiErrorBase;
-};
-#endif
-
-} // namespace UbuntuToolkit
-
-#endif // MOUSETOUCHADAPTOR_P
-
+#endif // MOUSE_TOUCH_ADAPTOR_H

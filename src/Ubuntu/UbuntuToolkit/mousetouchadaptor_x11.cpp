@@ -53,7 +53,7 @@
 **
 ****************************************************************************/
 
-#include "mousetouchadaptor_p.h"
+#include "mousetouchadaptor_p_p.h"
 
 #include <qpa/qplatformnativeinterface.h>
 
@@ -96,7 +96,7 @@ Qt::KeyboardModifiers translateMofidier(uint32_t mod)
 } // end of anonymous namespace
 
 
-namespace UbuntuToolkit {
+UT_NAMESPACE_BEGIN
 
 X11MouseTouchAdaptorPrivate::X11MouseTouchAdaptorPrivate()
     : m_leftButtonIsPressed(false)
@@ -279,10 +279,10 @@ bool X11MouseTouchAdaptorPrivate::handleButtonPress(WId windowId, uint32_t detai
 
     QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, MouseTouchAdaptor::touchDevice(),
                                                        false /* autoCommit */);
-    touchEvent.press(0 /* touchId */, windowPos);
+    touchEvent.press(0 /* touchId */, windowPos, (QWindow*)nullptr);
     if (qtMod == TRI_PRESS_MODIFIER) {
-        touchEvent.press(1, windowPos);
-        touchEvent.press(2, windowPos);
+        touchEvent.press(1, windowPos, (QWindow*)nullptr);
+        touchEvent.press(2, windowPos, (QWindow*)nullptr);
         m_triPressModifier = true;
     }
     touchEvent.commit(false /* processEvents */);
@@ -305,10 +305,10 @@ bool X11MouseTouchAdaptorPrivate::handleButtonRelease(WId windowId, uint32_t det
 
     QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, MouseTouchAdaptor::touchDevice(),
                                                        false /* autoCommit */);
-    touchEvent.release(0 /* touchId */, windowPos);
+    touchEvent.release(0 /* touchId */, windowPos, (QWindow*)nullptr);
     if (m_triPressModifier) {
-        touchEvent.release(1, windowPos);
-        touchEvent.release(2, windowPos);
+        touchEvent.release(1, windowPos, (QWindow*)nullptr);
+        touchEvent.release(2, windowPos, (QWindow*)nullptr);
     }
     touchEvent.commit(false /* processEvents */);
 
@@ -330,15 +330,15 @@ bool X11MouseTouchAdaptorPrivate::handleMotionNotify(WId windowId, uint32_t modi
 
     QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, MouseTouchAdaptor::touchDevice(),
                                                        false /* autoCommit */);
-    touchEvent.move(0 /* touchId */, windowPos);
+    touchEvent.move(0 /* touchId */, windowPos, (QWindow*)nullptr);
     if (m_triPressModifier) {
         if (qtMod == TRI_PRESS_MODIFIER) {
-            touchEvent.move(1, windowPos);
-            touchEvent.move(2, windowPos);
+            touchEvent.move(1, windowPos, (QWindow*)nullptr);
+            touchEvent.move(2, windowPos, (QWindow*)nullptr);
         } else {
             // released modifiers
-            touchEvent.release(1, windowPos);
-            touchEvent.release(2, windowPos);
+            touchEvent.release(1, windowPos, (QWindow*)nullptr);
+            touchEvent.release(2, windowPos, (QWindow*)nullptr);
             m_triPressModifier = false;
         }
     }
@@ -347,4 +347,4 @@ bool X11MouseTouchAdaptorPrivate::handleMotionNotify(WId windowId, uint32_t modi
     return true;
 }
 
-} // namespace UbuntuToolkit
+UT_NAMESPACE_END
