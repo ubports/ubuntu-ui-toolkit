@@ -79,28 +79,24 @@ Empty {
 
     /*!
       \internal
-      \deprecated
       Width of the icon to be displayed
     */
     property real __iconWidth
 
     /*!
       \internal
-      \deprecated
       Height of the icon to be displayed
     */
     property real __iconHeight
 
     /*!
       \internal
-      \deprecated
       The margin on the left side of the icon.
      */
     property real __leftIconMargin
 
     /*!
       \internal
-      \deprecated
       The margin on the right side of the icon.
      */
     property real __rightIconMargin
