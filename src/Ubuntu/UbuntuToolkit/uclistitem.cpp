@@ -1126,7 +1126,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     bool updateNode = false;
 
     // focus frame
-    bool paintFocus = hasActiveFocus() && keyNavigationFocus();
+    bool paintFocus = keyNavigationFocus();
     rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(2) : 0);
     if (paintFocus) {
         QColor penColor;
@@ -1140,6 +1140,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     QRectF rect(boundingRect());
     d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
     rectNode->setRect(rect);
+
 
     // highlight color
     if (color.alphaF() >= (1.0f / 255.0f)) {

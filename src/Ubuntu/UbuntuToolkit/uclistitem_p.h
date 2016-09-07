@@ -187,6 +187,7 @@ class UBUNTUTOOLKIT_EXPORT UCViewItemsAttached : public QObject
     // https://bugs.launchpad.net/ubuntu/+source/qtdeclarative-opensource-src/+bug/1389721
     Q_PROPERTY(QList<int> expandedIndices READ expandedIndices WRITE setExpandedIndices NOTIFY expandedIndicesChanged)
     Q_PROPERTY(int expansionFlags READ expansionFlags WRITE setExpansionFlags NOTIFY expansionFlagsChanged)
+    Q_PROPERTY(int effectiveCurrentIndex READ effectiveCurrentIndex NOTIFY effectiveCurrentIndexChanged)
 public:
     enum ExpansionFlag {
         Exclusive = 0x01,
@@ -217,6 +218,7 @@ public:
     void setExpandedIndices(QList<int> indices);
     int expansionFlags() const;
     void setExpansionFlags(int flags);
+    int effectiveCurrentIndex() const;
 
 private Q_SLOTS:
     void unbindItem();
@@ -232,6 +234,7 @@ Q_SIGNALS:
     // 1.3
     void expandedIndicesChanged(const QList<int> &indices);
     void expansionFlagsChanged();
+    void effectiveCurrentIndexChanged();
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };

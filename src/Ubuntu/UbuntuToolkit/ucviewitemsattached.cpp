@@ -678,6 +678,21 @@ void UCViewItemsAttached::setExpansionFlags(int flags)
     Q_EMIT expansionFlagsChanged();
 }
 
+int UCViewItemsAttached::effectiveCurrentIndex() const
+{
+    Q_D(const UCViewItemsAttached);
+    return d->effectiveCurrentIndex;
+}
+void UCViewItemsAttachedPrivate::setEffectiveCurrentIndex(int index)
+{
+    if (effectiveCurrentIndex == index) {
+        return;
+    }
+    effectiveCurrentIndex = index;
+    Q_EMIT q_func()->effectiveCurrentIndexChanged();
+}
+
+
 void UCViewItemsAttachedPrivate::toggleExpansionFlags(bool enable)
 {
     bool hasClickOutsideFlag = (expansionFlags & UCViewItemsAttached::CollapseOnOutsidePress) == UCViewItemsAttached::CollapseOnOutsidePress;

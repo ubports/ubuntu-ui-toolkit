@@ -165,6 +165,9 @@ public:
     void collapseAll();
     void toggleExpansionFlags(bool enable);
 
+    // effective current index
+    void setEffectiveCurrentIndex(int index);
+
     QSet<int> selectedList;
     QMap<int, QPointer<UCListItem> > expansionList;
     QList< QPointer<QQuickFlickable> > flickables;
@@ -172,6 +175,7 @@ public:
     ListViewProxy *listView;
     ListItemDragArea *dragArea;
     UCViewItemsAttached::ExpansionFlags expansionFlags;
+    int effectiveCurrentIndex{-1};
     bool selectable:1;
     bool draggable:1;
     bool ready:1;

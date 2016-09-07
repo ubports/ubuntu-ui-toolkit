@@ -149,6 +149,8 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
 
     if (currentIndex >= 0 && count > 0) {
         currentIndex = qBound<int>(0, forwards ? currentIndex + 1 : currentIndex - 1, count - 1);
+        // disable keynav for previus
+        setKeyNavigationForListView(false);
         setCurrentIndex(currentIndex);
         setKeyNavigationForListView(true);
     }
