@@ -49,7 +49,7 @@ Rectangle {
         property int duration: UbuntuAnimation.SleepyDuration
         property int easing: Easing.InOutQuad
         readonly property bool animateStrip:
-            (styledItem.enabled || styledItem.visible)
+            styledItem.enabled && styledItem.visible
             && styledItem.indeterminate
             // animate only after style completion!
             && animated && !reverseAnimate
@@ -58,7 +58,7 @@ Rectangle {
         NumberAnimation on width {
             duration: UbuntuAnimation.SlowDuration
             easing.type: strip.easing
-            running: !styledItem.indeterminate
+            running: !styledItem.indeterminate && styledItem.enabled && styledItem.visible
         }
 
         state: animateStrip ? "animate" : ""
