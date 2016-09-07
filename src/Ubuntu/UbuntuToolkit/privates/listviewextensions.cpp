@@ -28,7 +28,10 @@ UT_NAMESPACE_BEGIN
 ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
     , listView(listView)
+    , _currentItem(Q_NULLPTR)
+    , _prevItem(Q_NULLPTR)
 {
+    connect(listView, SIGNAL(currentItemChanged()), this, SLOT(onCurrentItemChanged()), Qt::DirectConnection);
 }
 ListViewProxy::~ListViewProxy()
 {
@@ -51,7 +54,7 @@ int ListViewProxy::count()
 
 QQuickItem *ListViewProxy::currentItem()
 {
-    return listView->property("currentItem").value<QQuickItem*>();
+    return _currentItem.data();
 }
 
 int ListViewProxy::currentIndex()
@@ -76,12 +79,13 @@ QVariant ListViewProxy::model()
 // Navigation override used by ListItems
 void ListViewProxy::overrideItemNavigation(bool override)
 {
-    if (override) {
-        listView->installEventFilter(this);
-    } else {
-        listView->removeEventFilter(this);
-    }
-    isEventFilter = override;
+    Q_UNUSED(override);
+//    if (override) {
+//        listView->installEventFilter(this);
+//    } else {
+//        listView->removeEventFilter(this);
+//    }
+//    isEventFilter = override;
 }
 
 bool ListViewProxy::eventFilter(QObject *, QEvent *event)
@@ -89,8 +93,8 @@ bool ListViewProxy::eventFilter(QObject *, QEvent *event)
     switch (event->type()) {
         case QEvent::FocusIn:
             return focusInEvent(static_cast<QFocusEvent*>(event));
-        case QEvent::KeyPress:
-            return keyPressEvent(static_cast<QKeyEvent*>(event));
+//        case QEvent::KeyPress:
+//            return keyPressEvent(static_cast<QKeyEvent*>(event));
         default:
             break;
     }
@@ -100,7 +104,7 @@ bool ListViewProxy::eventFilter(QObject *, QEvent *event)
 
 void ListViewProxy::setKeyNavigationForListView(bool value)
 {
-    UCListItem *listItem = qobject_cast<UCListItem*>(currentItem());
+    UCListItem *listItem = qobject_cast<UCListItem*>(_currentItem);
     if (listItem) {
         UCListItemPrivate::get(listItem)->setListViewKeyNavigation(value);
         listItem->update();
@@ -156,6 +160,17 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     }
 
     return (oldIndex != currentIndex);
+}
+
+void ListViewProxy::onCurrentItemChanged()
+{
+    setKeyNavigationForListView(false);
+    _currentItem = listView->property("currentItem").value<QQuickItem*>();
+    if (_currentItem && _currentItem->isEnabled()) {
+        UCViewItemsAttached *attached = qobject_cast<UCViewItemsAttached*>(parent());
+        UCViewItemsAttachedPrivate::get(attached)->setEffectiveCurrentIndex(currentIndex());
+        setKeyNavigationForListView(true);
+    }
 }
 
 UT_NAMESPACE_END

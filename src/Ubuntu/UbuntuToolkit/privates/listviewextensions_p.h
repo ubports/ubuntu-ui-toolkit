@@ -56,8 +56,11 @@ protected:
     bool focusInEvent(QFocusEvent *event);
     bool keyPressEvent(QKeyEvent *event);
     void setKeyNavigationForListView(bool value);
+    Q_SLOT void onCurrentItemChanged();
 private:
     QQuickFlickable *listView;
+    QPointer<QQuickItem> _currentItem;
+    QPointer<QQuickItem> _prevItem;
     bool isEventFilter:1;
 };
 
