@@ -361,5 +361,11 @@ TestCase {
                  "iconSource not properly set with an undefined iconSource from style.");
          compare(actionWithPropertiesFromStyle.numIconSourceChanged, 1,
                  "iconSource did not update exactly once.");
+         var newIconSource = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
+         styleProperties.iconSource = newIconSource;
+         compare(actionWithPropertiesFromStyle.iconSource, newIconSource,
+                 "Failed to update iconSource from style properly.");
+         compare(actionWithPropertiesFromStyle.numIconSourceChanged, 2,
+                 "Incorrect number of updates to icon source.");
      }
 }
