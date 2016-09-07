@@ -36,6 +36,7 @@ QuickUtils *QuickUtils::m_instance = nullptr;
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
+    m_rootWindow(0),
     m_rootView(0),
     m_mouseAttached(false),
     m_keyboardAttached(false)
@@ -86,7 +87,7 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
     // make sure we have the m_rootView updated
     lookupQuickView();
     if (!object) {
-        return (m_rootView) ? m_rootView->rootObject() : 0;
+        return m_rootView ? m_rootView->rootObject() : (m_rootWindow ? m_rootWindow->contentItem() : 0);
     }
 
     QQuickItem *item = qobject_cast<QQuickItem*>(object);
@@ -175,9 +176,10 @@ bool QuickUtils::inherits(QObject *object, const QString &fromClass)
  */
 void QuickUtils::lookupQuickView()
 {
-    if (m_rootView)
+    if (m_rootWindow)
         return;
     Q_FOREACH (QWindow *w, QGuiApplication::topLevelWindows()) {
+        m_rootWindow = qobject_cast<QQuickWindow*>(w);
         m_rootView = qobject_cast<QQuickView*>(w);
         if (m_rootView) {
             // connect in case we get the root object changed

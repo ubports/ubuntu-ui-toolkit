@@ -53,7 +53,7 @@ inline void invokeTrigger(T *object, const QVariant &value)
     }
 }
 
-class UCActionAttached;
+class ExclusiveGroup;
 class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
 {
     Q_OBJECT
@@ -62,19 +62,23 @@ class UBUNTUTOOLKIT_EXPORT UCAction : public QObject
     Q_ENUMS(Type)
     Q_PROPERTY(QString name MEMBER m_name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString text READ text WRITE setText RESET resetText NOTIFY textChanged)
-    Q_PROPERTY(QString iconName MEMBER m_iconName WRITE setIconName NOTIFY iconNameChanged)
+    Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
     Q_PROPERTY(QString description MEMBER m_description NOTIFY descriptionChanged)
     Q_PROPERTY(QString keywords MEMBER m_keywords NOTIFY keywordsChanged)
-    Q_PROPERTY(bool enabled MEMBER m_enabled NOTIFY enabledChanged)
-    Q_PROPERTY(Type parameterType MEMBER m_parameterType NOTIFY parameterTypeChanged)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(Type parameterType READ parameterType WRITE setParameterType NOTIFY parameterTypeChanged)
+
+    Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable NOTIFY checkableChanged REVISION 1)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled REVISION 1)
+    Q_PROPERTY(ExclusiveGroup* exclusiveGroup READ exclusiveGroup WRITE setExclusiveGroup NOTIFY exclusiveGroupChanged REVISION 1)
 
     // Toolkit Actions API
-    Q_PROPERTY(QUrl iconSource MEMBER m_iconSource WRITE setIconSource NOTIFY iconSourceChanged)
-    Q_PROPERTY(bool visible MEMBER m_visible NOTIFY visibleChanged)
+    Q_PROPERTY(QUrl iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
+    Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(QQmlComponent *itemHint MEMBER m_itemHint WRITE setItemHint)
 
     // QtQuickControls.Action
-    Q_PROPERTY(QVariant shortcut MEMBER m_shortcut WRITE setShortcut RESET resetShortcut NOTIFY shortcutChanged REVISION 1)
+    Q_PROPERTY(QVariant shortcut READ shortcut WRITE setShortcut RESET resetShortcut NOTIFY shortcutChanged REVISION 1)
 public:
     enum Type {
         None,
@@ -108,11 +112,26 @@ public:
     QString text();
     void setText(const QString &text);
     void resetText();
+    QString iconName() const { return m_iconName; }
     void setIconName(const QString &name);
+    QUrl iconSource() const { return m_iconSource; }
     void setIconSource(const QUrl &url);
     void setItemHint(QQmlComponent *);
+    QVariant shortcut() const { return m_shortcut; }
     void setShortcut(const QVariant&);
     void resetShortcut();
+    bool visible() const { return m_visible; }
+    void setVisible(bool visible);
+    void setEnabled(bool enabled);
+    void setParameterType(Type type);
+    Type parameterType() const { return m_parameterType; }
+    void setCheckable(bool checkable);
+    bool isCheckable() const { return m_checkable; }
+    void setChecked(bool checked);
+    bool isChecked() const { return m_checkable && m_checked; }
+
+    ExclusiveGroup *exclusiveGroup() const { return m_exclusiveGroup; }
+    void setExclusiveGroup(ExclusiveGroup *exclusiveGroup);
 
 Q_SIGNALS:
     void nameChanged();
@@ -125,13 +144,18 @@ Q_SIGNALS:
     void iconSourceChanged();
     void visibleChanged();
     void shortcutChanged();
+    Q_REVISION(1) void checkableChanged();
+    Q_REVISION(1) void exclusiveGroupChanged();
+
     void triggered(const QVariant &value);
+    Q_REVISION(1) void toggled(bool value);
 
 public Q_SLOTS:
     void trigger(const QVariant &value = QVariant());
 
 private:
     QPODVector<QQuickItem*, 4> m_owningItems;
+    ExclusiveGroup *m_exclusiveGroup;
     QString m_name;
     QString m_text;
     QString m_iconName;
@@ -146,6 +170,8 @@ private:
     bool m_enabled:1;
     bool m_visible:1;
     bool m_published:1;
+    bool m_checkable:1;
+    bool m_checked:1;
 
     friend class UCActionContext;
     friend class UCActionItem;

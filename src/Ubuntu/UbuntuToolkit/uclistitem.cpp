@@ -537,7 +537,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * there will be no highlight happening if the click happens on the active component.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * MainView {
  *    width: units.gu(40)
@@ -572,20 +572,29 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *            onClicked: console.log("clicked on ListItem with trailingActions set")
  *        }
  *        ListItem {
- *            Label {
- *                text: "onClicked implemented"
+ *            // shall specify the height when Using ListItemLayout inside ListItem
+ *            height: clickImplementedLayout.height + (divider.visible ? divider.height : 0)
+ *            ListItemLayout {
+ *                id: clickImplementedLayout
+ *                title.text: "onClicked implemented"
  *            }
  *            onClicked: console.log("clicked on ListItem with onClicked implemented")
  *        }
  *        ListItem {
- *            Label {
- *                text: "onPressAndHold implemented"
+ *            // shall specify the height when Using ListItemLayout inside ListItem
+ *            height: pressHoldLayout.height + (divider.visible ? divider.height : 0)
+ *            ListItemLayout {
+ *                id: pressHoldLayout
+ *                title.text: "onPressAndHold implemented"
  *            }
  *            onPressAndHold: console.log("long-pressed on ListItem with onPressAndHold implemented")
  *        }
  *        ListItem {
- *            Label {
- *                text: "No highlight"
+ *            // shall specify the height when Using ListItemLayout inside ListItem
+ *            height: noHighlightLayout.height + (divider.visible ? divider.height : 0)
+ *            ListItemLayout {
+ *                id: noHighlightLayout
+ *                title.text: "No highlight"
  *            }
  *        }
  *    }
@@ -671,7 +680,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * to the view itself.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * Flickable {
  *    width: units.gu(40)
@@ -735,7 +744,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * Example of live drag implementation:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: ListModel {
@@ -746,8 +755,11 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         }
  *     }
  *     delegate: ListItem {
- *         Label {
- *             text: modelData
+ *         // shall specify the height when Using ListItemLayout inside ListItem
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0)
+ *         ListItemLayout {
+ *             id: modelLayout
+ *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
@@ -769,7 +781,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * Example of drag'n'drop implementation:
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: ListModel {
@@ -780,8 +792,11 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *         }
  *     }
  *     delegate: ListItem {
- *         Label {
- *             text: modelData
+ *         // shall specify the height when Using ListItemLayout inside ListItem
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0)
+ *         ListItemLayout {
+ *             id: modelLayout
+ *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
@@ -815,13 +830,16 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * can still be implemented with these kind of lists as well.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: ["plum", "peach", "pomegrenade", "pear", "banana"]
  *     delegate: ListItem {
- *         Label {
- *             text: modelData
+ *         // shall specify the height when Using ListItemLayout inside ListItem
+ *         height: modelLayout.height + (divider.visible ? divider.height : 0)
+ *         ListItemLayout {
+ *             id: modelLayout
+ *             title.text: modelData
  *         }
  *         color: dragMode ? "lightblue" : "lightgray"
  *         onPressAndHold: ListView.view.ViewItems.dragMode =
@@ -849,14 +867,17 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * \l ViewItems::dragUpdated signal handler.
  * \qml
  * import QtQuick 2.4
- * import Ubuntu.Components 1.2
+ * import Ubuntu.Components 1.3
  *
  * ListView {
  *     model: DelegateModel {
  *         model: ["apple", "pear", "plum", "peach", "nuts", "dates"]
  *         delegate: ListItem {
- *             Label {
- *                 text: modelData
+ *             // shall specify the height when Using ListItemLayout inside ListItem
+ *             height: modelLayout.height + (divider.visible ? divider.height : 0)
+ *             ListItemLayout {
+ *                 id: modelLayout
+ *                 title.text: modelData
  *             }
  *             onPressAndHold: dragMode = !dragMode;
  *         }
@@ -914,8 +935,11 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *     }
  *     ViewItems.expansionFlags: ViewItems.CollapseOnOutsidePress
  *     delegate: ListItem {
- *         Label {
- *             text: "Model item #" + modelData
+ *         ListItemLayout {
+ *             // shall specify the height when Using ListItemLayout inside ListItem
+ *             height: modelLayout.height + (divider.visible ? divider.height : 0)
+ *             id: modelLayout
+ *             title.text: "Model item #" + modelData
  *         }
  *         trailingActions: ListItemActions {
  *             actions: [
@@ -1126,7 +1150,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     bool updateNode = false;
 
     // focus frame
-    bool paintFocus = keyNavigationFocus();
+    bool paintFocus = hasActiveFocus() && keyNavigationFocus();
     rectNode->setPenWidth(paintFocus ? UCUnits::instance()->dp(2) : 0);
     if (paintFocus) {
         QColor penColor;
@@ -1140,7 +1164,6 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     QRectF rect(boundingRect());
     d->divider->setOpacity(paintFocus ? 0.0 : 1.0);
     rectNode->setRect(rect);
-
 
     // highlight color
     if (color.alphaF() >= (1.0f / 255.0f)) {

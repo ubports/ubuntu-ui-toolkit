@@ -316,7 +316,9 @@ Item {
         property string propPosRatio: (isVertical) ? "yPosition" : "xPosition"
         property string propSizeRatio: (isVertical) ? "heightRatio" : "widthRatio"
         property string propCoordinate: (isVertical) ? "y" : "x"
+        property string otherPropCoordinate: (isVertical) ? "x" : "y"
         property string propSize: (isVertical) ? "height" : "width"
+        property string otherPropSize: (isVertical) ? "width" : "height"
         property string propAtBeginning: (isVertical) ? "atYBeginning" : "atXBeginning"
         property string propAtEnd: (isVertical) ? "atYEnd" : "atXEnd"
 
@@ -622,8 +624,6 @@ Item {
                     property bool lockDrag: false
 
                     property bool hoveringThumb: false
-                    property string scrollingProp: isVertical ? "y" : "x"
-                    property string sizeProp: isVertical ? "height" : "width"
 
                     function initDrag(isMouse) {
                         __disableStateBinding = true
@@ -648,20 +648,29 @@ Item {
                         if (!thumbArea.pressed) return
 
                         var mouseScrollingProp = isVertical ? mouseY : mouseX
-                        if (mouseScrollingProp < slider[scrollingProp]) {
+                        if (mouseScrollingProp < slider[scrollbarUtils.propCoordinate]) {
                             scrollBy(-pageSize*visuals.longScrollingRatio, true)
-                        } else if (mouseScrollingProp > slider[scrollingProp] + slider[sizeProp]) {
+                        } else if (mouseScrollingProp > slider[scrollbarUtils.propCoordinate] + slider[scrollbarUtils.propSize]) {
                             scrollBy(pageSize*visuals.longScrollingRatio, true)
                         }
                     }
 
+                    //we consider hover if it's inside the TROUGH along the scrolling axis
+                    //and inside the THUMB along the non-scrolling axis
+                    //NOTE: mouseX and mouseY are assumed to be relative to thumbArea
                     function handleHover(mouseX, mouseY) {
+                        //NOTE: we're assuming thumbArea has same size/position as the trough.
+                        //Use mapToItem to map the coordinates if that assumption falls (i.e. to implement
+                        //a larger touch detection area around the thumb)
                         var mouseScrollingProp = isVertical ? mouseY : mouseX
-                        //don't count as hover if the user is already press-and-holding the trough to
-                        //scroll page by page
+                        var otherProp = isVertical ? mouseX : mouseY
+
+                        //don't count as hover if the user is already press-and-holding
+                        //the trough to scroll page by page
                         hoveringThumb = !(pressHoldTimer.running && pressHoldTimer.startedBy === thumbArea)
-                                && mouseScrollingProp >= slider[scrollingProp] &&
-                                mouseScrollingProp <= slider[scrollingProp] + slider[sizeProp]
+                                && mouseScrollingProp >= slider[scrollbarUtils.propCoordinate] &&
+                                mouseScrollingProp <= slider[scrollbarUtils.propCoordinate] + slider[scrollbarUtils.propSize] &&
+                                otherProp >= 0 && otherProp <= trough[scrollbarUtils.otherPropSize]
                     }
 
                     function saveFlickableScrollingState() {
@@ -691,14 +700,9 @@ Item {
                         previousY = mouse.y
                     }
 
-                    anchors {
-                        fill: trough
-                        // set margins adding 2 dp for error area
-                        leftMargin: (!isVertical || frontAligned) ? 0 : units.dp(-2)
-                        rightMargin: (!isVertical || rearAligned) ? 0 : units.dp(-2)
-                        topMargin: (isVertical || topAligned) ?  0 : units.dp(-2)
-                        bottomMargin: (isVertical || bottomAligned) ?  0 : units.dp(-2)
-                    }
+                    //NOTE: remember to update the handleHover check if you add anchor margins
+                    anchors.fill: trough
+
                     enabled: isScrollable && interactive && __canFitSteppersAndShorterThumb
                     onPressed: {
                         cacheMousePosition(mouse)
@@ -710,8 +714,8 @@ Item {
                         if (firstStepper.visible) {
                             var mouseScrollingProp = isVertical ? mouseY : mouseX
                             //don't start the press and hold timer to avoid conflicts with the drag
-                            if (mouseScrollingProp < slider[scrollingProp] ||
-                                    mouseScrollingProp > (slider[scrollingProp] + slider[sizeProp])) {
+                            if (mouseScrollingProp < slider[scrollbarUtils.propCoordinate] ||
+                                    mouseScrollingProp > (slider[scrollbarUtils.propCoordinate] + slider[scrollbarUtils.propSize])) {
                                 handlePress(mouseX, mouseY)
                                 pressHoldTimer.startTimer(thumbArea)
                             } else {
@@ -761,7 +765,8 @@ Item {
                         pressHoldTimer.stop()
                     }
                     onReleased: {
-                        handleHover(mouseX, mouseY)
+                        //don't call handleHover here as touch release also triggers this handler
+                        //see bug #1616868
                         resetDrag()
                         pressHoldTimer.stop()
                     }
@@ -797,17 +802,28 @@ Item {
 
                     //logic to support different colour on hovering
                     hoverEnabled: true
-                    Mouse.enabled: true
+                    //This means this mouse filter will only handle real mouse events!
+                    //i.e. the synthesized mouse events created when you use
+                    //touchscreen will not trigger it! This way we can have logic that
+                    //will not trigger when using touch
                     Mouse.ignoreSynthesizedEvents: true
+                    Mouse.enabled: true
                     Mouse.onEntered: {
                         hoveringThumb = false
                         handleHover(event.x, event.y)
                     }
                     Mouse.onPositionChanged: {
+                        //We need to update the hover state also onPosChanged because this area
+                        //covers the whole trough, not just the thumb, so entered/exited are not enough
+                        //e.g. when mouse moves from inside the thumb to inside the trough, or when you
+                        //click on the trough and the thumb scrolls and goes under the mouse cursor
                         handleHover(mouse.x, mouse.y)
                     }
                     Mouse.onExited: {
                         hoveringThumb = false
+                    }
+                    Mouse.onReleased: {
+                        handleHover(mouse.x, mouse.y)
                     }
 
                     Timer {
@@ -845,6 +861,7 @@ Item {
 
             MouseArea {
                 id: steppersMouseArea
+                objectName: "steppersMouseArea"
                 //size is handled by the states
 
                 property bool hoveringFirstStepper: false
@@ -897,12 +914,7 @@ Item {
                     hoveringFirstStepper = false
                     hoveringSecondStepper = false
                 }
-
-                //We don't change the size of the images because we let the image reader figure the size out,
-                //though that means we have to hide the images somehow while the mousearea is visible but has
-                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
-                clip: true
-                onPressed: {
+                Mouse.onPressed: {
                     //This additional trigger of the hovering logic is useful especially in testing
                     //environments, where simulating a click on the first stepper will generate onEntered,
                     //but then clicking on the second one (without a mouseMove) won't, because they're
@@ -910,7 +922,16 @@ Item {
                     //we ensure that the hovering logic is correct even when there are no mouse moves between
                     //clicks on different steppers (like it happens in tst_actionSteppers test).
                     handleHover(mouse)
+                }
+                Mouse.onReleased: {
+                    handleHover(mouse)
+                }
 
+                //We don't change the size of the images because we let the image reader figure the size out,
+                //though that means we have to hide the images somehow while the mousearea is visible but has
+                //null size. We choose to enable clipping here instead of creating bindings on images' visible prop
+                clip: true
+                onPressed: {
                     handlePress()
                     pressHoldTimer.startTimer(steppersMouseArea)
                 }
@@ -952,7 +973,7 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 180 : 90
-                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and 
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and
                         //the QML profiler showed it's relatively expensive
                         source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
                         asynchronous: true
@@ -998,7 +1019,7 @@ Item {
                         anchors.centerIn: parent
                         width: __stepperAssetWidth
                         rotation: isVertical ? 0 : -90
-                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and     
+                        //NOTE: Qt.resolvedUrl was removed because it does not seem to be needed and
                         //the QML profiler showed it's relatively expensive
                         source: visible ? "../artwork/toolkit_scrollbar-stepper.svg" : ""
                         asynchronous: true

@@ -19,6 +19,7 @@ import logging
 from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
 from ubuntuuitoolkit._custom_proxy_objects import _common
+from ubuntuuitoolkit._custom_proxy_objects import _flickable
 
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,14 @@ logger = logging.getLogger(__name__)
 
 class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ActionBar Autopilot custom proxy object."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        # listview will only be set for a scrolling ActionBar.
+        try:
+            self.listview = self.select_single(objectName='actions_listview')
+        except dbus.StateNotFoundError:
+            self.listview = None
 
     def _open_overflow(self):
         """Click the overflow button and return the overflow panel"""
@@ -49,16 +58,7 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         return popover
 
-    @autopilot_logging.log_action(logger.info)
-    def click_action_button(self, action_object_name):
-        """Click an action button of the action bar.
-
-        :parameter object_name: The QML objectName property of the action
-        :raise ToolkitException: If there is no action button with that object
-            name.
-
-        """
-
+    def _overflow_bar_click_action_button(self, action_object_name):
         try:
             object_name = action_object_name + "_button"
             button = self.select_single(objectName=object_name)
@@ -73,4 +73,36 @@ class ActionBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 popover.click_action_button(action_object_name)
             except _common.ToolkitException:
                 raise _common.ToolkitException(
-                    'Button not found in ActionBar or overflow')
+                    'Button not found')
+
+    def _scrolling_bar_click_action_button(self, action_object_name):
+        buttonName = action_object_name + "_button"
+        try:
+            self.listview.click_element(buttonName)
+        except _flickable.CannotSwipeMoreToolkitException:
+            # The button was found, but is not inside the ListView. This
+            # happens because at the beginning and end of the ListView
+            # there are list items visible inside the extra margins. But
+            # the buttons are present otherwise a different error message
+            # wass given.
+            button = self.listview.select_single(objectName=buttonName)
+            self.pointing_device.click_object(button)
+        except _common.ToolkitException:
+            raise _common.ToolkitException('Button not found')
+
+    @autopilot_logging.log_action(logger.info)
+    def click_action_button(self, action_object_name):
+        """Click an action button of the action bar.
+
+        :parameter object_name: The QML objectName property of the action
+        :raise ToolkitException: If there is no action button with that object
+            name.
+
+        """
+        if self.styleName == "ActionBarStyle":
+            return self._overflow_bar_click_action_button(action_object_name)
+        elif self.styleName == "ScrollingActionBarStyle":
+            return self._scrolling_bar_click_action_button(action_object_name)
+        else:
+            raise _common.ToolkitException(
+                'Unsupported style name ' + self.styleName + ' for ActionBar.')

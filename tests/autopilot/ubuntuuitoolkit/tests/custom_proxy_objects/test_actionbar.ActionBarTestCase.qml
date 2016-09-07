@@ -38,7 +38,7 @@ MainView {
         ActionBar {
             objectName: "ActionBar"
             anchors.centerIn: parent
-            numberOfSlots: 2
+            numberOfSlots: 4
             actions: [
                 Action {
                     iconName: "share"
@@ -57,6 +57,18 @@ MainView {
                     text: "Lock"
                     onTriggered: label.text = "Action 3 triggered."
                     objectName: "Action3"
+                },
+                Action {
+                    iconName: "alarm-clock"
+                    text: "Tick tock"
+                    onTriggered: label.text = "Action 4 triggered."
+                    objectName: "Action4"
+                },
+                Action {
+                    iconName: "appointment"
+                    text: "Date"
+                    onTriggered: label.text = "Action 5 triggered."
+                    objectName: "Action5"
                 }
             ]
         }
