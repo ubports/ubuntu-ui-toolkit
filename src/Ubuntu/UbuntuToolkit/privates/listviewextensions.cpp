@@ -79,7 +79,6 @@ QVariant ListViewProxy::model()
 // Navigation override used by ListItems
 void ListViewProxy::overrideItemNavigation(bool override)
 {
-    Q_UNUSED(override);
     if (override) {
         listView->installEventFilter(this);
     } else {
