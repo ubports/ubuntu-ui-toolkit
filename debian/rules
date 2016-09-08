@@ -13,7 +13,7 @@ DEB_HOST_SERIES ?= $(shell lsb_release -c -s)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
 testskip_architectures := powerpc arm64 ppc64el s390x
-testskip_series := yakkety
+testskip_series := yakkety xenial
 
 override_dh_auto_configure:
 	qmake -r
