@@ -13,7 +13,15 @@
 # 
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
+# FIXME(loicm)
+# Since the new src/ layout (src/imports/ for QML modules and src/ for libs),
+# the parsing order of the source files has changed. qdoc first stores all the
+# file names and then does a sort (QMap iteration) which makes
+# ucmainviewbase.cpp parsed before MainView.qml (UbuntuToolkit is sorted before
+# imports ASCII-wise). The result is that qdoc is unable to link to properties
+# inherited from UCMainViewBase like applicationName, so constructs like that
+# don't work: \l MainView::applicationName...
 
 QDOC=$1
 QHELPGENERATOR=$2
