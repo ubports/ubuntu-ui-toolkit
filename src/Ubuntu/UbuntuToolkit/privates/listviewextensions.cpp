@@ -29,7 +29,6 @@ ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
     , listView(listView)
     , _currentItem(Q_NULLPTR)
-    , _prevItem(Q_NULLPTR)
 {
     connect(listView, SIGNAL(currentItemChanged()), this, SLOT(onCurrentItemChanged()), Qt::DirectConnection);
 }
@@ -80,12 +79,12 @@ QVariant ListViewProxy::model()
 void ListViewProxy::overrideItemNavigation(bool override)
 {
     Q_UNUSED(override);
-//    if (override) {
-//        listView->installEventFilter(this);
-//    } else {
-//        listView->removeEventFilter(this);
-//    }
-//    isEventFilter = override;
+    if (override) {
+        listView->installEventFilter(this);
+    } else {
+        listView->removeEventFilter(this);
+    }
+    isEventFilter = override;
 }
 
 bool ListViewProxy::eventFilter(QObject *, QEvent *event)
@@ -93,8 +92,8 @@ bool ListViewProxy::eventFilter(QObject *, QEvent *event)
     switch (event->type()) {
         case QEvent::FocusIn:
             return focusInEvent(static_cast<QFocusEvent*>(event));
-//        case QEvent::KeyPress:
-//            return keyPressEvent(static_cast<QKeyEvent*>(event));
+        case QEvent::KeyPress:
+            return keyPressEvent(static_cast<QKeyEvent*>(event));
         default:
             break;
     }
@@ -118,8 +117,7 @@ bool ListViewProxy::focusInEvent(QFocusEvent *event)
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
         {
-            QQuickItem *currentItem = this->currentItem();
-            if (!currentItem && count() > 0) {
+            if (!_currentItem && count() > 0) {
                 // set the first one to be the focus
                 setCurrentIndex(0);
                 setKeyNavigationForListView(true);
@@ -139,27 +137,12 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     int key = event->key();
     Qt::Orientation orientation = this->orientation();
 
-    if ((orientation == Qt::Vertical && key != Qt::Key_Up && key != Qt::Key_Down)
-        || (orientation == Qt::Horizontal && key != Qt::Key_Left && key != Qt::Key_Right)) {
-        return false;
-    }
-    // effectiveLayoutDirection takes into account effectiveLayoutMirror and layoutDirection.
-    bool isRtl = (Qt::RightToLeft == listView->property("effectiveLayoutDirection").toInt());
-    bool isBtt = (QQuickItemView::BottomToTop == listView->property("verticalLayoutDirection").toInt());
-    bool forwards = (isBtt ? key == Qt::Key_Up : key == Qt::Key_Down) || (isRtl ? key == Qt::Key_Left : key == Qt::Key_Right);
-    int oldIndex = this->currentIndex();
-    int currentIndex = this->currentIndex();
-    int count = this->count();
-
-    if (currentIndex >= 0 && count > 0) {
-        currentIndex = qBound<int>(0, forwards ? currentIndex + 1 : currentIndex - 1, count - 1);
-        // disable keynav for previus
-        setKeyNavigationForListView(false);
-        setCurrentIndex(currentIndex);
-        setKeyNavigationForListView(true);
+    if ((orientation == Qt::Vertical && (key == Qt::Key_Up || key == Qt::Key_Down))
+        || (orientation == Qt::Horizontal && (key == Qt::Key_Left || key == Qt::Key_Right))) {
+        keyNavigation = true;
     }
 
-    return (oldIndex != currentIndex);
+    return false;
 }
 
 void ListViewProxy::onCurrentItemChanged()
@@ -169,7 +152,8 @@ void ListViewProxy::onCurrentItemChanged()
     if (_currentItem && _currentItem->isEnabled()) {
         UCViewItemsAttached *attached = qobject_cast<UCViewItemsAttached*>(parent());
         UCViewItemsAttachedPrivate::get(attached)->setEffectiveCurrentIndex(currentIndex());
-        setKeyNavigationForListView(true);
+        setKeyNavigationForListView(keyNavigation);
+        keyNavigation = false;
     }
 }
 

@@ -25,12 +25,12 @@ Item {
     width: units.gu(40)
     height: units.gu(71)
 
-    ListView {
+    UbuntuListView {
         id: testView
         anchors.fill: parent
         model: 50
         currentIndex: 10
-        delegate: ListItem {
+        delegate: ListItem { width: testView.width; height: units.gu(7)
             objectName: "listItem" + index
             enabled: index > 20 && index < 25
             Label {
@@ -38,8 +38,6 @@ Item {
                 text: (parent.enabled ? "enabled" : "disabled") + index
             }
         }
-        onCurrentIndexChanged: print("index=", currentIndex)
-        onCurrentItemChanged: print("item=", currentItem)
     }
 
     UbuntuTestCase {

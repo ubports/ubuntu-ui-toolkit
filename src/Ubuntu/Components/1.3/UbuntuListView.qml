@@ -194,17 +194,15 @@ ListView {
         }
     }
 
-    property int _fake: ViewItems.effectiveCurrentIndex
-
     // highlight current item
     highlight: Rectangle {
         color: root.activeFocus
                ? theme.palette.focused.background
                : theme.palette.selected.background
-        border {
-            width: root._fake == root.currentIndex ? units.dp(1) : 0
-            color: theme.palette.selected.activity
-        }
+        width: root.currentItem.width
+        height: root.currentItem.height
+        // FIXME: use opacity yet, until we fix the palette's disabled.background color
+        opacity: root.currentItem.enabled ? 1.0 : 0.5
     }
-    highlightMoveDuration: 0
+    highlightMoveDuration: 50
 }

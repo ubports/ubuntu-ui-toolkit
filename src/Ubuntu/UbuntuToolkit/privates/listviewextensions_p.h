@@ -60,8 +60,8 @@ protected:
 private:
     QQuickFlickable *listView;
     QPointer<QQuickItem> _currentItem;
-    QPointer<QQuickItem> _prevItem;
     bool isEventFilter:1;
+    bool keyNavigation:1;
 };
 
 UT_NAMESPACE_END
