@@ -42,6 +42,40 @@ Item {
 
     UbuntuTestCase {
         when: windowShown
+
+        function cleanup() {
+            main.forceActiveFocus();
+        }
+
+        function test_focus_bug1611327_data() {
+            return [
+                        {tag: "navigate from disabled through enabled", startIndex: 18, key: Qt.Key_Down,
+                        checks: [
+                                {enabled: false, keyNavigation: false}, // 19
+                                {enabled: false, keyNavigation: false}, // 20
+                                {enabled: true, keyNavigation: true}, // 21
+                                {enabled: true, keyNavigation: true}, // 22
+                                {enabled: true, keyNavigation: true}, // 23
+                                {enabled: true, keyNavigation: true}, // 24
+                                {enabled: false, keyNavigation: false}, // 25
+                                {enabled: false, keyNavigation: false}, // 26
+                        ]},
+                    ];
+        }
+        function test_focus_bug1611327(data) {
+            testView.forceActiveFocus();
+            testView.currentIndex = data.startIndex;
+
+            var testIndex = data.startIndex;
+            for (var i in data.checks) {
+                testIndex++;
+                keyClick(data.key);
+                waitForRendering(testView, 500);
+                compare(testView.currentIndex, testIndex);
+                compare(testView.currentItem.enabled, data.checks[i].enabled);
+                compare(testView.currentItem.keyNavigationFocus, data.checks[i].keyNavigation);
+            }
+        }
     }
 }
 

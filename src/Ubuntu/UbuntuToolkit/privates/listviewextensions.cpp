@@ -31,6 +31,7 @@ ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     , _currentItem(Q_NULLPTR)
 {
     connect(listView, SIGNAL(currentItemChanged()), this, SLOT(onCurrentItemChanged()), Qt::DirectConnection);
+    onCurrentItemChanged();
 }
 ListViewProxy::~ListViewProxy()
 {
@@ -150,8 +151,6 @@ void ListViewProxy::onCurrentItemChanged()
     setKeyNavigationForListView(false);
     _currentItem = listView->property("currentItem").value<QQuickItem*>();
     if (_currentItem && _currentItem->isEnabled()) {
-        UCViewItemsAttached *attached = qobject_cast<UCViewItemsAttached*>(parent());
-        UCViewItemsAttachedPrivate::get(attached)->setEffectiveCurrentIndex(currentIndex());
         setKeyNavigationForListView(keyNavigation);
         keyNavigation = false;
     }

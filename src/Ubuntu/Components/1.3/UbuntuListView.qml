@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.3// as Toolkit
+import Ubuntu.Components 1.3 as Toolkit
 
 /*!
     \qmltype UbuntuListView
@@ -161,7 +161,7 @@ ListView {
      */
     onMovementStarted: priv.requestFocus(Qt.MouseFocusReason)
     onFlickStarted: priv.requestFocus(Qt.MouseFocusReason)
-    Mouse.onClicked: priv.requestFocus(Qt.MouseFocusReason)
+    Toolkit.Mouse.onClicked: priv.requestFocus(Qt.MouseFocusReason)
 
     /*!
       Expand the item at the given index.
