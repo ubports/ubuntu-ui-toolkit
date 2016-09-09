@@ -26,7 +26,7 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
 #include <QtCore/QDebug>
-#include <QtOrganizer/QOrganizerTodoOccurrence>
+#include <QtOrganizer/QtOrganizer>
 
 #include "alarmmanager_p_p.h"
 #include "ucalarm_p_p.h"
