@@ -58,6 +58,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtGui/QMouseEvent>
 #include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtTest/qtesttouch.h>
 
 #include <X11/extensions/XInput2.h>
 #include <X11/extensions/XI2proto.h>
