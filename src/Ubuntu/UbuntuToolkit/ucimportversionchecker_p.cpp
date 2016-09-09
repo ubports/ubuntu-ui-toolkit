@@ -18,11 +18,11 @@
 
 #include "ucimportversionchecker_p.h"
 
-#include <QtQuick>
-#include <QtQml/private/qqmldata_p.h>
 #include <QtQml/private/qqmlcontext_p.h>
-#include <QtQml/private/qqmlpropertycache_p.h>
+#include <QtQml/private/qqmldata_p.h>
 #include <QtQml/private/qqmlmetatype_p.h>
+#include <QtQml/private/qqmlpropertycache_p.h>
+#include <QtQuick/QtQuick>
 
 UT_NAMESPACE_BEGIN
 

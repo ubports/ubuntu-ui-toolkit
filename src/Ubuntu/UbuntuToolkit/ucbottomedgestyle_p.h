@@ -16,11 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGESTYLE_H
-#define UCBOTTOMEDGESTYLE_H
+#ifndef UCBOTTOMEDGESTYLE_P_H
+#define UCBOTTOMEDGESTYLE_P_H
 
 #include <QtQuick/QQuickItem>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 class QQuickAbstractAnimation;
@@ -63,4 +64,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGESTYLE_H
+#endif // UCBOTTOMEDGESTYLE_P_H

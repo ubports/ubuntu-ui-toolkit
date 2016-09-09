@@ -14,10 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCSERVICEPROPERTIES_P_H
-#define UCSERVICEPROPERTIES_P_H
+#ifndef UCSERVICEPROPERTIES_P_P_H
+#define UCSERVICEPROPERTIES_P_P_H
 
-#include "ucserviceproperties_p.h"
+#include <UbuntuToolkit/private/ucserviceproperties_p.h>
+
 #include <QtCore/QStringList>
 
 UT_NAMESPACE_BEGIN
@@ -55,4 +56,4 @@ UCServicePropertiesPrivate *createServicePropertiesAdapter(UCServiceProperties *
 
 UT_NAMESPACE_END
 
-#endif // UCSERVICEPROPERTIES_P_H
+#endif // UCSERVICEPROPERTIES_P_P_H

@@ -17,6 +17,7 @@
  */
 
 #include "ucperformancemonitor_p.h"
+
 #include <QtGui/QGuiApplication>
 
 Q_LOGGING_CATEGORY(ucPerformance, "[PERFORMANCE]")

@@ -16,12 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTATESAVER_P_H
-#define UCSTATESAVER_P_H
+#ifndef UCSTATESAVER_P_P_H
+#define UCSTATESAVER_P_P_H
 
-#include "ucstatesaver_p.h"
+#include <UbuntuToolkit/private/ucstatesaver_p.h>
 
-#include <QStringList>
+#include <QtCore/QStringList>
 #include <QtCore/private/qobject_p.h>
 
 UT_NAMESPACE_BEGIN
@@ -50,4 +50,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCSTATESAVER_P_H
+#endif // UCSTATESAVER_P_P_H

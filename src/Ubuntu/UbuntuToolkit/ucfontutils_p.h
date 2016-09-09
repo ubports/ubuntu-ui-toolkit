@@ -12,14 +12,14 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef UCFONTUTILS_H
-#define UCFONTUTILS_H
+#ifndef UCFONTUTILS_P_H
+#define UCFONTUTILS_P_H
 
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -68,4 +68,4 @@ UT_NAMESPACE_END
 #define SCALE_XSMALL        0x6d732d78 // "x-sm"
 #define SCALE_XXSMALL       0x732d7878 // "xx-s"
 
-#endif // UCFONTUTILS_H
+#endif // UCFONTUTILS_P_H

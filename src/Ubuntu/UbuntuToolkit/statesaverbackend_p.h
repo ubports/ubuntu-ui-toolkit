@@ -20,12 +20,13 @@
 #define STATESAVERBACKEND_P_H
 
 #include <QtCore/QObject>
-#include <QtCore/QSettings>
 #include <QtCore/QPointer>
 #include <QtCore/QSet>
-#include <QtCore/QTimer>
+#include <QtCore/QSettings>
 #include <QtCore/QStack>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QTimer>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 

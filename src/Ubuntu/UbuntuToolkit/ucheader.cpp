@@ -15,10 +15,12 @@
  */
 
 #include "ucheader_p.h"
-#include <QDebug>
-#include <QtQuick/private/qquickflickable_p.h>
+
+#include <QtCore/QDebug>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
+
 #include "ucubuntuanimation_p.h"
 #include "ucunits_p.h"
 

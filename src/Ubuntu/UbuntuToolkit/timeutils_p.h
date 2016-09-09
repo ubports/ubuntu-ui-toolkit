@@ -17,12 +17,12 @@
 #ifndef TIMEUTILS_P_H
 #define TIMEUTILS_P_H
 
-#include "livetimer_p.h"
+#include <QtCore/QDateTime>
+#include <QtCore/QLocale>
+#include <QtCore/QObject>
+#include <QtCore/QTimer>
 
-#include <QDateTime>
-#include <QLocale>
-#include <QObject>
-#include <QTimer>
+#include <UbuntuToolkit/private/livetimer_p.h>
 
 UT_NAMESPACE_BEGIN
 

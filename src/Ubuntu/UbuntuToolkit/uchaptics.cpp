@@ -15,9 +15,11 @@
  */
 
 #include "uchaptics_p.h"
-#include <QtQml/QQmlComponent>
+
 #include <QtCore/QUrl>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtQml/QQmlComponent>
+
 #include "ubuntutoolkitmodule.h"
 
 UT_NAMESPACE_BEGIN

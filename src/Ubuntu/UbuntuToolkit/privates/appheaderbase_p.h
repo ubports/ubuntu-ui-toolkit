@@ -14,10 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef APPHEADERBASE_H
-#define APPHEADERBASE_H
+#ifndef APPHEADERBASE_P_H
+#define APPHEADERBASE_P_H
 
-#include "ucheader_p.h"
+#include <UbuntuToolkit/private/ucheader_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -62,4 +62,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // APPHEADERBASE_H
+#endif // APPHEADERBASE_P_H

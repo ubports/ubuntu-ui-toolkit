@@ -17,9 +17,11 @@
  */
 
 #include "ucalarm_p_p.h"
+
+#include <QtQml/QQmlInfo>
+
 #include "alarmmanager_p_p.h"
 #include "i18n_p.h"
-#include <QtQml/QQmlInfo>
 
 UT_NAMESPACE_BEGIN
 

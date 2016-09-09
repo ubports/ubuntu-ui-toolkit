@@ -14,13 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCHAPTICS_H
-#define UCHAPTICS_H
+#ifndef UCHAPTICS_P_H
+#define UCHAPTICS_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
 #include <QtQml/QQmlEngine>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlEngine;
 UT_NAMESPACE_BEGIN

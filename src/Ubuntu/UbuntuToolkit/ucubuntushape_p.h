@@ -16,15 +16,16 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCUBUNTUSHAPE_H
-#define UCUBUNTUSHAPE_H
+#ifndef UCUBUNTUSHAPE_P_H
+#define UCUBUNTUSHAPE_P_H
 
+#include <QtGui/QOpenGLFunctions>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGNode>
 #include <QtQuick/qsgmaterial.h>
-#include <QtGui/QOpenGLFunctions>
-#include "ucubuntushapetextures_p.h"
-#include "ucimportversionchecker_p.h"
+
+#include <UbuntuToolkit/private/ucimportversionchecker_p.h>
+#include <UbuntuToolkit/private/ucubuntushapetextures_p.h>
 
 // --- Scene graph shader ---
 
@@ -365,4 +366,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCUbuntuShape))
 
-#endif  // UCUBUNTUSHAPE_H
+#endif  // UCUBUNTUSHAPE_P_H

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <UbuntuGestures/private/unownedtouchevent_p.h>
+#include "unownedtouchevent_p.h"
 
 UG_NAMESPACE_BEGIN
 

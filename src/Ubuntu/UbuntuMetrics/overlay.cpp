@@ -16,11 +16,14 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include "overlay_p.h"
-#include "ubuntumetricsglobal_p.h"
-#include <QtCore/QSysInfo>
-#include <QtGui/QGuiApplication>
+
 #include <unistd.h>
 #include <fcntl.h>
+
+#include <QtCore/QSysInfo>
+#include <QtGui/QGuiApplication>
+
+#include "ubuntumetricsglobal_p.h"
 
 static const QPointF position = QPointF(5.0f, 5.0f);
 static const float opacity = 0.85f;

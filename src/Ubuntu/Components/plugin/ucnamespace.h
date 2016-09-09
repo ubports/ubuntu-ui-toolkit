@@ -12,15 +12,14 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef UCNAMESPACE_H
 #define UCNAMESPACE_H
 
 #include <QtCore/QObject>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 #include <UbuntuToolkit/private/quickutils_p.h>
-#include <ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 

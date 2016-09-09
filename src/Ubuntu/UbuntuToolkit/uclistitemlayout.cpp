@@ -16,11 +16,12 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#include "private/qqmldata_p.h"
+#include "uclistitemlayout_p.h"
+
 #include <QtQml/QQmlEngine>
+#include <QtQml/private/qqmldata_p.h>
 
 #include "privates/threelabelsslot_p.h"
-#include "uclistitemlayout_p.h"
 #include "uclabel_p.h"
 
 UT_NAMESPACE_BEGIN

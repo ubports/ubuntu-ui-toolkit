@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMACTIONS_H
-#define UCLISTITEMACTIONS_H
+#ifndef UCLISTITEMACTIONS_P_H
+#define UCLISTITEMACTIONS_P_H
 
 #include <QtCore/QObject>
-#include "uclistitem_p_p.h"
+
+#include <UbuntuToolkit/private/uclistitem_p_p.h>
 
 class QQmlComponent;
 
@@ -51,4 +52,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCLISTITEMACTIONS_H
+#endif // UCLISTITEMACTIONS_P_H

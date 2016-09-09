@@ -14,31 +14,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucunits_p.h"
-#include "uctheme_p.h"
 #include "uclistitem_p_p.h"
-#include "uclistitemactions_p_p.h"
-#include "privates/listitemselection_p.h"
-#include "ucubuntuanimation_p.h"
-#include <propertychange_p.h>
-#include "i18n_p.h"
-#include "quickutils_p.h"
-#include "ucaction_p.h"
-#include "privates/listviewextensions_p.h"
-#include <QtQml/QQmlInfo>
-#include <QtQuick/private/qquickitem_p.h>
-#include <QtQuick/private/qquickflickable_p.h>
-#include <QtQuick/private/qquickpositioners_p.h>
+
+#include <QtCore/QFileInfo>
+#include <QtCore/QLibraryInfo>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QStyleHints>
-#include <QtQuick/private/qquickanimation_p.h>
-#include <QtQuick/private/qquickmousearea_p.h>
-#include "uclistitemstyle_p.h"
-#include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
-#include <QFileInfo>
-#include <QLibraryInfo>
-#include <ubuntutoolkitmodule.h>
+#include <QtQml/QQmlInfo>
+#include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickbehavior_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
+#include <QtQuick/private/qquickitem_p.h>
+#include <QtQuick/private/qquickmousearea_p.h>
+#include <QtQuick/private/qquickpositioners_p.h>
+
+#include "i18n_p.h"
+#include "privates/listitemselection_p.h"
+#include "privates/listviewextensions_p.h"
+#include "propertychange_p.h"
+#include "quickutils_p.h"
+#include "ubuntutoolkitmodule.h"
+#include "ucaction_p.h"
+#include "uclistitemactions_p_p.h"
+#include "uclistitemstyle_p.h"
+#include "uctheme_p.h"
+#include "ucubuntuanimation_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 

@@ -16,7 +16,7 @@
 
 #include "ucpagetreenode_p_p.h"
 
-#include <QQmlEngine>
+#include <QtQml/QQmlEngine>
 
 Q_LOGGING_CATEGORY(ucPageTreeNode, "ubuntu.components.PageTreeNode", QtMsgType::QtWarningMsg)
 

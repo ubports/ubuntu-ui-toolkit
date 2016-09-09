@@ -16,15 +16,15 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include "ucqquickimageextension_p.h"
+
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
-#include <QtCore/QDir>
 #include <QtGui/QGuiApplication>
 #include <QtQuick/private/qquickimagebase_p.h>
 
-#include "ucqquickimageextension_p.h"
 #include "ucunits_p.h"
-
 
 UT_NAMESPACE_BEGIN
 

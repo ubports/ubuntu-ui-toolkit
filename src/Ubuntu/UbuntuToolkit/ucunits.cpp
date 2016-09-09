@@ -18,18 +18,17 @@
 
 #include "ucunits_p.h"
 
-#include <QtQml/QQmlContext>
-#include <QtQml/QQmlFile>
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 #include <QtCore/QRegularExpression>
-#include <QtCore/qmath.h>
+#include <QtCore/QtMath>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
-
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/qpa/qplatformscreen.h>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlFile>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8

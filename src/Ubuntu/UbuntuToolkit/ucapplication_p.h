@@ -16,11 +16,12 @@
  * Author: Christian Dywan <christian.dywan@canonical.om>
  */
 
-#ifndef UBUNTU_COMPONENTS_APPLICATION_H
-#define UBUNTU_COMPONENTS_APPLICATION_H
+#ifndef UCAPPLICATION_P_H
+#define UCAPPLICATION_P_H
 
 #include <QtCore/QObject>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlContext;
 class QQmlEngine;
@@ -70,4 +71,4 @@ Q_SIGNALS:
 
 UT_NAMESPACE_END
 
-#endif // UBUNTU_COMPONENTS_I18N_H
+#endif // UCAPPLICATION_P_H

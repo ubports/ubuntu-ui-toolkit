@@ -16,14 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include <QtGui/QClipboard>
-#include <QtGui/QGuiApplication>
+#include "qquickmimedata_p.h"
+
 #include <QtCore/QMimeData>
 #include <QtCore/QMimeDatabase>
 #include <QtCore/QMimeType>
-#include "qquickmimedata_p.h"
-
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtGui/QClipboard>
+#include <QtGui/QGuiApplication>
 
 UT_NAMESPACE_BEGIN
 

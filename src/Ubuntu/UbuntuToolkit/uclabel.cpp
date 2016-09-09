@@ -15,10 +15,11 @@
  */
 
 #include "label_p.h"
+
+#include "quickutils_p.h"
 #include "ucfontutils_p.h"
-#include "ucunits_p.h"
 #include "uctheme_p.h"
-#include <quickutils_p.h>
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 

@@ -16,13 +16,14 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include "logger_p.h"
-#include "ubuntumetricsglobal_p.h"
-#include "events.h"
+
+#include <dlfcn.h>
+
 #include <QtCore/QDir>
 #include <QtCore/QTime>
 
-// LTTng shared object runtime loading.
-#include <dlfcn.h>
+#include "events.h"
+#include "ubuntumetricsglobal_p.h"
 #define TRACEPOINT_DEFINE
 #define TRACEPOINT_PROBE_DYNAMIC_LINKAGE
 #include "lttng/lttng_p.h"

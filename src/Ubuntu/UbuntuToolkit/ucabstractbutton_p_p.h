@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCABSTRACTBUTTON_P
-#define UCABSTRACTBUTTON_P
+#ifndef UCABSTRACTBUTTON_P_P_H
+#define UCABSTRACTBUTTON_P_P_H
 
-#include "ucabstractbutton_p.h"
-#include "ucactionitem_p_p.h"
+#include <UbuntuToolkit/private/ucabstractbutton_p.h>
+
+#include <UbuntuToolkit/private/ucactionitem_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -54,4 +55,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCABSTRACTBUTTON_P
+#endif // UCABSTRACTBUTTON_P_P_H

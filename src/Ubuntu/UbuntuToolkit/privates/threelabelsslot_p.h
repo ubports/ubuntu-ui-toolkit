@@ -14,12 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef THREELABELSSLOT_H
-#define THREELABELSSLOT_H
+#ifndef THREELABELSSLOT_P_H
+#define THREELABELSSLOT_P_H
 
-#include <QQuickItem>
-#include <private/qquickitem_p.h>
-#include <ubuntutoolkitglobal.h>
+#include <QtQuick/private/qquickitem_p.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 //The padding between title and the string below it (i.e. subtitle, or
 //summary, when subtitle is empty)
@@ -89,4 +89,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // THREELABELSSLOT_H
+#endif // THREELABELSSLOT_P_H

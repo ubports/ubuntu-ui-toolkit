@@ -17,6 +17,7 @@
  */
 
 #include "upmcpuusage.h"
+
 #include <unistd.h>
 
 UPMCpuUsage::UPMCpuUsage(QQuickItem *parent) :

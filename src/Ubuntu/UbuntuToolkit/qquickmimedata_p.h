@@ -16,14 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef QQUICKMIMEDATA_H
-#define QQUICKMIMEDATA_H
+#ifndef QQUICKMIMEDATA_P_H
+#define QQUICKMIMEDATA_P_H
 
 #include <QtCore/QMimeData>
 #include <QtCore/QStringList>
-#include <QtGui/QColor>
 #include <QtCore/QUrl>
-#include "qquickclipboard_p.h"
+#include <QtGui/QColor>
+
+#include <UbuntuToolkit/private/qquickclipboard_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -74,4 +75,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // QQUICKMIMEDATA_H
+#endif // QQUICKMIMEDATA_P_H

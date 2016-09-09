@@ -14,14 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLABEL_H
-#define UCLABEL_H
+#ifndef UCLABEL_P_H
+#define UCLABEL_P_H
+
+#include <functional>  // std::function
 
 #include <QtQuick/private/qquicktext_p.h>
-#include "ucthemingextension_p.h"
-// C++ std lib for std::function declaration
-#include <functional>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucthemingextension_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -101,4 +102,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCLabel))
 
-#endif  // UCLABEL_H
+#endif  // UCLABEL_P_H

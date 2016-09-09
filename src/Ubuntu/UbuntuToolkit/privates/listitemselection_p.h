@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LISTITEMSELECTION_H
-#define LISTITEMSELECTION_H
+#ifndef LISTITEMSELECTION_P_H
+#define LISTITEMSELECTION_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -58,4 +59,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // LISTITEMSELECTION_H
+#endif // LISTITEMSELECTION_P_H

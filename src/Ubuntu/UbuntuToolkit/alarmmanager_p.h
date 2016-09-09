@@ -16,14 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ALARMMANAGER_H
-#define ALARMMANAGER_H
+#ifndef ALARMMANAGER_P_H
+#define ALARMMANAGER_P_H
 
 #include <QtCore/QObject>
-#include <QtQml/QQmlListProperty>
 #include <QtCore/QSet>
+#include <QtQml/QQmlListProperty>
 
-#include "ucalarm_p.h"
+#include <UbuntuToolkit/private/ucalarm_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -126,4 +126,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // ALARMMANAGER_H
+#endif // ALARMMANAGER_P_H

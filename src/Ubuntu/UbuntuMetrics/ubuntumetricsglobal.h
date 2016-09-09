@@ -18,7 +18,7 @@
 #ifndef UBUNTUMETRICSGLOBAL_H
 #define UBUNTUMETRICSGLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <QtCore/QtGlobal>
 
 #if defined(QT_BUILD_UBUNTUMETRICS_LIB)
 #define UBUNTU_METRICS_EXPORT Q_DECL_EXPORT

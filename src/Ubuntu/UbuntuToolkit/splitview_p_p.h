@@ -19,7 +19,8 @@
 #ifndef SPLITVIEW_P_P_H
 #define SPLITVIEW_P_P_H
 
-#include "splitview_p.h"
+#include <UbuntuToolkit/private/splitview_p.h>
+
 #include <QtCore/private/qobject_p.h>
 
 UT_NAMESPACE_BEGIN

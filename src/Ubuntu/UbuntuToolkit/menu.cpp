@@ -14,22 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "menu_p.h"
 #include "menu_p_p.h"
+
+#include <functional>
+
+#include <QtCore/QPointer>
+#include <QtCore/QLoggingCategory>
+#include <QtGui/qpa/qplatformtheme.h>
+#include <QtGui/qpa/qplatformmenu.h>
+#include <QtGui/private/qguiapplication_p.h>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/private/qquickitem_p.h>
+
 #include "menubar_p.h"
 #include "actionlist_p.h"
 #include "menugroup_p.h"
-
-// Qt
-#include <QPointer>
-#include <QQuickItem>
-#include <QLoggingCategory>
-#include <QtGui/qpa/qplatformtheme.h>
-#include <QtGui/qpa/qplatformmenu.h>
-#include <private/qguiapplication_p.h>
-#include <private/qquickitem_p.h>
-
-#include <functional>
 
 Q_LOGGING_CATEGORY(ucMenu, "ubuntu.components.Menu", QtMsgType::QtWarningMsg)
 

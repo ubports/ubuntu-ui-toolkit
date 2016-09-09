@@ -16,14 +16,15 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UBUNTU_COMPONENTS_UNITS_H
-#define UBUNTU_COMPONENTS_UNITS_H
+#ifndef UCUNITS_P_H
+#define UCUNITS_P_H
 
-#include <QObject>
 #include <QtCore/QHash>
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QUrl>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QPlatformWindow;
 
@@ -76,4 +77,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UBUNTU_COMPONENTS_UNITS_H
+#endif // UCUNITS_P_H

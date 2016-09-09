@@ -16,6 +16,7 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include "applicationmonitor_p.h"
+
 #include <QtCore/QTimer>
 #include <QtGui/QGuiApplication>
 #include <QtQuick/QQuickWindow>

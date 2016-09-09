@@ -15,11 +15,13 @@
  */
 
 #include "ucactionitem_p_p.h"
-#include "ucaction_p.h"
-#include "ucstyleditembase_p_p.h"
+
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
+
+#include "ucaction_p.h"
+#include "ucstyleditembase_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

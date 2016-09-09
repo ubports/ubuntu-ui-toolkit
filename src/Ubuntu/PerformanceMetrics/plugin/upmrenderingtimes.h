@@ -16,12 +16,13 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UPMPERFORMANCE_METRICS_H
-#define UPMPERFORMANCE_METRICS_H
+#ifndef UPMRENDERINGTIMES_H
+#define UPMRENDERINGTIMES_H
 
+#include <QtCore/QElapsedTimer>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickWindow>
-#include <QtCore/QElapsedTimer>
+
 #include "upmgraphmodel.h"
 #include "rendertimer.h"
 
@@ -83,4 +84,4 @@ private:
     qint64 m_oddFrameRenderTime;
 };
 
-#endif // UPMPERFORMANCE_METRICS_H
+#endif // UPMRENDERINGTIMES_H

@@ -1,16 +1,13 @@
 TEMPLATE=lib
 TARGET=UbuntuToolkit
 
-QT *= core-private gui-private qml qml-private quick quick-private testlib
+QT *= core-private gui-private qml-private quick-private testlib dbus svg organizer \
+      UbuntuGestures-private UbuntuMetrics
 
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
 }
-QT *= dbus svg UbuntuGestures UbuntuGestures_private UbuntuMetrics
-
-# QOrganizer for Alarm API
-QT *= organizer
 
 !contains(QT_ARCH, arm) {
     DEFINES += UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
@@ -20,8 +17,6 @@ QT *= organizer
 }
 
 CONFIG += dll no_keywords c++11
-
-INCLUDEPATH+=$$PWD
 
 DEFINES += UBUNTUTOOLKIT_LIBRARY
 #comment in the following line to disable traces
@@ -47,7 +42,7 @@ HEADERS += \
     ubuntutoolkitmodule.h \
     splitview_p.h \
     splitview_p_p.h \
-    privates/splitviewhandler_p_p.h \
+    privates/splitviewhandler_p.h \
     menu_p_p.h \
     menubar_p_p.h \
     menu_p.h \

@@ -16,14 +16,13 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
-#include <QCoreApplication>
-#include <QDebug>
-#include <QDir>
-
-#include <QFileInfoList>
-#include <QProcess>
-#include <QDomDocument>
-#include <QDateTime>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfoList>
+#include <QtCore/QProcess>
+#include <QtXml/QDomDocument>
 
 QStringList _testReports;
 int _testcaseCounter;

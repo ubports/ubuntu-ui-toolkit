@@ -12,13 +12,13 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include "exclusivegroup_p.h"
-#include "ucaction_p.h"
 
-#include <QSignalMapper>
+#include <QtCore/QSignalMapper>
+
+#include "ucaction_p.h"
 
 #define CHECKED_PROPERTY "checked"
 

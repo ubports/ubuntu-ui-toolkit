@@ -17,13 +17,15 @@
  */
 
 #include "ucarguments_p.h"
-#include "i18n_p.h"
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
-#include <QtCore/QTextStream>
 #include <QtCore/QFileInfo>
+#include <QtCore/QTextStream>
+#include <QtQml/QtQml>
 #include <QtQml/QQmlProperty>
-#include <QtQml/qqml.h>
+
+#include "i18n_p.h"
 
 UT_NAMESPACE_BEGIN
 

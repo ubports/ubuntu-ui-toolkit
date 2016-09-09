@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTU_COMPONENTS_LISTENER_H
-#define UBUNTU_COMPONENTS_LISTENER_H
+#ifndef LISTENER_P_H
+#define LISTENER_P_H
 
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlContext;
 
@@ -36,4 +37,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UBUNTU_COMPONENTS_PLUGIN_H
+#endif // LISTENER_P_H

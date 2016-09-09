@@ -17,9 +17,12 @@
  */
 
 #include "ucurihandler_p.h"
-#include <QtDBus/QtDBus>
+
 #include <libnih.h>
 #include <libnih-dbus.h>
+
+#include <QtDBus/QtDBus>
+
 #include "statesaverbackend_p.h"
 
 UT_NAMESPACE_BEGIN

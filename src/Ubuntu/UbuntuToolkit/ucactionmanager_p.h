@@ -14,13 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCACTIONMANAGER_H
-#define UCACTIONMANAGER_H
+#ifndef UCACTIONMANAGER_P_H
+#define UCACTIONMANAGER_P_H
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -65,4 +66,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCACTIONMANAGER_H
+#endif // UCACTIONMANAGER_P_H

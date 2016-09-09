@@ -18,10 +18,8 @@
 #ifndef APPLICATIONMONITOR_P_H
 #define APPLICATIONMONITOR_P_H
 
-#include "applicationmonitor.h"
-#include "overlay_p.h"
-#include "gputimer_p.h"
-#include "ubuntumetricsglobal_p.h"
+#include <UbuntuMetrics/applicationmonitor.h>
+
 #include <QtCore/QTimer>
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
@@ -29,6 +27,10 @@
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QRunnable>
 #include <QtCore/QAtomicInteger>
+
+#include <UbuntuMetrics/private/overlay_p.h>
+#include <UbuntuMetrics/private/gputimer_p.h>
+#include <UbuntuMetrics/private/ubuntumetricsglobal_p.h>
 
 class LoggingThread;
 class WindowMonitor;

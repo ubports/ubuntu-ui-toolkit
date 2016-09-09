@@ -17,9 +17,11 @@
  */
 
 #include "ucstylehints_p.h"
-#include "ucstyleditembase_p_p.h"
-#include <propertychange_p.h>
+
 #include <QtQml/QQmlInfo>
+
+#include "propertychange_p.h"
+#include "ucstyleditembase_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

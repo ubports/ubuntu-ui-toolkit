@@ -16,12 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTYLEDITEMBASE_H
-#define UCSTYLEDITEMBASE_H
+#ifndef UCSTYLEDITEMBASE_P_H
+#define UCSTYLEDITEMBASE_P_H
 
 #include <QtQuick/QQuickItem>
-#include "ucthemingextension_p.h"
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/private/ucthemingextension_p.h>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -91,4 +92,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCSTYLEDITEMBASE_H
+#endif // UCSTYLEDITEMBASE_P_H

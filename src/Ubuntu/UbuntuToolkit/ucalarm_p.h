@@ -16,13 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCALARM_H
-#define UCALARM_H
+#ifndef UCALARM_P_H
+#define UCALARM_P_H
 
-#include <QtCore/QObject>
 #include <QtCore/QDateTime>
+#include <QtCore/QObject>
 #include <QtCore/QUrl>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -143,4 +144,4 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(UCAlarm::DaysOfWeek)
 
 UT_NAMESPACE_END
 
-#endif // UUALARM_H
+#endif // UUALARM_P_H

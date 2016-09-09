@@ -16,12 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ALARMMANAGER_P_H
-#define ALARMMANAGER_P_H
+#ifndef ALARMMANAGER_P_P_H
+#define ALARMMANAGER_P_P_H
 
-#include "ucalarm_p.h"
-#include "alarmmanager_p.h"
+#include <UbuntuToolkit/private/alarmmanager_p.h>
+
 #include <QtCore/QUrl>
+
+#include <UbuntuToolkit/private/ucalarm_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -61,4 +63,4 @@ AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms);
 
 UT_NAMESPACE_END
 
-#endif // ALARMMANAGER_P_H
+#endif // ALARMMANAGER_P_P_H

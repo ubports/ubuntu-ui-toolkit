@@ -16,12 +16,12 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGEHINT_P
-#define UCBOTTOMEDGEHINT_P
+#ifndef UCBOTTOMEDGEHINT_P_P_H
+#define UCBOTTOMEDGEHINT_P_P_H
 
-#include "ucbottomedgehint_p.h"
-#include "ucactionitem_p_p.h"
-#include <ubuntugesturesglobal.h>
+#include <UbuntuToolkit/private/ucbottomedgehint_p.h>
+
+#include <UbuntuToolkit/private/ucactionitem_p_p.h>
 
 UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
 
@@ -50,4 +50,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGEHINT_P
+#endif // UCBOTTOMEDGEHINT_P_P_H

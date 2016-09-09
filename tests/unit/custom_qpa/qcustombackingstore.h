@@ -34,9 +34,9 @@
 #ifndef QBACKINGSTORE_MINIMAL_H
 #define QBACKINGSTORE_MINIMAL_H
 
-#include <qpa/qplatformbackingstore.h>
-#include <qpa/qplatformwindow.h>
 #include <QtGui/QImage>
+#include <QtGui/qpa/qplatformbackingstore.h>
+#include <QtGui/qpa/qplatformwindow.h>
 
 class QCustomBackingStore : public QPlatformBackingStore
 {

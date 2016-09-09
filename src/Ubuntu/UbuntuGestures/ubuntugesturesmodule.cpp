@@ -16,10 +16,11 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
+#include <QtQml/QtQml>
 #include <QtQml/QQmlEngine>
-#include <QtQml>
+
 #include "ubuntugesturesmodule.h"
-#include <private/ucswipearea_p.h>
+#include "ucswipearea_p.h"
 
 UG_NAMESPACE_BEGIN
 

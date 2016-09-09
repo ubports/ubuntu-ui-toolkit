@@ -15,7 +15,8 @@
  */
 
 #include "colorutils_p.h"
-#include <QColor>
+
+#include <QtGui/QColor>
 
 UT_NAMESPACE_BEGIN
 

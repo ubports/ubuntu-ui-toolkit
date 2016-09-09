@@ -16,12 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGE_P_H
-#define UCBOTTOMEDGE_P_H
+#ifndef UCBOTTOMEDGE_P_P_H
+#define UCBOTTOMEDGE_P_P_H
 
-#include "ucbottomedge_p.h"
-#include "ucstyleditembase_p_p.h"
-#include "ucaction_p.h"
+#include <UbuntuToolkit/private/ucbottomedge_p.h>
+
+#include <UbuntuToolkit/private/ucstyleditembase_p_p.h>
+#include <UbuntuToolkit/private/ucaction_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -116,4 +117,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGE_P_H
+#endif // UCBOTTOMEDGE_P_P_H

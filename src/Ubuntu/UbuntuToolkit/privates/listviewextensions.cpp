@@ -16,12 +16,14 @@
  * Author Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "listviewextensions_p.h"
-#include "uclistitem_p_p.h"
-#include "quickutils_p.h"
+#include "privates/listviewextensions_p.h"
+
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickitemview_p.h> // for QQuickItemView::BottomToTop
+
+#include "uclistitem_p_p.h"
+#include "quickutils_p.h"
 
 UT_NAMESPACE_BEGIN
 

@@ -17,12 +17,12 @@
  *              Zsombor Egri <zsomboir.egri@canonical.com>
  */
 
-#ifndef MOUSE_TOUCH_ADAPTOR_H
-#define MOUSE_TOUCH_ADAPTOR_H
-
-#include "ubuntutoolkitglobal.h"
+#ifndef MOUSETOUCHADAPTOR_P_H
+#define MOUSETOUCHADAPTOR_P_H
 
 #include <QtCore/QObject>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QMouseEvent;
 class QTouchDevice;
@@ -60,4 +60,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // MOUSE_TOUCH_ADAPTOR_H
+#endif // MOUSETOUCHADAPTOR_P_H

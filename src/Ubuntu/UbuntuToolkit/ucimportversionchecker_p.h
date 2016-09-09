@@ -19,8 +19,9 @@
 #ifndef UCIMPORTVERSIONCHECKER_P_H
 #define UCIMPORTVERSIONCHECKER_P_H
 
-#include <QtCore>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QtCore>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 

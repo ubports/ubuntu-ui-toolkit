@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listitemdraghandler_p.h"
-#include "uclistitem_p.h"
-#include "uclistitem_p_p.h"
-#include <propertychange_p.h>
+#include "privates/listitemdraghandler_p.h"
+
 #include <QtQuick/private/qquickanimation_p.h>
+
+#include "uclistitem_p_p.h"
+#include "propertychange_p.h"
 
 UT_NAMESPACE_BEGIN
 

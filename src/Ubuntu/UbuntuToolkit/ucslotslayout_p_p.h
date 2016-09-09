@@ -16,12 +16,12 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#ifndef UCSLOTSLAYOUTPRIVATE_H
-#define UCSLOTSLAYOUTPRIVATE_H
+#ifndef UCSLOTSLAYOUT_P_P_H
+#define UCSLOTSLAYOUT_P_P_H
 
-#include <private/qquickitem_p.h>
+#include <UbuntuToolkit/private/ucslotslayout_p.h>
 
-#include "ucslotslayout_p.h"
+#include <QtQuick/private/qquickitem_p.h>
 
 #define IMPLICIT_SLOTSLAYOUT_WIDTH_GU                40
 #define IMPLICIT_SLOTSLAYOUT_HEIGHT_GU               7
@@ -150,4 +150,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCSLOTSLAYOUTPRIVATE_H
+#endif // UCSLOTSLAYOUT_P_P_H

@@ -16,13 +16,14 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef FRAME_H
-#define FRAME_H
+#ifndef FRAME_P_H
+#define FRAME_P_H
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGMaterial>
 #include <QtQuick/QSGNode>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -101,4 +102,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif  // FRAME_H
+#endif  // FRAME_P_H

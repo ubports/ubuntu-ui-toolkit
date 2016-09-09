@@ -15,11 +15,13 @@
  */
 
 #include "ucserviceproperties_p_p.h"
-#include "i18n_p.h"
-#include <QtQml/QQmlInfo>
+
 #include <QtCore/QMetaProperty>
+#include <QtQml/QQmlInfo>
 #include <QtQml/QQmlProperty>
 #include <QtQml/private/qqmlproperty_p.h>
+
+#include "i18n_p.h"
 
 UT_NAMESPACE_BEGIN
 

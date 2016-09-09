@@ -14,9 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucpagewrapperincubator_p.h"
-#include <QVariantMap>
-#include <QQmlInfo>
+#include "privates/ucpagewrapperincubator_p.h"
+
+#include <QtCore/QVariantMap>
+#include <QtQml/QQmlInfo>
 
 UT_NAMESPACE_BEGIN
 

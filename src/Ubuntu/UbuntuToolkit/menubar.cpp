@@ -12,19 +12,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include "menubar_p.h"
 #include "menubar_p_p.h"
 
-// Qt
-#include <QQuickItem>
-#include <QQuickWindow>
-#include <QLoggingCategory>
-#include <private/qguiapplication_p.h>
+#include <QtCore/QLoggingCategory>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickWindow>
 #include <QtGui/qpa/qplatformtheme.h>
 #include <QtGui/qpa/qplatformmenu.h>
+#include <QtGui/private/qguiapplication_p.h>
 
 UT_NAMESPACE_BEGIN
 

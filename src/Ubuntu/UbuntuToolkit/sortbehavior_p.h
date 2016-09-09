@@ -17,11 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SORTBEHAVIOR_H
-#define SORTBEHAVIOR_H
+#ifndef SORTBEHAVIOR_P_H
+#define SORTBEHAVIOR_P_H
 
-#include <QSortFilterProxyModel>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QSortFilterProxyModel>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -50,4 +51,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // SORTBEHAVIOR_H
+#endif // SORTBEHAVIOR_P_H

@@ -25,11 +25,10 @@
 //     the trade-off between shader cycles and bandwidth requirements needs to be precisely
 //     evaluated.
 
-#include <math.h>
 #include "ucubuntushape_p.h"
-#include "ucunits_p.h"
-#include "ubuntutoolkitglobal.h"
-#include "quickutils_p.h"
+
+#include <math.h>
+
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlInfo>
@@ -38,6 +37,10 @@
 #define emit Q_EMIT
 #include <QtQuick/private/qquickimage_p.h>
 #undef emit
+
+#include "quickutils_p.h"
+#include "ubuntutoolkitglobal.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 

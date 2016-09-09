@@ -18,12 +18,12 @@
 
 #include "unitythemeiconprovider_p.h"
 
-#include <QDir>
-#include <QFileInfo>
-#include <QSettings>
-#include <QImageReader>
-#include <QStandardPaths>
-#include <QtDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QSettings>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QtDebug>
+#include <QtGui/QImageReader>
 
 UT_NAMESPACE_BEGIN
 

@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACTIONLIST_H
-#define ACTIONLIST_H
+#ifndef ACTIONLIST_P_H
+#define ACTIONLIST_P_H
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtQml/QQmlListProperty>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -55,4 +56,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // ACTIONLIST_H
+#endif // ACTIONLIST_P_H

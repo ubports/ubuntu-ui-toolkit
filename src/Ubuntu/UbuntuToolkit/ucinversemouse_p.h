@@ -12,15 +12,15 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef UCINVERSEMOUSE_H
-#define UCINVERSEMOUSE_H
+#ifndef UCINVERSEMOUSE_P_H
+#define UCINVERSEMOUSE_P_H
 
-#include "ucmouse_p.h"
-#include <QtQml>
-#include <ubuntutoolkitglobal.h>
+#include <QtQml/QtQml>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucmouse_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -52,4 +52,4 @@ UT_NAMESPACE_END
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCInverseMouse))
 QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCInverseMouse), QML_HAS_ATTACHED_PROPERTIES)
 
-#endif // UCINVERSEMOUSE_H
+#endif // UCINVERSEMOUSE_P_H

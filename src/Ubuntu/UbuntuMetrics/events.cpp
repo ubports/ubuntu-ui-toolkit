@@ -16,12 +16,15 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include "events_p.h"
-#include "ubuntumetricsglobal_p.h"
-#include <QtCore/QElapsedTimer>
+
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <cstdio>
+#include <stdio.h>
+
+#include <QtCore/QElapsedTimer>
+
+#include "ubuntumetricsglobal_p.h"
 
 const int bufferSize = 128;
 const int bufferAlignment = 64;

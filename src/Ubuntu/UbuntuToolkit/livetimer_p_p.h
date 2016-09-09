@@ -14,12 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIVETIMER_P_H
-#define LIVETIMER_P_H
+#ifndef LIVETIMER_P_P_H
+#define LIVETIMER_P_P_H
 
-#include "livetimer_p.h"
+#include <UbuntuToolkit/private/livetimer_p.h>
 
-#include <QTimer>
+#include <QtCore/QTimer>
 
 UT_NAMESPACE_BEGIN
 
@@ -59,4 +59,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // LIVETIMER_P_H
+#endif // LIVETIMER_P_P_H

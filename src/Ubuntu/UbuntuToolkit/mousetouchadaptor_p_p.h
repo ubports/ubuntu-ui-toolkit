@@ -16,13 +16,15 @@
  * Authored by: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef MOUSETOUCHADAPTOR_P
-#define MOUSETOUCHADAPTOR_P
+#ifndef MOUSETOUCHADAPTOR_P_P_H
+#define MOUSETOUCHADAPTOR_P_P_H
 
-#include "mousetouchadaptor_p.h"
-#include <QtCore/private/qobject_p.h>
+#include <UbuntuToolkit/private/mousetouchadaptor_p.h>
+
 #include <QtCore/QAbstractNativeEventFilter>
-#include <QWindow>
+#include <QtCore/private/qobject_p.h>
+#include <QtGui/QWindow>
+
 #include <xcb/xcb.h>
 
 UT_NAMESPACE_BEGIN
@@ -73,5 +75,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // MOUSETOUCHADAPTOR_P
-
+#endif // MOUSETOUCHADAPTOR_P_P_H

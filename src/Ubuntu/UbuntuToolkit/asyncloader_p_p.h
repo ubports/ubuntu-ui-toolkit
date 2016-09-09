@@ -16,14 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ASYNCLOADER_P_H
-#define ASYNCLOADER_P_H
+#ifndef ASYNCLOADER_P_P_H
+#define ASYNCLOADER_P_P_H
+
+#include <UbuntuToolkit/private/asyncloader_p.h>
 
 #include <QtCore/private/qobject_p.h>
 #include <QtQml/QQmlIncubator>
-#include <ubuntutoolkitglobal.h>
-#include <UbuntuToolkit/private/asyncloader_p.h>
-#include <UbuntuToolkit/private/asyncloader_p_p.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -52,4 +53,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // ASYNCLOADER_P_H
+#endif // ASYNCLOADER_P_P_H

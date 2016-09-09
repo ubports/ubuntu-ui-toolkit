@@ -17,13 +17,15 @@
  */
 
 #include "ucdeprecatedtheme_p.h"
-#include "uctheme_p.h"
-#include "quickutils_p.h"
-#include "listener_p.h"
+
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
-#include <QtQml/QQmlInfo>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
+
+#include "listener_p.h"
+#include "quickutils_p.h"
+#include "uctheme_p.h"
 
 UT_NAMESPACE_BEGIN
 

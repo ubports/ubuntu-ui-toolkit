@@ -17,13 +17,14 @@
  */
 
 #include "plugin.h"
-#include "tarpan.h"
-#include "smilodon.h"
-#include "pangaea.h"
-#include "rune.h"
-#include "europe.h"
 
 #include <QtQuick/private/qquickimagebase_p.h>
+
+#include "europe.h"
+#include "pangaea.h"
+#include "rune.h"
+#include "smilodon.h"
+#include "tarpan.h"
 
 static QObject *registerPangaea(QQmlEngine *engine, QJSEngine *scriptEngine)
 {

@@ -15,9 +15,11 @@
  */
 
 #include "ucactioncontext_p.h"
-#include "ucaction_p.h"
-#include "adapters/actionsproxy_p.h"
+
 #include <QtQuick/QQuickItem>
+
+#include "adapters/actionsproxy_p.h"
+#include "ucaction_p.h"
 
 Q_LOGGING_CATEGORY(ucActionContext, "ubuntu.components.ActionContext", QtMsgType::QtWarningMsg)
 

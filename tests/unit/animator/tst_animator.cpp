@@ -14,21 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /*
  * Test to prevent regressions for bug: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1338602
  * Activity Indicator crashes in QML/Widget mixed applications
  */
 
-#include <QTest>
-#include <QTimer>
-#include <QQuickView>
-#include <QScopedPointer>
-#include <QObject>
-#include <QEventLoop>
+#include <QtCore/QEventLoop>
+#include <QtCore/QObject>
+#include <QtCore/QScopedPointer>
+#include <QtCore/QTimer>
+#include <QtQuick/QQuickView>
+#include <QtTest/QTest>
+#include <UbuntuToolkit/private/uctheme_p.h>
 
 #include "uctestcase.h"
-#include <UbuntuToolkit/private/uctheme_p.h>
 
 UT_USE_NAMESPACE
 

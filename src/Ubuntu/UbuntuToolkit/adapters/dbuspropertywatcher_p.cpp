@@ -14,12 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "dbuspropertywatcher_p.h"
-#include <QtDBus/QDBusReply>
-#include <unistd.h>
+#include "adapters/dbuspropertywatcher_p.h"
+
 #include <sys/types.h>
-#include "i18n_p.h"
+#include <unistd.h>
+
+#include <QtDBus/QDBusReply>
 #include <QtQml/QQmlInfo>
+
+#include "i18n_p.h"
 
 #define DYNAMIC_PROPERTY    "__q_property"
 

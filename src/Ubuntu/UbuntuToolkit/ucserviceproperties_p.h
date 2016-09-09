@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCSERVICEPROPERTIES_H
-#define UCSERVICEPROPERTIES_H
+#ifndef UCSERVICEPROPERTIES_P_H
+#define UCSERVICEPROPERTIES_P_H
 
 #include <QtCore/QObject>
 #include <QtQml/QQmlParserStatus>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -85,4 +86,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCSERVICEPROPERTIES_H
+#endif // UCSERVICEPROPERTIES_P_H
