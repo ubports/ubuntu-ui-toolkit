@@ -55,7 +55,7 @@
 
 #include "mousetouchadaptor_p_p.h"
 
-#include <QtCore/QCoreApplication>
+#include <QtGui/QGuiApplication>
 #include <QtGui/QMouseEvent>
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtTest/qtesttouch.h>
