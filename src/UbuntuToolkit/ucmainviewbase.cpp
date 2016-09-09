@@ -30,7 +30,8 @@ UT_NAMESPACE_BEGIN
 
 /*!
   \internal
-  \qmlabstract MainViewBase
+  \qmlabstract
+  \qmltype MainViewBase
   \inqmlmodule Ubuntu.Components
   \ingroup ubuntu
   \brief The base class for MainView and MultiColumnView.
@@ -126,7 +127,7 @@ UCMainViewBase::UCMainViewBase(UCMainViewBasePrivate &dd, QQuickItem *parent)
 }
 
 /*!
-  \qmlproperty string MainView::applicationName
+  \qmlproperty string MainViewBase::applicationName
 
   The property holds the application's name, which must be the same as the
   desktop file's name.
@@ -157,7 +158,7 @@ void UCMainViewBase::setApplicationName(QString applicationName)
 }
 
 /*!
-  \qmlproperty bool MainView::anchorToKeyboard
+  \qmlproperty bool MainViewBase::anchorToKeyboard
 
   The property holds if the application should automatically resize the
   contents when the input method appears
@@ -201,7 +202,7 @@ void UCMainViewBase::setHeaderColor(QColor headerColor)
 }
 
 /*!
-  \qmlproperty color MainView::backgroundColor
+  \qmlproperty color MainViewBase::backgroundColor
   Color of the background.
 
   Example:
@@ -265,7 +266,7 @@ void UCMainViewBase::setFooterColor(QColor footerColor)
 }
 
 /*!
-  \qmlproperty list<Action> MainView::actions
+  \qmlproperty list<Action> MainViewBase::actions
   \readonly
   \deprecated
 
@@ -279,7 +280,7 @@ QQmlListProperty<UCAction> UCMainViewBase::actions() const
 }
 
 /*!
-  \qmlproperty ActionManager MainView::actionManager
+  \qmlproperty ActionManager MainViewBase::actionManager
   \readonly
   \deprecated
 
@@ -295,7 +296,7 @@ UCActionManager *UCMainViewBase::actionManager() const
 }
 
 /*!
-  \qmlproperty ActionContext MainView::actionContext
+  \qmlproperty ActionContext MainViewBase::actionContext
   \readonly
   \since Ubuntu.Components 1.3
   The action context of the MainView.

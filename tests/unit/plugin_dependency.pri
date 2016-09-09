@@ -1,8 +1,9 @@
-PLUGIN_SRC = $$PWD/../../src/Ubuntu
+PLUGIN_SRC = $$PWD/../../src/imports
 PLUGIN_BLD = $$shadowed($$PWD)/../../qml/Ubuntu
 
 COMPONENTS_PATH = ../../../qml/Ubuntu/Components
 INCLUDEPATH += $$PLUGIN_SRC/Components/plugin
+INCLUDEPATH += $$PLUGIN_SRC/Layouts/plugin
 INCLUDEPATH += $$PLUGIN_SRC/Test/plugin
 PRE_TARGETDEPS =  $$PLUGIN_BLD/Components/libUbuntuComponents.so
 PRE_TARGETDEPS += $$PLUGIN_BLD/Test/libUbuntuTest.so

@@ -349,8 +349,6 @@ Menu::Menu(QObject *parent)
     : UCAction(parent)
     , d_ptr(new MenuPrivate(this))
 {
-    Q_D(Menu);
-
     connect(this, SIGNAL(enabledChanged()), this, SLOT(_q_updateEnabled()));
     connect(this, SIGNAL(textChanged()), this, SLOT(_q_updateText()));
     connect(this, SIGNAL(iconNameChanged()), this, SLOT(_q_updateIcon()));

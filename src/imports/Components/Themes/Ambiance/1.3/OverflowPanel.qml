@@ -63,7 +63,6 @@ ActionSelectionPopover {
 
     delegate: AbstractButton {
         id: actionButton
-        action: modelData
 
         // close after triggering the action.
         onClicked: overflow.hide()
