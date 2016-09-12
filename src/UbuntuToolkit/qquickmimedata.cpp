@@ -198,6 +198,9 @@ static bool setMimeType(QMimeData *mimeData, QVariantList &mlist)
     QMimeDatabase db;
     for (int i = 0; i < mlist.length() / 2; i++) {
         QString type = mlist[2 * i].toString();
+        // FIXME(loicm) Just went through that while converting the code base to
+        //     QStringLiteral, the else can't be executed here and that smells
+        //     like a bug.
         if (db.mimeTypeForName(type).isValid() || type == QStringLiteral("application/x-color")) {
             QByteArray data = mlist[2 * i + 1].toByteArray();
             mimeData->setData(type, data);

@@ -102,7 +102,8 @@
 
 UT_NAMESPACE_BEGIN
 
-const char *EngineProperty("__ubuntu_toolkit_plugin_data");
+static const QString notInstantiatable = QStringLiteral("Not instantiatable");
+static const char engineProperty[] = "__ubuntu_toolkit_plugin_data";
 
 /******************************************************************************
  * UbuntuToolkitModule
@@ -114,7 +115,7 @@ UbuntuToolkitModule* UbuntuToolkitModule::create(QQmlEngine *engine, const QUrl 
     }
     UbuntuToolkitModule *data = new UbuntuToolkitModule(engine);
     data->m_baseUrl = QUrl(baseUrl.toString() + '/');
-    engine->setProperty(EngineProperty, QVariant::fromValue(data));
+    engine->setProperty(engineProperty, QVariant::fromValue(data));
     return data;
 }
 
@@ -196,17 +197,15 @@ void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
     qmlRegisterUncreatableType<UCApplication>(
-        uri, major, minor, "UCApplication", QStringLiteral("Not instantiable"));
+        uri, major, minor, "UCApplication", notInstantiatable);
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterUncreatableType<UCFontUtils>(
-        uri, major, minor, "UCFontUtils", QStringLiteral("Not instantiable"));
+    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", notInstantiatable);
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
     qmlRegisterUncreatableType<UbuntuI18n>(
         uri, major, minor, "i18n", QStringLiteral("Singleton object"));
     qmlRegisterExtendedType<
         QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
-    qmlRegisterUncreatableType<
-        UCUnits>(uri, major, minor, "UCUnits", QStringLiteral("Not instantiable"));
+    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", notInstantiatable);
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
     // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
@@ -243,7 +242,7 @@ QUrl UbuntuToolkitModule::baseUrl(QQmlEngine *engine)
     if (!engine) {
         return QUrl();
     }
-    UbuntuToolkitModule *data = engine->property(EngineProperty).value<UbuntuToolkitModule*>();
+    UbuntuToolkitModule *data = engine->property(engineProperty).value<UbuntuToolkitModule*>();
     return !data ? QUrl() : data->m_baseUrl;
 }
 
@@ -343,15 +342,13 @@ void UbuntuToolkitModule::defineModule()
 
     // register parent type so that properties can get/ set it
     qmlRegisterUncreatableType<QAbstractItemModel>(
-        uri, 1, 1, "QAbstractItemModel", QStringLiteral("Not instantiable"));
+        uri, 1, 1, "QAbstractItemModel", notInstantiatable);
 
     // register 1.1 only API
     qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItem");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
-    qmlRegisterUncreatableType<FilterBehavior>(
-        uri, 1, 1, "FilterBehavior", QStringLiteral("Not instantiable"));
-    qmlRegisterUncreatableType<SortBehavior>(
-        uri, 1, 1, "SortBehavior", QStringLiteral("Not instantiable"));
+    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", notInstantiatable);
+    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", notInstantiatable);
     qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
 
     // register 1.2 only API
@@ -362,8 +359,7 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterUncreatableType<UCDragEvent>(
         uri, 1, 2, "ListItemDrag", QStringLiteral("This is an event object"));
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
-    qmlRegisterUncreatableType<UCViewItemsAttached>(
-        uri, 1, 2, "ViewItems", QStringLiteral("Not instantiable"));
+    qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", notInstantiatable);
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
@@ -381,10 +377,9 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
     qmlRegisterType<UCMargins>();
-    qmlRegisterUncreatableType<UCSlotsAttached>(
-        uri, 1, 3, "SlotsAttached", QStringLiteral("Not instantiable"));
+    qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", notInstantiatable);
     qmlRegisterUncreatableType<UCSlotsLayoutPadding>(
-        uri, 1, 3, "SlotsLayoutPadding", QStringLiteral("Not instantiable"));
+        uri, 1, 3, "SlotsLayoutPadding", notInstantiatable);
     qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");

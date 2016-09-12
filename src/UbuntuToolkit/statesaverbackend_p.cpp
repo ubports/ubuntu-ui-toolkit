@@ -171,11 +171,6 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
             // skip the property
             continue;
         }
-        // FIXME(loicm) The conversion to const char* from local 8-bit has been
-        //     kept while porting the toolkit lib to QT_ASCII_CAST_WARNINGS in
-        //     order to avoid potential behaviour changes. We just convert back
-        //     to QString (Unicode) from Latin-1. Shouldn't we just keep the
-        //     original QString?
         QQmlProperty qmlProperty(
             item, QString::fromLatin1(propertyName.toLocal8Bit().constData()), qmlContext(item));
         if (qmlProperty.isValid() && qmlProperty.isWritable()) {
@@ -216,11 +211,6 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
     m_archive.data()->beginGroup(id);
     int result = 0;
     Q_FOREACH(const QString &propertyName, properties) {
-        // FIXME(loicm) Same as above for load(). The conversion to const char*
-        //     from local 8-bit has been kept while porting the toolkit lib to
-        //     QT_ASCII_CAST_WARNINGS in order to avoid potential behaviour
-        //     changes. We just convert back to QString (Unicode) from
-        //     Latin-1. Shouldn't we just keep the original QString?
         QQmlProperty qmlProperty(
             item, QString::fromLatin1(propertyName.toLocal8Bit().constData()));
         if (qmlProperty.isValid()) {

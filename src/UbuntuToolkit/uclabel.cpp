@@ -249,7 +249,7 @@ QString UCLabel::fontSize() const
     if (d->flags & UCLabelPrivate::TextSizeSet) {
         return QStringLiteral("");
     }
-    const QString sizes[] = {
+    static const QString sizes[] = {
         QStringLiteral("xx-small"), QStringLiteral("x-small"), QStringLiteral("small"),
         QStringLiteral("medium"), QStringLiteral("large"), QStringLiteral("x-large")
     };

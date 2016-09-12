@@ -20,6 +20,8 @@
 
 #include "timeutils_p.h"
 
+static const QString dbusService = QStringLiteral("org.freedesktop.timedate1");
+
 UT_NAMESPACE_BEGIN
 
 SharedLiveTimer::SharedLiveTimer(QObject* parent)
@@ -29,12 +31,10 @@ SharedLiveTimer::SharedLiveTimer(QObject* parent)
     m_timer.setSingleShot(true);
     connect(&m_timer, &QTimer::timeout, this, &SharedLiveTimer::timeout);
 
-    QDBusConnection::systemBus().connect(QStringLiteral("org.freedesktop.timedate1"),
-                                         QStringLiteral("/org/freedesktop/timedate1"),
-                                         QStringLiteral("org.freedesktop.DBus.Properties"),
-                                         QStringLiteral("PropertiesChanged"),
-                                         this,
-                                         SLOT(timedate1PropertiesChanged(QString, QVariantMap, QStringList)));
+    QDBusConnection::systemBus().connect(
+        dbusService, QStringLiteral("/org/freedesktop/timedate1"),
+        QStringLiteral("org.freedesktop.DBus.Properties"), QStringLiteral("PropertiesChanged"),
+        this, SLOT(timedate1PropertiesChanged(QString, QVariantMap, QStringList)));
 }
 
 void SharedLiveTimer::registerTimer(LiveTimer *timer)
@@ -161,7 +161,7 @@ void SharedLiveTimer::timeout()
 
 void SharedLiveTimer::timedate1PropertiesChanged(const QString &interface, const QVariantMap &changed, const QStringList &)
 {
-    if (interface != QStringLiteral("org.freedesktop.timedate1")) return;
+    if (interface != dbusService) return;
     if (!changed.contains(QStringLiteral("Timezone"))) return;
 
     QList<LiveTimer*> tmpTimers(m_liveTimers);

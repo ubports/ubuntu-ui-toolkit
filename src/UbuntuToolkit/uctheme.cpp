@@ -145,9 +145,9 @@ UT_NAMESPACE_BEGIN
  * \sa {StyledItem}
  */
 
-#define CONTEXT_THEME       "theme"
-#define THEME_FOLDER_FORMAT "%1/%2/"
-#define PARENT_THEME_FILE   "parent_theme"
+static const QString contextTheme = QStringLiteral("theme");
+static const QString themeFolderFormat = QStringLiteral("%1/%2/");
+static const QString parentThemeFile = QStringLiteral("parent_theme");
 
 quint16 UCTheme::previousVersion = 0;
 
@@ -202,7 +202,7 @@ UCTheme::ThemeRecord pathFromThemeName(QString themeName)
     themeName.replace('.', '/');
     QStringList pathList = themeSearchPath();
     Q_FOREACH(const QString &path, pathList) {
-        QString themeFolder = QStringLiteral(THEME_FOLDER_FORMAT).arg(path, themeName);
+        QString themeFolder = themeFolderFormat.arg(path, themeName);
         // QUrl needs a trailing slash to understand it's a directory
         QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
         if (QDir(absoluteThemeFolder).exists()) {
@@ -221,7 +221,7 @@ QString parentThemeName(const UCTheme::ThemeRecord& themePath)
     if (!themePath.isValid()) {
         qWarning() << qPrintable(QStringLiteral("Theme not found: \"%1\"").arg(themePath.name));
     } else {
-        QFile file(themePath.path.resolved(QStringLiteral(PARENT_THEME_FILE)).toLocalFile());
+        QFile file(themePath.path.resolved(parentThemeFile).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             parentTheme = in.readLine();
@@ -307,18 +307,18 @@ void UCTheme::PaletteConfig::buildConfig()
     if (!palette) {
         return;
     }
-    const char* valueSet[2] = { "normal", "selected" };
-    const QString valueSetString[2] = { QStringLiteral("normal"), QStringLiteral("selected") };
+    const char* valueSetString[2] = { "normal", "selected" };
+    const QString valueSetQString[2] = { QStringLiteral("normal"), QStringLiteral("selected") };
     QQmlContext *configContext = qmlContext(palette);
 
     for (int i = 0; i < 2; i++) {
-        QObject *configObject = palette->property(valueSet[i]).value<QObject*>();
+        QObject *configObject = palette->property(valueSetString[i]).value<QObject*>();
         const QMetaObject *mo = configObject->metaObject();
 
         for (int ii = mo->propertyOffset(); ii < mo->propertyCount(); ii++) {
             const QMetaProperty prop = mo->property(ii);
             QString propertyName = QStringLiteral("%1.%2")
-                .arg(valueSetString[i]).arg(QString::fromLatin1(prop.name()));
+                .arg(valueSetQString[i]).arg(QString::fromLatin1(prop.name()));
             QQmlProperty configProperty(palette, propertyName, configContext);
 
             // first we need to check whether the property has a binding or not
@@ -392,7 +392,7 @@ UCTheme *UCTheme::defaultTheme(QQmlEngine *engine)
     }
     UCTheme *theme = Q_NULLPTR;
     for (int tryCount = 0; !theme && tryCount < 2; tryCount++) {
-        theme = engine->rootContext()->contextProperty(QStringLiteral(CONTEXT_THEME)).value<UCTheme*>();
+        theme = engine->rootContext()->contextProperty(contextTheme).value<UCTheme*>();
         if (!theme) {
             createDefaultTheme(engine);
         }
@@ -673,13 +673,13 @@ void UCTheme::createDefaultTheme(QQmlEngine* engine)
 
     UCTheme *theme = new UCTheme(engine);
     QQmlEngine::setContextForObject(theme, context);
-    context->setContextProperty(QStringLiteral(CONTEXT_THEME), theme);
+    context->setContextProperty(contextTheme, theme);
 
     theme->setupDefault();
     theme->updateEnginePaths(engine);
 
     ContextPropertyChangeListener *listener =
-        new ContextPropertyChangeListener(context, QStringLiteral(CONTEXT_THEME));
+        new ContextPropertyChangeListener(context, contextTheme);
     QObject::connect(theme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
