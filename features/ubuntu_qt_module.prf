@@ -1,7 +1,5 @@
-!build_with_qt: {
-    #enable autocreation of include directory
-    CONFIG += git_build
-}
+# Enable autocreation of include directory
+CONFIG += git_build
 
 load(qt_module)
 

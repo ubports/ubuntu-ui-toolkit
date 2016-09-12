@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2015-2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -66,7 +66,9 @@ AnimatedItem {
 
     /*!
       \since Ubuntu.Components 1.1
-      Specifies if the value of the progress is visible
+      \deprecated
+      Specifies if the value of the progress is visible. The current visuals in
+      Ubuntu Components 1.3 do not support this feature.
     */
     property bool showProgressPercentage: true
 

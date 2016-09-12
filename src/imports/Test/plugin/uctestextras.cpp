@@ -17,12 +17,12 @@
 #include "uctestextras.h"
 #include "uctestcase.h"
 
-#include "ucswipearea_p.h"
-#include "ucswipearea_p_p.h"
-
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qobject_p.h>
 #include <QSysInfo>
+
+#include <UbuntuGestures/private/ucswipearea_p.h>
+#include <UbuntuGestures/private/ucswipearea_p_p.h>
 #include <UbuntuToolkit/private/mousetouchadaptor_p.h>
 
 UT_USE_NAMESPACE
