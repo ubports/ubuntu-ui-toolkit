@@ -42,7 +42,7 @@ static const QString alarmManagerFallback = QStringLiteral("memory");
 static const QString alarmCollection = QStringLiteral("Alarms");
 
 // special tags used as workaround for bug #1361702
-static const QString tagCanonicalAlarm = QStringLiteral("x-canonical-alarm");
+static const QString tagAlarmService = QStringLiteral("x-canonical-alarm");
 static const QString tagDisabledAlarm = QStringLiteral("x-canonical-disabled");
 
 QTORGANIZER_USE_NAMESPACE
@@ -352,8 +352,8 @@ void AlarmDataAdapter::setData(const QOrganizerTodo &data)
 {
     event = data;
     // add x-canonical-alarm tag as agreed in bug #1361702
-    if (!event.tags().contains(tagCanonicalAlarm)) {
-        event.addTag(tagCanonicalAlarm);
+    if (!event.tags().contains(tagAlarmService)) {
+        event.addTag(tagAlarmService);
     }
     event.setCollectionId(AlarmsAdapter::get()->collection.id());
     event.setAllDay(false);
@@ -562,10 +562,10 @@ bool AlarmsAdapter::verifyChange(UCAlarm *alarm, AlarmManager::Change change, co
             Q_ASSERT(value.type() == QVariant::Bool);
             if (value.toBool()) {
                 return !todo.tags().contains(tagDisabledAlarm)
-                    && todo.tags().contains(tagCanonicalAlarm);
+                    && todo.tags().contains(tagAlarmService);
             } else {
                 return todo.tags().contains(tagDisabledAlarm)
-                    && todo.tags().contains(tagCanonicalAlarm);
+                    && todo.tags().contains(tagAlarmService);
             }
         }
         case AlarmManager::Date:
