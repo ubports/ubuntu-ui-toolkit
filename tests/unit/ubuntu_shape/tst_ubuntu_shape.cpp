@@ -16,9 +16,9 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include <QtTest/QtTest>
-#include <QtQuick/QQuickView>
 #include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickView>
+#include <QtTest/QtTest>
 
 class tst_UbuntuShape: public QObject
 {

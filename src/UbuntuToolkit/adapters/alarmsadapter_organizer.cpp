@@ -16,11 +16,7 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucalarm_p.h"
-#include "ucalarm_p_p.h"
-#include "alarmmanager_p_p.h"
-#include "alarmsadapter_p.h"
-#include <qorganizertodooccurrence.h>
+#include "adapters/alarmsadapter_p.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -30,6 +26,10 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
 #include <QtCore/QDebug>
+#include <QtOrganizer/QtOrganizer>
+
+#include "alarmmanager_p_p.h"
+#include "ucalarm_p_p.h"
 
 #define ALARM_DATABASE          "%1/alarms.json"
 /*

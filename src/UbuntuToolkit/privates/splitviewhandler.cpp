@@ -16,13 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "splitviewhandler_p_p.h"
+#include "privates/splitviewhandler_p.h"
+
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickevents_p_p.h>
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlInfo>
-#include <splitview_p_p.h>
+
+#include "splitview_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

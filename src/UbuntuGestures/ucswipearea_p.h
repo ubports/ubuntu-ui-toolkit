@@ -12,21 +12,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef UCSWIPEAREA_H
-#define UCSWIPEAREA_H
+#ifndef UCSWIPEAREA_P_H
+#define UCSWIPEAREA_P_H
 
+#include <QtCore/QLoggingCategory>
 #include <QtQuick/QQuickItem>
-#include "ubuntugesturesglobal.h"
 
-// lib UbuntuGestures
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 #include <UbuntuGestures/private/pool_p.h>
 #include <UbuntuGestures/private/timer_p.h>
-
-// logging
-#include <QtCore/QLoggingCategory>
 
 UG_NAMESPACE_BEGIN
 
@@ -106,4 +102,4 @@ UG_NAMESPACE_END
 Q_DECLARE_LOGGING_CATEGORY(ucSwipeArea)
 Q_DECLARE_LOGGING_CATEGORY(ucActiveTouchInfo)
 
-#endif // UCSWIPEAREA_H
+#endif // UCSWIPEAREA_P_H

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LABEL_P
-#define LABEL_P
+#ifndef LABEL_P_H
+#define LABEL_P_H
 
 #include "uclabel_p.h"
 
@@ -59,4 +59,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // LABEL_P
+#endif // LABEL_P_H

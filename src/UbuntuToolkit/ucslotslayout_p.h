@@ -16,11 +16,12 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#ifndef UCSLOTSLAYOUT_H
-#define UCSLOTSLAYOUT_H
+#ifndef UCSLOTSLAYOUT_P_H
+#define UCSLOTSLAYOUT_P_H
 
 #include <QtQuick/QQuickItem>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -170,4 +171,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCSLOTSLAYOUT_H
+#endif // UCSLOTSLAYOUT_P_H

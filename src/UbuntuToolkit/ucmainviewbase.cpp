@@ -16,16 +16,15 @@
 
 #include "ucmainviewbase_p_p.h"
 
-#include "ucactionmanager_p.h"
-#include "ucactioncontext_p.h"
-#include "ucapplication_p.h"
-#include "uctheme_p.h"
+#include <QtCore/QCoreApplication>
+
+#include "colorutils_p.h"
 #include "i18n_p.h"
 #include "quickutils_p.h"
-
-#include <colorutils_p.h>
-
-#include <QCoreApplication>
+#include "ucactioncontext_p.h"
+#include "ucactionmanager_p.h"
+#include "ucapplication_p.h"
+#include "uctheme_p.h"
 
 UT_NAMESPACE_BEGIN
 

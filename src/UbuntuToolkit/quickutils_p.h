@@ -12,7 +12,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef QUICKUTILS_P_H
@@ -21,7 +20,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtQuick/QQuickView>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 class QQmlEngine;

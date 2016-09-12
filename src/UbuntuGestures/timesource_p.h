@@ -16,11 +16,12 @@
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#ifndef UBUNTUGESTURES_TIMESOURCE_H
-#define UBUNTUGESTURES_TIMESOURCE_H
+#ifndef TIMESOURCE_P_H
+#define TIMESOURCE_P_H
 
-#include "ubuntugesturesglobal.h"
-#include <QSharedPointer>
+#include <QtCore/QSharedPointer>
+
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 
 UG_NAMESPACE_BEGIN
 /*
@@ -59,4 +60,4 @@ public:
 
 UG_NAMESPACE_END
 
-#endif // UBUNTUGESTURES_TIMESOURCE_H
+#endif // TIMESOURCE_P_H

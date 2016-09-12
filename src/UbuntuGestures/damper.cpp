@@ -15,7 +15,8 @@
  */
 
 #include "damper_p.h"
-#include <QDebug>
+
+#include <QtCore/QDebug>
 
 QDebug operator<<(QDebug dbg, const DampedPointF &p)
 {

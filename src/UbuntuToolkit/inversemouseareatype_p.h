@@ -13,12 +13,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef INVERSEMOUSEAREATYPE_H
-#define INVERSEMOUSEAREATYPE_H
 
-#include <private/qquickmousearea_p.h>
+#ifndef INVERSEMOUSEAREATYPE_P_H
+#define INVERSEMOUSEAREATYPE_P_H
+
 #include <QtCore/QPointer>
-#include <ubuntutoolkitglobal.h>
+#include <QtQuick/private/qquickmousearea_p.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
@@ -73,4 +75,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // INVERSEMOUSEAREATYPE_H
+#endif // INVERSEMOUSEAREATYPE_P_H

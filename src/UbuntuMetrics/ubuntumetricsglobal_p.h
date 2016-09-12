@@ -18,7 +18,7 @@
 #ifndef UBUNTUMETRICSGLOBAL_P_H
 #define UBUNTUMETRICSGLOBAL_P_H
 
-#include "ubuntumetricsglobal.h"
+#include <UbuntuMetrics/ubuntumetricsglobal.h>
 
 // Logging macros, debug macros are compiled out for release builds.
 #define LOG(...) qDebug(__VA_ARGS__)

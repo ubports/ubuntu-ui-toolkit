@@ -20,11 +20,11 @@
 
 #include <stdlib.h>
 
-#include <QtQml/QQmlEngine>
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
-#include <QtTest/QtTest>
+#include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickItem>
+#include <QtTest/QtTest>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 

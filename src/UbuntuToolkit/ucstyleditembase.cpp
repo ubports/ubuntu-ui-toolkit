@@ -17,11 +17,13 @@
  */
 
 #include "ucstyleditembase_p_p.h"
-#include "uctheme_p.h"
-#include "ucstylehints_p.h"
-#include "ucthemingextension_p.h"
+
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
+
+#include "ucstylehints_p.h"
+#include "uctheme_p.h"
+#include "ucthemingextension_p.h"
 
 UT_NAMESPACE_BEGIN
 

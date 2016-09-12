@@ -15,11 +15,13 @@
  *
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
-#ifndef UCURIHANDLER_H
-#define UCURIHANDLER_H
+
+#ifndef UCURIHANDLER_P_H
+#define UCURIHANDLER_P_H
 
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -56,4 +58,4 @@ class UBUNTUTOOLKIT_EXPORT UCUriHandler : public QObject
 
 UT_NAMESPACE_END
 
-#endif // USURIHANDLER_H
+#endif // USURIHANDLER_P_H

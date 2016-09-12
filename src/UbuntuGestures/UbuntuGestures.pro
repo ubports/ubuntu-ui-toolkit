@@ -1,11 +1,9 @@
 TEMPLATE=lib
 TARGET=UbuntuGestures
 
-QT *= core-private gui-private qml qml-private quick quick-private
+QT *= core-private gui-private qml-private quick-private
 
 CONFIG += dll no_keywords c++11
-
-INCLUDEPATH+=$$PWD
 
 DEFINES += UBUNTUGESTURES_LIBRARY
 

@@ -16,13 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTYLEDITEMBASE_P_H
-#define UCSTYLEDITEMBASE_P_H
+#ifndef UCSTYLEDITEMBASE_P_P_H
+#define UCSTYLEDITEMBASE_P_P_H
+
+#include <UbuntuToolkit/private/ucstyleditembase_p.h>
 
 #include <QtQuick/private/qquickitem_p.h>
-#include "ucstyleditembase_p.h"
-#include "ucthemingextension_p.h"
-#include "ucimportversionchecker_p.h"
+
+#include <UbuntuToolkit/private/ucthemingextension_p.h>
+#include <UbuntuToolkit/private/ucimportversionchecker_p.h>
 
 class QQuickMouseArea;
 
@@ -84,4 +86,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // UCSTYLEDITEMBASE_P_H
+#endif // UCSTYLEDITEMBASE_P_P_H

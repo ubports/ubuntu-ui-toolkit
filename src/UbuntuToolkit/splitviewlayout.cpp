@@ -15,12 +15,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include <QtQuick/private/qquickitem_p.h>
+#include "splitview_p_p.h"
+
 #include <QtQuick/private/qquickanchors_p.h>
+#include <QtQuick/private/qquickitem_p.h>
 #include <QtQml/QQmlInfo>
 
-#include "splitview_p.h"
-#include "splitview_p_p.h"
 #include "ucmathutils_p.h"
 
 UT_NAMESPACE_BEGIN

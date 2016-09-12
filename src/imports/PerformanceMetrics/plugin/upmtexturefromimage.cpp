@@ -16,8 +16,9 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include <QtQuick/QQuickWindow>
 #include "upmtexturefromimage.h"
+
+#include <QtQuick/QQuickWindow>
 
 UPMTextureFromImageTextureProvider::UPMTextureFromImageTextureProvider() :
     QSGTextureProvider(),

@@ -15,6 +15,7 @@
  */
 
 #include "appheaderbase_p.h"
+
 #include "ucstyleditembase_p_p.h"
 
 UT_NAMESPACE_BEGIN

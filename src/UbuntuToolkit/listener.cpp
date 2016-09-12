@@ -16,7 +16,7 @@
 
 #include "listener_p.h"
 
-#include <QQmlContext>
+#include <QtQml/QQmlContext>
 
 UT_NAMESPACE_BEGIN
 

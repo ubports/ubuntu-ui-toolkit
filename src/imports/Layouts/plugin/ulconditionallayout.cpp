@@ -16,13 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
+#include "ulconditionallayout_p.h"
+
 #define foreach Q_FOREACH
-#include <private/qqmlbinding_p.h>
+#include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
-#include "ulconditionallayout.h"
-#include "ulconditionallayout_p.h"
-#include "ullayouts.h"
 #include "ullayouts_p.h"
 
 ULConditionalLayoutPrivate::ULConditionalLayoutPrivate(ULConditionalLayout *qq) :

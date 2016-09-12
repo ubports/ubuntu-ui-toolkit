@@ -16,9 +16,10 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include "rendertimer.h"
+
 #include <QtCore/QPair>
 #include <QtGui/QOpenGLContext>
-#include "rendertimer.h"
 
 #if defined(QT_OPENGL_ES)
 #include <EGL/egl.h>

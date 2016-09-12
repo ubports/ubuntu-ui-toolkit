@@ -20,7 +20,9 @@
 #define ULLAYOUTS_P_H
 
 #include "ullayouts.h"
+
 #include <QtQml/QQmlIncubator>
+
 #include "propertychanges_p.h"
 
 typedef QHash<QString, QQuickItem*> LaidOutItemsMap;

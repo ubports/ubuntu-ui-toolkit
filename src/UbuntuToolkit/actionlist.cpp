@@ -15,6 +15,7 @@
  */
 
 #include "actionlist_p.h"
+
 #include "ucaction_p.h"
 
 UT_NAMESPACE_BEGIN

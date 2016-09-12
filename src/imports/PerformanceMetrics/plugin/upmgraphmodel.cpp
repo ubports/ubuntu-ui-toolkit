@@ -17,7 +17,8 @@
  */
 
 #include "upmgraphmodel.h"
-#include <QtCore/qmath.h>
+
+#include <QtCore/QtMath>
 
 UPMGraphModel::UPMGraphModel(QObject *parent) :
     QObject(parent),

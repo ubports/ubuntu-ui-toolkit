@@ -18,12 +18,13 @@
  */
 
 #include "ucdefaulttheme_p.h"
-#include "uctheme_p.h"
 
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QStandardPaths>
+
+#include "uctheme_p.h"
 
 UT_NAMESPACE_BEGIN
 

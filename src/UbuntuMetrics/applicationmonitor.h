@@ -18,10 +18,11 @@
 #ifndef APPLICATIONMONITOR_H
 #define APPLICATIONMONITOR_H
 
-#include <UbuntuMetrics/ubuntumetricsglobal.h>
+#include <QtCore/QList>
+
 #include <UbuntuMetrics/logger.h>
 #include <UbuntuMetrics/events.h>
-#include <QtCore/QList>
+#include <UbuntuMetrics/ubuntumetricsglobal.h>
 
 class UMApplicationMonitorPrivate;
 

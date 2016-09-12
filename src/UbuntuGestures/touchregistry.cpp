@@ -14,21 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <UbuntuGestures/private/touchregistry_p.h>
+#include "touchregistry_p.h"
 
-#include <QCoreApplication>
-#include <QDebug>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtQuick/private/qquickitem_p.h>
 
-#include <private/qquickitem_p.h>
-
-#include <UbuntuGestures/private/candidateinactivitytimer_p.h>
-#include <UbuntuGestures/private/timer_p.h>
-#include <UbuntuGestures/private/touchownershipevent_p.h>
-#include <UbuntuGestures/private/unownedtouchevent_p.h>
+#include "candidateinactivitytimer_p.h"
+#include "debughelpers_p.h"
+#include "timer_p.h"
+#include "touchownershipevent_p.h"
+#include "unownedtouchevent_p.h"
 
 Q_LOGGING_CATEGORY(ugTouchRegistry, "libubuntugestures.TouchRegistry", QtMsgType::QtWarningMsg)
 
-#include <UbuntuGestures/private/debughelpers_p.h>
 #define UG_DEBUG qCDebug(ugTouchRegistry) << "[TouchRegistry]"
 
 UG_NAMESPACE_BEGIN

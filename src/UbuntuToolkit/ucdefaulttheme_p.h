@@ -17,13 +17,14 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCDEFAULTTHEME_H
-#define UCDEFAULTTHEME_H
+#ifndef UCDEFAULTTHEME_P_H
+#define UCDEFAULTTHEME_P_H
 
 #include <QtCore/QFileSystemWatcher>
-#include <QtCore/QSettings>
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QSettings>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -52,4 +53,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCDEFAULTTHEME_H
+#endif // UCDEFAULTTHEME_P_H

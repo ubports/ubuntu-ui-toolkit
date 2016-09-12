@@ -19,7 +19,7 @@
 #ifndef UBUNTUGESTURESMODULE_H
 #define UBUNTUGESTURESMODULE_H
 
-#include <ubuntugesturesglobal.h>
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 
 UG_NAMESPACE_BEGIN
 

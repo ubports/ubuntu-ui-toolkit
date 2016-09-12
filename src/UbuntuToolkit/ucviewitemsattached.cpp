@@ -14,21 +14,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucunits_p.h"
-#include "uctheme_p.h"
-#include "uclistitem_p_p.h"
-#include <propertychange_p.h>
-#include "quickutils_p.h"
+#include <QtCore/QAbstractItemModel>
+#include <QtQml/QQmlInfo>
+#include <QtQml/private/qqmlcomponentattached_p.h>
+#include <QtQml/private/qqmldelegatemodel_p.h>
+#include <QtQml/private/qqmlobjectmodel_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
+
 #include "i18n_p.h"
-#include "uclistitemstyle_p.h"
 #include "privates/listitemdragarea_p.h"
 #include "privates/listviewextensions_p.h"
-#include <QtQuick/private/qquickflickable_p.h>
-#include <QtQml/private/qqmlcomponentattached_p.h>
-#include <QtQml/QQmlInfo>
-#include <QtCore/QAbstractItemModel>
-#include <QtQml/private/qqmlobjectmodel_p.h>
-#include <QtQml/private/qqmldelegatemodel_p.h>
+#include "propertychange_p.h"
+#include "quickutils_p.h"
+#include "uclistitem_p_p.h"
+#include "uclistitemstyle_p.h"
+#include "uctheme_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 

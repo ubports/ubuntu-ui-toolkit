@@ -12,16 +12,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef UCSWIPEAREAPRIVATE_H
-#define UCSWIPEAREAPRIVATE_H
+#ifndef UCSWIPEAREA_P_P_H
+#define UCSWIPEAREA_P_P_H
 
-#include "ucswipearea_p.h"
+#include <UbuntuGestures/private/ucswipearea_p.h>
+
 #include <QtQuick/private/qquickitem_p.h>
 
-#include "damper_p.h"
+#include <UbuntuGestures/private/damper_p.h>
 
 UG_NAMESPACE_BEGIN
 
@@ -175,4 +175,4 @@ public:
 
 UG_NAMESPACE_END
 
-#endif // UCSWIPEAREAPRIVATE_H
+#endif // UCSWIPEAREA_P_P_H

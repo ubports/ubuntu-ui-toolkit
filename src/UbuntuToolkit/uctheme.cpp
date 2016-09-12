@@ -17,32 +17,32 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ubuntutoolkitglobal.h"
 #include "uctheme_p.h"
-#include "listener_p.h"
-#include "quickutils_p.h"
-#include "i18n_p.h"
-#include "ucfontutils_p.h"
-#include "ucstyleditembase_p_p.h"
-#include "ucthemingextension_p.h"
 
-#include <QtQml/qqml.h>
-#include <QtQml/qqmlinfo.h>
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlContext>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-#include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QStandardPaths>
-#include <QtGui/QGuiApplication>
+#include <QtCore/QTextStream>
 #include <QtGui/QFont>
-
+#include <QtGui/QGuiApplication>
+#include <QtQml/QtQml>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
+
+#include "i18n_p.h"
+#include "listener_p.h"
+#include "quickutils_p.h"
+#include "ubuntutoolkitglobal.h"
+#include "ucfontutils_p.h"
+#include "ucstyleditembase_p_p.h"
+#include "ucthemingextension_p.h"
 
 UT_NAMESPACE_BEGIN
 

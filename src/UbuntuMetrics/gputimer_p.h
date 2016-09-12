@@ -18,12 +18,14 @@
 #ifndef GPUTIMER_P_H
 #define GPUTIMER_P_H
 
-#include "ubuntumetricsglobal_p.h"
 #include <QtGui/QOpenGLFunctions>
+
 #if defined(QT_OPENGL_ES)
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #endif
+
+#include <UbuntuMetrics/private/ubuntumetricsglobal_p.h>
 
 // GPUTimer is used to measure the amount of time taken by the GPU to fully
 // complete a set of graphics commands. As opposed to a basic timer which would

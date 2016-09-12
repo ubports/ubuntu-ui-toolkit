@@ -16,11 +16,12 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGEHINT_H
-#define UCBOTTOMEDGEHINT_H
+#ifndef UCBOTTOMEDGEHINT_P_H
+#define UCBOTTOMEDGEHINT_P_H
 
-#include "ucactionitem_p.h"
-#include <ubuntugesturesglobal.h>
+#include <UbuntuGestures/ubuntugesturesglobal.h>
+
+#include <UbuntuToolkit/private/ucactionitem_p.h>
 
 class QQuickFlickable;
 UG_FORWARD_DECLARE_CLASS(UCSwipeArea)
@@ -102,4 +103,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGEHINT_H
+#endif // UCBOTTOMEDGEHINT_P_H

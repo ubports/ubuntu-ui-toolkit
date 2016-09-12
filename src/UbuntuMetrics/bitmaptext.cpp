@@ -16,12 +16,14 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include <math.h>
+
+#include <QtCore/QtGlobal>
+#include <QtCore/QPoint>
+#include <QtCore/QSize>
+
 #include "bitmaptext_p.h"
 #include "bitmaptextfont_p.h"
 #include "ubuntumetricsglobal_p.h"
-#include <QtCore/QtGlobal>
-#include <QtCore/QSize>
-#include <QtCore/QPoint>
 
 static const GLchar* bitmapTextVertexShaderSource =
 #if !defined(QT_OPENGL_ES_2)

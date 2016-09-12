@@ -17,18 +17,19 @@
  */
 
 #include "statesaverbackend_p.h"
-#include "ucapplication_p.h"
-#include <QtQml/QQmlContext>
-#include <QtQml/QQmlProperty>
-#include <QtQml/qqmlinfo.h>
-#include <QtQml/qqml.h>
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
+#include <QtCore/QStandardPaths>
 #include <QtCore/QStringList>
+#include <QtQml/QtQml>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlInfo>
+#include <QtQml/QQmlProperty>
+
 #include "i18n_p.h"
 #include "quickutils_p.h"
-#include <QtCore/QStandardPaths>
-
+#include "ucapplication_p.h"
 #include "unixsignalhandler_p.h"
 
 UT_NAMESPACE_BEGIN

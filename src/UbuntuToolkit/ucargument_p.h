@@ -16,13 +16,14 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCARGUMENT_H
-#define UCARGUMENT_H
+#ifndef UCARGUMENT_P_H
+#define UCARGUMENT_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -75,4 +76,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCARGUMENT_H
+#endif // UCARGUMENT_P_H

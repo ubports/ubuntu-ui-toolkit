@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "threelabelsslot_p.h"
+#include "privates/threelabelsslot_p.h"
+
 #include "label_p.h"
 #include "ucunits_p.h"
 #include "ucfontutils_p.h"

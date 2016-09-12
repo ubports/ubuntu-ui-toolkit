@@ -18,10 +18,11 @@
 #ifndef OVERLAY_P_H
 #define OVERLAY_P_H
 
-#include "ubuntumetricsglobal_p.h"
-#include "bitmaptext_p.h"
-#include "events.h"
 #include <QtCore/QSize>
+
+#include <UbuntuMetrics/events.h>
+#include <UbuntuMetrics/private/bitmaptext_p.h>
+#include <UbuntuMetrics/private/ubuntumetricsglobal_p.h>
 
 #if !defined QT_NO_DEBUG
 class QOpenGLContext;

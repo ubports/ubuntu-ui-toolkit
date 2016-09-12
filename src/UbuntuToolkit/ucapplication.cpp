@@ -19,11 +19,11 @@
 #include "ucapplication_p.h"
 
 #include <QtCore/QCoreApplication>
-#include <QDebug>
-#include <QtQml/QQmlContext>
-#include <QtQml/QQmlEngine>
+#include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
 #include <QtGui/QGuiApplication>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
 
 UT_NAMESPACE_BEGIN
 

@@ -12,20 +12,19 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include "GestureTest.h"
-#include "uctestcase.h"
-#include "uctestextras.h"
 
-#include <qpa/qwindowsysteminterface.h>
-#include <QQmlEngine>
-#include <QQuickView>
-#include <QtTest>
-
+#include <QtGui/qpa/qwindowsysteminterface.h>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickView>
+#include <QtTest/QtTest>
 #include <UbuntuGestures/private/timer_p.h>
 #include <UbuntuGestures/private/touchregistry_p.h>
+
+#include "uctestcase.h"
+#include "uctestextras.h"
 
 UG_USE_NAMESPACE
 

@@ -16,11 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef ASYNCLOADER_H
-#define ASYNCLOADER_H
+#ifndef ASYNCLOADER_P_H
+#define ASYNCLOADER_P_H
 
 #include <QtQml/QQmlComponent>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 class QQmlContext;
@@ -60,4 +61,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // ASYNCLOADER_H
+#endif // ASYNCLOADER_P_H

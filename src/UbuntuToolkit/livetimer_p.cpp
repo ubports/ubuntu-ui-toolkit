@@ -15,9 +15,10 @@
  */
 
 #include "livetimer_p_p.h"
-#include "timeutils_p.h"
 
-#include <QDBusConnection>
+#include <QtDBus/QDBusConnection>
+
+#include "timeutils_p.h"
 
 UT_NAMESPACE_BEGIN
 

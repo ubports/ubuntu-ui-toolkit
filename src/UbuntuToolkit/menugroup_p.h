@@ -17,11 +17,11 @@
 #ifndef MENUGROUP_P_H
 #define MENUGROUP_P_H
 
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QObject>
+#include <QtCore/QVector>
+#include <QtQml/QQmlListProperty>
 
-#include <QObject>
-#include <QVector>
-#include <QQmlListProperty>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 

@@ -17,24 +17,25 @@
  */
 
 #include "ucbottomedge_p_p.h"
+
+#include <QtCore/QtMath>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
+#include <QtGui/QStyleHints>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlProperty>
+#include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
+#include <QtQuick/private/qquickitem_p.h>
+#include <UbuntuGestures/private/ucswipearea_p_p.h>
+
 #include "ucbottomedgestyle_p.h"
 #include "ucbottomedgeregion_p_p.h"
 #include "ucbottomedgehint_p_p.h"
 #include "ucstyleditembase_p_p.h"
-#include <QtCore/QtMath>
-#include <QtQml/QQmlEngine>
-#include <QtGui/QScreen>
-#include <QtQml/QQmlProperty>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QStyleHints>
-#include <QtQuick/private/qquickitem_p.h>
-#include <QtQuick/private/qquickflickable_p.h>
-
 #include "ucheader_p.h"
 #include "ucaction_p.h"
 #include "quickutils_p.h"
-#include "private/ucswipearea_p_p.h"
-#include <QtQuick/private/qquickanimation_p.h>
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
 

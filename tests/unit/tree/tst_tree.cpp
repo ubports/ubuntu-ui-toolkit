@@ -17,10 +17,9 @@
  */
 
 #include <QtCore/QDebug>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QVariant>
 #include <QtTest/QTest>
-#include <QSharedPointer>
-#include <QVariant>
-
 #include <UbuntuToolkit/private/tree_p.h>
 
 UT_USE_NAMESPACE

@@ -16,32 +16,32 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include <QtTest/QtTest>
-#include <QtTest/QSignalSpy>
+#include <signal.h>
+
 #include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
-#include <QVector3D>
-#include <QVector4D>
-#include <QQuaternion>
-#include <QMatrix4x4>
-#include <QtQuick/QQuickItem>
-#include <QtQml/QQmlProperty>
-#include <UbuntuToolkit/private/quickutils_p.h>
-#include <UbuntuToolkit/private/ucapplication_p.h>
 #include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
-#include "uctestcase.h"
-#include <signal.h>
-#include <ubuntutoolkitmodule.h>
-
+#include <QtGui/QMatrix4x4>
+#include <QtGui/QQuaternion>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlProperty>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
+#include <UbuntuToolkit/private/quickutils_p.h>
+#include <UbuntuToolkit/private/ucapplication_p.h>
 #define protected public
 #define private public
 #include <UbuntuToolkit/private/ucstatesaver_p.h>
-#include "private/statesaverbackend_p.h"
+#include <UbuntuToolkit/private/statesaverbackend_p.h>
 #undef private
 #undef protected
+
+#include "uctestcase.h"
 
 UT_USE_NAMESPACE
 

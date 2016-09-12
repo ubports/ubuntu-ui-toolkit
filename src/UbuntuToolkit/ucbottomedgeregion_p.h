@@ -16,15 +16,16 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGEREGION_H
-#define UCBOTTOMEDGEREGION_H
+#ifndef UCBOTTOMEDGEREGION_P_H
+#define UCBOTTOMEDGEREGION_P_H
 
 #include <QtCore/QObject>
-#include <QtQml/QQmlParserStatus>
-#include <QtCore/QUrl>
 #include <QtCore/QPointer>
+#include <QtCore/QUrl>
 #include <QtQml/QQmlIncubator>
-#include <ubuntutoolkitglobal.h>
+#include <QtQml/QQmlParserStatus>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlComponent;
 
@@ -85,4 +86,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGEREGION_H
+#endif // UCBOTTOMEDGEREGION_P_H

@@ -15,7 +15,9 @@
  */
 
 #include "inversemouseareatype_p.h"
+
 #include <QtGui/QGuiApplication>
+
 #include "quickutils_p.h"
 
 UT_NAMESPACE_BEGIN

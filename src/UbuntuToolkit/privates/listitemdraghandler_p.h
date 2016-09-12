@@ -14,13 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LISTITEMDRAGHANDLER_H
-#define LISTITEMDRAGHANDLER_H
+#ifndef LISTITEMDRAGHANDLER_P_H
+#define LISTITEMDRAGHANDLER_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtCore/QPointF>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -49,4 +50,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // LISTITEMDRAGHANDLER_H
+#endif // LISTITEMDRAGHANDLER_P_H

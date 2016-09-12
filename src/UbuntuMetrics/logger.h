@@ -18,8 +18,9 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <UbuntuMetrics/ubuntumetricsglobal.h>
 #include <QtCore/QFile>
+
+#include <UbuntuMetrics/ubuntumetricsglobal.h>
 
 class UMEvent;
 class UMFileLoggerPrivate;

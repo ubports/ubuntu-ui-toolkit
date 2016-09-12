@@ -15,13 +15,15 @@
  */
 
 #include "uclistitemstyle_p.h"
-#include "i18n_p.h"
-#include "uclistitem_p_p.h"
-#include <QtQml/QQmlEngine>
+
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+
+#include "uclistitem_p_p.h"
+#include "i18n_p.h"
 
 UT_NAMESPACE_BEGIN
 

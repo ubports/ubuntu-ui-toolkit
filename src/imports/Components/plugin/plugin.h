@@ -16,12 +16,12 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
-#ifndef UBUNTU_COMPONENTS_PLUGIN_H
-#define UBUNTU_COMPONENTS_PLUGIN_H
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
-#include <ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 {
@@ -35,4 +35,4 @@ public:
 
 };
 
-#endif // UBUNTU_COMPONENTS_PLUGIN_H
+#endif // PLUGIN_H

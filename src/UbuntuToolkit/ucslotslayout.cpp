@@ -16,11 +16,12 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
+#include "ucslotslayout_p_p.h"
+
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 
 #include "ucunits_p.h"
-#include "ucslotslayout_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

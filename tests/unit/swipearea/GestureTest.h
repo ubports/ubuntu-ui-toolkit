@@ -12,24 +12,22 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef GESTURETEST_H
-#endif // GESTURETEST_H
+#define GESTURETEST_H
 
-#include <QtQuick/QQuickItem>
+#include <functional>
+
 #include <QtGui/QTouchEvent>
-#include <ubuntugesturesglobal.h>
+#include <QtQuick/QQuickItem>
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 
 class UbuntuTestCase;
 class QTouchDevice;
 
 UG_FORWARD_DECLARE_CLASS(FakeTimerFactory)
 UG_FORWARD_DECLARE_CLASS(TouchRegistry)
-
-// C++ std lib
-#include <functional>
 
 /*
     The common stuff among tests come here
@@ -88,4 +86,4 @@ protected:
     QString m_qmlFilename;
 };
 
-#define GESTURETEST_H
+#endif // GESTURETEST_H

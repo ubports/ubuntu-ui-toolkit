@@ -14,17 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCACTION_H
-#define UCACTION_H
+#ifndef UCACTION_P_H
+#define UCACTION_P_H
 
 #include <QtCore/QObject>
-#include <QtCore/QVariant>
 #include <QtCore/QUrl>
+#include <QtCore/QVariant>
 #include <QtGui/QKeySequence>
-#include <QtQml>
+#include <QtQml/QtQml>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/private/qpodvector_p.h>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlComponent;
 class QQuickItem;
@@ -191,4 +192,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCAction))
 
-#endif // UCACTION_H
+#endif // UCACTION_P_H

@@ -55,11 +55,10 @@
 
 #include "mousetouchadaptor_p_p.h"
 
-#include <qpa/qplatformnativeinterface.h>
-
-#include <QCoreApplication>
-#include <QMouseEvent>
-#include <QTest>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QMouseEvent>
+#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtTest/qtesttouch.h>
 
 #include <X11/extensions/XInput2.h>
 #include <X11/extensions/XI2proto.h>

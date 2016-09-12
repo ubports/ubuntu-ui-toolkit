@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucpagewrapper_p_p.h"
-#include "ucpagewrapperincubator_p.h"
+#include "privates/ucpagewrapper_p_p.h"
 
-#include <QQmlEngine>
-#include <QQmlContext>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
+
+#include "privates/ucpagewrapperincubator_p.h"
 
 UT_NAMESPACE_BEGIN
 

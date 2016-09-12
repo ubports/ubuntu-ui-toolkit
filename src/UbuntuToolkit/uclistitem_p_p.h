@@ -14,15 +14,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCVIEWITEM_P_H
-#define UCVIEWITEM_P_H
+#ifndef UCLISTITEM_P_P_H
+#define UCLISTITEM_P_P_H
 
-#include "uclistitem_p.h"
-#include "ucstyleditembase_p_p.h"
-#include "uclistitemstyle_p.h"
+#include <UbuntuToolkit/private/uclistitem_p.h>
+
 #include <QtCore/QPointer>
 #include <QtCore/QBasicTimer>
 #include <QtQuick/private/qquickrectangle_p.h>
+
+#include <UbuntuToolkit/private/uclistitemstyle_p.h>
+#include <UbuntuToolkit/private/ucstyleditembase_p_p.h>
 
 #define IMPLICIT_LISTITEM_WIDTH_GU      40
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
@@ -179,4 +181,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCVIEWITEM_P_H
+#endif // UCLISTITEM_P_P_H

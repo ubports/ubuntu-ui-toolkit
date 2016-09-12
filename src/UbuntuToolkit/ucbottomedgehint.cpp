@@ -17,14 +17,16 @@
  */
 
 #include "ucbottomedgehint_p_p.h"
-#include "ucstyleditembase_p_p.h"
-#include "quickutils_p.h"
-#include "ucunits_p.h"
-#include "ucaction_p.h"
-#include "private/ucswipearea_p_p.h"
-#include <propertychange_p.h>
+
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+#include <UbuntuGestures/private/ucswipearea_p_p.h>
+
+#include "propertychange_p.h"
+#include "quickutils_p.h"
+#include "ucaction_p.h"
+#include "ucstyleditembase_p_p.h"
+#include "ucunits_p.h"
 
 #define SWIPE_AREA_HEIGHT_GU    3
 

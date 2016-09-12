@@ -14,11 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMLAYOUT_H
-#define UCLISTITEMLAYOUT_H
+#ifndef UCLISTITEMLAYOUT_P_H
+#define UCLISTITEMLAYOUT_P_H
 
-#include "ucslotslayout_p.h"
-#include <ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucslotslayout_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -51,4 +51,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCLISTITEMLAYOUT_H
+#endif // UCLISTITEMLAYOUT_P_H

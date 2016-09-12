@@ -16,12 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCALARMSMODEL_H
-#define UCALARMSMODEL_H
+#ifndef UCALARMSMODEL_P_H
+#define UCALARMSMODEL_P_H
 
 #include <QtCore/QAbstractListModel>
 #include <QtQml/QQmlParserStatus>
-#include "ucalarm_p_p.h"
+
+#include <UbuntuToolkit/private/ucalarm_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -72,4 +73,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCALARMSMODEL_H
+#endif // UCALARMSMODEL_P_H

@@ -16,8 +16,8 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCUBUNTUSHAPEOVERLAY_H
-#define UCUBUNTUSHAPEOVERLAY_H
+#ifndef UCUBUNTUSHAPEOVERLAY_P_H
+#define UCUBUNTUSHAPEOVERLAY_P_H
 
 #include "ucubuntushape_p.h"
 
@@ -114,4 +114,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCUbuntuShapeOverlay))
 
-#endif  // UCUBUNTUSHAPEOVERLAY_H
+#endif  // UCUBUNTUSHAPEOVERLAY_P_H

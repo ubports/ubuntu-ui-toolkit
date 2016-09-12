@@ -17,11 +17,12 @@
  */
 
 #include "ulplugin.h"
+
+#include <QtQml/QtQml>
+
 #include "ullayouts.h"
 #include "ulconditionallayout.h"
 #include "ulitemlayout.h"
-
-#include <qqml.h>
 
 void PluginPlugin::registerTypeVersions(const char *uri, int major, int minor)
 {

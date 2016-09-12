@@ -14,10 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMAINVIEWBASE_H
-#define UCMAINVIEWBASE_H
+#ifndef UCMAINVIEWBASE_P_H
+#define UCMAINVIEWBASE_P_H
 
-#include "ucpagetreenode_p.h"
+#include <UbuntuToolkit/private/ucpagetreenode_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -97,4 +97,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCMAINVIEWBASE_H
+#endif // UCMAINVIEWBASE_P_H

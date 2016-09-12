@@ -17,17 +17,18 @@
  */
 
 #include "i18n_p.h"
-#include "timeutils_p.h"
-#include <QtCore/QDir>
 
 namespace C {
 #include <libintl.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 }
-
 #include <stdlib.h>
 #include <locale.h>
+
+#include <QtCore/QDir>
+
+#include "timeutils_p.h"
 
 UT_NAMESPACE_BEGIN
 /*!

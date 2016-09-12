@@ -16,11 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedge_p_p.h"
 #include "ucbottomedgeregion_p_p.h"
-#include <propertychange_p.h>
+
 #include <QtQml/private/qqmlproperty_p.h>
 
+#include "propertychange_p.h"
+#include "ucbottomedge_p_p.h"
 
 UT_NAMESPACE_BEGIN
 

@@ -12,18 +12,18 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef UCMOUSE_H
-#define UCMOUSE_H
+#ifndef UCMOUSE_P_H
+#define UCMOUSE_P_H
 
+#include <QtCore/QBasicTimer>
 #include <QtCore/QObject>
-#include <QtQml>
+#include <QtQml/QtQml>
 #include <QtQuick/QQuickItem>
-#include <private/qquickevents_p_p.h>
-#include <QtCore/qbasictimer.h>
-#include <ubuntutoolkitglobal.h>
+#include <QtQuick/private/qquickevents_p_p.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -169,4 +169,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCMouse), QML_HAS_ATTACHED_PROPERTIES)
 
-#endif // UCMOUSE_H
+#endif // UCMOUSE_P_H

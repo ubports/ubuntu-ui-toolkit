@@ -14,11 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCPAGEWRAPPER_H
-#define UCPAGEWRAPPER_H
+#ifndef UCPAGEWRAPPER_P_H
+#define UCPAGEWRAPPER_P_H
 
-#include <ubuntutoolkitglobal.h>
-#include "ucpagetreenode_p.h"
+#include <UbuntuToolkit/private/ucpagetreenode_p.h>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 

@@ -16,11 +16,12 @@
  * Author Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef LISTVIEWEXTENSIONS_H
-#define LISTVIEWEXTENSIONS_H
+#ifndef LISTVIEWEXTENSIONS_P_H
+#define LISTVIEWEXTENSIONS_P_H
 
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickFlickable;
 class QQuickItem;
@@ -63,4 +64,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // LISTVIEWEXTENSIONS_H
+#endif // LISTVIEWEXTENSIONS_P_H

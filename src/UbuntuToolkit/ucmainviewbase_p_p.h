@@ -14,12 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMAINVIEWBASE_P_H
-#define UCMAINVIEWBASE_P_H
+#ifndef UCMAINVIEWBASE_P_P_H
+#define UCMAINVIEWBASE_P_P_H
 
-#include "ucpagetreenode_p_p.h"
-#include "ucmainviewbase_p.h"
-#include <QQmlProperty>
+#include <UbuntuToolkit/private/ucmainviewbase_p.h>
+
+#include <QtQml/QQmlProperty>
+
+#include <UbuntuToolkit/private/ucpagetreenode_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -59,4 +61,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCMAINVIEWBASE_P_H
+#endif // UCMAINVIEWBASE_P_P_H

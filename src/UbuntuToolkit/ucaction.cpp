@@ -15,15 +15,16 @@
  */
 
 #include "ucaction_p.h"
+
+#include <QtCore/QtDebug>
+#include <QtGui/private/qguiapplication_p.h>
+#include <QtQml/QQmlInfo>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickWindow>
+
+#include "exclusivegroup_p.h"
 #include "quickutils_p.h"
 #include "ucactioncontext_p.h"
-#include "exclusivegroup_p.h"
-
-#include <QtDebug>
-#include <QtQml/QQmlInfo>
-#include <QtQuick/qquickitem.h>
-#include <QtQuick/qquickwindow.h>
-#include <private/qguiapplication_p.h>
 
 Q_LOGGING_CATEGORY(ucAction, "ubuntu.components.Action", QtMsgType::QtWarningMsg)
 

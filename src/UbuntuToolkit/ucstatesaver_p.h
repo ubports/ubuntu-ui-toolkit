@@ -16,12 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTATESAVER_H
-#define UCSTATESAVER_H
+#ifndef UCSTATESAVER_P_H
+#define UCSTATESAVER_P_H
 
 #include <QtCore/QObject>
-#include <QtQml/qqml.h>
-#include <ubuntutoolkitglobal.h>
+#include <QtQml/QtQml>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -66,4 +67,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCStateSaver), QML_HAS_ATTACHED_PROPERTIES)
 
-#endif // UCSTATESAVER_H
+#endif // UCSTATESAVER_P_H

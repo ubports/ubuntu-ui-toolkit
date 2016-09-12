@@ -15,12 +15,14 @@
  */
 
 #include "ucabstractbutton_p_p.h"
-#include "uchaptics_p.h"
-#include "ucunits_p.h"
-#include "ucaction_p.h"
+
+#include <QtQml/private/qqmlglobal_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
-#include <QtQml/private/qqmlglobal_p.h>
+
+#include "ucaction_p.h"
+#include "uchaptics_p.h"
+#include "ucunits_p.h"
 
 #define MIN_SENSING_WIDTH_GU    4
 #define MIN_SENSING_HEIGHT_GU   4

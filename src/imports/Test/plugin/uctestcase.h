@@ -16,12 +16,12 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#ifndef UBUNTU_TEST_UBUNTUTESTCASE_H
-#define UBUNTU_TEST_UBUNTUTESTCASE_H
+#ifndef UCTESTCASE_H
+#define UCTESTCASE_H
 
-#include <QtTest/QtTest>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickView>
+#include <QtTest/QtTest>
 #include <QtTest/QSignalSpy>
 
 class UbuntuTestCase : public QQuickView
@@ -70,4 +70,4 @@ private:
     QSignalSpy* m_spy;
 };
 
-#endif // UBUNTU_TEST_UBUNTUTESTCASE_H
+#endif // UCTESTCASE_H

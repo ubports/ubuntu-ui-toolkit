@@ -16,10 +16,10 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ullayouts.h"
 #include "ullayouts_p.h"
+
 #include <QtQml/QQmlInfo>
-#include <private/qqmlcomponentattached_p.h>
+#include <QtQml/private/qqmlcomponentattached_p.h>
 
 ULLayoutsAttached::ULLayoutsAttached(QObject *parent)
     : QObject(parent)

@@ -16,12 +16,13 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef QQUICKCLIPBOARD_P_H
-#define QQUICKCLIPBOARD_P_H
+#ifndef QQUICKCLIPBOARD_P_P_H
+#define QQUICKCLIPBOARD_P_P_H
 
-#include "qquickclipboard_p.h"
-#include <QtGui/QClipboard>
+#include <UbuntuToolkit/private/qquickclipboard_p.h>
+
 #include <QtCore/private/qobject_p.h>
+#include <QtGui/QClipboard>
 
 UT_NAMESPACE_BEGIN
 
@@ -41,4 +42,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // QQUICKCLIPBOARD_P_H
+#endif // QQUICKCLIPBOARD_P_P_H

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <UbuntuGestures/private/candidateinactivitytimer_p.h>
+#include "candidateinactivitytimer_p.h"
 
 UG_NAMESPACE_BEGIN
 

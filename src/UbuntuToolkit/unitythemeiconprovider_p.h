@@ -16,11 +16,12 @@
  * Authors: Lars Uebernickel <lars.uebernickel@canonical.com>
  */
 
-#ifndef UNITY_THEME_ICON_PROVIDER_H
-#define UNITY_THEME_ICON_PROVIDER_H
+#ifndef UNITYTHEMEICONPROVIDER_P_H
+#define UNITYTHEMEICONPROVIDER_P_H
 
-#include <QQuickImageProvider>
-#include <ubuntutoolkitglobal.h>
+#include <QtQuick/QQuickImageProvider>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -36,4 +37,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif
+#endif // UNITYTHEMEICONPROVIDER_P_H

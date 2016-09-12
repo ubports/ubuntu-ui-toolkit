@@ -16,27 +16,27 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QCryptographicHash>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QProcessEnvironment>
+#include <QtCore/QSettings>
+#include <QtCore/QStandardPaths>
 #include <QtCore/QString>
 #include <QtCore/QTextCodec>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QProcessEnvironment>
-#include <QtCore/QDebug>
-#include <QtTest/QTest>
-#include <QtTest/QSignalSpy>
-#include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
 #include <QtCore/QThread>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QCryptographicHash>
-#include <QSettings>
-
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QTest>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
 #include <UbuntuToolkit/private/ucapplication_p.h>
 #include <UbuntuToolkit/private/ucunits_p.h>
+
 #include "uctestcase.h"
-#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 

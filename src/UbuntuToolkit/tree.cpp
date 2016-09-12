@@ -16,8 +16,8 @@
 
 #include "tree_p.h"
 
-#include <private/qobject_p.h>
-#include <QQmlEngine>
+#include <QtCore/private/qobject_p.h>
+#include <QtQml/QQmlEngine>
 
 UT_NAMESPACE_BEGIN
 
