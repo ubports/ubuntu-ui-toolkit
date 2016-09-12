@@ -1,7 +1,7 @@
 %modules = ( # path to module name map
-    "UbuntuGestures" => "$basedir/src/Ubuntu/UbuntuGestures",
-    "UbuntuMetrics" => "$basedir/src/Ubuntu/UbuntuMetrics",
-    "UbuntuToolkit"  => "$basedir/src/Ubuntu/UbuntuToolkit",
+    "UbuntuGestures" => "$basedir/src/UbuntuGestures",
+    "UbuntuMetrics" => "$basedir/src/UbuntuMetrics",
+    "UbuntuToolkit"  => "$basedir/src/UbuntuToolkit",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );

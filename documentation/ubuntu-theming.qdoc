@@ -127,7 +127,7 @@
  * A typical example of such a style API is the PullToRefresh component's style:
  * \snippet Styles/1.2/PullToRefreshStyle.qml 0
  * The default style implementation can be found under Ubuntu.Components.Themes.Ambiance
- * theme \l {http://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk/view/head:/src/Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml}
+ * theme \l {http://bazaar.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk/view/head:/src/imports/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml}
  * {PullToRefreshStyle.qml}.
  *
  * Beside these, component styles may provide default values for colors, fonts, widths,
