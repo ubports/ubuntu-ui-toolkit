@@ -1,8 +1,6 @@
-TEMPLATE=lib
-TARGET=UbuntuToolkit
-
-QT *= core-private gui-private qml-private quick-private testlib dbus svg organizer \
-      UbuntuGestures-private UbuntuMetrics
+TARGET = UbuntuToolkit
+QT = core-private gui-private qml-private quick-private testlib dbus svg organizer \
+     UbuntuGestures-private UbuntuMetrics
 
 unix {
     CONFIG += link_pkgconfig
@@ -12,239 +10,222 @@ unix {
 !contains(QT_ARCH, arm) {
     DEFINES += UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
     LIBS += -lX11 -lxcb -lXi
-
     SOURCES += mousetouchadaptor_x11.cpp
 }
 
-CONFIG += dll no_keywords c++11
-
 DEFINES += UBUNTUTOOLKIT_LIBRARY
-#comment in the following line to disable traces
-#DEFINES += QT_NO_DEBUG_OUTPUT
-DEFINES += QT_USE_QSTRINGBUILDER
 
-load(qt_build_config)
-load(ubuntu_qt_module)
-
-QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
-DEFINES -= QT_DEPRECATED_WARNINGS
-DEFINES -= QT_ASCII_CAST_WARNINGS
+# Uncomment to compile out qDebug() calls.
+# DEFINES += QT_NO_DEBUG_OUTPUT
 
 HEADERS += \
-    colorutils_p.h \
-    ubuntutoolkitglobal.h \
-    tree_p.h \
-    asyncloader_p.h \
-    asyncloader_p_p.h \
-    mousetouchadaptor_p.h \
-    mousetouchadaptor_p_p.h \
-    propertychange_p.h \
-    ubuntutoolkitmodule.h \
-    splitview_p.h \
-    splitview_p_p.h \
-    privates/splitviewhandler_p.h \
-    menu_p_p.h \
-    menubar_p_p.h \
-    menu_p.h \
-    menubar_p.h \
-    menugroup_p.h
-
-SOURCES += \ 
-    colorutils.cpp \
-    tree.cpp \
-    asyncloader.cpp \
-    mousetouchadaptor.cpp \
-    propertychange.cpp \
-    ubuntutoolkitmodule.cpp \
-    splitview.cpp \
-    privates/splitviewhandler.cpp \
-    splitviewlayout.cpp \
-    menu.cpp \
-    menubar.cpp \
-    menugroup.cpp
-
-HEADERS += \
-    uctheme_p.h \
-    i18n_p.h \
-    listener_p.h \
-    ucscalingimageprovider_p.h \
-    ucunits_p.h \
-    ucqquickimageextension_p.h \
-    quickutils_p.h \
-    ucubuntushapetextures_p.h \
-    ucubuntushape_p.h \
-    ucubuntushapeoverlay_p.h \
-    ucproportionalshape_p.h \
-    inversemouseareatype_p.h \
-    qquickclipboard_p.h \
-    qquickmimedata_p.h \
-    qquickclipboard_p_p.h \
-    ucubuntuanimation_p.h \
-    ucfontutils_p.h \
-    ucapplication_p.h \
-    ucarguments_p.h \
-    ucargument_p.h \
-    ucalarm_p.h \
-    ucalarm_p_p.h \
-    alarmmanager_p_p.h \
-    alarmmanager_p.h \
-    ucalarmmodel_p.h \
-    unitythemeiconprovider_p.h \
-    adapters/alarmsadapter_p.h \
-    ucstatesaver_p.h \
-    sortbehavior_p.h \
-    filterbehavior_p.h \
-    sortfiltermodel_p.h \
-    statesaverbackend_p.h \
-    ucstatesaver_p_p.h \
-    ucurihandler_p.h \
-    ucinversemouse_p.h \
-    ucmouse_p.h \
-    unixsignalhandler_p.h \
-    ucstyleditembase_p.h \
-    ucstyleditembase_p_p.h \
-    ucaction_p.h \
-    ucactioncontext_p.h \
-    ucactionmanager_p.h \
-    adapters/actionsproxy_p.h \
-    adapters/dbuspropertywatcher_p.h \
-    uclistitem_p.h \
-    uclistitem_p_p.h \
-    uclistitemactions_p.h \
-    uclistitemactions_p_p.h \
-    uclistitemstyle_p.h \
-    ucserviceproperties_p.h \
-    ucserviceproperties_p_p.h \
-    privates/listitemdragarea_p.h \
-    privates/listitemdraghandler_p.h \
-    privates/listitemselection_p.h \
-    ucdeprecatedtheme_p.h \
-    ucdefaulttheme_p.h \
-    ucstylehints_p.h \
-    ucslotslayout_p.h \
-    ucslotslayout_p_p.h \
-    livetimer_p.h \
-    livetimer_p_p.h \
-    timeutils_p.h \
-    ucactionitem_p.h \
-    ucactionitem_p_p.h \
-    uchaptics_p.h \
-    ucabstractbutton_p.h \
-    ucabstractbutton_p_p.h \
-    ucmargins_p.h \
-    ucthemingextension_p.h \
-    ucheader_p.h \
-    uclabel_p.h \
-    uclistitemlayout_p.h \
-    privates/threelabelsslot_p.h \
-    ucimportversionchecker_p.h \
-    ucbottomedgehint_p.h \
-    ucbottomedgehint_p_p.h \
-    ucmathutils_p.h \
-    ucbottomedge_p.h \
-    ucbottomedge_p_p.h \
-    ucbottomedgestyle_p.h \
-    ucbottomedgeregion_p.h \
-    ucpagetreenode_p.h \
-    ucpagetreenode_p_p.h \
-    ucmainviewbase_p.h \
-    ucmainviewbase_p_p.h \
-    ucperformancemonitor_p.h \
-    privates/listviewextensions_p.h \
-    privates/frame_p.h \
-    privates/ucpagewrapper_p.h \
-    privates/ucpagewrapper_p_p.h \
-    privates/ucpagewrapperincubator_p.h \
-    privates/appheaderbase_p.h \
-    label_p.h \
-    ucbottomedgeregion_p_p.h \
-    privates/ucscrollbarutils_p.h \
-    actionlist_p.h \
-    exclusivegroup_p.h
+    $$PWD/actionlist_p.h \
+    $$PWD/adapters/actionsproxy_p.h \
+    $$PWD/adapters/alarmsadapter_p.h \
+    $$PWD/adapters/dbuspropertywatcher_p.h \
+    $$PWD/alarmmanager_p.h \
+    $$PWD/alarmmanager_p_p.h \
+    $$PWD/asyncloader_p.h \
+    $$PWD/asyncloader_p_p.h \
+    $$PWD/colorutils_p.h \
+    $$PWD/exclusivegroup_p.h \
+    $$PWD/filterbehavior_p.h \
+    $$PWD/i18n_p.h \
+    $$PWD/inversemouseareatype_p.h \
+    $$PWD/label_p.h \
+    $$PWD/listener_p.h \
+    $$PWD/livetimer_p.h \
+    $$PWD/livetimer_p_p.h \
+    $$PWD/menu_p.h \
+    $$PWD/menu_p_p.h \
+    $$PWD/menubar_p.h \
+    $$PWD/menubar_p_p.h \
+    $$PWD/menugroup_p.h \
+    $$PWD/mousetouchadaptor_p.h \
+    $$PWD/mousetouchadaptor_p_p.h \
+    $$PWD/privates/appheaderbase_p.h \
+    $$PWD/privates/frame_p.h \
+    $$PWD/privates/listitemdragarea_p.h \
+    $$PWD/privates/listitemdraghandler_p.h \
+    $$PWD/privates/listitemselection_p.h \
+    $$PWD/privates/listviewextensions_p.h \
+    $$PWD/privates/splitviewhandler_p.h \
+    $$PWD/privates/threelabelsslot_p.h \
+    $$PWD/privates/ucpagewrapper_p.h \
+    $$PWD/privates/ucpagewrapper_p_p.h \
+    $$PWD/privates/ucpagewrapperincubator_p.h \
+    $$PWD/privates/ucscrollbarutils_p.h \
+    $$PWD/propertychange_p.h \
+    $$PWD/qquickclipboard_p.h \
+    $$PWD/qquickclipboard_p_p.h \
+    $$PWD/qquickmimedata_p.h \
+    $$PWD/quickutils_p.h \
+    $$PWD/sortbehavior_p.h \
+    $$PWD/sortfiltermodel_p.h \
+    $$PWD/splitview_p.h \
+    $$PWD/splitview_p_p.h \
+    $$PWD/statesaverbackend_p.h \
+    $$PWD/timeutils_p.h \
+    $$PWD/tree_p.h \
+    $$PWD/ubuntutoolkitglobal.h \
+    $$PWD/ubuntutoolkitmodule.h \
+    $$PWD/ucabstractbutton_p.h \
+    $$PWD/ucabstractbutton_p_p.h \
+    $$PWD/ucaction_p.h \
+    $$PWD/ucactioncontext_p.h \
+    $$PWD/ucactionitem_p.h \
+    $$PWD/ucactionitem_p_p.h \
+    $$PWD/ucactionmanager_p.h \
+    $$PWD/ucalarm_p.h \
+    $$PWD/ucalarm_p_p.h \
+    $$PWD/ucalarmmodel_p.h \
+    $$PWD/ucapplication_p.h \
+    $$PWD/ucargument_p.h \
+    $$PWD/ucarguments_p.h \
+    $$PWD/ucbottomedge_p.h \
+    $$PWD/ucbottomedge_p_p.h \
+    $$PWD/ucbottomedgehint_p.h \
+    $$PWD/ucbottomedgehint_p_p.h \
+    $$PWD/ucbottomedgeregion_p.h \
+    $$PWD/ucbottomedgeregion_p_p.h \
+    $$PWD/ucbottomedgestyle_p.h \
+    $$PWD/ucdefaulttheme_p.h \
+    $$PWD/ucdeprecatedtheme_p.h \
+    $$PWD/ucfontutils_p.h \
+    $$PWD/uchaptics_p.h \
+    $$PWD/ucheader_p.h \
+    $$PWD/ucimportversionchecker_p.h \
+    $$PWD/ucinversemouse_p.h \
+    $$PWD/uclabel_p.h \
+    $$PWD/uclistitem_p.h \
+    $$PWD/uclistitem_p_p.h \
+    $$PWD/uclistitemactions_p.h \
+    $$PWD/uclistitemactions_p_p.h \
+    $$PWD/uclistitemlayout_p.h \
+    $$PWD/uclistitemstyle_p.h \
+    $$PWD/ucmainviewbase_p.h \
+    $$PWD/ucmainviewbase_p_p.h \
+    $$PWD/ucmargins_p.h \
+    $$PWD/ucmathutils_p.h \
+    $$PWD/ucmouse_p.h \
+    $$PWD/ucpagetreenode_p.h \
+    $$PWD/ucpagetreenode_p_p.h \
+    $$PWD/ucperformancemonitor_p.h \
+    $$PWD/ucproportionalshape_p.h \
+    $$PWD/ucqquickimageextension_p.h \
+    $$PWD/ucscalingimageprovider_p.h \
+    $$PWD/ucserviceproperties_p.h \
+    $$PWD/ucserviceproperties_p_p.h \
+    $$PWD/ucslotslayout_p.h \
+    $$PWD/ucslotslayout_p_p.h \
+    $$PWD/ucstatesaver_p.h \
+    $$PWD/ucstatesaver_p_p.h \
+    $$PWD/ucstyleditembase_p.h \
+    $$PWD/ucstyleditembase_p_p.h \
+    $$PWD/ucstylehints_p.h \
+    $$PWD/uctheme_p.h \
+    $$PWD/ucthemingextension_p.h \
+    $$PWD/ucubuntuanimation_p.h \
+    $$PWD/ucubuntushape_p.h \
+    $$PWD/ucubuntushapeoverlay_p.h \
+    $$PWD/ucubuntushapetextures_p.h \
+    $$PWD/ucunits_p.h \
+    $$PWD/ucurihandler_p.h \
+    $$PWD/unitythemeiconprovider_p.h \
+    $$PWD/unixsignalhandler_p.h
 
 SOURCES += \
-    uctheme.cpp \
-    i18n.cpp \
-    listener.cpp \
-    ucscalingimageprovider.cpp \
-    ucunits.cpp \
-    ucqquickimageextension.cpp \
-    quickutils.cpp \
-    ucubuntushapetextures.cpp \
-    ucubuntushape.cpp \
-    ucubuntushapeoverlay.cpp \
-    ucproportionalshape.cpp \
-    inversemouseareatype.cpp \
-    qquickclipboard.cpp \
-    qquickmimedata.cpp \
-    ucubuntuanimation.cpp \
-    ucfontutils.cpp \
-    ucapplication.cpp \
-    ucarguments.cpp \
-    ucargument.cpp \
-    ucalarm.cpp \
-    alarmmanager_p.cpp \
-    ucalarmmodel.cpp \
-    unitythemeiconprovider.cpp \
-    ucstatesaver.cpp \
-    sortbehavior.cpp \
-    filterbehavior.cpp \
-    sortfiltermodel.cpp \
-    statesaverbackend_p.cpp \
-    ucurihandler.cpp \
-    ucmousefilters.cpp \
-    unixsignalhandler_p.cpp \
-    ucstyleditembase.cpp \
-    ucaction.cpp \
-    ucactioncontext.cpp \
-    ucactionmanager.cpp \
-    adapters/actionsproxy_p.cpp \
-    adapters/dbuspropertywatcher_p.cpp \
-    uclistitem.cpp \
-    uclistitemactions.cpp \
-    uclistitemstyle.cpp \
-    ucviewitemsattached.cpp \
-    ucserviceproperties.cpp \
-    privates/listitemdragarea.cpp \
-    privates/listitemdraghandler.cpp \
-    privates/listitemexpansion.cpp \
-    privates/listitemselection.cpp \
-    ucdeprecatedtheme.cpp \
-    ucdefaulttheme.cpp \
-    ucstylehints.cpp \
-    ucslotslayout.cpp \
-    livetimer.cpp \
-    livetimer_p.cpp \
-    ucactionitem.cpp \
-    uchaptics.cpp \
-    ucabstractbutton.cpp \
-    ucthemingextension.cpp \
-    ucheader.cpp \
-    uclabel.cpp \
-    uclistitemlayout.cpp \
-    privates/threelabelsslot_p.cpp \
-    ucimportversionchecker_p.cpp \
-    ucbottomedgehint.cpp \
-    ucmathutils.cpp \
-    ucbottomedge.cpp \
-    ucbottomedgestyle.cpp \
-    ucbottomedgeregion.cpp \
-    ucpagetreenode.cpp \
-    ucmainviewbase.cpp \
-    ucperformancemonitor.cpp \
-    privates/listviewextensions.cpp \
-    privates/frame.cpp \
-    privates/ucpagewrapper.cpp \
-    privates/ucpagewrapperincubator.cpp \
-    privates/appheaderbase.cpp \
-    privates/ucscrollbarutils.cpp \
-    actionlist.cpp \
-    exclusivegroup.cpp
+    $$PWD/actionlist.cpp \
+    $$PWD/adapters/actionsproxy_p.cpp \
+    $$PWD/adapters/alarmsadapter_organizer.cpp \
+    $$PWD/adapters/dbuspropertywatcher_p.cpp \
+    $$PWD/alarmmanager_p.cpp \
+    $$PWD/asyncloader.cpp \
+    $$PWD/colorutils.cpp \
+    $$PWD/exclusivegroup.cpp \
+    $$PWD/filterbehavior.cpp \
+    $$PWD/i18n.cpp \
+    $$PWD/inversemouseareatype.cpp \
+    $$PWD/listener.cpp \
+    $$PWD/livetimer.cpp \
+    $$PWD/livetimer_p.cpp \
+    $$PWD/menu.cpp \
+    $$PWD/menubar.cpp \
+    $$PWD/menugroup.cpp \
+    $$PWD/mousetouchadaptor.cpp \
+    $$PWD/privates/appheaderbase.cpp \
+    $$PWD/privates/frame.cpp \
+    $$PWD/privates/listitemdragarea.cpp \
+    $$PWD/privates/listitemdraghandler.cpp \
+    $$PWD/privates/listitemexpansion.cpp \
+    $$PWD/privates/listitemselection.cpp \
+    $$PWD/privates/listviewextensions.cpp \
+    $$PWD/privates/splitviewhandler.cpp \
+    $$PWD/privates/threelabelsslot_p.cpp \
+    $$PWD/privates/ucpagewrapper.cpp \
+    $$PWD/privates/ucpagewrapperincubator.cpp \
+    $$PWD/privates/ucscrollbarutils.cpp \
+    $$PWD/propertychange.cpp \
+    $$PWD/qquickclipboard.cpp \
+    $$PWD/qquickmimedata.cpp \
+    $$PWD/quickutils.cpp \
+    $$PWD/sortbehavior.cpp \
+    $$PWD/sortfiltermodel.cpp \
+    $$PWD/splitview.cpp \
+    $$PWD/splitviewlayout.cpp \
+    $$PWD/statesaverbackend_p.cpp \
+    $$PWD/tree.cpp \
+    $$PWD/ubuntutoolkitmodule.cpp \
+    $$PWD/ucabstractbutton.cpp \
+    $$PWD/ucaction.cpp \
+    $$PWD/ucactioncontext.cpp \
+    $$PWD/ucactionitem.cpp \
+    $$PWD/ucactionmanager.cpp \
+    $$PWD/ucalarm.cpp \
+    $$PWD/ucalarmmodel.cpp \
+    $$PWD/ucapplication.cpp \
+    $$PWD/ucargument.cpp \
+    $$PWD/ucarguments.cpp \
+    $$PWD/ucbottomedge.cpp \
+    $$PWD/ucbottomedgehint.cpp \
+    $$PWD/ucbottomedgeregion.cpp \
+    $$PWD/ucbottomedgestyle.cpp \
+    $$PWD/ucdefaulttheme.cpp \
+    $$PWD/ucdeprecatedtheme.cpp \
+    $$PWD/ucfontutils.cpp \
+    $$PWD/uchaptics.cpp \
+    $$PWD/ucheader.cpp \
+    $$PWD/ucimportversionchecker_p.cpp \
+    $$PWD/uclabel.cpp \
+    $$PWD/uclistitem.cpp \
+    $$PWD/uclistitemactions.cpp \
+    $$PWD/uclistitemlayout.cpp \
+    $$PWD/uclistitemstyle.cpp \
+    $$PWD/ucmainviewbase.cpp \
+    $$PWD/ucmathutils.cpp \
+    $$PWD/ucmousefilters.cpp \
+    $$PWD/ucpagetreenode.cpp \
+    $$PWD/ucperformancemonitor.cpp \
+    $$PWD/ucproportionalshape.cpp \
+    $$PWD/ucqquickimageextension.cpp \
+    $$PWD/ucscalingimageprovider.cpp \
+    $$PWD/ucserviceproperties.cpp \
+    $$PWD/ucslotslayout.cpp \
+    $$PWD/ucstatesaver.cpp \
+    $$PWD/ucstyleditembase.cpp \
+    $$PWD/ucstylehints.cpp \
+    $$PWD/uctheme.cpp \
+    $$PWD/ucthemingextension.cpp \
+    $$PWD/ucubuntuanimation.cpp \
+    $$PWD/ucubuntushape.cpp \
+    $$PWD/ucubuntushapeoverlay.cpp \
+    $$PWD/ucubuntushapetextures.cpp \
+    $$PWD/ucunits.cpp \
+    $$PWD/ucurihandler.cpp \
+    $$PWD/ucviewitemsattached.cpp \
+    $$PWD/unitythemeiconprovider.cpp \
+    $$PWD/unixsignalhandler_p.cpp
 
-# adapters
-SOURCES += $$PWD/adapters/alarmsadapter_organizer.cpp
-
-#resources
 RESOURCES += \
     $$PWD/resources.qrc
 
@@ -257,3 +238,8 @@ OTHER_FILES += \
     $$PWD/shaders/shapeoverlay_no_dfdy.frag \
     $$PWD/privates/shaders/frame.vert \
     $$PWD/privates/shaders/frame.frag
+
+load(ubuntu_qt_module)
+
+# Remove the ASCII cast warnings added by qt_module.
+DEFINES -= QT_ASCII_CAST_WARNINGS
