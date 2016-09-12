@@ -201,9 +201,9 @@ QString UCAction::text()
     // if we have a mnemonic, underscore it
     if (!m_mnemonic.isEmpty()) {
 
-        QString mnemonic = "&" + m_mnemonic.toString().remove("Alt+");
+        QString mnemonic = "&" + m_mnemonic.toString().remove(QStringLiteral("Alt+"));
         // patch special cases
-        mnemonic.replace("Space", " ");
+        mnemonic.replace(QStringLiteral("Space"), QStringLiteral(" "));
         int mnemonicIndex = m_text.indexOf(mnemonic);
         if (mnemonicIndex < 0) {
             // try lower case
@@ -311,7 +311,7 @@ bool UCAction::isValidType(QVariant::Type valueType)
 void UCAction::generateName()
 {
     static int id = 0;
-    m_name = QString("unity-action-%1").arg(id++);
+    m_name = QStringLiteral("unity-action-%1").arg(id++);
 }
 
 /*!

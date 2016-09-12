@@ -39,7 +39,7 @@ LoggingThread::LoggingThread()
         aligned_alloc(logQueueAlignment, logQueueSize * sizeof(UMEvent)));
 
 #if !defined(QT_NO_DEBUG)
-    setObjectName(QString::fromLatin1("UbuntuMetrics logging", 21));  // Thread name.
+    setObjectName(QStringLiteral("UbuntuMetrics logging"));  // Thread name.
 #endif
     start();
 }

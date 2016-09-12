@@ -400,7 +400,7 @@ UCMouse::UCMouse(QObject *parent)
 
 UCMouse *UCMouse::qmlAttachedProperties(QObject *owner)
 {
-    return createAttachedFilter<UCMouse>(owner, "Mouse");
+    return createAttachedFilter<UCMouse>(owner, QStringLiteral("Mouse"));
 }
 
 bool UCMouse::eventFilter(QObject *target, QEvent *event)
@@ -1037,7 +1037,7 @@ UCInverseMouse::UCInverseMouse(QObject *parent)
 
 UCInverseMouse *UCInverseMouse::qmlAttachedProperties(QObject *owner)
 {
-    return createAttachedFilter<UCInverseMouse>(owner, "InverseMouse");
+    return createAttachedFilter<UCInverseMouse>(owner, QStringLiteral("InverseMouse"));
 }
 
 QMouseEvent UCInverseMouse::mapMouseToOwner(QObject *target, QMouseEvent* event)

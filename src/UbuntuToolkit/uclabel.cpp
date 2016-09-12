@@ -135,7 +135,7 @@ void UCLabelPrivate::init()
 
     updatePixelSize();
     QFont defaultFont = q->font();
-    defaultFont.setFamily("Ubuntu");
+    defaultFont.setFamily(QStringLiteral("Ubuntu"));
     defaultFont.setWeight(QFont::Light);
     q->setFont(defaultFont);
     updateRenderType();
@@ -247,11 +247,13 @@ QString UCLabel::fontSize() const
 {
     Q_D(const UCLabel);
     if (d->flags & UCLabelPrivate::TextSizeSet) {
-        return "";
+        return QStringLiteral("");
     }
-    const char* const sizes[] =
-        { "xx-small", "x-small", "small", "medium", "large", "x-large" };
-    return QString(sizes[d->textSize]);
+    const QString sizes[] = {
+        QStringLiteral("xx-small"), QStringLiteral("x-small"), QStringLiteral("small"),
+        QStringLiteral("medium"), QStringLiteral("large"), QStringLiteral("x-large")
+    };
+    return sizes[d->textSize];
 }
 void UCLabel::setFontSize(const QString& fontSize)
 {

@@ -35,7 +35,7 @@ UCServicePropertiesPrivate *createServicePropertiesAdapter(UCServiceProperties *
 
 DBusServiceProperties::DBusServiceProperties(UCServiceProperties *qq)
     : UCServicePropertiesPrivate(qq)
-    , connection("")
+    , connection(QStringLiteral(""))
     , watcher(0)
     , iface(0)
 {
@@ -53,7 +53,7 @@ bool DBusServiceProperties::init()
 
     if (service.isEmpty() || path.isEmpty()) {
         setStatus(UCServiceProperties::ConnectionError);
-        setError("No service/path specified");
+        setError(QStringLiteral("No service/path specified"));
         return false;
     }
 
@@ -98,14 +98,15 @@ bool DBusServiceProperties::init()
  */
 bool DBusServiceProperties::setupInterface()
 {
-    QDBusReply<QDBusObjectPath> dbusObjectPath = iface->call("FindUserById", qlonglong(getuid()));
+    QDBusReply<QDBusObjectPath> dbusObjectPath =
+        iface->call(QStringLiteral("FindUserById"), qlonglong(getuid()));
     if (dbusObjectPath.isValid()) {
         objectPath = dbusObjectPath.value().path();
         iface->connection().connect(
             service,
             objectPath,
-            "org.freedesktop.DBus.Properties",
-            "PropertiesChanged",
+            QStringLiteral("org.freedesktop.DBus.Properties"),
+            QStringLiteral("PropertiesChanged"),
             this,
             SLOT(updateProperties(QString,QVariantMap,QStringList)));
         return true;
@@ -134,7 +135,9 @@ bool DBusServiceProperties::readProperty(const QString &property)
         return false;
     }
     Q_Q(UCServiceProperties);
-    QDBusInterface readIFace(iface->interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
+    QDBusInterface readIFace(
+        iface->interface(), objectPath, QStringLiteral("org.freedesktop.DBus.Properties"),
+        connection);
     if (!readIFace.isValid()) {
         // report invalid interface only if the property's first letter was with capital one!
         if (property[0].isUpper()) {
@@ -142,7 +145,7 @@ bool DBusServiceProperties::readProperty(const QString &property)
         }
         return false;
     }
-    QDBusPendingCall pending = readIFace.asyncCall("Get", adaptor, property);
+    QDBusPendingCall pending = readIFace.asyncCall(QStringLiteral("Get"), adaptor, property);
     if (pending.isError()) {
         warning(pending.error().message());
         return false;
@@ -164,12 +167,15 @@ bool DBusServiceProperties::testProperty(const QString &property, const QVariant
     if (objectPath.isEmpty()) {
         return false;
     }
-    QDBusInterface writeIFace(iface->interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
+    QDBusInterface writeIFace(
+        iface->interface(), objectPath, QStringLiteral("org.freedesktop.DBus.Properties"),
+        connection);
     if (!writeIFace.isValid()) {
         // invalid interface
         return false;
     }
-    QDBusMessage msg = writeIFace.call("Set", adaptor, property, QVariant::fromValue(QDBusVariant(value)));
+    QDBusMessage msg = writeIFace.call(
+        QStringLiteral("Set"), adaptor, property, QVariant::fromValue(QDBusVariant(value)));
     return msg.type() == QDBusMessage::ReplyMessage;
 }
 

@@ -40,9 +40,9 @@ UCScalingImageProvider::UCScalingImageProvider() : QQuickImageProvider(QQuickIma
 
 QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    int separatorPosition = id.indexOf("/");
+    int separatorPosition = id.indexOf(QStringLiteral("/"));
     float scaleFactor = id.left(separatorPosition).toFloat();
-    int fragmentPosition = id.lastIndexOf("#");
+    int fragmentPosition = id.lastIndexOf(QStringLiteral("#"));
     int pathLength = fragmentPosition > -1 ? fragmentPosition - separatorPosition - 1 : -1;
     QString path = id.mid(separatorPosition + 1, pathLength);
     QFile file(path);

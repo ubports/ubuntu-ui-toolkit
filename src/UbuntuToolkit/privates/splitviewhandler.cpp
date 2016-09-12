@@ -32,7 +32,7 @@ SplitViewHandler::SplitViewHandler(QQuickItem *parent)
     : QQuickMouseArea(parent)
 {
     // for testing purposes
-    setObjectName("resize_handle");
+    setObjectName(QStringLiteral("resize_handle"));
     setFlag(ItemHasContents);
     setHoverEnabled(true);
     setAcceptedButtons(Qt::LeftButton);
@@ -115,7 +115,7 @@ void SplitViewHandler::onDelegateChanged()
     // and set the new delegate - if any
     if (SplitViewPrivate::get(view)->handleDelegate) {
         QQmlContext *context = new QQmlContext(qmlContext(this), this);
-        context->setContextProperty("handle", QVariant::fromValue(this));
+        context->setContextProperty(QStringLiteral("handle"), QVariant::fromValue(this));
         QObject *object = SplitViewPrivate::get(view)->handleDelegate->beginCreate(context);
         if (object) {
             QQuickItem *item = qobject_cast<QQuickItem*>(object);

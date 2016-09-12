@@ -150,7 +150,7 @@ void UCMainViewBase::setApplicationName(QString applicationName)
 
     d->m_applicationName = applicationName;
 
-    if (applicationName != "") {
+    if (applicationName != QStringLiteral("")) {
         UbuntuI18n::instance()->setDomain(applicationName);
         UCApplication::instance()->setApplicationName(applicationName);
     }

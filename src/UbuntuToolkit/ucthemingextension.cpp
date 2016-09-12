@@ -227,7 +227,7 @@ UCTheme *UCThemingExtension::getTheme()
         theme = UCTheme::defaultTheme(qmlEngine(themedItem));
         if (!theme) {
             QString msg = QStringLiteral("The item %1 was created without a valid QML Engine. Styling will not be possible.")
-                    .arg(themedItem->metaObject()->className());
+                .arg(QString::fromLocal8Bit(themedItem->metaObject()->className()));
             qCritical().noquote() << msg;
             return Q_NULLPTR;
         }
