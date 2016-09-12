@@ -13,8 +13,6 @@ unix {
     SOURCES += mousetouchadaptor_x11.cpp
 }
 
-DEFINES += UBUNTUTOOLKIT_LIBRARY
-
 # Uncomment to compile out qDebug() calls.
 # DEFINES += QT_NO_DEBUG_OUTPUT
 
