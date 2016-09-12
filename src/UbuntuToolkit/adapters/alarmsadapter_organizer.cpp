@@ -31,20 +31,19 @@
 #include "alarmmanager_p_p.h"
 #include "ucalarm_p_p.h"
 
-#define ALARM_DATABASE          "%1/alarms.json"
-/*
- * The main alarm manager engine used from Saucy onwards is EDS (Evolution Data
- * Server) based. Any previous release uses the generic "memory" manager engine
- * which does not store alarm data, does not schedule organizer events and does
- * not give visual or audible reminding.
- */
-#define ALARM_MANAGER           "eds"
-#define ALARM_MANAGER_FALLBACK  "memory"
-#define ALARM_COLLECTION        "Alarms"
+static const QString alarmDatabase = QStringLiteral("%1/alarms.json");
+
+// The main alarm manager engine used from Saucy onwards is EDS (Evolution Data
+// Server) based. Any previous release uses the generic "memory" manager engine
+// which does not store alarm data, does not schedule organizer events and does
+// not give visual or audible reminding.
+static const QString alarmManager = QStringLiteral("eds");
+static const QString alarmManagerFallback = QStringLiteral("memory");
+static const QString alarmCollection = QStringLiteral("Alarms");
 
 // special tags used as workaround for bug #1361702
-#define TAG_CANONICAL_ALARM "x-canonical-alarm"
-#define TAG_DISABLED_ALARM  "x-canonical-disabled"
+static const QString tagCanonicalAlarm = QStringLiteral("x-canonical-alarm");
+static const QString tagDisabledAlarm = QStringLiteral("x-canonical-disabled");
 
 QTORGANIZER_USE_NAMESPACE
 
@@ -65,7 +64,7 @@ AlarmDataAdapter::~AlarmDataAdapter()
 
 bool AlarmDataAdapter::enabled() const
 {
-    return !event.tags().contains(QStringLiteral("x-canonical-disabled"));
+    return !event.tags().contains(tagDisabledAlarm);
 }
 bool AlarmDataAdapter::setEnabled(bool enabled)
 {
@@ -75,11 +74,11 @@ bool AlarmDataAdapter::setEnabled(bool enabled)
     if (enabled) {
         // remove eventual x-canonical-disabled tag as agreed in bug #1361702
         QStringList tags = event.tags();
-        tags.removeAll(QStringLiteral(TAG_DISABLED_ALARM));
+        tags.removeAll(tagDisabledAlarm);
         event.setTags(tags);
     } else {
         // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
-        event.addTag(QStringLiteral(TAG_DISABLED_ALARM));
+        event.addTag(tagDisabledAlarm);
     }
     return true;
 }
@@ -94,7 +93,7 @@ bool AlarmDataAdapter::setDate(const QDateTime &date)
         return false;
     }
     QDateTime dt = AlarmUtils::normalizeDate(date);
-    if (AlarmsAdapter::get()->manager->managerName() == QStringLiteral(ALARM_MANAGER)) {
+    if (AlarmsAdapter::get()->manager->managerName() == alarmManager) {
         // use invalid timezone to simulate floating time for EDS backend
         dt = QDateTime(dt.date(), dt.time(), QTimeZone());
     }
@@ -353,8 +352,8 @@ void AlarmDataAdapter::setData(const QOrganizerTodo &data)
 {
     event = data;
     // add x-canonical-alarm tag as agreed in bug #1361702
-    if (!event.tags().contains(QStringLiteral(TAG_CANONICAL_ALARM))) {
-        event.addTag(QStringLiteral(TAG_CANONICAL_ALARM));
+    if (!event.tags().contains(tagCanonicalAlarm)) {
+        event.addTag(tagCanonicalAlarm);
     }
     event.setCollectionId(AlarmsAdapter::get()->collection.id());
     event.setAllDay(false);
@@ -395,11 +394,11 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
 
     QString envManager = QString::fromLocal8Bit(qgetenv("ALARM_BACKEND"));
     if (envManager.isEmpty())
-        envManager = QStringLiteral(ALARM_MANAGER);
+        envManager = alarmManager;
     if (!QOrganizerManager::availableManagers().contains(envManager)) {
         qWarning() << "WARNING: alarm manager" << envManager << "not installed, using"
-                   << QStringLiteral(ALARM_MANAGER_FALLBACK);
-        envManager = QStringLiteral(ALARM_MANAGER_FALLBACK);
+                   << alarmManagerFallback;
+        envManager = alarmManagerFallback;
     }
     manager = new QOrganizerManager(envManager);
     manager->setParent(q_ptr);
@@ -407,8 +406,7 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     QList<QOrganizerCollection> collections = manager->collections();
     if (collections.count() > 0) {
         Q_FOREACH(const QOrganizerCollection &c, collections) {
-            if (c.metaData(QOrganizerCollection::KeyName).toString()
-                == QStringLiteral(ALARM_COLLECTION)) {
+            if (c.metaData(QOrganizerCollection::KeyName).toString() == alarmCollection) {
                 collection = c;
                 break;
             }
@@ -416,7 +414,7 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     }
     if (collection.id().isNull()) {
         // create alarm collection
-        collection.setMetaData(QOrganizerCollection::KeyName, QStringLiteral(ALARM_COLLECTION));
+        collection.setMetaData(QOrganizerCollection::KeyName, alarmCollection);
         // EDS requires extra metadata to be set
         collection.setExtendedMetaData(
             QStringLiteral("collection-type"), QStringLiteral("Task List"));
@@ -473,11 +471,10 @@ UCAlarmPrivate * AlarmsAdapter::createAlarmData(UCAlarm *alarm)
 // load fallback manager data
 void AlarmsAdapter::loadAlarms()
 {
-    if (manager->managerName() != QStringLiteral(ALARM_MANAGER_FALLBACK)) {
+    if (manager->managerName() != alarmManagerFallback) {
         return;
     }
-    QFile file(QStringLiteral(ALARM_DATABASE).arg(
-        QStandardPaths::writableLocation(QStandardPaths::DataLocation)));
+    QFile file(alarmDatabase.arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation)));
     if (!file.open(QFile::ReadOnly)) {
         return;
     }
@@ -509,14 +506,14 @@ void AlarmsAdapter::loadAlarms()
 // save fallback manager data only
 void AlarmsAdapter::saveAlarms()
 {
-    if (manager->managerName() != QStringLiteral(ALARM_MANAGER_FALLBACK)) {
+    if (manager->managerName() != alarmManagerFallback) {
         return;
     }
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
     if (!dir.exists()) {
         dir.mkpath(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
     }
-    QFile file(QStringLiteral(ALARM_DATABASE).arg(dir.path()));
+    QFile file(alarmDatabase.arg(dir.path()));
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
         return;
     }
@@ -564,11 +561,11 @@ bool AlarmsAdapter::verifyChange(UCAlarm *alarm, AlarmManager::Change change, co
         {
             Q_ASSERT(value.type() == QVariant::Bool);
             if (value.toBool()) {
-                return !todo.tags().contains(QStringLiteral(TAG_DISABLED_ALARM))
-                    && todo.tags().contains(QStringLiteral(TAG_CANONICAL_ALARM));
+                return !todo.tags().contains(tagDisabledAlarm)
+                    && todo.tags().contains(tagCanonicalAlarm);
             } else {
-                return todo.tags().contains(QStringLiteral(TAG_DISABLED_ALARM))
-                    && todo.tags().contains(QStringLiteral(TAG_CANONICAL_ALARM));
+                return todo.tags().contains(tagDisabledAlarm)
+                    && todo.tags().contains(tagCanonicalAlarm);
             }
         }
         case AlarmManager::Date:
