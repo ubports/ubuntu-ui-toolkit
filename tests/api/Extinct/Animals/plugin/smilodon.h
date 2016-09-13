@@ -16,8 +16,8 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#ifndef UCARGUMENT_H
-#define UCARGUMENT_H
+#ifndef SMILODON_H
+#define SMILODON_H
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
@@ -44,4 +44,4 @@ private:
     QString m_name;
 };
 
-#endif // UCARGUMENT_H
+#endif // SMILODON_H

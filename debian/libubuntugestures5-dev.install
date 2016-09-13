@@ -5,7 +5,6 @@ usr/include/*/qt5/UbuntuGestures/UbuntuGesturesVersion
 usr/include/*/qt5/UbuntuGestures/ubuntugesturesglobal.h
 usr/include/*/qt5/UbuntuGestures/ubuntugesturesmodule.h
 usr/include/*/qt5/UbuntuGestures/ubuntugesturesversion.h
-usr/lib/*/libUbuntuGestures.la
 usr/lib/*/libUbuntuGestures.prl
 usr/lib/*/libUbuntuGestures.so
 usr/lib/*/pkgconfig/UbuntuGestures.pc

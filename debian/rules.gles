@@ -9,7 +9,7 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_SERIES ?= $(shell lsb_release -c -s)
 
-testskip_series := yakkety
+testskip_series := yakkety xenial
 
 CONFIGURE_SWITCHES = "-r" \
                      "ROOT_SOURCE_DIR=$(CURDIR)" \

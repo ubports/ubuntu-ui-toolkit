@@ -12,12 +12,12 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include "uctestcase.h"
-#include "private/quickutils_p.h"
 #include <QtQml/QQmlEngine>
+#include <UbuntuToolkit/private/quickutils_p.h>
+
+#include "uctestcase.h"
 
 UT_USE_NAMESPACE
 

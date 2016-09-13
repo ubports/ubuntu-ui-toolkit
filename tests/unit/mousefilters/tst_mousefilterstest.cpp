@@ -12,26 +12,24 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
-
-#include <UbuntuToolkit/private/ucmouse_p.h>
-#include <UbuntuToolkit/private/ucinversemouse_p.h>
-
-#include <UbuntuToolkit/private/ucunits_p.h>
-#include <UbuntuToolkit/private/quickutils_p.h>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtQuick/private/qquickevents_p_p.h>
+#include <QtQuick/private/qquickmousearea_p.h>
+#include <QtTest/QtTest>
 #include <UbuntuToolkit/private/inversemouseareatype_p.h>
+#include <UbuntuToolkit/private/quickutils_p.h>
+#include <UbuntuToolkit/private/ucinversemouse_p.h>
+#include <UbuntuToolkit/private/ucmouse_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
+
 #include "uctestcase.h"
 #include "uctestextras.h"
-#include <private/qquickevents_p_p.h>
-#include <private/qquickmousearea_p.h>
 
 UT_USE_NAMESPACE
 

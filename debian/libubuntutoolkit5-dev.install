@@ -5,7 +5,6 @@ usr/include/*/qt5/UbuntuToolkit/UbuntuToolkitVersion
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitglobal.h
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitmodule.h
 usr/include/*/qt5/UbuntuToolkit/ubuntutoolkitversion.h
-usr/lib/*/libUbuntuToolkit.la
 usr/lib/*/libUbuntuToolkit.prl
 usr/lib/*/libUbuntuToolkit.so
 usr/lib/*/pkgconfig/UbuntuToolkit.pc

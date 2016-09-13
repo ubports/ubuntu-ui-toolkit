@@ -34,8 +34,8 @@
 #ifndef QPLATFORMINTEGRATION_MINIMAL_H
 #define QPLATFORMINTEGRATION_MINIMAL_H
 
-#include <qpa/qplatformintegration.h>
-#include <qpa/qplatformscreen.h>
+#include <QtGui/qpa/qplatformintegration.h>
+#include <QtGui/qpa/qplatformscreen.h>
 
 class QCustomScreen : public QPlatformScreen
 {

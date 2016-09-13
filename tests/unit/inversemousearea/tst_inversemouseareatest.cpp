@@ -12,21 +12,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
-
-#include "uctestextras.h"
-#include "uctestcase.h"
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtTest/QtTest>
+#include <QtQuick/private/qquickevents_p_p.h>
 #include <UbuntuToolkit/private/inversemouseareatype_p.h>
 #include <UbuntuToolkit/private/ucunits_p.h>
-#include <private/qquickevents_p_p.h>
+
+#include "uctestcase.h"
+#include "uctestextras.h"
 
 #define DOUBLECLICK_TIMEOUT 400
 
