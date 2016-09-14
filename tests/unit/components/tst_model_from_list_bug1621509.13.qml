@@ -27,6 +27,7 @@ TestCase {
     height: 100
 
     // Bug #1621509 only occurs when we wait for the window to be visible.
+    // Forces the components to be completed before the test functions are executed.
     when: windowShown
 
     ModelFromList13 {
@@ -35,29 +36,15 @@ TestCase {
             objectName: "one"
             id: objectOne
         }
-        QtObject {
-            objectName: "two"
-            id: objectTwo
-        }
-        QtObject{
-            objectName: "three"
-            id: objectThree
-        }
-        objectList: [objectOne, objectTwo, objectThree]
-        Component.onCompleted: {
-//            print("Component completed.");
-            modelChangedCount = 0;
-        }
-        onModelChangedCountChanged: {
-            print("modelChangedCount changed to "+modelChangedCount); // must print to reproduce the bug.
-        }
+        myObject: objectOne
     }
 
-    function initTestCase() {
+    Component.onCompleted: {
+        print("Component completed."); // must print something to reproduce the bug.
     }
 
     function test_no_model_change_after_completed_bug1621509_bug1610231() {
-        compare(embeddedListView.modelChangedCount, 0,
+        compare(embeddedListView.count, 0,
                 "The model was changed after the component was completed.");
     }
 }

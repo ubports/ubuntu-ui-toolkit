@@ -100,6 +100,8 @@
 #include "ucurihandler_p.h"
 #include "unitythemeiconprovider_p.h"
 
+#include <QDebug>
+
 UT_NAMESPACE_BEGIN
 
 const char *EngineProperty("__ubuntu_toolkit_plugin_data");
@@ -136,9 +138,13 @@ void UbuntuToolkitModule::registerWindowContextProperty()
 
 void UbuntuToolkitModule::setWindowContextProperty(QWindow* focusWindow)
 {
+//    Q_UNUSED(focusWindow);
+    qDebug()<<"setWindowContextProperty("<<focusWindow<<")";
     QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
 
     if (view != NULL) {
+        qDebug()<<"Setting window context property to "<<view;
+        qDebug()<<"Old context property = "<<view->rootContext()->contextProperty("window");
         view->rootContext()->setContextProperty("window", view);
     }
 }
@@ -151,6 +157,8 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
     UCApplication::instance(engine);
     UCFontUtils::instance(engine);
     UCTheme::defaultTheme(engine);
+
+    qDebug()<<"Initializing context properties....";
 
     QQmlContext* context = engine->rootContext();
 
@@ -189,6 +197,8 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
         new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
+
+    qDebug()<<"Context properties initialization done!";
 }
 
 void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int minor)

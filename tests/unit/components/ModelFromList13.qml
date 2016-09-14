@@ -19,15 +19,14 @@ import QtQuick 2.4
 // This component is used in tst_listview_bug1621509.13.qml
 Item {
     id: root
-//    Component.onCompleted: print("root item completed.")
-    property list<QtObject> objectList
-    property var model: objectList
+    property var myObject
+    property int count: 0 // will hold the number of changes to myObject after Component.completed.
 
-    property int modelChangedCount: 0
-
-    onModelChanged: {
-        modelChangedCount++;
-//        print("Item model changed to "+model[0]+" "+model[1]+" "+model[2]+" "+model[3])
-        print("root.model changed to "+model[0]+" "+model[1]+" "+model[2]); // must print to reproduce the bug.
+    onMyObjectChanged: {
+        print("myObject changed to "+myObject)
+        count++;
+    }
+    Component.onCompleted: {
+        count = 0;
     }
 }
