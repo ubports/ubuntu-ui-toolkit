@@ -54,7 +54,7 @@ int ListViewProxy::count()
 
 QQuickItem *ListViewProxy::currentItem()
 {
-    return _currentItem.data();
+    return _currentItem;
 }
 
 int ListViewProxy::currentIndex()
