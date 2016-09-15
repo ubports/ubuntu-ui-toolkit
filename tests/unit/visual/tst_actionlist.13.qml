@@ -49,8 +49,31 @@ Button {
     }
     onClicked: popup = PopupUtils.open(menuFactory, root)
 
+    ActionList {
+        id: actionList
+        Action {
+        }
+        Action {
+        }
+    }
+
+    Action {
+        id: dynamicListAction
+    }
+
     UbuntuTestCase {
         when: windowShown
+
+        function test_actionlist() {
+            verify(actionList.actions.length, 2, "Default actions not added to actionList");
+        }
+
+        function test_actionlist_dynamic_actions() {
+            actionList.addAction(dynamicListAction);
+            verify(actionList.actions.length, 3, "Dynamic action not added to actionList");
+            actionList.removeAction(dynamicListAction);
+            verify(actionList.actions.length, 2, "Dynamic action not remove from actionList");
+        }
 
         function test_bug1623841() {
             mouseClick(root, centerOf(root).x, centerOf(root).y);
