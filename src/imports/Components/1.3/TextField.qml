@@ -954,7 +954,7 @@ Ubuntu.ActionItem {
         width: visible ? icon.width : 0
         visible: control.hasClearButton &&
                  !control.readOnly &&
-                    (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
+                 control.activeFocus && editor.displayText != ""
 
         Ubuntu.Icon {
             id: icon
