@@ -33,6 +33,6 @@ Item {
 
     Item {
         objectName: "checkpoint"
-        property int contentOrientation: QuickUtils.focusWindow.contentOrientation
+        property int contentOrientation: QuickUtils.focusWindow ? QuickUtils.focusWindow.contentOrientation : 0
     }
 }
