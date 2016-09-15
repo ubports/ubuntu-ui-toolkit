@@ -29,7 +29,9 @@ class UBUNTUTOOLKIT_EXPORT ActionList : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
-    Q_CLASSINFO("DefaultProperty", "actions")
+    // children alias
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> children READ actions NOTIFY childrenChanged)
+    Q_CLASSINFO("DefaultProperty", "children")
 public:
     explicit ActionList(QObject *parent = 0);
 
@@ -42,6 +44,7 @@ public Q_SLOTS:
     void removeAction(UT_PREPEND_NAMESPACE(UCAction) *action);
 
 Q_SIGNALS:
+    void childrenChanged();
     void added(UCAction *action);
     void removed(UCAction *action);
 

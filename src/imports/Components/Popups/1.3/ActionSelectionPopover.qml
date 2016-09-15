@@ -130,6 +130,7 @@ Popover {
 
     Column {
         id: body
+        objectName: "body"
         anchors {
             left: parent.left
             top: parent.top
