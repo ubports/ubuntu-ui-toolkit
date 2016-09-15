@@ -20,6 +20,7 @@
 #define LISTVIEWEXTENSIONS_H
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <ubuntutoolkitglobal.h>
 
 class QQuickFlickable;
