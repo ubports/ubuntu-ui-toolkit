@@ -129,15 +129,15 @@ Item {
           http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
           http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
          */
-        property bool windowActive: typeof window != 'undefined'
+        property bool windowActive: typeof QuickUtils.focusWindow != 'undefined'
 
         /*!
           Report the current orientation of the application via QWindow::contentOrientation.
           http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
          */
         function applyOrientation() {
-            if (windowActive && window)
-                window.contentOrientation = Screen.orientation
+            if (windowActive && QuickUtils.focusWindow)
+                QuickUtils.focusWindow.contentOrientation = Screen.orientation
         }
 
         onWindowActiveChanged: {
