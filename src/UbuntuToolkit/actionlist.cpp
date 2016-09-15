@@ -80,6 +80,7 @@ void ActionList::addAction(UCAction *action)
     }
     m_actions.append(action);
     Q_EMIT added(action);
+    Q_EMIT childrenChanged();
 }
 
 /*!
@@ -95,6 +96,7 @@ void ActionList::removeAction(UCAction *action)
     }
     if (m_actions.removeOne(action)) {
         Q_EMIT removed(action);
+        Q_EMIT childrenChanged();
     }
 }
 
@@ -135,6 +137,7 @@ void ActionList::clear(QQmlListProperty<UCAction> *list)
     ActionList *actionList = qobject_cast<ActionList*>(list->object);
     if (actionList) {
         actionList->m_actions.clear();
+        Q_EMIT actionList->childrenChanged();
     }
 }
 
