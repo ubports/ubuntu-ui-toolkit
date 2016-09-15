@@ -143,12 +143,14 @@ Object {
 
         function openPopover(caller, params) {
             var popover = PopupUtils.open(datePickerPopover, caller, params);
-            popover.parent = QuickUtils.rootItem(null);
+            // Avoid confusing TypeError if popover couldn't be created
+            if (popover)
+                popover.parent = QuickUtils.rootItem(caller);
             return popover;
         }
         function openPanel(caller, params) {
             params["caller"] = caller;
-            var panel = datePickerPanel.createObject(QuickUtils.rootItem(null), params);
+            var panel = datePickerPanel.createObject(QuickUtils.rootItem(caller), params);
             return panel;
         }
     }
