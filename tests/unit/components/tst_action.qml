@@ -185,17 +185,6 @@ TestCase {
          compare(checkableAction.checked, false, "Non-checkable action should never be checked");
      }
 
-     function test_actionlist() {
-         verify(actionList.actions.length, 2, "Default actions not added to actionList");
-     }
-
-     function test_actionlist_dynamic_actions() {
-         actionList.addAction(dynamicListAction);
-         verify(actionList.actions.length, 3, "Dynamic action not added to actionList");
-         actionList.removeAction(dynamicListAction);
-         verify(actionList.actions.length, 2, "Dynamic action not remove from actionList");
-     }
-
      function test_exclusive_group() {
          compare(exclusiveGroup.actions.length, 3, "Incorrect number of actions");
      }
@@ -309,18 +298,6 @@ TestCase {
      Action {
          id: checkableAction
          checkable: true
-     }
-
-     ActionList {
-         id: actionList
-         Action {
-         }
-         Action {
-         }
-     }
-
-     Action {
-         id: dynamicListAction
      }
 
      ExclusiveGroup {
