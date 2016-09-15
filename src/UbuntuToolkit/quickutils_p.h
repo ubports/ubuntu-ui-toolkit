@@ -26,6 +26,7 @@
 class QQuickItem;
 class QQmlEngine;
 class QQmlComponent;
+class QQuickView;
 
 UT_NAMESPACE_BEGIN
 
@@ -33,6 +34,7 @@ class UBUNTUTOOLKIT_EXPORT QuickUtils : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
+    Q_PROPERTY(QWindow *focusWindow READ focusWindow NOTIFY focusWindowChanged)
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
     Q_PROPERTY(bool touchScreenAvailable READ touchScreenAvailable NOTIFY touchScreenAvailableChanged)
     Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached NOTIFY mouseAttachedChanged)
@@ -52,6 +54,7 @@ public:
 
     QQuickItem *rootObject();
     Q_INVOKABLE QQuickItem *rootItem(QObject *object);
+    QQuickView *focusWindow();
     QString inputMethodProvider() const;
     bool touchScreenAvailable() const;
 
@@ -74,6 +77,7 @@ public:
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void focusWindowChanged();
     void activated();
     void deactivated();
     void touchScreenAvailableChanged();
@@ -87,6 +91,7 @@ private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickWindow> m_rootWindow;
     QPointer<QQuickView> m_rootView;
+    QPointer<QQuickView> m_focusWindow;
     QStringList m_omitIM;
     bool m_mouseAttached;
     bool m_keyboardAttached;
@@ -94,6 +99,7 @@ private:
     static QuickUtils *m_instance;
 
     void lookupQuickView();
+    void setFocusWindow(QWindow *view);
 };
 
 #define UC_QML_DEPRECATION_WARNING(msg) \
