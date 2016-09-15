@@ -139,7 +139,7 @@ void UbuntuToolkitModule::registerWindowContextProperty()
 void UbuntuToolkitModule::setWindowContextProperty(QWindow* focusWindow)
 {
 //    Q_UNUSED(focusWindow);
-//    qDebug()<<"setWindowContextProperty("<<focusWindow<<")";
+    qDebug()<<"UbuntuToolkitModule.setWindowContextProperty("<<focusWindow<<")";
     QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
 
     if (view != NULL) {

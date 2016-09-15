@@ -61,11 +61,11 @@ QuickUtils::QuickUtils(QObject *parent) :
 /*!
  * \internal
  */
-void QuickUtils::setFocusWindow(QWindow* focusWindow)
+void QuickUtils::setFocusWindow(QWindow* window)
 {
 //    Q_UNUSED(focusWindow);
-    qDebug()<<"setFocusWindow("<<focusWindow<<")";
-    QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
+    qDebug()<<"QuickUtils.setFocusWindow("<<window<<")";
+    QQuickView* view = qobject_cast<QQuickView*>(window);
 
 //    if (view != NULL) {
 //        qDebug()<<"Setting window context property to "<<view;
@@ -74,7 +74,8 @@ void QuickUtils::setFocusWindow(QWindow* focusWindow)
 //    }
     if (view != m_focusWindow) {
         m_focusWindow = view;
-        Q_EMIT focusWindowChanged();
+        qDebug()<<"New focus window is "<<view;
+        Q_EMIT focusWindowChanged(m_focusWindow);
     }
 }
 

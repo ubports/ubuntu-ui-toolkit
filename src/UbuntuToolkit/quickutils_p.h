@@ -34,7 +34,7 @@ class UBUNTUTOOLKIT_EXPORT QuickUtils : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
-    Q_PROPERTY(QWindow *focusWindow READ focusWindow NOTIFY focusWindowChanged)
+    Q_PROPERTY(QQuickView *focusWindow READ focusWindow NOTIFY focusWindowChanged)
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
     Q_PROPERTY(bool touchScreenAvailable READ touchScreenAvailable NOTIFY touchScreenAvailableChanged)
     Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached NOTIFY mouseAttachedChanged)
@@ -77,7 +77,7 @@ public:
 
 Q_SIGNALS:
     void rootObjectChanged();
-    void focusWindowChanged();
+    void focusWindowChanged(QWindow*);
     void activated();
     void deactivated();
     void touchScreenAvailableChanged();
@@ -99,7 +99,7 @@ private:
     static QuickUtils *m_instance;
 
     void lookupQuickView();
-    void setFocusWindow(QWindow *view);
+    Q_SLOT void setFocusWindow(QWindow *window);
 };
 
 #define UC_QML_DEPRECATION_WARNING(msg) \
