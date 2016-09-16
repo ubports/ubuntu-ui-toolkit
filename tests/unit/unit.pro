@@ -38,7 +38,7 @@ SUBDIRS += \
     units \
     scaling_image_provider \
     qquick_image_extension \
-#    performance \ # FIXME: Breaks with Qt 5.6. See bug 1570478.
+#    performance \ # FIXME: Breaks with Qt 5.6. See bug #1570478.
     mainview \
     i18n \
     arguments \
