@@ -486,6 +486,7 @@ Item {
             }
         }
 
+        // FIXME: Fails with Qt 5.6. See bug #1624331.
         // re-focusing ListView will focus on the last focused item
         function test_refocus_listview_on_last_focused_item_data() {
             return [

@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.2103+16.10) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.2104+16.10) UNRELEASED; urgency=medium
 
   [ Andrea Bernabei ]
   * Scrollbar: more hover related bugfixes and unit tests. 
@@ -60,6 +60,9 @@ ubuntu-ui-toolkit (1.3.2103+16.10) UNRELEASED; urgency=medium
     initialized. That fixes a ReferenceError in OverflowPanel with Qt 5.6. 
     Fixes: LP: #1616858.
   * Use the new arrow icons from the suru-icon-theme in the scrolling ActionBar.
+  * Do not skip Xenial and Yakkety series for running unit tests. Individual
+    unit tests that fail with Qt 5.6 have been disabled, and bugs are reported 
+    here: http://goo.gl/stAe43
   
   [ Zsombor Egri ]
   * New visuals for ProgressBar. Fixes: LP: #1587176.

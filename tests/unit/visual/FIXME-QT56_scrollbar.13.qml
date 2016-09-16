@@ -155,6 +155,7 @@ Item {
         }
     }
 
+    // FIXME: Tests failing with Qt 5.6. See bug #1624337.
     ScrollbarTestCase13 {
         name: "Scrollbar"
 

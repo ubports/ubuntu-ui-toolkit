@@ -243,6 +243,7 @@ Item {
             wait(200);
         }
 
+        // FIXME: Fails with Qt 5.6. See bug #1624328.
         function test_0_defaults() {
             verify(defaults.contentItem !== null, "Defaults is null");
             compare(defaults.color.toString(), Qt.rgba(0.0, 0.0, 0.0, 0.0).toString(), "Transparent by default");
