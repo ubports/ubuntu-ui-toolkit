@@ -32,14 +32,14 @@
 ****************************************************************************/
 
 #include "qcustomintegration.h"
-#include "qcustombackingstore.h"
 
+#include <QtGui/qpa/qplatformfontdatabase.h>
+#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/private/qguiapplication_p.h>
-#include <qpa/qplatformwindow.h>
-#include <qpa/qplatformfontdatabase.h>
-#include <qpa/qplatformnativeinterface.h>
-
 #include <QtPlatformSupport/private/qgenericunixeventdispatcher_p.h>
+
+#include "qcustombackingstore.h"
 
 static const char devicePixelRatioEnvironmentVariable[] = "QT_DEVICE_PIXEL_RATIO";
 

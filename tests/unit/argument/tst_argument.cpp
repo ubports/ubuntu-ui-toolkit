@@ -16,12 +16,11 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include <QtCore/QString>
+#include <QtTest/QTest>
 #define protected public
 #include <UbuntuToolkit/private/ucargument_p.h>
 #undef protected
-
-#include <QtCore/QString>
-#include <QtTest/QTest>
 
 UT_USE_NAMESPACE
 

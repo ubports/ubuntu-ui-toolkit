@@ -14,10 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtTest>
-#include <QSet>
-#include <QTouchEvent>
-
+#include <QtCore/QSet>
+#include <QtGui/QTouchEvent>
+#include <QtQuick/QQuickItem>
+#include <QtTest/QtTest>
 #include <UbuntuGestures/private/timer_p.h>
 #include <UbuntuGestures/private/touchownershipevent_p.h>
 #include <UbuntuGestures/private/touchregistry_p.h>

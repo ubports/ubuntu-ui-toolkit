@@ -296,7 +296,6 @@ Item {
             compare(bar.actions, root.shortActionList, "Actions property can be updated.");
         }
 
-
         function test_actions_visibility_data() {
             // bar has 11 actions, shortBar has 2 actions.
             return [

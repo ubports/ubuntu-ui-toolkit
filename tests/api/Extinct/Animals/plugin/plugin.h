@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EXTINCT_ANIMALS_PLUGIN_H
-#define EXTINCT_ANIMALS_PLUGIN_H
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
@@ -30,4 +30,4 @@ public:
     void initializeEngine(QQmlEngine *engine, const char *uri) override;
 };
 
-#endif // EXTINCT_ANIMALS_PLUGIN_H
+#endif // PLUGIN_H

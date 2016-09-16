@@ -16,15 +16,13 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include <QtTest/QtTest>
+#include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickimagebase_p.h>
-
-// Make protected methods of QQuickImageExtension public in order to test them
+#include <QtTest/QtTest>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
 #define protected public
 #include <UbuntuToolkit/private/ucqquickimageextension_p.h>
 #undef protected
-#include <QtQml/QQmlEngine>
-#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 

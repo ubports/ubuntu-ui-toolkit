@@ -31,8 +31,8 @@
 **
 ****************************************************************************/
 
+#include <QtGui/qpa/qplatformintegrationplugin.h>
 
-#include <qpa/qplatformintegrationplugin.h>
 #include "qcustomintegration.h"
 
 class QCustomIntegrationPlugin : public QPlatformIntegrationPlugin
