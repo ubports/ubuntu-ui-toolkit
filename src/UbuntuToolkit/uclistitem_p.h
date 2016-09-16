@@ -233,6 +233,7 @@ Q_SIGNALS:
     // 1.3
     void expandedIndicesChanged(const QList<int> &indices);
     void expansionFlagsChanged();
+    void effectiveCurrentIndexChanged();
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };

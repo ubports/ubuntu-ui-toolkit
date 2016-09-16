@@ -1,3 +1,33 @@
+ubuntu-ui-toolkit (1.3.2085+16.10.20160831.4) yakkety; urgency=medium
+
+  [ Zoltan Balogh ] 
+  * Remove the *.la files from the -dev package; they have been obsolete for
+    many years, cause dependency trouble.
+  * Fix the sscanf and roundf incompatiblity for Yaketty builds
+
+
+  [ Nick Dedekind ]
+  * API for MenuBar, Menus, MenuItem & MenuSeparator.
+  * Introduced Action states & ExclusiveGroup action list
+
+  [ Tim Peeters ]
+  * Add ScrollingActionBarStyle.
+
+
+  [ Zsombor Egri ]
+  * SplitView to Ubuntu.Components.Labs.
+  * Get rid of pragma warning, use standard way to mark an argument unused; fix
+    build failure related to static const used in qMin(), happening with Qt5.5.1
+
+  [ Florian Boucault ]
+  * ActivityIndicatorStyle: set default size on component instead of style.
+
+  [ Morgan ]
+  * Update Popover and ListItem code examples to use the new ListItem and
+    ListItemLayout components. 
+
+ -- Zoltán Balogh <zoltan.balogh@canonical.com>  Wed, 31 Aug 2016 16:45:18 +0000
+
 ubuntu-ui-toolkit (1.3.2073+16.10.20160824) yakkety; urgency=medium
 
   [ Zsombor Egri ]
