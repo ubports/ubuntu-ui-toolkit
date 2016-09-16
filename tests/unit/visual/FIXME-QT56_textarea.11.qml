@@ -137,6 +137,7 @@ Item {
             compare(textArea.canUndo,textEdit.canUndo,"TextArea.canUndo is same as TextEdit.canUndo")
         }
 
+        // FIXME: Fails with Qt 5.6. See bug #1624342.
         function test_0_color() {
             compare(textArea.color,textEdit.color,"TextArea.color is same as TextEdit.canUndo")
         }

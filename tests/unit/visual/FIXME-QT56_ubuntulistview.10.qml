@@ -65,6 +65,7 @@ Item {
         }
     }
 
+    // FIXME: Failing unit tests with Qt 5.6. See bug #1624343.
     UbuntuTestCase {
         name: "UbuntuListView"
         when: windowShown
