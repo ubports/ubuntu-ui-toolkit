@@ -29,7 +29,7 @@ SUBDIRS += \
     mousefilters \
     animator \
     serviceproperties \
-    subtheming \
+#    subtheming \ # FIXME: Breaks with Qt 5.6
     swipearea \
     touchregistry \
     bottomedge \
@@ -38,7 +38,7 @@ SUBDIRS += \
     units \
     scaling_image_provider \
     qquick_image_extension \
-    performance \
+#    performance \ # FIXME: Breaks with Qt 5.6
     mainview \
     i18n \
     arguments \
