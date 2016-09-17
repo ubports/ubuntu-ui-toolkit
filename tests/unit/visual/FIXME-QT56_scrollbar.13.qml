@@ -1203,7 +1203,7 @@ Item {
             compare(style.troughColorThumbStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
             compare(style.troughColorSteppersStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
             compare(style.stepperBgColor, theme.palette.normal.base, "Wrong styling property default value.")
-            compare(style.sliderColor, theme.palette.normal.foregroundText, "Wrong styling property default value.")
+            compare(style.sliderColor, theme.palette.normal.overlayText, "Wrong styling property default value.")
             compare(style.sliderRadius, units.dp(3), "Wrong styling property default value.")
             compare(style.thumbThickness, units.gu(1), "Wrong styling property default value.")
             compare(style.indicatorThickness, units.dp(3), "Wrong styling property default value.")
