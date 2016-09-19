@@ -49,7 +49,7 @@ TestCase {
         }
     }
 
-    function test_no_model_change_after_completed_bug1621509_bug1610231() {
+    function test_no_property_change_after_completed_bug1621509_bug1610231() {
         compare(testItem.count, 0,
                 "The property was changed after the component was completed.");
     }
