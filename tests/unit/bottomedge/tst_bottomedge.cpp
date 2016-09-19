@@ -12,25 +12,25 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include <QtTest/QtTest>
-#include <UbuntuToolkit/private/ucbottomedge_p.h>
-#include <UbuntuToolkit/private/ucbottomedgeregion_p.h>
-#include "private/ucbottomedgeregion_p_p.h"
-#include "private/ucbottomedge_p_p.h"
-#include <UbuntuToolkit/private/ucbottomedgehint_p.h>
-#include "private/ucswipearea_p_p.h"
-#include <UbuntuToolkit/private/ucunits_p.h>
-#include <UbuntuToolkit/private/ucheader_p.h>
+#include <UbuntuGestures/private/ucswipearea_p_p.h>
 #include <UbuntuToolkit/private/ucaction_p.h>
-#include "uctestcase.h"
-#include "uctestextras.h"
+#include <UbuntuToolkit/private/ucbottomedge_p.h>
+#include <UbuntuToolkit/private/ucbottomedge_p_p.h>
+#include <UbuntuToolkit/private/ucbottomedgehint_p.h>
+#include <UbuntuToolkit/private/ucbottomedgeregion_p.h>
+#include <UbuntuToolkit/private/ucbottomedgeregion_p_p.h>
+#include <UbuntuToolkit/private/ucheader_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 #define private public
 #include <UbuntuToolkit/private/quickutils_p.h>
 #include <UbuntuToolkit/private/ucbottomedgestyle_p.h>
 #undef private
+#include <QtTest/QtTest>
+
+#include "uctestcase.h"
+#include "uctestextras.h"
 
 UT_USE_NAMESPACE
 

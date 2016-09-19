@@ -14,10 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtTest/QtTest>
 #include <UbuntuToolkit/private/ucunits_p.h>
-
-#include <qpa/qplatformnativeinterface.h>
 
 UT_USE_NAMESPACE
 

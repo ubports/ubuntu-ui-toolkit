@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2015 Canonical Ltd.
  *
@@ -17,29 +16,27 @@
  * Author: Nick Dedekind <nick.dedekind@gmail.com>
  */
 
-#include <QtCore/QString>
-#include <QtCore/QTextCodec>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QDir>
-#include <QtCore/QProcessEnvironment>
-#include <QtTest/QTest>
-#include <QtTest/QSignalSpy>
-#include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
-#include <QtCore/QThread>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QtTest/qtest_gui.h>
-
 namespace C {
 #include <libintl.h>
 }
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QProcessEnvironment>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QString>
+#include <QtCore/QTextCodec>
+#include <QtCore/QThread>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtTest/QTest>
+#include <QtTest/QtTestGui>
+#include <QtTest/QSignalSpy>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
 #include <UbuntuToolkit/private/ucunits_p.h>
 #include <UbuntuToolkit/private/i18n_p.h>
-#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 

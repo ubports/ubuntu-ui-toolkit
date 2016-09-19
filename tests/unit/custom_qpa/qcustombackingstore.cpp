@@ -31,13 +31,13 @@
 **
 ****************************************************************************/
 
-
 #include "qcustombackingstore.h"
-#include "qcustomintegration.h"
-#include "qscreen.h"
-#include <qpa/qplatformscreen.h>
-#include <private/qguiapplication_p.h>
 
+#include <QtGui/QScreen>
+#include <QtGui/qpa/qplatformscreen.h>
+#include <QtGui/private/qguiapplication_p.h>
+
+#include "qcustomintegration.h"
 
 QCustomBackingStore::QCustomBackingStore(QWindow *window)
     : QPlatformBackingStore(window)

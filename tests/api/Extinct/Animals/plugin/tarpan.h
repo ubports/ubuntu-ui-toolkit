@@ -16,8 +16,8 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#ifndef UCTARPAN_H
-#define UCTARPAN_H
+#ifndef TARPAN_H
+#define TARPAN_H
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -43,4 +43,4 @@ private:
     QString m_name;
 };
 
-#endif // UCTARPAN_H
+#endif // TARPAN_H

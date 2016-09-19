@@ -319,4 +319,30 @@ TestCase {
          }
      }
 
+     QtObject {
+         id: styleProperties
+         property string iconName: "contact"
+         property string iconSource
+     }
+     Action {
+         id: actionWithPropertiesFromStyle
+         iconName: styleProperties.iconName
+         iconSource: styleProperties.iconSource
+         property int numIconSourceChanged: 0
+         onIconSourceChanged: numIconSourceChanged++
+     }
+     function test_icon_name_and_source_from_style_bug1616858() {
+         compare(actionWithPropertiesFromStyle.iconName, "contact",
+                 "iconName not properly copied from style.");
+         compare(actionWithPropertiesFromStyle.iconSource, "image://theme/contact",
+                 "iconSource not properly set with an undefined iconSource from style.");
+         compare(actionWithPropertiesFromStyle.numIconSourceChanged, 1,
+                 "iconSource did not update exactly once.");
+         var newIconSource = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
+         styleProperties.iconSource = newIconSource;
+         compare(actionWithPropertiesFromStyle.iconSource, newIconSource,
+                 "Failed to update iconSource from style properly.");
+         compare(actionWithPropertiesFromStyle.numIconSourceChanged, 2,
+                 "Incorrect number of updates to icon source.");
+     }
 }

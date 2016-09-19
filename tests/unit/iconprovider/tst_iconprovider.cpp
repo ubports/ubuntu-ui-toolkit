@@ -15,7 +15,6 @@
  */
 
 #include <QtTest/QtTest>
-
 #define private public
 #include <UbuntuToolkit/private/unitythemeiconprovider_p.h>
 #undef private
