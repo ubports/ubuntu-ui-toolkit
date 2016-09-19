@@ -58,12 +58,23 @@ Page {
                             'Sex on the Beach',
                             'Strawberry Mojito'
                         ];
+                        currentlyExpanded: false;
+                        expanded: false;
                     }
                 },
                 State {
                     name: 'expanded'
-                    extend: 'default'
-                    PropertyChanges { target: defaultSelector; expanded: true; currentlyExpanded: true }
+                    PropertyChanges {
+                        target: defaultSelector;
+                        model: [
+                            'Ginger Ale',
+                            'Coke',
+                            'Ipanema',
+                            'Virgin Mojito'
+                        ];
+                        currentlyExpanded: true;
+                        expanded: true;
+                    }
                 },
                 State {
                     name: 'custom'
