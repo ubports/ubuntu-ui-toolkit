@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.3
 import QtQuick.Window 2.0
 
 Item {
@@ -25,14 +25,17 @@ Item {
     OrientationHelper {
         objectName: "helper"
         orientationAngle: 90
+//        automaticOrientation: false
     }
 
-    Window {
-        id: window
-    }
+    // I don't know what this is supposed to test. It does nothing.
+//    Window {
+//        id: window
+//    }
 
-    Item {
-        objectName: "checkpoint"
-        property int contentOrientation: window.contentOrientation
-    }
+//    Item {
+//        objectName: "checkpoint"
+//        property int contentOrientation: window.contentOrientation
+//        property int contentOrientation: Screen.angleBetween(Screen.primaryOrientation, Screen.orientation)
+//    }
 }
