@@ -150,16 +150,19 @@ quint16 UCTheme::previousVersion = 0;
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
 
-static inline void updateBinding (QQmlAbstractBinding *binding)
-{
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+static inline void updateBinding(const QQmlAbstractBinding::Ptr &binding)
+{
     if (binding->isValueTypeProxy())
         return;
-    static_cast<QQmlBinding *>(binding)->update();
-#else
-    binding->update();
-#endif
+    static_cast<QQmlBinding*>(binding.data())->update();
 }
+#else
+static inline void updateBinding (const QQmlAbstractBinding *binding)
+{
+    const_cast<QQmlAbstractBinding*>(binding)->update();
+}
+#endif
 
 QStringList themeSearchPath()
 {
@@ -263,11 +266,14 @@ void UCTheme::PaletteConfig::restorePalette()
         // restore the config binding to the config target
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         if (config.configBinding && !config.configBinding->isValueTypeProxy()) {
+            QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding.data());
+            qmlBinding->removeFromObject();
+            QQmlPropertyPrivate::removeBinding(config.paletteProperty);
 #else
         if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
-#endif
             QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
             qmlBinding->removeFromObject();
+#endif
             qmlBinding->setTarget(config.configProperty);
         }
 
@@ -275,7 +281,7 @@ void UCTheme::PaletteConfig::restorePalette()
             // restore the binding to the palette
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(config.paletteProperty));
-            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding.data());
 #else
             QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
 #endif
@@ -293,7 +299,7 @@ void UCTheme::PaletteConfig::restorePalette()
         }
 
         config.paletteProperty = QQmlProperty();
-        config.paletteBinding = NULL;
+        config.paletteBinding = Q_NULLPTR;
         config.paletteValue.clear();
     }
 
@@ -346,6 +352,10 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
         config.paletteBinding = QQmlPropertyPrivate::binding(config.paletteProperty);
         if (!config.paletteBinding) {
             config.paletteValue = config.paletteProperty.read();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        } else {
+            QQmlPropertyPrivate::removeBinding(config.paletteProperty);
+#endif
         }
 
         // apply configuration
@@ -353,17 +363,26 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
             // transfer binding's target
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             if (!config.configBinding->isValueTypeProxy()) {
+                QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding.data());
 #else
             if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
-#endif
                 QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+#endif
                 qmlBinding->setTarget(config.paletteProperty);
             }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.configBinding.data());
+#else
             QQmlPropertyPrivate::setBinding(config.paletteProperty, config.configBinding);
+#endif
         } else {
             if (config.paletteBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                QQmlPropertyPrivate::removeBinding(config.paletteProperty);
+#else
                 // remove binding so the property doesn't clear it
                 QQmlPropertyPrivate::setBinding(config.paletteProperty, 0);
+#endif
             }
             config.paletteProperty.write(config.configProperty.read());
         }
