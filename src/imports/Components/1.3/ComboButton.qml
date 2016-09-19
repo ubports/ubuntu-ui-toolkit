@@ -298,6 +298,7 @@ AbstractButton {
     default property alias comboList: comboListHolder.data
 
     styleName: "ComboButtonStyle"
+    activeFocusOnTab: true
 
     // update sensing area to report clicks only on the main button area
     // area excluding dropDown button and combo list

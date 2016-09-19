@@ -122,4 +122,5 @@ AbstractButton {
     property string iconPosition: "left"
 
     styleName: "ButtonStyle"
+    activeFocusOnTab: true
 }
