@@ -51,7 +51,7 @@ function open(popup, caller, params) {
     if (popup.createObject) {
         // popup is a component and can create an object
         popupComponent = popup;
-        rootObject = QuickUtils.rootItem(popup);
+        rootObject = QuickUtils.rootItem(caller !== undefined ? caller : popup);
     } else if (typeof popup === "string") {
         popupComponent = Qt.createComponent(popup);
         rootObject = (caller !== undefined) ? QuickUtils.rootItem(caller) : QuickUtils.rootItem(null);
