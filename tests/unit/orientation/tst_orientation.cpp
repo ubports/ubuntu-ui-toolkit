@@ -16,18 +16,17 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
+#include <QtCore/QCoreApplication>
+#include <QtGui/QMatrix4x4>
+#include <QtGui/QQuaternion>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlProperty>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
 #include <QtTest/QtTest>
 #include <QtTest/QSignalSpy>
-#include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
-#include <QVector3D>
-#include <QVector4D>
-#include <QQuaternion>
-#include <QMatrix4x4>
-#include <QtQuick/QQuickItem>
-#include <QtQml/QQmlProperty>
 
 #include "uctestcase.h"
 

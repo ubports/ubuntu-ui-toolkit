@@ -16,21 +16,20 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include <UbuntuToolkit/private/ucalarm_p.h>
-#include "private/ucalarm_p_p.h"
-#include "private/alarmmanager_p_p.h"
-#include <UbuntuToolkit/private/ucalarmmodel_p.h>
-#include "private/alarmsadapter_p.h"
-
-#include "uctestcase.h"
+#include <QtCore/QDebug>
 #include <QtCore/QString>
 #include <QtCore/QTextCodec>
-#include <QtCore/QDebug>
-#include <QtTest/QTest>
-#include <QtTest/QSignalSpy>
 #include <QtCore/QTimeZone>
 #include <QtQml/QQmlEngine>
-#include <ubuntutoolkitmodule.h>
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
+#include <UbuntuToolkit/private/ucalarm_p_p.h>
+#include <UbuntuToolkit/private/alarmmanager_p_p.h>
+#include <UbuntuToolkit/private/ucalarmmodel_p.h>
+#include <UbuntuToolkit/private/alarmsadapter_p.h>
+
+#include "uctestcase.h"
 
 UT_USE_NAMESPACE
 
@@ -537,8 +536,7 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
 
         // update alarm to occur 1h earlier
-        QDateTime date = alarm.date();
-        date.addSecs(-60);
+        QDateTime date = alarm.date().addSecs(-60);
         alarm.save();
         waitForUpdate();
         QVERIFY(containsAlarm(&alarm));

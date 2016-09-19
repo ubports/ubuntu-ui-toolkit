@@ -14,13 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "uctestcase.h"
-#include <UbuntuToolkit/private/ucserviceproperties_p.h>
-#include <UbuntuToolkit/private/ucserviceproperties_p_p.h>
-#include <QtCore/QString>
 #include <QtCore/QDebug>
-#include <QtTest/QTest>
+#include <QtCore/QString>
 #include <QtTest/QSignalSpy>
+#include <QtTest/QTest>
+#include <UbuntuToolkit/private/ucserviceproperties_p_p.h>
+
+#include "uctestcase.h"
 
 UT_USE_NAMESPACE
 

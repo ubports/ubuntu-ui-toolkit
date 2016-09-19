@@ -16,10 +16,9 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#include <QtQuick/private/qquickimagebase_p.h>
-
 #include "rune.h"
 
+#include <QtQuick/private/qquickimagebase_p.h>
 
 QHash<QUrl, QSharedPointer<QTemporaryFile> > UCQQuickImageExtension::s_rewrittenSciFiles;
 

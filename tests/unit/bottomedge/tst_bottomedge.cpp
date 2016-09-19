@@ -12,25 +12,25 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include <QtTest/QtTest>
-#include <UbuntuToolkit/private/ucbottomedge_p.h>
-#include <UbuntuToolkit/private/ucbottomedgeregion_p.h>
-#include "private/ucbottomedgeregion_p_p.h"
-#include "private/ucbottomedge_p_p.h"
-#include <UbuntuToolkit/private/ucbottomedgehint_p.h>
-#include "private/ucswipearea_p_p.h"
-#include <UbuntuToolkit/private/ucunits_p.h>
-#include <UbuntuToolkit/private/ucheader_p.h>
+#include <UbuntuGestures/private/ucswipearea_p_p.h>
 #include <UbuntuToolkit/private/ucaction_p.h>
-#include "uctestcase.h"
-#include "uctestextras.h"
+#include <UbuntuToolkit/private/ucbottomedge_p.h>
+#include <UbuntuToolkit/private/ucbottomedge_p_p.h>
+#include <UbuntuToolkit/private/ucbottomedgehint_p.h>
+#include <UbuntuToolkit/private/ucbottomedgeregion_p.h>
+#include <UbuntuToolkit/private/ucbottomedgeregion_p_p.h>
+#include <UbuntuToolkit/private/ucheader_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 #define private public
 #include <UbuntuToolkit/private/quickutils_p.h>
 #include <UbuntuToolkit/private/ucbottomedgestyle_p.h>
 #undef private
+#include <QtTest/QtTest>
+
+#include "uctestcase.h"
+#include "uctestextras.h"
 
 UT_USE_NAMESPACE
 
@@ -242,7 +242,7 @@ private Q_SLOTS:
         QScopedPointer<BottomEdgeTestCase> test(new BottomEdgeTestCase("BottomEdgeInItem.qml"));
         UCBottomEdge *bottomEdge = test->testItem();
         UCBottomEdgeStyle *style = UCBottomEdgePrivate::get(bottomEdge)->bottomPanel;
-        QSignalSpy spy(bottomEdge, SIGNAL(statusChanged(UbuntuToolkit::UCBottomEdge::Status)));
+        QSignalSpy spy(bottomEdge, SIGNAL(statusChanged(UCBottomEdge::Status)));
 
         // swipe till we reveal it
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 1);
@@ -568,7 +568,7 @@ private Q_SLOTS:
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
-        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UbuntuToolkit::UCBottomEdgeRegion*)));
+        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
 
         UCTestExtras::touchPress(0, bottomEdge, from);
         QPoint movePos(from);
@@ -831,7 +831,7 @@ private Q_SLOTS:
         UCBottomEdgeRegionPrivate::get(region)->to = 0.2;
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint delta(0, -(bottomEdge->height() / 2.0f));
-        QSignalSpy activeRegion(bottomEdge, SIGNAL(activeRegionChanged(UbuntuToolkit::UCBottomEdgeRegion*)));
+        QSignalSpy activeRegion(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
         if (withMouse) {
             bottomEdge->hint()->setStatus(UCBottomEdgeHint::Locked);
             UCTestExtras::mouseDrag(bottomEdge, from, delta, Qt::LeftButton, 0, 10);
@@ -910,7 +910,7 @@ private Q_SLOTS:
 
         QPoint from(bottomEdge->width() / 2.0f, bottomEdge->height() - 5);
         QPoint to = from + QPoint(0, -(bottomEdge->parentItem()->height() - 1));
-        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UbuntuToolkit::UCBottomEdgeRegion*)));
+        QSignalSpy spy(bottomEdge, SIGNAL(activeRegionChanged(UCBottomEdgeRegion*)));
 
         connect(bottomEdge, &UCBottomEdge::contentItemChanged, [=]() {
             regionObjects.append(bottomEdge->contentItem()

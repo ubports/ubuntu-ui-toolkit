@@ -56,13 +56,13 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("No label")
+            title: progressTypeFlip.indeterminate ? i18n.tr("Infinite") : i18n.tr("Standard")
 
             ProgressBar {
-                id: progressNoLabel
+                id: progressTypeFlip
                 objectName: "progressbar_nolabel"
-                width: parent.width
-                showProgressPercentage: false
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width - (switchBox.width + label.width + 2 * parent.spacing)
 
                 SequentialAnimation on value {
                     loops: Animation.Infinite
@@ -73,6 +73,15 @@ Template {
                     }
                     PauseAnimation {duration: 1000}
                 }
+            }
+            Switch {
+                id: switchBox
+                checked: progressTypeFlip.indeterminate
+                onTriggered: progressTypeFlip.indeterminate = !progressTypeFlip.indeterminate
+            }
+            Label {
+                id: label
+                text: progressTypeFlip.indeterminate ? i18n.tr("to standard") : i18n.tr("to infinite")
             }
         }
     }

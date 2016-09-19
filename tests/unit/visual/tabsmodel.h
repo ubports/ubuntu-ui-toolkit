@@ -12,14 +12,13 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef TABSMODEL_H
 #define TABSMODEL_H
 
-#include <QAbstractListModel>
-#include <QStringList>
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QStringList>
 
 class TabsModel : public QAbstractListModel
 {

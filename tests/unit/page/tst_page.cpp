@@ -16,12 +16,12 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
+#include <QtCore/QDir>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
-#include <QtCore/QDir>
 
 #include "uctestcase.h"
 
@@ -29,12 +29,8 @@ class tst_Page : public QObject
 {
     Q_OBJECT
 
-private:
-    QQuickView *view;
-
 public:
-    tst_Page() :
-        view(0)
+    tst_Page()
     {
     }
 

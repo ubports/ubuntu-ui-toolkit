@@ -136,6 +136,15 @@
      \endcode
      \annotatedlist ubuntu-performance-metrics
 
+     \part Labs
+     The Labs module contains a set of components which have unstable API. Those
+     should not be used in applications as their interface may change any time.
+     Available through:
+     \code
+         import Ubuntu.Components.Labs 1.0
+     \endcode
+     \annotatedlist ubuntu-labs
+
      \part Test extensions
      Available through:
      \code

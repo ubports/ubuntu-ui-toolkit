@@ -35,7 +35,6 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
     def setUp(self):
         self.test_source_path = self._get_test_source_path()
         self.test_qml_file_path = self._get_test_qml_file_path()
-        self.desktop_file_path = self._get_desktop_file_path()
 
         if self.should_simulate_device():
             # Hide the Unity7 launcher because it takes space that might be
@@ -101,25 +100,6 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
         host_multiarch = ubuntuuitoolkit.base.get_host_multiarch()
         return '/usr/lib/{}/qt5/examples//ubuntu-ui-toolkit/examples/' \
                'ubuntu-ui-toolkit-gallery'.format(host_multiarch)
-
-    def _get_desktop_file_path(self):
-        desktop_file_path = os.path.join(
-            self.test_source_path,
-            'ubuntu-ui-toolkit-gallery.desktop')
-        if self._application_source_exists():
-            local_desktop_file_dir = (
-                ubuntuuitoolkit.tests.get_local_desktop_file_directory())
-            if not os.path.exists(local_desktop_file_dir):
-                os.makedirs(local_desktop_file_dir)
-            local_desktop_file_path = os.path.join(
-                local_desktop_file_dir, 'ubuntu-ui-toolkit-gallery.desktop')
-            shutil.copy(desktop_file_path, local_desktop_file_path)
-            # We can't delete the desktop file before we close the application,
-            # so we save it on an attribute to be deleted on tear down.
-            self.local_desktop_file_path = local_desktop_file_path
-            return local_desktop_file_path
-        else:
-            return desktop_file_path
 
     def open_page(self, page):
         """Open a page of the widget gallery.

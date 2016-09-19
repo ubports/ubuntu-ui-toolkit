@@ -1,4 +1,4 @@
-LAYOUT_SRC = $$PWD/../../src/Ubuntu/Layouts
+LAYOUT_SRC = $$PWD/../../src/imports/Layouts
 LAYOUT_BLD = $$shadowed($$PWD)/../../qml/Ubuntu/Layouts
 
 INCLUDEPATH += $$LAYOUT_SRC/plugin
