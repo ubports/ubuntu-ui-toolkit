@@ -131,19 +131,23 @@ Item {
          */
         property bool windowActive: typeof window != 'undefined'
 
+
+        Component.onCompleted: print("oncompleted, windowActive = "+windowActive)
         /*!
           Report the current orientation of the application via QWindow::contentOrientation.
           http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
          */
         function applyOrientation() {
             print("applying orientation");
-            if (windowActive && window)
+            if (windowActive && window) {
                 print("bla")
                 print("2.."+Screen.orientation+" "+window);
                 window.contentOrientation = Screen.orientation
+            }
         }
 
         onWindowActiveChanged: {
+            print("windowActive changed to "+windowActive)
             if (automaticOrientation)
                 applyOrientation();
         }

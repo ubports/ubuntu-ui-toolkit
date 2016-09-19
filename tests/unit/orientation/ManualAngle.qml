@@ -25,17 +25,17 @@ Item {
     OrientationHelper {
         objectName: "helper"
         orientationAngle: 90
-//        automaticOrientation: false
+        automaticOrientation: false
     }
 
     // I don't know what this is supposed to test. It does nothing.
-//    Window {
-//        id: window
-//    }
+    Window {
+        id: window
+    }
 
-//    Item {
-//        objectName: "checkpoint"
-//        property int contentOrientation: window.contentOrientation
+    Item {
+        objectName: "checkpoint"
+        property int contentOrientation: window.contentOrientation
 //        property int contentOrientation: Screen.angleBetween(Screen.primaryOrientation, Screen.orientation)
-//    }
+    }
 }
