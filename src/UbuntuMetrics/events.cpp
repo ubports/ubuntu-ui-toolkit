@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <cstdio>
 
 #include <QtCore/QElapsedTimer>
 
@@ -134,9 +135,8 @@ void EventUtilsPrivate::updateProcStatMetrics(UMEvent* event)
     value = sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
     ASSERT(value == 2);
 #else
-    // Commenting out to see if i386 build on Yakkety passes
-    // std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
-    // std::sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
+    std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
+    std::sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
 #endif
 
     event->process.vszMemory = vsize >> 10;
