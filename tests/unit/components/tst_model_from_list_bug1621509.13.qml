@@ -30,21 +30,27 @@ TestCase {
     // Forces the components to be completed before the test functions are executed.
     when: windowShown
 
-    ModelFromList13 {
-        id: embeddedListView
+    Item {
+        id: testItem
+
+        // This property changes its value when a new context property is added.
+        property var myObject: objectOne
+        property int count: 0
+        onMyObjectChanged: {
+            count++;
+        }
+        Component.onCompleted: {
+            count = 0;
+            print("Component completed."); // must print something to reproduce the bug.
+        }
         QtObject {
             objectName: "one"
             id: objectOne
         }
-        myObject: objectOne
-    }
-
-    Component.onCompleted: {
-        print("Component completed."); // must print something to reproduce the bug.
     }
 
     function test_no_model_change_after_completed_bug1621509_bug1610231() {
-        compare(embeddedListView.count, 0,
-                "The model was changed after the component was completed.");
+        compare(testItem.count, 0,
+                "The property was changed after the component was completed.");
     }
 }

@@ -139,12 +139,13 @@ void UbuntuToolkitModule::registerWindowContextProperty()
 void UbuntuToolkitModule::setWindowContextProperty(QWindow* focusWindow)
 {
 //    Q_UNUSED(focusWindow);
-    qDebug()<<"UbuntuToolkitModule.setWindowContextProperty("<<focusWindow<<")";
+//    qDebug()<<"UbuntuToolkitModule.setWindowContextProperty("<<focusWindow<<")";
     QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
 
     if (view != NULL) {
 //        qDebug()<<"Setting window context property to "<<view;
 //        qDebug()<<"Old context property = "<<view->rootContext()->contextProperty("window");
+//        qDebug()<<"Context = "<<view->rootContext();
         view->rootContext()->setContextProperty("window", view);
     }
 }
@@ -198,7 +199,9 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
 
-//    qDebug()<<"Context properties initialization done!";
+    qDebug()<<"Context properties initialization done! Context = "<<context;
+
+//    context->setContextProperty("window", Q_NULLPTR);
 }
 
 void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int minor)
