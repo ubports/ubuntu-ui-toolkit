@@ -21,6 +21,8 @@ import Ubuntu.Components 1.1
 // pagestack tests for the new header are in
 // unit/visual/tst_pagestack_new_header.qml
 
+// FIXME: These unit tests generate fatal warnings that must be fixed. See bug #1622577.
+
 TestCase {
     name: "PageStackAPI"
 

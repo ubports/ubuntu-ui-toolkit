@@ -65,6 +65,7 @@ Item {
         }
     }
 
+    // FIXME: Failing unit tests with Qt 5.6. See bug #1624343.
     UbuntuTestCase {
         name: "UbuntuListView"
         when: windowShown
@@ -113,12 +114,12 @@ Item {
 
         function test_noScrollingNeeded() {
             var item = findChild(ubuntuListView, "expandable1");
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, .5);
+            fuzzyCompare(ubuntuListView.mapFromItem(item, 0, 0).y, item.collapsedHeight, .5);
 
             expandItem(item);
             waitForRendering(ubuntuListView);
 
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, .5);
+            fuzzyCompare(ubuntuListView.mapFromItem(item, 0, 0).y, item.collapsedHeight, .5);
         }
 
         function test_scrollToTop() {
@@ -126,11 +127,11 @@ Item {
             ubuntuListView.positionViewAtIndex(0, ListView.Beginning)
 
             var item = findChild(ubuntuListView, "expandable1");
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, 1);
+            fuzzyCompare(ubuntuListView.mapFromItem(item, 0, 0).y, item.collapsedHeight, 1);
 
             expandItem(item);
 
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, 0, .5);
+            fuzzyCompare(ubuntuListView.mapFromItem(item, 0, 0).y, 0, .5);
         }
 
         function test_scrollIntoView() {
@@ -139,7 +140,7 @@ Item {
             waitForRendering(ubuntuListView);
 
             // The item must be scrolled upwards, leaving space for one other item at the bottom
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, ubuntuListView.height - item.collapsedHeight - item.expandedHeight, 1);
+            fuzzyCompare(ubuntuListView.mapFromItem(item, 0, 0).y, ubuntuListView.height - item.collapsedHeight - item.expandedHeight, 1);
         }
 
         function test_collapseByClickingOutside() {

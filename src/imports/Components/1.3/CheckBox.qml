@@ -50,4 +50,5 @@ AbstractButton {
     onTriggered: checked = !checked
 
     styleName: "CheckBoxStyle"
+    activeFocusOnTab: true
 }

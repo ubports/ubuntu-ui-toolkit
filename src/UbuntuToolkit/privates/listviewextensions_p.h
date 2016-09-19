@@ -20,6 +20,7 @@
 #define LISTVIEWEXTENSIONS_P_H
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 #include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
@@ -57,9 +58,12 @@ protected:
     bool focusInEvent(QFocusEvent *event);
     bool keyPressEvent(QKeyEvent *event);
     void setKeyNavigationForListView(bool value);
+    Q_SLOT void onCurrentItemChanged();
 private:
     QQuickFlickable *listView;
+    QPointer<QQuickItem> _currentItem;
     bool isEventFilter:1;
+    bool keyNavigation:1;
 };
 
 UT_NAMESPACE_END

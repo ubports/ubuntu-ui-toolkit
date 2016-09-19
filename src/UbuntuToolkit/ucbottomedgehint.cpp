@@ -70,6 +70,9 @@ void UCBottomEdgeHintPrivate::init()
 
     // accept mouse events
     q->setAcceptedMouseButtons(Qt::LeftButton);
+
+    // set focusOnTab
+    q->setActiveFocusOnTab(true);
 }
 
 /*!

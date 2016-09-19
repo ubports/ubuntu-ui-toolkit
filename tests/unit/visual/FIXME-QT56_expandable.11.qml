@@ -20,6 +20,8 @@ import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 
+// FIXME: Unit tests fail with fatal warnings. See bug #1610230.
+
 Item {
     width: units.gu(40)
     height: units.gu(60)
