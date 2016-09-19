@@ -36,53 +36,11 @@ QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
     m_rootWindow(0),
     m_rootView(0),
-    m_focusWindow(0),
     m_mouseAttached(false),
     m_keyboardAttached(false)
 {
-    QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
-
-    application->installEventFilter(this);
+    QGuiApplication::instance()->installEventFilter(this);
     m_omitIM << "ibus" << "none" << "compose";
-
-    setFocusWindow(QGuiApplication::focusWindow());
-
-    // listen to QGuiApplication::focusWindowChanged
-    /* Ensure that setWindowContextProperty is called in the same thread (the
-       main thread) otherwise it segfaults. Reference:
-       https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205556
-    */
-//    QGuiApplication* application = static_cast<QGuiApplication*>(QCoreApplication::instance());
-    QObject::connect(application, SIGNAL(focusWindowChanged(QWindow*)),
-                     this, SLOT(setFocusWindow(QWindow*)),
-                     Qt::ConnectionType(Qt::DirectConnection | Qt::UniqueConnection));
-}
-
-/*!
- * \internal
- */
-void QuickUtils::setFocusWindow(QWindow* focusWindow)
-{
-//    Q_UNUSED(focusWindow);
-    qDebug()<<"setFocusWindow("<<focusWindow<<")";
-    QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
-
-//    if (view != NULL) {
-//        qDebug()<<"Setting window context property to "<<view;
-//        qDebug()<<"Old context property = "<<view->rootContext()->contextProperty("window");
-//        view->rootContext()->setContextProperty("window", view);
-//    }
-    if (view != m_focusWindow) {
-        m_focusWindow = view;
-        Q_EMIT focusWindowChanged();
-    }
-}
-
-/*!
-  TODO
- */
-QQuickView *QuickUtils::focusWindow() {
-    return m_focusWindow;
 }
 
 /*!
