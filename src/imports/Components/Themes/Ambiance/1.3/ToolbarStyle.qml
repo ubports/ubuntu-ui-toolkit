@@ -34,5 +34,6 @@ Style.ToolbarStyle {
         height: parent ? parent.height : undefined
         width: units.gu(4)
         action: modelData
+        activeFocusOnTab: true
     }
 }

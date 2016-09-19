@@ -112,6 +112,7 @@ Toolkit.StyledItem {
     onValueChanged: mouseArea.liveValue = slider.value
 
     activeFocusOnPress: true
+    activeFocusOnTab: true
 
     Binding {
         target: slider
