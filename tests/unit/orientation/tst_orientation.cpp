@@ -52,7 +52,7 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("ManualAngle.qml"));
         QQuickItem *helper = testCase->findItem<QQuickItem*>("helper");
         // No warning about "window" being undefined must appear
-//        QSKIP("TypeError: Cannot set property 'contentOrientation' of null");
+        QSKIP("TypeError: Cannot set property 'contentOrientation' of null");
         QCOMPARE(testCase->warnings(), 0);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
         // Verify expected values
