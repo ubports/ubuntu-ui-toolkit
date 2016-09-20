@@ -438,7 +438,11 @@ PageTreeNode {
             d.relayout();
         }
         property real defaultColumnWidth: units.gu(40)
-        onDefaultColumnWidthChanged: body.applyMetrics()
+        onDefaultColumnWidthChanged: {
+            print("Column Changed - 1", defaultColumnWidth)
+            body.applyMetrics()
+            print("Column Changed - 2")
+        }
 
         function internalPropertyUpdate(propertyName, value) {
             internalUpdate = true;
@@ -471,7 +475,9 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
+            print("PW CO-1");
             var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: !layout.asynchronous});
+            print("PW CO-2");
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -482,6 +488,7 @@ PageTreeNode {
 
         function addWrappedPage(pageWrapper) {
             pageWrapper.parentWrapper = d.getWrapper(pageWrapper.parentPage);
+            print(pageWrapper.column, pageWrapper.parentWrapper, pageWrapper, pageWrapper.object.header.title);
             tree.add(pageWrapper.column, pageWrapper.parentWrapper, pageWrapper);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
             // replace page holder's child
@@ -494,8 +501,10 @@ PageTreeNode {
             if (page && page.hasOwnProperty("header") && page.header &&
                     page.header.hasOwnProperty("navigationActions")) {
                 // Page.header is an instance of PageHeader.
+                print("BACK CO-1");
                 var backAction = backActionComponent.createObject(
                             pageWrapper, { 'wrapper': pageWrapper } );
+                print("BACK CO-2");
                 page.header.navigationActions = [ backAction ] ;
             }
         }
@@ -641,7 +650,9 @@ PageTreeNode {
 
                 // add columns
                 for (var i = 0; i < d.columns - prevColumns; i++) {
+                    print("CO-1", d.columns);
                     pageHolderComponent.createObject(body);
+                    print("CO-2", d.columns);
                 }
             }
             rearrangePages();
@@ -738,7 +749,15 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property var pageWrapper: pageWrapperComponent.createObject()
+            property var pageWrapper: {
+                print("PTN CO-1", objectName);
+                var o = pageWrapperComponent.createObject();
+                print("PTN CO-2");
+                return o;
+            }
+            Component.onCompleted: print(objectName, "COMPLETE")
+            Component.onDestruction: print(objectName, "DIED")
+
             property int column
             property alias config: subHeader.config
             property PageColumn metrics: getDefaultMetrics()
@@ -941,7 +960,9 @@ PageTreeNode {
             }
 
             function getDefaultMetrics() {
+                print("DM CO-1");
                 var result = defaultMetrics.createObject(holder);
+                print("DM CO-2");
                 result.__column = Qt.binding(function() { return holder.column + 1; });
                 return result;
             }
@@ -1012,20 +1033,30 @@ PageTreeNode {
             for (var i = 0; i < children.length; i++) {
                 children[i].column = i;
             }
+            print("C Changed - 1", children.length)
             applyMetrics();
+            print("C Changed - 2")
         }
 
+        property bool __applyMetrics: false
         function applyMetrics() {
+            if (__applyMetrics) {
+                return;
+            }
+            __applyMetrics = true;
             for (var i = 0; i < children.length; i++) {
                 var holder = children[i];
                 // search for the column metrics
                 var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
                 if (!metrics) {
+                    print("GDM-1", i)
                     metrics = holder.getDefaultMetrics();
+                    print("GDM-2", i)
                 }
                 holder.metrics = metrics;
                 updateHeaderHeight(0);
             }
+            __applyMetrics = true;
         }
     }
 }
