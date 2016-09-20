@@ -223,7 +223,7 @@ QString UCAction::text()
         }
     }
     // Escape ampersands
-    displayText.replace("&&", "&amp;");
+    displayText.replace(QStringLiteral("&&"), QStringLiteral("&amp;"));
     return displayText;
 }
 void UCAction::setText(const QString &text)
