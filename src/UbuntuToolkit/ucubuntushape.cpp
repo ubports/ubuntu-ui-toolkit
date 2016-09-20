@@ -411,7 +411,8 @@ bool UCUbuntuShape::isVersionGreaterThanOrEqual(Version version)
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
-  const Radius newRadius = (radius == "medium") ? Medium : ((radius == "large") ? Large : Small);
+    const Radius newRadius = (radius == QStringLiteral("medium")) ?
+        Medium : ((radius == QStringLiteral("large")) ? Large : Small);
     if (m_radius != newRadius) {
         m_radius = newRadius;
         update();
@@ -855,9 +856,9 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 
     if (!(m_flags & AspectSet)) {
         quint8 aspect;
-        if (borderSource.endsWith(QString("radius_idle.sci"))) {
+        if (borderSource.endsWith(QStringLiteral("radius_idle.sci"))) {
             aspect = Inset;
-        } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
+        } else if (borderSource.endsWith(QStringLiteral("radius_pressed.sci"))) {
             aspect = Pressed;
         } else {
             aspect = Flat;

@@ -223,7 +223,7 @@ UCListItemPrivate::~UCListItemPrivate()
 void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
-    contentItem->setObjectName("ListItemHolder");
+    contentItem->setObjectName(QStringLiteral("ListItemHolder"));
     divider->init(q);
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
@@ -247,7 +247,7 @@ void UCListItemPrivate::init()
     // watch grid unit size change and set implicit size
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-    styleDocument = "ListItemStyle";
+    styleDocument = QStringLiteral("ListItemStyle");
 
     // create selection object
     selection = new ListItemSelection(q);
@@ -379,7 +379,7 @@ int UCListItemPrivate::index()
     Q_Q(UCListItem);
     // is there an index context property?
     QQmlContext *context = qmlContext(q);
-    QVariant index = context->contextProperty("index");
+    QVariant index = context->contextProperty(QStringLiteral("index"));
     return index.isValid() ?
                 index.toInt() :
                 (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
@@ -1074,7 +1074,7 @@ void UCListItem::componentComplete()
         }
         // set the object name for testing purposes
         if (d->dragging()) {
-            setObjectName("DraggedListItem");
+            setObjectName(QStringLiteral("DraggedListItem"));
         }
     }
 }

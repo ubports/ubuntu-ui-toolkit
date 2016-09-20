@@ -240,6 +240,3 @@ OTHER_FILES += \
     $$PWD/privates/shaders/frame.frag
 
 load(ubuntu_qt_module)
-
-# Remove the ASCII cast warnings added by qt_module.
-DEFINES -= QT_ASCII_CAST_WARNINGS
