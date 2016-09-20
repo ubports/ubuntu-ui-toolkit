@@ -218,7 +218,7 @@ PageTreeNode {
       page is created from a Component or loaded from an external document. It
       has precedence over \l primaryPage.
       */
-    property var primaryPageSource
+    property string primaryPageSource
 
     /*!
       The property drives the way the pages should be loaded, synchronously or
@@ -399,7 +399,9 @@ PageTreeNode {
         d.purgeLayout();
         // create the new primary page if a valid component is specified
         if (primaryPageSource) {
+            print("CPage1")
             d.createPrimaryPage(primaryPageSource);
+            print("CPage2")
         } else {
             d.internalPropertyUpdate("primaryPage", null);
         }
@@ -696,15 +698,6 @@ PageTreeNode {
     }
 
 
-    // default metrics
-    Component {
-        id: defaultMetrics
-        PageColumn {
-            fillWidth: __column == d.columns
-            minimumWidth: d.defaultColumnWidth
-        }
-    }
-
     // An instance will be added to each Page with
     Component {
         id: backActionComponent
@@ -749,18 +742,17 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property var pageWrapper: {
-                print("PTN CO-1", objectName);
-                var o = pageWrapperComponent.createObject();
-                print("PTN CO-2");
-                return o;
-            }
+            property PageWrapper pageWrapper: PageWrapper{}
             Component.onCompleted: print(objectName, "COMPLETE")
             Component.onDestruction: print(objectName, "DIED")
 
             property int column
             property alias config: subHeader.config
-            property PageColumn metrics: getDefaultMetrics()
+            readonly property PageColumn metrics: PageColumn {
+                fillWidth: (holder.column + 1) == d.columns
+                minimumWidth: d.defaultColumnWidth
+            }
+
             readonly property real dividerThickness: units.dp(1)
             readonly property alias hiddenPool: hiddenItem
 
@@ -958,14 +950,6 @@ PageTreeNode {
                 wrapper.pageHolder = null;
                 return wrapper;
             }
-
-            function getDefaultMetrics() {
-                print("DM CO-1");
-                var result = defaultMetrics.createObject(holder);
-                print("DM CO-2");
-                result.__column = Qt.binding(function() { return holder.column + 1; });
-                return result;
-            }
         }
     }
 
@@ -1044,18 +1028,7 @@ PageTreeNode {
                 return;
             }
             __applyMetrics = true;
-            for (var i = 0; i < children.length; i++) {
-                var holder = children[i];
-                // search for the column metrics
-                var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
-                if (!metrics) {
-                    print("GDM-1", i)
-                    metrics = holder.getDefaultMetrics();
-                    print("GDM-2", i)
-                }
-                holder.metrics = metrics;
                 updateHeaderHeight(0);
-            }
             __applyMetrics = true;
         }
     }
