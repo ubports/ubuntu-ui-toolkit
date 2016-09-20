@@ -55,7 +55,7 @@ public:
 
 private:
     UMFileLoggerPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(UMFileLogger);
+    Q_DECLARE_PRIVATE(UMFileLogger)
 };
 
 // Log events to LTTng.
