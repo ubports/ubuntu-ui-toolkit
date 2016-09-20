@@ -14,9 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef UBUNTUGESTURESGLOBAL_H
+#define UBUNTUGESTURESGLOBAL_H
+
 #include <QtCore/QtGlobal>
 
-#if defined(UBUNTUGESTURES_LIBRARY)
+#if defined(QT_BUILD_UBUNTUGESTURES_LIB)
 #  define UBUNTUGESTURES_EXPORT Q_DECL_EXPORT
 #else
 #  define UBUNTUGESTURES_EXPORT Q_DECL_IMPORT
@@ -45,3 +48,5 @@
 #define UG_FORWARD_DECLARE_STRUCT(name) struct name;
 
 #endif
+
+#endif // UBUNTUGESTURESGLOBAL_H

@@ -19,7 +19,7 @@
 
 #include <QtCore/QtGlobal>
 
-#if defined(UBUNTUTOOLKIT_LIBRARY)
+#if defined(QT_BUILD_UBUNTUTOOLKIT_LIB)
 #  define UBUNTUTOOLKIT_EXPORT Q_DECL_EXPORT
 #else
 #  define UBUNTUTOOLKIT_EXPORT Q_DECL_IMPORT
