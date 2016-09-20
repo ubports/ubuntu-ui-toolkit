@@ -16,7 +16,7 @@ testskip_architectures := powerpc arm64 ppc64el s390x
 testskip_series := 
 
 override_dh_auto_configure:
-	qmake -r
+	qmake -r CONFIG+=debian_build
 
 %:
 	dh $@ --parallel
