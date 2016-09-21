@@ -11,13 +11,11 @@ confinement: strict
 
 parts:
   ubuntu-ui-toolkit:
-    plugin: make
+    plugin: qmake
+    qt-version: qt5
     options:
         - QT_QPA_PLATFORM=minimal
-    qt-version: qt5
-    source-type: git
-    source: https://github.com/tjyrinki/ubuntu-ui-toolkit.git
-    source-branch: master
+    source: .
     build-packages:
         - dbus
         - dbus-test-runner
