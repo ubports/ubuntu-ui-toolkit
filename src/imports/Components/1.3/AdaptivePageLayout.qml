@@ -218,7 +218,7 @@ PageTreeNode {
       page is created from a Component or loaded from an external document. It
       has precedence over \l primaryPage.
       */
-    property string primaryPageSource
+    property var primaryPageSource
 
     /*!
       The property drives the way the pages should be loaded, synchronously or
@@ -372,6 +372,18 @@ PageTreeNode {
             d.relayout();
         }
         if (primaryPageSource) {
+            /*
+              From Qt5.6 onwards, the change signal for a var type property (see
+              bug https://bugreports.qt.io/browse/QTBUG-42255) comes after the
+              component completion, due to elements being processed in parallel
+              by the compiler. This causes the page to be created twice for the
+              primaryPage, which ends up in failure for the second time that causes
+              the primaryPage to be set to null. Thus no other page can be added
+              afterwards.
+              */
+            if (d.prevPrimaryPageSource === undefined) {
+                d.prevPrimaryPageSource = primaryPageSource;
+            }
             d.createPrimaryPage(primaryPageSource);
         } else if (primaryPage) {
             d.createPrimaryPage(primaryPage);
@@ -392,16 +404,23 @@ PageTreeNode {
         }
     }
     onPrimaryPageSourceChanged: {
-        if (!d.completed || d.internalUpdate) {
+        if (!d.completed) {
             return;
         }
+        if (d.internalUpdate) {
+            d.prevPrimaryPageSource = primaryPageSource;
+            return;
+        }
+        if (d.prevPrimaryPageSource === primaryPageSource) {
+            return;
+        }
+
         // remove all pages first
         d.purgeLayout();
+        d.prevPrimaryPageSource = primaryPageSource;
         // create the new primary page if a valid component is specified
         if (primaryPageSource) {
-            print("CPage1")
             d.createPrimaryPage(primaryPageSource);
-            print("CPage2")
         } else {
             d.internalPropertyUpdate("primaryPage", null);
         }
@@ -430,6 +449,7 @@ PageTreeNode {
         property PageColumnsLayout activeLayout: null
         property list<PageColumnsLayout> prevLayouts
         property Page prevPrimaryPage
+        property var prevPrimaryPageSource
 
         /*! internal */
         onColumnsChanged: {
@@ -441,9 +461,7 @@ PageTreeNode {
         }
         property real defaultColumnWidth: units.gu(40)
         onDefaultColumnWidthChanged: {
-            print("Column Changed - 1", defaultColumnWidth)
             body.applyMetrics()
-            print("Column Changed - 2")
         }
 
         function internalPropertyUpdate(propertyName, value) {
@@ -477,9 +495,7 @@ PageTreeNode {
         }
 
         function createWrapper(page, properties) {
-            print("PW CO-1");
             var wrapperObject = pageWrapperComponent.createObject(hiddenPages, {synchronous: !layout.asynchronous});
-            print("PW CO-2");
             wrapperObject.pageStack = layout;
             wrapperObject.properties = properties;
             // set reference last because it will trigger creation of the object
@@ -490,7 +506,6 @@ PageTreeNode {
 
         function addWrappedPage(pageWrapper) {
             pageWrapper.parentWrapper = d.getWrapper(pageWrapper.parentPage);
-            print(pageWrapper.column, pageWrapper.parentWrapper, pageWrapper, pageWrapper.object.header.title);
             tree.add(pageWrapper.column, pageWrapper.parentWrapper, pageWrapper);
             var targetColumn = MathUtils.clamp(pageWrapper.column, 0, d.columns - 1);
             // replace page holder's child
@@ -503,10 +518,8 @@ PageTreeNode {
             if (page && page.hasOwnProperty("header") && page.header &&
                     page.header.hasOwnProperty("navigationActions")) {
                 // Page.header is an instance of PageHeader.
-                print("BACK CO-1");
                 var backAction = backActionComponent.createObject(
                             pageWrapper, { 'wrapper': pageWrapper } );
-                print("BACK CO-2");
                 page.header.navigationActions = [ backAction ] ;
             }
         }
@@ -652,9 +665,7 @@ PageTreeNode {
 
                 // add columns
                 for (var i = 0; i < d.columns - prevColumns; i++) {
-                    print("CO-1", d.columns);
                     pageHolderComponent.createObject(body);
-                    print("CO-2", d.columns);
                 }
             }
             rearrangePages();
@@ -743,12 +754,11 @@ PageTreeNode {
             active: false
             objectName: "ColumnHolder" + column
             property PageWrapper pageWrapper: PageWrapper{}
-            Component.onCompleted: print(objectName, "COMPLETE")
-            Component.onDestruction: print(objectName, "DIED")
 
             property int column
             property alias config: subHeader.config
-            readonly property PageColumn metrics: PageColumn {
+            property PageColumn metrics: defaultMetrics
+            readonly property PageColumn defaultMetrics: PageColumn {
                 fillWidth: (holder.column + 1) == d.columns
                 minimumWidth: d.defaultColumnWidth
             }
@@ -1017,9 +1027,7 @@ PageTreeNode {
             for (var i = 0; i < children.length; i++) {
                 children[i].column = i;
             }
-            print("C Changed - 1", children.length)
             applyMetrics();
-            print("C Changed - 2")
         }
 
         property bool __applyMetrics: false
@@ -1028,7 +1036,13 @@ PageTreeNode {
                 return;
             }
             __applyMetrics = true;
-                updateHeaderHeight(0);
+            for (var i = 0 in children) {
+                var holder = children[i];
+                // search for the column metrics
+                var metrics = d.activeLayout ? d.activeLayout.data[i] : holder.defaultMetrics;
+                holder.metrics = metrics;
+            }
+            updateHeaderHeight(0);
             __applyMetrics = true;
         }
     }
