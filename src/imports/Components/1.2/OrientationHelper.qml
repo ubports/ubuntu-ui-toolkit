@@ -129,7 +129,7 @@ Item {
           http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
           http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
          */
-        property bool windowActive: typeof window != 'undefined'
+        property bool windowActive: typeof window != 'undefined' && window !== null
 
         /*!
           Report the current orientation of the application via QWindow::contentOrientation.

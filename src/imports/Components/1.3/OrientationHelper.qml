@@ -129,27 +129,22 @@ Item {
           http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
           http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
          */
-        property bool windowActive: typeof window != 'undefined'
+        property bool windowActive: typeof window != 'undefined' && window !== null
 
-
-        Component.onCompleted: print("oncompleted, windowActive = "+windowActive)
         /*!
           Report the current orientation of the application via QWindow::contentOrientation.
           http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
          */
         function applyOrientation() {
-            print("applying orientation");
             if (windowActive && window) {
-                print("bla")
-                print("2.."+Screen.orientation+" "+window);
                 window.contentOrientation = Screen.orientation
             }
         }
 
         onWindowActiveChanged: {
-            print("windowActive changed to "+windowActive)
-            if (automaticOrientation)
+            if (automaticOrientation) {
                 applyOrientation();
+            }
         }
 
         Timer {

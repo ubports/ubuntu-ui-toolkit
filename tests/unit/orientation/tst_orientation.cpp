@@ -54,13 +54,13 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("ManualAngle.qml"));
         QQuickItem *helper = testCase->findItem<QQuickItem*>("helper");
         // No warning about "window" being undefined must appear
-//        QSKIP("TypeError: Cannot set property 'contentOrientation' of null");
+        QSKIP("FIXME: We have no valid OrientationHelper test. See bug #1626063.");
         QCOMPARE(testCase->warnings(), 0);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
         // Verify expected values
-//        QQuickItem *checkpoint = testCase->findItem<QQuickItem*>("checkpoint");
-        // window.contentOrientation 
-//        QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
+        QQuickItem *checkpoint = testCase->findItem<QQuickItem*>("checkpoint");
+        // window.contentOrientation
+        QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
     }
 };
 
