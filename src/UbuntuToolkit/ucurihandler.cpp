@@ -76,7 +76,7 @@ UCUriHandler::UCUriHandler()
         return;
     }
     char* path = nih_dbus_path(NULL, "", applicationId.constData(), NULL);
-    objectPath = QString(path);
+    objectPath = QString::fromLocal8Bit(path);
     nih_free(path);
 
     // Ensure handler is running on the main thread.

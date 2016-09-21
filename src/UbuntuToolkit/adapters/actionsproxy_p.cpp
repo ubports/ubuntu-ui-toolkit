@@ -30,7 +30,7 @@ ActionProxy::ActionProxy()
     : globalContext(new UCActionContext)
 {
     // for testing purposes
-    globalContext->setObjectName("GlobalActionContext");
+    globalContext->setObjectName(QStringLiteral("GlobalActionContext"));
 }
 ActionProxy::~ActionProxy()
 {

@@ -1,3 +1,5 @@
+load(ubuntu_common)
+
 # Enables the copy of private and public headers to an include directory at the
 # root of the sources before compilation and the copy of the compiled libraries
 # after compilation. Must be set before loading qt_module.
@@ -8,21 +10,4 @@ load(qt_module)
 # Disable CMake config file creation. Must be set after loading qt_module.
 CONFIG -= create_cmake
 
-# Common config options.
-CONFIG += dll no_keywords c++11
-
-# When building against the system Qt we pick up the CXX_FLAGS for a release
-# build reset them to the default debug build flags.
-!build_with_qt: {
-    CONFIG(debug, debug|release)  {
-        QMAKE_CFLAGS = $$QMAKE_CFLAGS_DEBUG
-        QMAKE_CXXFLAGS = $$QMAKE_CXXFLAGS_DEBUG
-    }
-}
-
-# Make all warnings into errors.
-QMAKE_CXXFLAGS += -Werror
-
-# Do not warn for deprecated declarations.
-QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
-DEFINES -= QT_DEPRECATED_WARNINGS
+CONFIG += dll

@@ -197,7 +197,8 @@ public:
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
     QString radius() const {
-      return (m_radius == Small) ? "small" : ((m_radius == Medium) ? "medium" : "large"); }
+      return (m_radius == Small) ? QStringLiteral("small")
+          : ((m_radius == Medium) ? QStringLiteral("medium") : QStringLiteral("large")); }
     void setRadius(const QString& radius);
     Aspect aspect() const { return (m_flags & AspectSet) ? static_cast<Aspect>(m_aspect) : Flat; }
     void setAspect(Aspect aspect);
@@ -239,9 +240,10 @@ public:
     void setBackgroundMode(BackgroundMode backgroundMode);
 
     QString borderSource() const {
-        return (m_flags & AspectSet) ? "" :
-            ((m_aspect == Flat) ? "" :
-             ((m_aspect == Inset) ? "radius_idle.sci" : "radius_pressed.sci")); }
+        return (m_flags & AspectSet) ? QStringLiteral("") :
+            ((m_aspect == Flat) ? QStringLiteral("") :
+             ((m_aspect == Inset) ? QStringLiteral("radius_idle.sci") :
+              QStringLiteral("radius_pressed.sci"))); }
     void setBorderSource(const QString& borderSource);
     QColor color() const {
         return (m_flags & BackgroundApiSet) ?

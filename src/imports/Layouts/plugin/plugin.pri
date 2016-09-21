@@ -3,12 +3,6 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT *= v8-private
 }
 
-CONFIG += no_keywords
-
-QMAKE_CXXFLAGS += -Werror
-
-DEFINES += QT_USE_QSTRINGBUILDER
-
 # Input
 SOURCES += \
     $$PWD/ullayouts.cpp \

@@ -113,11 +113,12 @@ QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
 int
 QSortFilterProxyModelQML::roleByName(const QString& roleName) const
 {
+    const QByteArray roleNameByteArray = roleName.toUtf8();
     const QHash<int, QByteArray> roles = roleNames();
     QHashIterator<int, QByteArray> i(roles);
     while (i.hasNext()) {
         i.next();
-        if (i.value() == roleName)
+        if (i.value() == roleNameByteArray)
             return i.key();
     }
     return 0;
@@ -224,7 +225,7 @@ QSortFilterProxyModelQML::get(int row)
     QHashIterator<int, QByteArray> i(roles);
     while (i.hasNext()) {
         i.next();
-        res.insert(i.value(), index(row, 0).data(i.key()));
+        res.insert(QString::fromUtf8(i.value()), index(row, 0).data(i.key()));
     }
     return res;
 }

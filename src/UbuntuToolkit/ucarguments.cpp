@@ -405,9 +405,10 @@ void UCArguments::setValuesOnArguments(const QHash<QString, QStringList>& argume
 
     // pass the values to the defaultArgument
     if (m_defaultArgument != NULL) {
-        if (argumentsValues.contains("")) {
+        if (argumentsValues.contains(QStringLiteral(""))) {
             int numberArguments = m_defaultArgument->valueNames().size();
-            m_defaultArgument->setValues(argumentsValues.value("").mid(0, numberArguments));
+            m_defaultArgument->setValues(
+                argumentsValues.value(QStringLiteral("")).mid(0, numberArguments));
             if (numberArguments > 0) {
                 // FIXME: not very elegant way to inform that values have changed
                 Q_EMIT(defaultArgumentChanged());
@@ -447,7 +448,7 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(const QStringList& ra
             // remove all prepended '-'
             rawArgument = rawArgument.split('-', QString::SkipEmptyParts).join('-');
             // string after the '=' sign is a value for the argument
-            values = rawArgument.split("=");
+            values = rawArgument.split(QStringLiteral("="));
             name = values.takeAt(0);
 
             if (expectedArguments.contains(name)) {
@@ -456,7 +457,7 @@ QHash<QString, QStringList> UCArguments::parseRawArguments(const QStringList& ra
             argumentsValues.insert(name, values);
         } else {
             // default/unnamed argument
-            argumentsValues[""].append(rawArgument);
+            argumentsValues[QStringLiteral("")].append(rawArgument);
         }
     }
 
@@ -486,9 +487,9 @@ QStringList UCArguments::collectArgumentValues(QStringList::const_iterator& i, Q
 }
 
 bool UCArguments::usageRequested(const QStringList& argumentNames) {
-    return argumentNames.contains("help") ||
-           argumentNames.contains("h") ||
-           argumentNames.contains("usage");
+    return argumentNames.contains(QStringLiteral("help")) ||
+        argumentNames.contains(QStringLiteral("h")) ||
+        argumentNames.contains(QStringLiteral("usage"));
 }
 
 bool UCArguments::requiredArgumentsProvided(const QHash<QString, QStringList>& argumentsValues, QString& error)
@@ -517,8 +518,8 @@ bool UCArguments::requiredDefaultArgumentProvided(const QHash<QString, QStringLi
 {
     // check if the required default argument was passed
     if (m_defaultArgument != NULL && m_defaultArgument->required() &&
-         ((!argumentsValues.contains("") && m_defaultArgument->valueNames().size() > 0)
-       || (argumentsValues.value("").size() < m_defaultArgument->valueNames().size()))) {
+        ((!argumentsValues.contains(QStringLiteral("")) && m_defaultArgument->valueNames().size() > 0)
+         || (argumentsValues.value(QStringLiteral("")).size() < m_defaultArgument->valueNames().size()))) {
         UbuntuI18n* i18n = UbuntuI18n::instance();
         error = i18n->tr("%1 is expecting additional arguments: %2").arg(m_applicationBinary).arg(m_defaultArgument->syntax());
         return false;

@@ -36,7 +36,8 @@ void UCStyleHintsParser::verifyBindings(const QV4::CompiledData::Unit *qmlUnit, 
 void UCStyleHintsParser::verifyProperty(const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding)
 {
     if (binding->type == QV4::CompiledData::Binding::Type_Object) {
-        error(qmlUnit->objectAt(binding->value.objectIndex), "StyleHints does not support creating state-specific objects.");
+        error(qmlUnit->objectAt(binding->value.objectIndex),
+              QStringLiteral("StyleHints does not support creating state-specific objects."));
         return;
     }
 
@@ -52,8 +53,8 @@ void UCStyleHintsParser::verifyProperty(const QV4::CompiledData::Unit *qmlUnit, 
 
     // filter out signals!
     QString propertyName = qmlUnit->stringAt(binding->propertyNameIndex);
-    if (propertyName.startsWith("on") && propertyName.at(2).isUpper()) {
-        error(binding, "Signal properties are not supported.");
+    if (propertyName.startsWith(QStringLiteral("on")) && propertyName.at(2).isUpper()) {
+        error(binding, QStringLiteral("Signal properties are not supported."));
         return;
     }
 }
@@ -142,7 +143,7 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::Compi
 void UCStyleHints::propertyNotFound(const QString &styleName, const QString &property)
 {
     if (!m_ignoreUnknownProperties) {
-        qmlInfo(this) << QString("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
+        qmlInfo(this) << QStringLiteral("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
     }
 }
 

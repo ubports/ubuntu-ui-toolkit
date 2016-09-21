@@ -249,7 +249,7 @@ QString UCUnits::suffixForGridUnit(float gridUnit)
 
 float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
 {
-    QRegularExpression re("^.*@([0-9]*).*$");
+    QRegularExpression re(QStringLiteral("^.*@([0-9]*).*$"));
     QRegularExpressionMatch match = re.match(fileName);
     if (match.hasMatch()) {
         return match.captured(1).toFloat();
@@ -281,13 +281,13 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
      */
     if (qGuiApp->allWindows().count() > 1) {
         if (window && window->screen()
-                && window->screen()->name().contains("LVDS")) {
+            && window->screen()->name().contains(QStringLiteral("LVDS"))) {
             return;
         }
     }
 
     auto nativeInterface = qGuiApp->platformNativeInterface();
-    QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
+    QVariant scaleVal = nativeInterface->windowProperty(window, QStringLiteral("scale"));
     if (!scaleVal.isValid()) {
         return;
     }
