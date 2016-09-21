@@ -137,7 +137,7 @@ Item {
          */
         function applyOrientation() {
             if (windowActive && window) {
-                window.contentOrientation = Screen.orientation
+                window.contentOrientation = Screen.orientation;
             }
         }
 

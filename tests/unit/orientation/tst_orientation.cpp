@@ -30,8 +30,6 @@
 
 #include "uctestcase.h"
 
-#include <QDebug>
-
 class tst_OrientationTest : public QObject
 {
     Q_OBJECT
@@ -54,7 +52,7 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("ManualAngle.qml"));
         QQuickItem *helper = testCase->findItem<QQuickItem*>("helper");
         // No warning about "window" being undefined must appear
-        QSKIP("FIXME: We have no valid OrientationHelper test. See bug #1626063.");
+        QSKIP("FIXME: We have no valid effectiveness tests for OrientationHelper. See bug #1626063.");
         QCOMPARE(testCase->warnings(), 0);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
         // Verify expected values

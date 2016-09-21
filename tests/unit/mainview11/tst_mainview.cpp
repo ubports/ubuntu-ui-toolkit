@@ -37,7 +37,6 @@
 #include <UbuntuToolkit/private/ucunits_p.h>
 
 #include "uctestcase.h"
-#include "private/uctheme_p.h"
 
 UT_USE_NAMESPACE
 

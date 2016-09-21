@@ -202,19 +202,18 @@ MainViewBase {
                 }
             }
 
+            // 'window' is defined by QML between startup and showing on the screen.
+            // There is no signal for when it becomes available and re-declaring it is not safe.
+            property bool windowActive: window !== null
             function updateWindowTitle() {
                 if (window) {
                     window.title = headerItem.title;
                 }
             }
-            onTitleChanged: {
+            onWindowActiveChanged: {
                 updateWindowTitle();
             }
-
-            // 'window' is defined by QML between startup and showing on the screen.
-            // There is no signal for when it becomes available and re-declaring it is not safe.
-            property bool windowActive: window !== null
-            onWindowActiveChanged: {
+            onTitleChanged: {
                 updateWindowTitle();
             }
 

@@ -100,8 +100,6 @@
 #include "ucurihandler_p.h"
 #include "unitythemeiconprovider_p.h"
 
-#include <QDebug>
-
 UT_NAMESPACE_BEGIN
 
 static const QString notInstantiatable = QStringLiteral("Not instantiatable");
@@ -139,14 +137,9 @@ void UbuntuToolkitModule::registerWindowContextProperty()
 
 void UbuntuToolkitModule::setWindowContextProperty(QWindow* focusWindow)
 {
-//    Q_UNUSED(focusWindow);
-//    qDebug()<<"UbuntuToolkitModule.setWindowContextProperty("<<focusWindow<<")";
     QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
 
     if (view != NULL) {
-//        qDebug()<<"Setting window context property to "<<view;
-//        qDebug()<<"Old context property = "<<view->rootContext()->contextProperty("window");
-//        qDebug()<<"Context = "<<view->rootContext();
         view->rootContext()->setContextProperty(QStringLiteral("window"), view);
     }
 }
@@ -159,8 +152,6 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
     UCApplication::instance(engine);
     UCFontUtils::instance(engine);
     UCTheme::defaultTheme(engine);
-
-//    qDebug()<<"Initializing context properties....";
 
     QQmlContext* context = engine->rootContext();
 
@@ -199,8 +190,6 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
         new ContextPropertyChangeListener(context, QStringLiteral("FontUtils"));
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
-
-//    qDebug()<<"Context properties initialization done! Context = "<<context;
 
     // Make the context property 'window' available even before there is a window,
     // so that in QML we do not have to check whether 'window' is defined, and no new

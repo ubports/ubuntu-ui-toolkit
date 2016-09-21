@@ -136,13 +136,15 @@ Item {
           http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
          */
         function applyOrientation() {
-            if (windowActive && window)
-                window.contentOrientation = Screen.orientation
+            if (windowActive && window) {
+                window.contentOrientation = Screen.orientation;
+            }
         }
 
         onWindowActiveChanged: {
-            if (automaticOrientation)
+            if (automaticOrientation) {
                 applyOrientation();
+            }
         }
 
         Timer {
