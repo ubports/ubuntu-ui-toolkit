@@ -202,7 +202,6 @@ MainViewBase {
                 }
             }
 
-
             function updateWindowTitle() {
                 if (window) {
                     window.title = headerItem.title;

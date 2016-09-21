@@ -37,6 +37,7 @@
 #include <UbuntuToolkit/private/ucunits_p.h>
 
 #include "uctestcase.h"
+#include "private/uctheme_p.h"
 
 UT_USE_NAMESPACE
 
@@ -93,6 +94,10 @@ private Q_SLOTS:
     {
         delete view;
     }
+
+//    void cleanup() {
+//        UCTheme::previousVersion = 0;
+//    }
 
     void testCase_AppName()
     {
