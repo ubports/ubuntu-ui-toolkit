@@ -39,7 +39,8 @@ SUBDIRS += \
     scaling_image_provider \
     qquick_image_extension \
     performance \
-    mainview \
+    mainview11 \
+    mainview13 \
     i18n \
     arguments \
     argument \
