@@ -16,14 +16,14 @@
 
 #include "ucmainwindow_p_p.h"
 
+#include <QtCore/QCoreApplication>
+
 #include "ucactionmanager_p.h"
 #include "ucactioncontext_p.h"
 #include "ucapplication_p.h"
 #include "uctheme_p.h"
 #include "i18n_p.h"
 #include "quickutils_p.h"
-
-#include <QCoreApplication>
 
 UT_NAMESPACE_BEGIN
 
@@ -161,7 +161,7 @@ void UCMainWindow::setApplicationName(QString applicationName)
 
     d->m_applicationName = applicationName;
 
-    if (applicationName != "") {
+    if (!applicationName.isEmpty()) {
         UbuntuI18n::instance()->setDomain(applicationName);
         UCApplication::instance()->setApplicationName(applicationName);
     }

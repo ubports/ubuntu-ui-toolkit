@@ -14,13 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMAINWINDOW_H
-#define UCMAINWINDOW_H
-
-#include <i18n_p.h>
-#include <ucunits_p.h>
+#ifndef UCMAINWINDOW_P_H
+#define UCMAINWINDOW_P_H
 
 #include <QtQuick/QQuickWindow>
+
+#include <UbuntuToolkit/private/i18n_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -73,4 +73,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCMAINWINDOW_H
+#endif // UCMAINWINDOW_P_H

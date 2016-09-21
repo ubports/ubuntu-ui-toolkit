@@ -14,12 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMAINWINDOW_P_H
-#define UCMAINWINDOW_P_H
+#ifndef UCMAINWINDOW_P_P_H
+#define UCMAINWINDOW_P_P_H
 
-#include "ucstyleditembase_p_p.h"
-#include "ucmainwindow_p.h"
-#include <QQmlProperty>
+#include <UbuntuToolkit/private/ucmainwindow_p.h>
+
+#include <QtQml/QQmlProperty>
+
+#include <UbuntuToolkit/private/ucstyleditembase_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -42,4 +44,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCMAINWINDOW_P_H
+#endif // UCMAINWINDOW_P_P_H

@@ -30,8 +30,8 @@
 #include <QtCore/QThread>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
-#include <QCryptographicHash>
-#include <QSettings>
+#include <QtCore/QCryptographicHash>
+#include <QtCore/QSettings>
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickView>
@@ -40,9 +40,9 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
 #include <UbuntuToolkit/private/ucapplication_p.h>
 #include <UbuntuToolkit/private/ucunits_p.h>
-#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 
