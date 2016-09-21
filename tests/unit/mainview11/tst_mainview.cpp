@@ -95,10 +95,6 @@ private Q_SLOTS:
         delete view;
     }
 
-//    void cleanup() {
-//        UCTheme::previousVersion = 0;
-//    }
-
     void testCase_AppName()
     {
         QQuickItem *root = loadTest("AppName.qml");
