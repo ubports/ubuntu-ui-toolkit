@@ -9,6 +9,13 @@ description: |
 grade: stable
 confinement: strict
 
+slots:
+  ubuntu-ui-toolkit-slot:
+    content: ubuntu-ui-toolkit
+    interface: content
+    read:
+      - /
+
 parts:
   ubuntu-ui-toolkit:
     plugin: qmake
