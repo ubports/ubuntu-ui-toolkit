@@ -199,7 +199,7 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
 
-    qDebug()<<"Context properties initialization done! Context = "<<context;
+//    qDebug()<<"Context properties initialization done! Context = "<<context;
 
     // Make the context property 'window' available even before there is a window,
     // so that in QML we do not have to check whether 'window' is defined, and no new
