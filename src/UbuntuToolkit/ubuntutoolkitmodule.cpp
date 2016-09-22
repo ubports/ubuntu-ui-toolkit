@@ -309,8 +309,10 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
         UMLogger* logger;
         if (metricsLogging.isEmpty() || metricsLogging == "stdout") {
             logger = new UMFileLogger(stdout);
+#if defined(Q_OS_LINUX)
         } else if (metricsLogging == "lttng") {
             logger = new UMLTTNGLogger();
+#endif  // defined(Q_OS_LINUX)
         } else {
             logger = new UMFileLogger(QString::fromLocal8Bit(metricsLogging));
         }
