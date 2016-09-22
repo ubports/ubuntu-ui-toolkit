@@ -22,7 +22,7 @@ import Ubuntu.Components 1.3
 
 TestCase {
     id: testCase
-    name: "EmbeddedListView"
+    name: "ContextPropertyInit"
     width: 100
     height: 100
 
