@@ -1,0 +1,53 @@
+# The qtbase packaging for Ubuntu exports the CFLAGS, CXXFLAGS and LFLAGS
+# variables in the environment before running configure so that the qtbase
+# shared libraries can be compiled with the required distribution defined
+# compiler flags. That is fine (though I guess that could be handled better at
+# the qtbase packaging level with maybe a dedicated prf) but it results in
+# qt_build_config.prf defining the QMAKE_CFLAGS, QMAKE_CXXFLAGS and QMAKE_LFLAGS
+# variables with these distribution specific flags. Since we load this prf,
+# these variables end up being defined when building the toolkit for development
+# purpose. This is problematic because -O2 and -g are always defined (whatever
+# the debug or release config chosen by the developer), also these are GCC
+# specific flags which makes our build break with other compilers. This is also
+# ugly because preprocessor defines are directly set in the QMAKE_C*FLAGS. In
+# order to workaround these issues, we unset these variables and set the
+# different flags apart from -g and -O2 in the right qmake variables. This
+# allows to keep compiling with the Debian flags but in a more flexible way.
+!qt_submodule_build:!debian_build {
+    gcc:!clang {
+        QMAKE_CFLAGS = -fstack-protector
+        QMAKE_CXXFLAGS = -fstack-protector
+        QMAKE_CXXFLAGS_WARN_ON += -Wdate-time -Wformat -Werror=format-security
+        QMAKE_LFLAGS_SHLIB += -Wl,-z,relro
+        DEFINES += _FORTIFY_SOURCE=2
+        unix:!contains(QT_CONFIG, reduce_relocations): CONFIG += bsymbolic_functions
+    } else {
+        QMAKE_CFLAGS =
+        QMAKE_CXXFLAGS =
+    }
+    QMAKE_LFLAGS =
+}
+
+# Warn about overriding virtual functions not marked with the override keyword.
+gcc:!clang {
+    # Breaks the build when built as a Qt submodule. Should be fixed in Qt 5.6,
+    # see https://codereview.qt-project.org/#/c/169969/
+    !qt_submodule_build:!lessThan(QT_GCC_MAJOR_VERSION, 5): \
+        QMAKE_CXXFLAGS_WARN_ON += -Wsuggest-override
+} else {
+    greaterThan(QT_CLANG_MAJOR_VERSION, 3)| \
+        if(equals(QT_CLANG_MAJOR_VERSION, 3):!lessThan(QT_CLANG_MINOR_VERSION, 6)): \
+            QMAKE_CXXFLAGS_WARN_ON += -Winconsistent-missing-override
+}
+
+# Use the 2011 ISO C++ standard plus amendments. Since Qt 5.6, GNU extensions
+# are enabled by default with Clang, GCC and ICC, strict_c++ disables them.
+CONFIG += c++11
+greaterThan(QT_MAJOR_VERSION, 5)| \
+    if(equals(QT_MAJOR_VERSION, 5):!lessThan(QT_MINOR_VERSION, 6)): \
+        CONFIG += strict_c++
+
+CONFIG += no_keywords
+
+# Make all warnings into errors.
+CONFIG += warnings_are_errors

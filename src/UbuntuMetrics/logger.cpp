@@ -24,9 +24,11 @@
 
 #include "events.h"
 #include "ubuntumetricsglobal_p.h"
+#if defined(Q_OS_LINUX)
 #define TRACEPOINT_DEFINE
 #define TRACEPOINT_PROBE_DYNAMIC_LINKAGE
 #include "lttng/lttng_p.h"
+#endif  // defined(Q_OS_LINUX)
 
 UMFileLogger::UMFileLogger(const QString& fileName, bool parsable)
     : d_ptr(new UMFileLoggerPrivate(fileName, parsable))
@@ -229,6 +231,8 @@ bool UMFileLogger::parsable()
     return !!(d_func()->m_flags & UMFileLoggerPrivate::Parsable);
 }
 
+#if defined(Q_OS_LINUX)
+
 UMLTTNGPlugin* UMLTTNGLogger::m_plugin = nullptr;
 bool UMLTTNGLogger::m_error = false;
 
@@ -318,3 +322,5 @@ void UMLTTNGLogger::log(const UMEvent& event)
         }
     }
 }
+
+#endif  // defined(Q_OS_LINUX)
