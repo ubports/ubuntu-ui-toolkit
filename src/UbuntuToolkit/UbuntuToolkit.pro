@@ -13,8 +13,6 @@ unix {
     SOURCES += mousetouchadaptor_x11.cpp
 }
 
-DEFINES += UBUNTUTOOLKIT_LIBRARY
-
 # Uncomment to compile out qDebug() calls.
 # DEFINES += QT_NO_DEBUG_OUTPUT
 
@@ -240,6 +238,3 @@ OTHER_FILES += \
     $$PWD/privates/shaders/frame.frag
 
 load(ubuntu_qt_module)
-
-# Remove the ASCII cast warnings added by qt_module.
-DEFINES -= QT_ASCII_CAST_WARNINGS

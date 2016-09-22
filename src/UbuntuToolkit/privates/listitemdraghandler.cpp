@@ -61,7 +61,7 @@ void ListItemDragHandler::drop()
         connect(animation, &QQuickAbstractAnimation::stopped,
                 this, &ListItemDragHandler::dropItem, Qt::DirectConnection);
         // force properties to contain only the 'y' coordinate
-        animation->setProperties("y");
+        animation->setProperties(QStringLiteral("y"));
         animation->setTargetObject(listItem);
         animation->setFrom(listItem->y());
         animation->setTo(targetPos.y());

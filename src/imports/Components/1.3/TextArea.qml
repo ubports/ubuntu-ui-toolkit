@@ -95,6 +95,7 @@ Ubuntu.StyledItem {
     id: control
     implicitWidth: units.gu(30)
     implicitHeight: (autoSize) ? internal.minimumSize : internal.linesHeight(4)
+    activeFocusOnTab: true
 
     // new properties
     /*!

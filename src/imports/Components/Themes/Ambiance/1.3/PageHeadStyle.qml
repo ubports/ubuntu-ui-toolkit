@@ -437,6 +437,7 @@ Style.PageHeadStyle {
                 objectName: action.objectName + "_button"
                 height: parent ? parent.height : undefined
                 action: modelData
+                activeFocusOnTab: true
                 StyleHints {
                     foregroundColor: headerStyle.buttonColor
                 }

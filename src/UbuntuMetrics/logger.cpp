@@ -113,8 +113,8 @@ void UMFileLoggerPrivate::log(const UMEvent& event)
 
         QTime timeStamp = QTime(0, 0).addMSecs(event.timeStamp / 1000000);
         QString timeString = !timeStamp.hour()
-            ? timeStamp.toString(QString::fromLatin1("mm:ss:zzz", 9))
-            : timeStamp.toString(QString::fromLatin1("hh:mm:ss:zzz", 12));
+            ? timeStamp.toString(QStringLiteral("mm:ss:zzz"))
+            : timeStamp.toString(QStringLiteral("hh:mm:ss:zzz"));
 
         switch (event.type) {
         case UMEvent::Process: {

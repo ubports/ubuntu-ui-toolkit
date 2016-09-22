@@ -1,0 +1,42 @@
+name: ubuntu-ui-toolkit
+version: '1.3.2085+16.10.20160915'
+summary: Ubuntu UI Toolkit
+description: |
+  Qt is a cross-platform C++ application framework. Qt's primary feature
+  is its rich set of widgets that provide standard GUI functionality.
+  This package includes UITK.
+
+grade: stable
+confinement: strict
+
+slots:
+  ubuntu-ui-toolkit-slot:
+    content: ubuntu-ui-toolkit
+    interface: content
+    read:
+      - /
+
+parts:
+  ubuntu-ui-toolkit:
+    plugin: qmake
+    qt-version: qt5
+    options:
+        - QT_QPA_PLATFORM=minimal
+    source: .
+    build-packages:
+        - dbus
+        - dbus-test-runner
+        - devscripts
+        - gdb
+        - libdbus-1-dev
+        - liblttng-ust-dev
+        - libnih-dbus-dev
+        - libqt5svg5-dev
+        - qtdeclarative5-unity-action-plugin
+        - qtpim5-dev
+    stage-packages:
+        - libnih-dbus1
+        - qtdeclarative5-unity-action-plugin
+        - suru-icon-theme
+        - ttf-ubuntu-font-family
+

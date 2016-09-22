@@ -27,12 +27,17 @@
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlParserStatus>
 #include <QtQml/QQmlProperty>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+#include <QtQml/private/qqmlabstractbinding_p.h>
+#endif
 #include <QtQml/private/qpodvector_p.h>
 
 #include <UbuntuToolkit/ubuntutoolkitglobal.h>
 #include <UbuntuToolkit/private/ucdefaulttheme_p.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
 class QQmlAbstractBinding;
+#endif
 class QQuickItem;
 
 UT_NAMESPACE_BEGIN
@@ -148,8 +153,13 @@ private:
             QQmlProperty configProperty;
             QQmlProperty paletteProperty;
             QVariant paletteValue;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlAbstractBinding::Ptr configBinding;
+            QQmlAbstractBinding::Ptr paletteBinding;
+#else
             QQmlAbstractBinding *configBinding;
             QQmlAbstractBinding *paletteBinding;
+#endif
         };
 
         // configuration palette, not the original theme one

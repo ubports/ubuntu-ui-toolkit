@@ -136,7 +136,7 @@ QString UCArgument::syntax() const
 
     if (!m_name.isEmpty()) {
         // for named argument: --name=value1 value2
-        syntax.append("--");
+        syntax.append(QStringLiteral("--"));
         syntax.append(m_name);
 
         if (!m_valueNames.empty()) {

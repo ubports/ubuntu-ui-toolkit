@@ -89,7 +89,7 @@ UCHeader::UCHeader(QQuickItem *parent)
 {
     m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);
-    m_showHideAnimation->setProperty("y");
+    m_showHideAnimation->setProperty(QStringLiteral("y"));
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
 

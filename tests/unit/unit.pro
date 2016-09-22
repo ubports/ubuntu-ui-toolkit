@@ -25,11 +25,11 @@ SUBDIRS += \
     statesaver \
     deprecated_theme_engine \
     orientation \
-    layouts \
+#    layouts \ # FIXME: Breaks on Yakkety. See bug #1625137.
     mousefilters \
     animator \
     serviceproperties \
-#    subtheming \ # FIXME: Breaks with Qt 5.6. See bug #1570478.
+    subtheming \
     swipearea \
     touchregistry \
     bottomedge \
@@ -38,7 +38,7 @@ SUBDIRS += \
     units \
     scaling_image_provider \
     qquick_image_extension \
-#    performance \ # FIXME: Breaks with Qt 5.6. See bug #1570478.
+    performance \
     mainview \
     i18n \
     arguments \
