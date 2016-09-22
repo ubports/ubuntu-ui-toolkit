@@ -30,6 +30,7 @@ SOURCES += \
     $$PWD/events.cpp \
     $$PWD/gputimer.cpp \
     $$PWD/logger.cpp \
-    $$PWD/overlay.cpp
+    $$PWD/overlay.cpp \
+    $$PWD/ubuntumetricsglobal.cpp
 
 load(ubuntu_qt_module)

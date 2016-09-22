@@ -37,9 +37,9 @@ UMEventUtils::UMEventUtils()
 EventUtilsPrivate::EventUtilsPrivate()
 {
 #if !defined(QT_NO_DEBUG)
-    ASSERT(m_buffer = static_cast<char*>(aligned_alloc(bufferAlignment, bufferSize)));
+    ASSERT(m_buffer = static_cast<char*>(alignedAlloc(bufferAlignment, bufferSize)));
 #else
-    m_buffer = static_cast<char*>(aligned_alloc(bufferAlignment, bufferSize));
+    m_buffer = static_cast<char*>(alignedAlloc(bufferAlignment, bufferSize));
 #endif
     m_cpuTimer.start();
     m_cpuTicks = times(&m_cpuTimes);
