@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <cstdio>
 
 #include <QtCore/QElapsedTimer>
 
