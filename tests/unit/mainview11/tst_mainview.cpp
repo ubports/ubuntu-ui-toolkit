@@ -156,23 +156,6 @@ private Q_SLOTS:
         return filename;
     }
 
-    void testLabsSettings() {
-        QString applicationName("red.riding.hood");
-        // Delete file if it exists to avoid false positives
-        QString filename(getConfFile(applicationName));
-        QFile::remove(filename);
-
-        QQuickItem *root = loadTest("Settings.qml");
-        QVERIFY(root);
-        QQuickItem *mainView = root;
-        QCOMPARE(applicationName, mainView->property("applicationName").toString());
-        QCOMPARE(QString(applicationName), QCoreApplication::organizationDomain());
-        QQuickItem *textField(testItem(mainView, "textfield"));
-        textField->setProperty("text", "Blue");
-        delete root;
-        QVERIFY(QFile::exists(filename));
-    }
-
     void testQSettings() {
         QString applicationName("i.prefer.pi");
         // Delete file if it exists to avoid false positives
