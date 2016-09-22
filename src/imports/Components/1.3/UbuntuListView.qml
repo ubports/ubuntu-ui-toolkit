@@ -199,10 +199,10 @@ ListView {
         color: root.activeFocus
                ? theme.palette.focused.background
                : theme.palette.selected.background
-        width: root.currentItem ? root.currentItem.width : 0
-        height: root.currentItem ? root.currentItem.height : 0
+        width: root.currentItem.width
+        height: root.currentItem.height
         // FIXME: use opacity yet, until we fix the palette's disabled.background color
-        opacity: root.currentItem && root.currentItem.enabled ? 1.0 : 0.5
+        opacity: root.currentItem.enabled ? 1.0 : 0.5
     }
     highlightMoveDuration: 50
 }
