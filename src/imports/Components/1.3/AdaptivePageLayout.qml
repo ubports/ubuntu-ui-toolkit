@@ -460,9 +460,7 @@ PageTreeNode {
             d.relayout();
         }
         property real defaultColumnWidth: units.gu(40)
-        onDefaultColumnWidthChanged: {
-            body.applyMetrics()
-        }
+        onDefaultColumnWidthChanged: body.updateHeaderHeight(0)
 
         function internalPropertyUpdate(propertyName, value) {
             internalUpdate = true;
@@ -757,8 +755,12 @@ PageTreeNode {
 
             property int column
             property alias config: subHeader.config
-            property PageColumn metrics: defaultMetrics
-            readonly property PageColumn defaultMetrics: PageColumn {
+            property PageColumn metrics: (d.activeLayout && d.activeLayout.data[column])
+                                         ? d.activeLayout.data[column]
+                                         : defaultMetrics
+
+            PageColumn {
+                id: defaultMetrics
                 fillWidth: (holder.column + 1) == d.columns
                 minimumWidth: d.defaultColumnWidth
             }
@@ -1027,23 +1029,7 @@ PageTreeNode {
             for (var i = 0; i < children.length; i++) {
                 children[i].column = i;
             }
-            applyMetrics();
-        }
-
-        property bool __applyMetrics: false
-        function applyMetrics() {
-            if (__applyMetrics) {
-                return;
-            }
-            __applyMetrics = true;
-            for (var i = 0 in children) {
-                var holder = children[i];
-                // search for the column metrics
-                var metrics = d.activeLayout ? d.activeLayout.data[i] : holder.defaultMetrics;
-                holder.metrics = metrics;
-            }
             updateHeaderHeight(0);
-            __applyMetrics = true;
         }
     }
 }
