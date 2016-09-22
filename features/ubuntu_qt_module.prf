@@ -5,7 +5,13 @@ load(ubuntu_common)
 # after compilation. Must be set before loading qt_module.
 CONFIG += git_build
 
+# Make sure our public headers compile with extra warnings and strict Qt
+# options. Must be set before loading qt_module. Requires qt_module_headers to
+# be loaded after qt_module.
+CONFIG += headersclean
+
 load(qt_module)
+load(qt_module_headers)
 
 # Disable CMake config file creation. Must be set after loading qt_module.
 CONFIG -= create_cmake
