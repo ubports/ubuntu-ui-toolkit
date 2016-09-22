@@ -22,9 +22,9 @@
 
 #include <UbuntuMetrics/ubuntumetricsglobal.h>
 
-class UMEvent;
 class UMFileLoggerPrivate;
 struct UMLTTNGPlugin;
+struct UMEvent;
 
 // Log events to a specific device.
 class UBUNTU_METRICS_EXPORT UMLogger
@@ -70,7 +70,7 @@ private:
     static UMLTTNGPlugin* m_plugin;
     static bool m_error;
 
-    void* __reserved;
+    Q_DECL_UNUSED_MEMBER void* __reserved;
 };
 
 #endif  // LOGGER_H
