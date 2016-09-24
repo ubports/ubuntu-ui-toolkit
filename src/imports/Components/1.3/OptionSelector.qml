@@ -193,6 +193,64 @@ ListItem.Empty {
     __height: column.height
     showDivider: false
 
+    activeFocusOnTab: true
+
+    // Prevent scrolling on pressed when released changes the index
+    Keys.onPressed: {
+        // Only change index while expanded
+        if (!listContainer.currentlyExpanded)
+            return;
+        var increment;
+        switch (event.key) {
+        case Qt.Key_Up:
+            increment = -1;
+            break;
+        case Qt.Key_Down:
+            increment = 1;
+        default:
+            return;
+        }
+        var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
+        if (newIndex != list.currentIndex) {
+            event.accepted = true;
+        }
+    }
+    Keys.onReleased: {
+        var increment;
+        switch (event.key) {
+        case Qt.Key_Up:
+            increment = -1;
+            break;
+        case Qt.Key_Down:
+            increment = 1;
+            break;
+        case Qt.Key_Enter:
+        case Qt.Key_Return:
+        case Qt.Key_Space:
+            if (!list.multiSelection) {
+                event.accepted = true;
+                listContainer.currentlyExpanded = !listContainer.currentlyExpanded;
+            }
+        default:
+            return;
+        }
+        // Only change index while expanded
+        if (!listContainer.currentlyExpanded)
+            return;
+        var newIndex = Toolkit.MathUtils.clamp(list.currentIndex + increment, 0, list.count - 1);
+        if (newIndex != list.currentIndex) {
+            event.accepted = true;
+            list.delegateClicked(newIndex);
+            var shifted = (event.modifiers & Qt.ShiftModifier);
+            if (list.multiSelection && !shifted)
+                list.currentItem.selected = false;
+            list.previousIndex = list.currentIndex;
+            list.currentIndex = newIndex;
+            if (list.multiSelection)
+                list.currentItem.selected = shifted ? !list.currentItem.selected : true;
+        }
+    }
+
     Column {
         id: column
 
@@ -212,7 +270,8 @@ ListItem.Empty {
         Toolkit.StyledItem {
             id: listContainer
             objectName: "listContainer"
-            activeFocusOnPress: true
+            property bool keyNavigationFocus: optionSelector.keyNavigationFocus
+            Component.onCompleted: activeFocusOnTab = false
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick

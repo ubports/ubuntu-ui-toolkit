@@ -36,7 +36,7 @@ LoggingThread::LoggingThread()
     , m_flags(0)
 {
     m_queue = static_cast<UMEvent*>(
-        aligned_alloc(logQueueAlignment, logQueueSize * sizeof(UMEvent)));
+        alignedAlloc(logQueueAlignment, logQueueSize * sizeof(UMEvent)));
 
 #if !defined(QT_NO_DEBUG)
     setObjectName(QStringLiteral("UbuntuMetrics logging"));  // Thread name.

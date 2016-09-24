@@ -20,7 +20,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 
 #include <QtCore/QElapsedTimer>
 
@@ -37,9 +37,9 @@ UMEventUtils::UMEventUtils()
 EventUtilsPrivate::EventUtilsPrivate()
 {
 #if !defined(QT_NO_DEBUG)
-    ASSERT(m_buffer = static_cast<char*>(aligned_alloc(bufferAlignment, bufferSize)));
+    ASSERT(m_buffer = static_cast<char*>(alignedAlloc(bufferAlignment, bufferSize)));
 #else
-    m_buffer = static_cast<char*>(aligned_alloc(bufferAlignment, bufferSize));
+    m_buffer = static_cast<char*>(alignedAlloc(bufferAlignment, bufferSize));
 #endif
     m_cpuTimer.start();
     m_cpuTicks = times(&m_cpuTimes);
@@ -129,9 +129,9 @@ void EventUtilsPrivate::updateProcStatMetrics(UMEvent* event)
     unsigned long vsize;
     long threadCount, rss;
 #if !defined(QT_NO_DEBUG)
-    int value = sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
+    int value =  std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
     ASSERT(value == 1);
-    value = sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
+    value =  std::sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
     ASSERT(value == 2);
 #else
     std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);

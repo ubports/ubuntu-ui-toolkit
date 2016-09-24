@@ -25,7 +25,7 @@ SUBDIRS += \
     statesaver \
     deprecated_theme_engine \
     orientation \
-#    layouts \ # FIXME: Breaks on Yakkety. See bug #1625137.
+    layouts \
     mousefilters \
     animator \
     serviceproperties \
