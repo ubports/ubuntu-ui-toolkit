@@ -527,11 +527,15 @@ Item {
         }
 
         function test_customPaddingUpdatesHeight(data) {
+            var initialHeight = data.item.height
             data.item.padding.top = data.padding
             compare(data.item.height, expectedImplicitHeight(data.item), "Changing top padding doesn't update height")
+            verify(data.item.height !== initialHeight)
 
+            initialHeight = data.item.height
             data.item.padding.bottom = data.padding
             compare(data.item.height, expectedImplicitHeight(data.item), "Changing bottom padding doesn't update height")
+            verify(data.item.height !== initialHeight)
         }
 
         function test_relayoutAfterChangingSlotsSize() {
