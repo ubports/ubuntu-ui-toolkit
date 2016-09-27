@@ -772,7 +772,7 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
 void tst_UCSwipeArea::givesUpWhenLosesTouch()
 {
     // Fails on arm64 at the moment LP: #1628066
-    if (QSysInfo::buildCpuArchitecture() != "arm64") {
+    if (QSysInfo::buildCpuArchitecture() == "arm64") {
         QSKIP("Skipping test on arm64");
     }
     UCSwipeArea *edgeDragArea =
