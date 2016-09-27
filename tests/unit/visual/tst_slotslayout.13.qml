@@ -158,6 +158,16 @@ Item {
             Item { id: layoutCustomPadding_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(9) }
         }
         ListItemLayout {
+            id: layoutCustomPaddingChanges
+            padding {
+                top: units.gu(2)
+                bottom: units.gu(2)
+                leading: units.gu(2)
+                trailing: units.gu(2)
+            }
+            title.text: "Padded"
+        }
+        ListItemLayout {
             id: layoutTestChangeSlotsSize
             readonly property var leadingSlots: [layoutTestChangeSlotsSize_leading1]
             readonly property var trailingSlots: []
@@ -505,6 +515,22 @@ Item {
 
             //check that slots are still in the right position
             checkSlotsPosition(data.item)
+        }
+
+        function test_customPaddingUpdatesHeight_data(){
+            return [
+                        { tag: "Custom padding Smaller", item: layoutCustomPaddingChanges, padding: units.gu(1) },
+                        { tag: "Custom padding Bigger", item: layoutCustomPaddingChanges, padding: units.gu(3) },
+                    ]
+        }
+        function test_customPaddingUpdatesHeight(data) {
+            var contentHeight = data.item.height - data.item.padding.top - data.item.padding.bottom
+
+            data.item.padding.top = data.padding
+            compare(data.item.height, contentHeight + data.padding + data.item.padding.bottom)
+
+            data.item.padding.bottom = data.padding
+            compare(data.item.height, contentHeight + data.padding * 2)
         }
 
         function test_relayoutAfterChangingSlotsSize() {
