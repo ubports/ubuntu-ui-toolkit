@@ -159,6 +159,8 @@ Item {
         }
         ListItemLayout {
             id: layoutCustomPaddingChanges
+            readonly property var leadingSlots: []
+            readonly property var trailingSlots: []
             padding {
                 top: units.gu(2)
                 bottom: units.gu(2)
@@ -523,14 +525,13 @@ Item {
                         { tag: "Custom padding Bigger", item: layoutCustomPaddingChanges, padding: units.gu(3) },
                     ]
         }
-        function test_customPaddingUpdatesHeight(data) {
-            var contentHeight = data.item.height - data.item.padding.top - data.item.padding.bottom
 
+        function test_customPaddingUpdatesHeight(data) {
             data.item.padding.top = data.padding
-            compare(data.item.height, contentHeight + data.padding + data.item.padding.bottom)
+            compare(data.item.height, expectedImplicitHeight(data.item), "Changing top padding doesn't update height")
 
             data.item.padding.bottom = data.padding
-            compare(data.item.height, contentHeight + data.padding * 2)
+            compare(data.item.height, expectedImplicitHeight(data.item), "Changing bottom padding doesn't update height")
         }
 
         function test_relayoutAfterChangingSlotsSize() {
