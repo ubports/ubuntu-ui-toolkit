@@ -35,6 +35,7 @@ ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 endif
 endif
 endif
+endif
 
 override_dh_build:
 	dh_auto_build --parallel
