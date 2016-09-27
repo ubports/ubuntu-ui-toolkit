@@ -62,7 +62,7 @@ Item {
         buttonView.selectButton(styledItem.model.selectedIndex);
     }
 
-    property var tabsModel : styledItem ? styledItem.model : null
+    property var tabsModel : styledItem && styledItem.model ? styledItem.model : []
 
     Connections {
         target: styledItem
