@@ -34,9 +34,9 @@
 #ifndef QBACKINGSTORE_MINIMAL_H
 #define QBACKINGSTORE_MINIMAL_H
 
-#include <qpa/qplatformbackingstore.h>
-#include <qpa/qplatformwindow.h>
 #include <QtGui/QImage>
+#include <QtGui/qpa/qplatformbackingstore.h>
+#include <QtGui/qpa/qplatformwindow.h>
 
 class QCustomBackingStore : public QPlatformBackingStore
 {
@@ -44,9 +44,9 @@ public:
     QCustomBackingStore(QWindow *window);
     ~QCustomBackingStore() = default;
 
-    QPaintDevice *paintDevice();
-    void flush(QWindow *window, const QRegion &region, const QPoint &offset);
-    void resize(const QSize &size, const QRegion &staticContents);
+    QPaintDevice *paintDevice() override;
+    void flush(QWindow *window, const QRegion &region, const QPoint &offset) override;
+    void resize(const QSize &size, const QRegion &staticContents) override;
 
 private:
     QImage mImage;

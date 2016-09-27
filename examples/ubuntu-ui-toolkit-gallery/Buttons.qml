@@ -110,8 +110,8 @@ Template {
                 width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
-                    delegate: Standard {
-                        text: "item #" + modelData
+                    delegate: ListItemWithLabel {
+                        title.text: "item #" + modelData
                     }
                 }
             }
@@ -125,8 +125,8 @@ Template {
                 width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
-                    delegate: Standard {
-                        text: "item #" + modelData
+                    delegate: ListItemWithLabel {
+                        title.text: "item #" + modelData
                     }
                 }
             }
@@ -141,8 +141,8 @@ Template {
                 width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
-                    delegate: Standard {
-                        text: "item #" + modelData
+                    delegate: ListItemWithLabel {
+                        title.text: "item #" + modelData
                     }
                 }
             }
@@ -157,8 +157,8 @@ Template {
                 width: parent.width < units.gu(30)? parent.width : units.gu(30)
                 comboList:  UbuntuListView {
                     model: 10
-                    delegate: Standard {
-                        text: "item #" + modelData
+                    delegate: ListItemWithLabel {
+                        title.text: "item #" + modelData
                     }
                 }
             }

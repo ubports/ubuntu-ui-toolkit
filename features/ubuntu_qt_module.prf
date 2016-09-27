@@ -1,22 +1,23 @@
-!build_with_qt: {
-    #enable autocreation of include directory
-    CONFIG += git_build
-}
+load(ubuntu_common)
+
+# Enables the copy of private and public headers to an include directory at the
+# root of the sources before compilation and the copy of the compiled libraries
+# after compilation. Must be set before loading qt_module.
+CONFIG += git_build
+
+# Make sure our public headers compile with extra warnings and strict Qt
+# options. Must be set before loading qt_module. Requires qt_module_headers to
+# be loaded after qt_module.
+CONFIG += headersclean
 
 load(qt_module)
+load(qt_module_headers)
 
+# Disable CMake config file creation. Must be set after loading qt_module.
 CONFIG -= create_cmake
 
-# when building against the system Qt we pick up the CXX_FLAGS for a release build
-# reset them to the default debug build flags
-!build_with_qt: {
-    CONFIG(debug, debug|release)  {
-        QMAKE_CFLAGS = $$QMAKE_CFLAGS_DEBUG
-        QMAKE_CXXFLAGS = $$QMAKE_CXXFLAGS_DEBUG
-    }
-}
+CONFIG += dll
 
-QMAKE_CXXFLAGS += -Werror
-
-#do not warn for deprecated declarations
-QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
+# warnings_are_errors depending on the compiler version, sometimes it doesn't
+# add the required flags (for instance for recent clang version on old Qt).
+!contains(QMAKE_CXXFLAGS_WARN_ON, -Werror): QMAKE_CXXFLAGS_WARN_ON += -Werror

@@ -16,38 +16,6 @@
 
 """Ubuntu UI Toolkit Autopilot custom proxy objects."""
 
-
-__all__ = [
-    'AppHeader',
-    'ActionBar',
-    'ActionSelectionPopover',
-    'check_autopilot_version',
-    'CheckBox',
-    'get_keyboard',
-    'get_pointing_device',
-    'Header',
-    'Dialog',
-    'listitems',
-    'UCListItem',
-    'MainView',
-    'OptionSelector',
-    'pickers',
-    'popups',
-    'QQuickFlickable',
-    'QQuickGridView',
-    'QQuickListView',
-    'Sections',
-    'TabBar',
-    'Tabs',
-    'TextArea',
-    'TextField',
-    'Toolbar',
-    'ToolkitException',
-    'UbuntuListView11',
-    'UbuntuListView',
-    'UbuntuUIToolkitCustomProxyObjectBase',
-]
-
 from ubuntuuitoolkit._custom_proxy_objects._actionbar import ActionBar
 from ubuntuuitoolkit._custom_proxy_objects._sections import Sections
 from ubuntuuitoolkit._custom_proxy_objects._checkbox import CheckBox
@@ -94,3 +62,34 @@ from ubuntuuitoolkit._custom_proxy_objects._ubuntulistview import (
     UbuntuListView11,
     UbuntuListView,
 )
+
+__all__ = [
+    'AppHeader',
+    'ActionBar',
+    'ActionSelectionPopover',
+    'check_autopilot_version',
+    'CheckBox',
+    'get_keyboard',
+    'get_pointing_device',
+    'Header',
+    'Dialog',
+    'listitems',
+    'UCListItem',
+    'MainView',
+    'OptionSelector',
+    'pickers',
+    'popups',
+    'QQuickFlickable',
+    'QQuickGridView',
+    'QQuickListView',
+    'Sections',
+    'TabBar',
+    'Tabs',
+    'TextArea',
+    'TextField',
+    'Toolbar',
+    'ToolkitException',
+    'UbuntuListView11',
+    'UbuntuListView',
+    'UbuntuUIToolkitCustomProxyObjectBase',
+]

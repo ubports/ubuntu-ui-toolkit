@@ -31,16 +31,16 @@
 **
 ****************************************************************************/
 
+#include <QtGui/qpa/qplatformintegrationplugin.h>
 
-#include <qpa/qplatformintegrationplugin.h>
 #include "qcustomintegration.h"
 
 class QCustomIntegrationPlugin : public QPlatformIntegrationPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QPA.QPlatformIntegrationFactoryInterface.5.2" FILE "custom.json")
+    Q_PLUGIN_METADATA(IID QPlatformIntegrationFactoryInterface_iid FILE "custom.json")
 public:
-    QPlatformIntegration *create(const QString&, const QStringList&);
+    QPlatformIntegration *create(const QString&, const QStringList&) override;
 };
 
 QPlatformIntegration *QCustomIntegrationPlugin::create(const QString& system, const QStringList& /*paramList*/)

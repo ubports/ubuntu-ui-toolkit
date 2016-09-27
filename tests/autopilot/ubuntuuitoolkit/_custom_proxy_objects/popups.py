@@ -62,7 +62,8 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _get_button(self, text):
         # Try the C++ class name in case this is a 1.3 AbstractButton
         try:
-            return self.wait_select_single('UCAbstractButton', text=text)
+            return self.wait_select_single(
+                'UbuntuToolkit::UCAbstractButton', text=text)
         except dbus.StateNotFoundError:
             return self.wait_select_single('AbstractButton', text=text)
 
@@ -97,7 +98,12 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
             button = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
-                'Action with objectName "{0}" not found.'.format(object_name))
+                'Button for action with objectName "{0}" not found.'.format(
+                    action_object_name))
+        if not button.visible:
+            raise _common.ToolkitException(
+                'Button for action with objectName "{0}" not visible.'.format(
+                    action_object_name))
         self.pointing_device.click_object(button)
         if self.autoClose:
             try:

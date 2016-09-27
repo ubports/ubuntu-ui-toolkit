@@ -1,6 +1,7 @@
 %modules = ( # path to module name map
-    "UbuntuGestures" => "$basedir/src/Ubuntu/UbuntuGestures",
-    "UbuntuToolkit"  => "$basedir/src/Ubuntu/UbuntuToolkit",
+    "UbuntuGestures" => "$basedir/src/UbuntuGestures",
+    "UbuntuMetrics" => "$basedir/src/UbuntuMetrics",
+    "UbuntuToolkit"  => "$basedir/src/UbuntuToolkit",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );
@@ -8,11 +9,8 @@
 %classnames = (
  #add classnames that are not automatically detected
  #e.g. "someheader.h" => "SomeType"
- "debughelpers.h" => "DebugHelpers",
- "pool.h" => "Pool",
- "touchregistry.h" => "TouchRegistry",
- "touchownershipevent.h" => "TouchOwnershipEvent",
- "unownedtouchevent.h" => "UnownedTouchEvent"
+ "ubuntugesturesmodule.h" => "UbuntuGesturesModule",
+ "ubuntutoolkitmodule.h" => "UbuntuToolkitModule"
 );
 
 # Module dependencies.
@@ -22,6 +20,7 @@
 #   - any git symbolic ref resolvable from the module's repository (e.g. "refs/heads/master" to track master branch)
 #
 %dependencies = (
+
     "qtbase" => "",
     "qtdeclarative" => "",
     "qtfeedback" => "",

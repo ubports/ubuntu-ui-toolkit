@@ -16,13 +16,13 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#ifndef EA_RUNE_H
-#define EA_RUNE_H
+#ifndef RUNE_H
+#define RUNE_H
 
 #include <QtCore/QObject>
-#include <QtCore/QUrl>
-#include <QtCore/QTemporaryFile>
 #include <QtCore/QSharedPointer>
+#include <QtCore/QTemporaryFile>
+#include <QtCore/QUrl>
 
 class QQuickImageBase;
 class UCQQuickImageExtension : public QObject
@@ -46,4 +46,4 @@ private:
     static QHash<QUrl, QSharedPointer<QTemporaryFile> > s_rewrittenSciFiles;
 };
 
-#endif // EA_RUNE_H
+#endif // RUNE_H

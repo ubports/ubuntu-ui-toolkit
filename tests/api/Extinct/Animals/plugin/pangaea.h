@@ -16,8 +16,8 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
-#ifndef EA_PANGAEA_H
-#define EA_PANGAEA_H
+#ifndef PANGAEA_H
+#define PANGAEA_H
 
 #include <QtCore/QObject>
 
@@ -60,4 +60,4 @@ protected:
     }
 };
 
-#endif // EA_PANGAEA_H
+#endif // PANGAEA_H

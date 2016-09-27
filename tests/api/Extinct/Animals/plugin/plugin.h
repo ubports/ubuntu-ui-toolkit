@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EXTINCT_ANIMALS_PLUGIN_H
-#define EXTINCT_ANIMALS_PLUGIN_H
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
@@ -26,8 +26,8 @@ class ExtinctAnimalsPlugin : public QQmlExtensionPlugin
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QQmlEngine *engine, const char *uri);
+    void registerTypes(const char *uri) override;
+    void initializeEngine(QQmlEngine *engine, const char *uri) override;
 };
 
-#endif // EXTINCT_ANIMALS_PLUGIN_H
+#endif // PLUGIN_H
