@@ -158,6 +158,10 @@ Item {
             Item { id: layoutCustomPadding_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(9) }
         }
         ListItemLayout {
+            id: layoutCustomPaddingSet
+            title.text: "Test"
+        }
+        ListItemLayout {
             id: layoutCustomPaddingChanges
             readonly property var leadingSlots: []
             readonly property var trailingSlots: []
@@ -517,6 +521,22 @@ Item {
 
             //check that slots are still in the right position
             checkSlotsPosition(data.item)
+        }
+
+        function test_customPaddingSet_data(){
+            return [
+                        { tag: "Custom padding top", item: layoutCustomPaddingSet, position: "top" },
+                        { tag: "Custom padding bottom", item: layoutCustomPaddingSet, position: "bottom" },
+                        { tag: "Custom padding leading", item: layoutCustomPaddingSet, position: "leading" },
+                        { tag: "Custom padding trailing", item: layoutCustomPaddingSet, position: "trailing" },
+                    ]
+        }
+
+        function test_customPaddingSet(data) {
+            var oldValue = data.item.padding[data.position]
+            var newValue = oldValue + units.gu(5)
+            data.item.padding[data.position] = newValue
+            compare(data.item.padding[data.position], newValue, "Changing "+data.position+"padding failed")
         }
 
         function test_customPaddingUpdatesHeight_data(){
