@@ -190,6 +190,11 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
         new ContextPropertyChangeListener(context, QStringLiteral("FontUtils"));
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
+
+    // Make the context property 'window' available even before there is a window,
+    // so that in QML we do not have to check whether 'window' is defined, and no new
+    // context property will be added after all components are completed (bug #1621509).
+    context->setContextProperty("window", Q_NULLPTR);
 }
 
 void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int minor)
