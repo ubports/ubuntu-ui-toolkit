@@ -72,3 +72,7 @@ load(ubuntu_enable_testing)
     INSTALLS+=autobld_install_qmltypes
     QMAKE_EXTRA_TARGETS += autobld_qmltypes
 }
+
+# warnings_are_errors depending on the compiler version, sometimes it doesn't
+# add the required flags (for instance for recent clang version on old Qt).
+!contains(QMAKE_CXXFLAGS_WARN_ON, -Werror): QMAKE_CXXFLAGS_WARN_ON += -Werror

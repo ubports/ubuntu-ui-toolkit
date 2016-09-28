@@ -36,6 +36,9 @@ Item {
         source: shapeSource
     }
 
+    FocusShape {
+    }
+
     ShaderEffectSource {
         id: shapeSource
         sourceItem: backgroundFrame

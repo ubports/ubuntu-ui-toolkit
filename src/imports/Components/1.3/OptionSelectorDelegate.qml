@@ -113,12 +113,10 @@ ListItem.Empty {
         if (listView.container.currentlyExpanded) {
             listView.delegateClicked(index);
 
-            if (!listView.multiSelection) {
-                listView.previousIndex = listView.currentIndex;
-                listView.currentIndex = index;
-            } else {
+            listView.previousIndex = listView.currentIndex;
+            listView.currentIndex = index;
+            if (listView.multiSelection)
                 selected = !selected;
-            }
         }
 
         if (!listView.expanded && !listView.multiSelection) {

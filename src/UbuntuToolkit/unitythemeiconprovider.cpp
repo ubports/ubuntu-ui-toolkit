@@ -138,15 +138,13 @@ private:
 
     static QImage loadIcon(const QString &filename, QSize *impsize, const QSize &requestSize)
     {
-        QImage image;
         QImageReader imgio(filename);
 
-        const bool force_scale = imgio.format() == QStringLiteral("svg")
-            || imgio.format() == QStringLiteral("svgz");
-
         if (requestSize.width() > 0 || requestSize.height() > 0) {
+            const bool force_scale = (imgio.format() == "svg") || (imgio.format() == "svgz");
             QSize s = imgio.size();
             qreal ratio = 0.0;
+
             if (requestSize.width() > 0 && (force_scale || requestSize.width() < s.width())) {
                 ratio = qreal(requestSize.width())/s.width();
             }
@@ -165,6 +163,7 @@ private:
         if (impsize)
             *impsize = imgio.scaledSize();
 
+        QImage image;
         if (imgio.read(&image)) {
             if (impsize)
                 *impsize = image.size();

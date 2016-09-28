@@ -142,7 +142,6 @@ Rectangle {
         name: "SectionsApi"
         when: windowShown
 
-        // FIXME: Fails with Qt 5.6. See bug #1610231.
         function initTestCase() {
             // The initially selected actions must be triggered.
             compare(label.text, "First action triggered.",

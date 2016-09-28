@@ -112,7 +112,7 @@ MainView {
 
         Page {
             id: page1
-            title: "Page1"
+            header: PageHeader { title: "Page1" }
 
             Column {
                 anchors.centerIn: parent
@@ -129,15 +129,15 @@ MainView {
         }
         Page {
             id: page2
-            title: "Page2"
+            header: PageHeader { title: "Page2" }
         }
         Page {
             id: page3
-            title: "Page3"
+            header: PageHeader { title: "Page3" }
         }
         Page {
             id: page4
-            title: "Page4"
+            header: PageHeader { title: "Page4" }
         }
     }
 
