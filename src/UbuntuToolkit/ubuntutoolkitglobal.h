@@ -13,12 +13,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef UBUNTUTOOLKITGLOBAL_H
 #define UBUNTUTOOLKITGLOBAL_H
 
 #include <QtCore/QtGlobal>
 
-#if defined(UBUNTUTOOLKIT_LIBRARY)
+#if defined(QT_BUILD_UBUNTUTOOLKIT_LIB)
 #  define UBUNTUTOOLKIT_EXPORT Q_DECL_EXPORT
 #else
 #  define UBUNTUTOOLKIT_EXPORT Q_DECL_IMPORT
@@ -54,4 +55,3 @@
 #endif
 
 #endif // UBUNTUTOOLKITGLOBAL_H
-

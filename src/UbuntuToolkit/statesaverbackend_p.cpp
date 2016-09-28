@@ -17,18 +17,19 @@
  */
 
 #include "statesaverbackend_p.h"
-#include "ucapplication_p.h"
-#include <QtQml/QQmlContext>
-#include <QtQml/QQmlProperty>
-#include <QtQml/qqmlinfo.h>
-#include <QtQml/qqml.h>
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
+#include <QtCore/QStandardPaths>
 #include <QtCore/QStringList>
+#include <QtQml/QtQml>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlInfo>
+#include <QtQml/QQmlProperty>
+
 #include "i18n_p.h"
 #include "quickutils_p.h"
-#include <QtCore/QStandardPaths>
-
+#include "ucapplication_p.h"
 #include "unixsignalhandler_p.h"
 
 UT_NAMESPACE_BEGIN
@@ -90,13 +91,13 @@ void StateSaverBackend::initialize()
     // see bug https://bugreports.qt-project.org/browse/QTBUG-41735
     QString runtimeDir = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
     if (runtimeDir.isEmpty()) {
-        runtimeDir = qgetenv("XDG_RUNTIME_DIR");
+        runtimeDir = QString::fromLocal8Bit(qgetenv("XDG_RUNTIME_DIR"));
     }
     if (runtimeDir.isEmpty()) {
         qCritical() << "[StateSaver] No XDG_RUNTIME_DIR path set, cannot create appstate file.";
         return;
     }
-    m_archive = new QSettings(QString("%1/%2/statesaver.appstate").
+    m_archive = new QSettings(QStringLiteral("%1/%2/statesaver.appstate").
                               arg(runtimeDir).
                               arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
@@ -170,7 +171,8 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
             // skip the property
             continue;
         }
-        QQmlProperty qmlProperty(item, propertyName.toLocal8Bit().constData(), qmlContext(item));
+        QQmlProperty qmlProperty(
+            item, QString::fromLatin1(propertyName.toLocal8Bit().constData()), qmlContext(item));
         if (qmlProperty.isValid() && qmlProperty.isWritable()) {
             QVariant type = m_archive.data()->value(propertyName + "_TYPE");
             value.convert(type.toInt());
@@ -182,9 +184,9 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
                     "object %2 has type %3 and cannot be set to value \"%4\" of"
                     " type %5").arg(propertyName)
                                .arg(qmlContext(item)->nameForObject(item))
-                               .arg(qmlProperty.propertyTypeName())
+                               .arg(QString::fromLatin1(qmlProperty.propertyTypeName()))
                                .arg(value.toString())
-                               .arg(value.typeName());
+                               .arg(QString::fromLatin1(value.typeName()));
             }
         } else {
             qmlInfo(item) << QStringLiteral("property \"%1\" does not exist or is not writable for object %2")
@@ -192,7 +194,7 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
         }
     }
     // drop cache once properties are successfully restored
-    m_archive.data()->remove("");
+    m_archive.data()->remove(QStringLiteral(""));
     m_archive.data()->endGroup();
     // restore leaved group if needed
     if (restorePreviousGroup) {
@@ -209,7 +211,8 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
     m_archive.data()->beginGroup(id);
     int result = 0;
     Q_FOREACH(const QString &propertyName, properties) {
-        QQmlProperty qmlProperty(item, propertyName.toLocal8Bit().constData());
+        QQmlProperty qmlProperty(
+            item, QString::fromLatin1(propertyName.toLocal8Bit().constData()));
         if (qmlProperty.isValid()) {
             QVariant value = qmlProperty.read();
             if (static_cast<QMetaType::Type>(value.type()) != QMetaType::QObjectStar) {

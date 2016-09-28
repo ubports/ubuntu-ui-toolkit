@@ -45,8 +45,8 @@ if [ -z $_TARGETPATH ]; then
   echo 'Examples:'
   echo "  $0 $(relpath ${BUILD_DIR}/tests/unit/components/components) $(relpath ${SRC_DIR}/tests/unit/components/tst_label13.qml) minimal"
   echo ''
-  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/mainview)"
-  echo "  ../$(basename $0) mainview minimal"
+  echo "  cd $(relpath ${BUILD_DIR}/tests/unit/mainview13)"
+  echo "  ../$(basename $0) mainview13 minimal"
   echo "  cd ../../.."
   echo ''
   echo "  cd $(relpath ${BUILD_DIR}/tests/unit/visual)"

@@ -16,13 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef QQUICKCLIPBOARD_H
-#define QQUICKCLIPBOARD_H
+#ifndef QQUICKCLIPBOARD_P_H
+#define QQUICKCLIPBOARD_P_H
 
 #include <QtCore/QObject>
 #include <QtQml/QJSEngine>
 #include <QtQml/QQmlEngine>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlEngine;
 class QJSEngine;
@@ -60,4 +61,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // QQUICKCLIPBOARD_H
+#endif // QQUICKCLIPBOARD_P_H

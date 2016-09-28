@@ -17,23 +17,27 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCTHEME_H
-#define UCTHEME_H
+#ifndef UCTHEME_P_H
+#define UCTHEME_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
-#include <QtCore/QUrl>
 #include <QtCore/QString>
+#include <QtCore/QUrl>
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlParserStatus>
 #include <QtQml/QQmlProperty>
-#include <ubuntutoolkitglobal.h>
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+#include <QtQml/private/qqmlabstractbinding_p.h>
+#endif
 #include <QtQml/private/qpodvector_p.h>
 
-#include "ucdefaulttheme_p.h"
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucdefaulttheme_p.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
 class QQmlAbstractBinding;
+#endif
 class QQuickItem;
 
 UT_NAMESPACE_BEGIN
@@ -149,8 +153,13 @@ private:
             QQmlProperty configProperty;
             QQmlProperty paletteProperty;
             QVariant paletteValue;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlAbstractBinding::Ptr configBinding;
+            QQmlAbstractBinding::Ptr paletteBinding;
+#else
             QQmlAbstractBinding *configBinding;
             QQmlAbstractBinding *paletteBinding;
+#endif
         };
 
         // configuration palette, not the original theme one
@@ -176,4 +185,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCTheme))
 
-#endif // UCTHEME_H
+#endif // UCTHEME_P_H

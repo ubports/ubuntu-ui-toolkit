@@ -16,13 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ullayouts.h"
 #include "ullayouts_p.h"
+
+#include <QtQml/QQmlInfo>
+#include <QtQuick/private/qquickitem_p.h>
+
 #include "ulitemlayout.h"
 #include "ulconditionallayout.h"
 #include "propertychanges_p.h"
-#include <QtQml/QQmlInfo>
-#include <QtQuick/private/qquickitem_p.h>
 
 ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
     : QQmlIncubator(Asynchronous)

@@ -16,11 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCACTIONITEM_P
-#define UCACTIONITEM_P
+#ifndef UCACTIONITEM_P_P_H
+#define UCACTIONITEM_P_P_H
 
-#include "ucactionitem_p.h"
-#include "ucstyleditembase_p_p.h"
+#include <UbuntuToolkit/private/ucactionitem_p.h>
+
+#include <UbuntuToolkit/private/ucstyleditembase_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -61,5 +62,5 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCACTIONITEM_P
+#endif // UCACTIONITEM_P_P_H
 

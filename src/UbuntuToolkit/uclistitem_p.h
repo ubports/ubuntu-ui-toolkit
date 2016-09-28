@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEM_H
-#define UCLISTITEM_H
+#ifndef UCLISTITEM_P_H
+#define UCLISTITEM_P_H
 
 #include <QtQuick/QQuickItem>
-#include "ucstyleditembase_p.h"
+
+#include <UbuntuToolkit/private/ucstyleditembase_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -232,6 +233,7 @@ Q_SIGNALS:
     // 1.3
     void expandedIndicesChanged(const QList<int> &indices);
     void expansionFlagsChanged();
+    void effectiveCurrentIndexChanged();
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
 };
@@ -320,4 +322,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCLISTITEM_H
+#endif // UCLISTITEM_P_H

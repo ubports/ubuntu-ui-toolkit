@@ -16,11 +16,12 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "ucbottomedge_p_p.h"
 #include "ucbottomedgeregion_p_p.h"
-#include <propertychange_p.h>
+
 #include <QtQml/private/qqmlproperty_p.h>
 
+#include "propertychange_p.h"
+#include "ucbottomedge_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -456,7 +457,7 @@ DefaultRegion::DefaultRegion(UCBottomEdge *parent)
     UCBottomEdgeRegionPrivate *d = UCBottomEdgeRegionPrivate::get(this);
     d->from = 0.0;
     d->to = 1.0;
-    setObjectName("default_BottomEdgeRegion");
+    setObjectName(QStringLiteral("default_BottomEdgeRegion"));
 }
 
 bool DefaultRegion::canCommit(qreal dragRatio)

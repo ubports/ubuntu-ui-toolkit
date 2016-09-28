@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listitemdraghandler_p.h"
-#include "uclistitem_p.h"
-#include "uclistitem_p_p.h"
-#include <propertychange_p.h>
+#include "privates/listitemdraghandler_p.h"
+
 #include <QtQuick/private/qquickanimation_p.h>
+
+#include "uclistitem_p_p.h"
+#include "propertychange_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -60,7 +61,7 @@ void ListItemDragHandler::drop()
         connect(animation, &QQuickAbstractAnimation::stopped,
                 this, &ListItemDragHandler::dropItem, Qt::DirectConnection);
         // force properties to contain only the 'y' coordinate
-        animation->setProperties("y");
+        animation->setProperties(QStringLiteral("y"));
         animation->setTargetObject(listItem);
         animation->setFrom(listItem->y());
         animation->setTo(targetPos.y());

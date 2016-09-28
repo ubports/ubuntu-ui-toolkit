@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTU_UNOWNEDTOUCHEVENT_H
-#define UBUNTU_UNOWNEDTOUCHEVENT_H
+#ifndef UNOWNEDTOUCHEVENT_P_H
+#define UNOWNEDTOUCHEVENT_P_H
 
-#include <QTouchEvent>
-#include <QScopedPointer>
-#include "ubuntugesturesglobal.h"
+#include <QtCore/QScopedPointer>
+#include <QtGui/QTouchEvent>
+
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 
 UG_NAMESPACE_BEGIN
 /*
@@ -45,4 +46,4 @@ private:
 
 UG_NAMESPACE_END
 
-#endif // UBUNTU_UNOWNEDTOUCHEVENT_H
+#endif // UNOWNEDTOUCHEVENT_P_H

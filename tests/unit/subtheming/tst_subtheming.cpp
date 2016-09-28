@@ -12,26 +12,26 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include <QtCore/QString>
-#include <QtTest/QtTest>
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
+#include <QtTest/QtTest>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
+#include <UbuntuToolkit/private/quickutils_p.h>
+#include <UbuntuToolkit/private/uclabel_p.h>
+#include <UbuntuToolkit/private/ucstyleditembase_p_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 #define private public
 #define protected public
 #include <UbuntuToolkit/private/uctheme_p.h>
 #undef protected
 #undef private
-#include <UbuntuToolkit/private/quickutils_p.h>
+
 #include "uctestcase.h"
-#include "private/ucstyleditembase_p_p.h"
 #include "ucnamespace.h"
-#include <UbuntuToolkit/private/ucunits_p.h>
-#include <UbuntuToolkit/private/uclabel_p.h>
-#include <ubuntutoolkitmodule.h>
 
 UT_USE_NAMESPACE
 

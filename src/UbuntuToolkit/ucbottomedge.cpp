@@ -17,24 +17,25 @@
  */
 
 #include "ucbottomedge_p_p.h"
+
+#include <QtCore/QtMath>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
+#include <QtGui/QStyleHints>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlProperty>
+#include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
+#include <QtQuick/private/qquickitem_p.h>
+#include <UbuntuGestures/private/ucswipearea_p_p.h>
+
 #include "ucbottomedgestyle_p.h"
 #include "ucbottomedgeregion_p_p.h"
 #include "ucbottomedgehint_p_p.h"
 #include "ucstyleditembase_p_p.h"
-#include <QtCore/QtMath>
-#include <QtQml/QQmlEngine>
-#include <QtGui/QScreen>
-#include <QtQml/QQmlProperty>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QStyleHints>
-#include <QtQuick/private/qquickitem_p.h>
-#include <QtQuick/private/qquickflickable_p.h>
-
 #include "ucheader_p.h"
 #include "ucaction_p.h"
 #include "quickutils_p.h"
-#include "private/ucswipearea_p_p.h"
-#include <QtQuick/private/qquickanimation_p.h>
 
 Q_LOGGING_CATEGORY(ucBottomEdge, "ubuntu.components.BottomEdge", QtMsgType::QtWarningMsg)
 
@@ -186,11 +187,11 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regions
         }
         QRectF rect(stackedRegion->rect(boundingRect));
         if (rect.contains(regionRect)) {
-            qmlInfo(region) << QString("Region at index %1 contains this region. This region will never activate.").arg(i);
+            qmlInfo(region) << QStringLiteral("Region at index %1 contains this region. This region will never activate.").arg(i);
         } else {
             QRectF intersect = regionRect.intersected(stackedRegion->rect(boundingRect));
             if (!intersect.isNull()) {
-                qmlInfo(region) << QString("Region intersects the one from index %1 having from: %2 and to: %3")
+                qmlInfo(region) << QStringLiteral("Region intersects the one from index %1 having from: %2 and to: %3")
                                    .arg(i)
                                    .arg(UCBottomEdgeRegionPrivate::get(stackedRegion)->from)
                                    .arg(UCBottomEdgeRegionPrivate::get(stackedRegion)->to);
@@ -390,7 +391,7 @@ UCCollapseAction::UCCollapseAction(QObject *parent)
 
 void UCCollapseAction::activate()
 {
-    setIconName("down");
+    setIconName(QStringLiteral("down"));
 }
 
 // inject collapse action into the content if the content has a PageHeader
@@ -398,7 +399,7 @@ void UCBottomEdgePrivate::patchContentItemHeader()
 {
     // ugly, as it can be, as we don't have the PageHeader in cpp to detect the type
     UCHeader *header = currentContentItem ? currentContentItem->findChild<UCHeader*>() : Q_NULLPTR;
-    if (!header || !QuickUtils::inherits(header, "PageHeader")) {
+    if (!header || !QuickUtils::inherits(header, QStringLiteral("PageHeader"))) {
         return;
     }
 

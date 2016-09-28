@@ -16,10 +16,10 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UBUNTU_PERFORMANCE_METRICS_PLUGIN_H
-#define UBUNTU_PERFORMANCE_METRICS_PLUGIN_H
+#ifndef UPMPLUGIN_H
+#define UPMPLUGIN_H
 
-#include <QQmlExtensionPlugin>
+#include <QtQml/QQmlExtensionPlugin>
 
 class UbuntuPerformanceMetricsPlugin : public QQmlExtensionPlugin
 {
@@ -33,5 +33,4 @@ private:
     void registerTypeVersion(const char *uri, int major, int minor);
 };
 
-#endif // UBUNTU_PERFORMANCE_METRICS_PLUGIN_H
-
+#endif // UPMPLUGIN_H

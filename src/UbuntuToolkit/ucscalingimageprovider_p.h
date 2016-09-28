@@ -16,12 +16,13 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef SCALINGIMAGEPROVIDER_H
-#define SCALINGIMAGEPROVIDER_H
+#ifndef UCSCALINGIMAGEPROVIDER_P_H
+#define UCSCALINGIMAGEPROVIDER_P_H
 
-#include <QtQuick/QQuickImageProvider>
 #include <QtGui/QImage>
-#include <ubuntutoolkitglobal.h>
+#include <QtQuick/QQuickImageProvider>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -34,4 +35,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // SCALINGIMAGEPROVIDER_H
+#endif // UCSCALINGIMAGEPROVIDER_P_H

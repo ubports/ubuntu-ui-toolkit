@@ -14,15 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCACTIONCONTEXT_H
-#define UCACTIONCONTEXT_H
+#ifndef UCACTIONCONTEXT_P_H
+#define UCACTIONCONTEXT_P_H
 
 #include <QtCore/QObject>
+#include <QtCore/QSet>
+#include <QtQml/QtQml>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
-#include <QtCore/QSet>
-#include <QtQml>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
@@ -111,4 +112,4 @@ UT_NAMESPACE_END
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCActionContext))
 QML_DECLARE_TYPEINFO(UT_PREPEND_NAMESPACE(UCActionContext), QML_HAS_ATTACHED_PROPERTIES)
 
-#endif // UCACTIONCONTEXT_H
+#endif // UCACTIONCONTEXT_P_H

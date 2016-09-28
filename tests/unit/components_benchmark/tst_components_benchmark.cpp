@@ -16,13 +16,13 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include <QtCore/QDir>
+#include <QtCore/QUrl>
+#include <QtQml/QQmlComponent>
+#include <QtQml/QQmlEngine>
 #include <QtTest/QtTest>
-#include <QQmlEngine>
-#include <QQmlComponent>
 
-#include <QDir>
-#include <QUrl>
-#include <ucnamespace.h>
+#include "ucnamespace.h"
 
 class tst_components_benchmark: public QObject
 {

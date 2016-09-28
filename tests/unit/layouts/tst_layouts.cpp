@@ -12,26 +12,23 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include <QtCore/QString>
-#include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
-
-#include <QtCore/QThread>
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
-
-#include "ullayouts.h"
-#include <UbuntuToolkit/private/ucunits_p.h>
-#include "uctestcase.h"
-#include <UbuntuToolkit/private/uctheme_p.h>
-#include <QtQuick/private/qquickanchors_p.h>
+#include <QtCore/QFileInfo>
+#include <QtCore/QString>
+#include <QtCore/QThread>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
 #include <QtQuick/private/qquickanchors_p_p.h>
+#include <QtTest/QtTest>
+#include <UbuntuToolkit/private/ucunits_p.h>
+#include <UbuntuToolkit/private/uctheme_p.h>
+
+#include "uctestcase.h"
+#include "ullayouts.h"
 
 UT_USE_NAMESPACE
 

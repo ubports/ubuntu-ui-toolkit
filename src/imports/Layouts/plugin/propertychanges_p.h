@@ -16,12 +16,11 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef LAYOUTACTION_P_H
-#define LAYOUTACTION_P_H
+#ifndef PROPERTYCHANGES_P_H
+#define PROPERTYCHANGES_P_H
 
 #include <QtCore/QVariant>
 #include <QtQml/QQmlListProperty>
-
 #define foreach Q_FOREACH //workaround to fix private includes
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
@@ -214,4 +213,4 @@ private:
     QList<PropertyChange*> unifiedChanges();
 };
 
-#endif // LAYOUTACTION_P_H
+#endif // PROPERTYCHANGES_P_H

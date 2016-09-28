@@ -17,6 +17,7 @@
  */
 
 #include "ucbottomedgestyle_p.h"
+
 #include "ucbottomedge_p_p.h"
 
 UT_NAMESPACE_BEGIN

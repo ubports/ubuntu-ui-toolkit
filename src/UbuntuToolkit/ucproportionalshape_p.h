@@ -16,10 +16,10 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UCPROPORTIONALSHAPE_H
-#define UCPROPORTIONALSHAPE_H
+#ifndef UCPROPORTIONALSHAPE_P_H
+#define UCPROPORTIONALSHAPE_P_H
 
-#include "ucubuntushape_p.h"
+#include <UbuntuToolkit/private/ucubuntushape_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -44,4 +44,4 @@ UT_NAMESPACE_END
 
 QML_DECLARE_TYPE(UT_PREPEND_NAMESPACE(UCProportionalShape))
 
-#endif  // UCPROPORTIONALSHAPE_H
+#endif  // UCPROPORTIONALSHAPE_P_H

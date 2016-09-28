@@ -16,16 +16,16 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCITEMEXTENSION_H
-#define UCITEMEXTENSION_H
+#ifndef UCTHEMINGEXTENSION_P_H
+#define UCTHEMINGEXTENSION_P_H
 
-#include <QtCore/QObject>
 #include <QtCore/QEvent>
+#include <QtCore/QObject>
 #include <QtCore/QPointer>
-#include <QtQml>
-
+#include <QtQml/QtQml>
 #include <QtQuick/private/qquickitem_p.h>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
@@ -68,4 +68,4 @@ UT_NAMESPACE_END
 #define UCThemingExtension_iid "org.qt-project.Qt.UCThemingExtension"
 Q_DECLARE_INTERFACE(UT_PREPEND_NAMESPACE(UCThemingExtension), UCThemingExtension_iid)
 
-#endif // UCITEMEXTENSION_H
+#endif // UCTHEMINGEXTENSION_P_H

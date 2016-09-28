@@ -14,22 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UNITY_TOUCHREGISTRY_H
-#define UNITY_TOUCHREGISTRY_H
+#ifndef TOUCHREGISTRY_P_H
+#define TOUCHREGISTRY_P_H
 
+#include <QtCore/QLoggingCategory>
+#include <QtCore/QObject>
+#include <QtCore/QPointer>
+#include <QtCore/QVector>
+#include <QtGui/QTouchEvent>
 #include <QtQuick/QQuickItem>
-#include <QObject>
-#include <QPointer>
-#include <QTouchEvent>
-#include <QVector>
 
-#include "ubuntugesturesglobal.h"
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 #include <UbuntuGestures/private/candidateinactivitytimer_p.h>
 #include <UbuntuGestures/private/timer_p.h>
 #include <UbuntuGestures/private/pool_p.h>
-
-// logging
-#include <QtCore/QLoggingCategory>
 
 UG_FORWARD_DECLARE_CLASS(AbstractTimerFactory)
 
@@ -206,4 +204,4 @@ UG_NAMESPACE_END
 
 Q_DECLARE_LOGGING_CATEGORY(ugTouchRegistry)
 
-#endif // UNITY_TOUCHREGISTRY_H
+#endif // TOUCHREGISTRY_P_H

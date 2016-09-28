@@ -13,11 +13,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef COLORUTILS_H
-#define COLORUTILS_H
 
-#include <QObject>
-#include "ubuntutoolkitglobal.h"
+#ifndef COLORUTILS_P_H
+#define COLORUTILS_P_H
+
+#include <QtCore/QObject>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -31,4 +33,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // COLORUTILS_H
+#endif // COLORUTILS_P_H

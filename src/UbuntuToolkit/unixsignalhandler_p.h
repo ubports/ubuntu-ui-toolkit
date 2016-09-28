@@ -12,15 +12,17 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
+
 #ifndef UNIXSIGNALHANDLER_P_H
 #define UNIXSIGNALHANDLER_P_H
 
-#include <QtCore/QObject>
-#include <QtCore/QHash>
 #include <signal.h>
-#include <ubuntutoolkitglobal.h>
+
+#include <QtCore/QHash>
+#include <QtCore/QObject>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QSocketNotifier;
 

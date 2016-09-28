@@ -12,22 +12,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include "ucswipearea_p_p.h"
 
-#include <QQuickWindow>
-#include <QtCore/qmath.h>
-#include <QScreen>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtGui/QScreen>
+#include <QtCore/QtMath>
+#include <QtQuick/QQuickWindow>
+#include <QtQuick/private/qquickwindow_p.h>
 
-#include <private/qquickwindow_p.h>
-
-// local
-#include <UbuntuGestures/private/touchownershipevent_p.h>
-#include <UbuntuGestures/private/touchregistry_p.h>
-#include <UbuntuGestures/private/unownedtouchevent_p.h>
+#include "touchownershipevent_p.h"
+#include "touchregistry_p.h"
+#include "unownedtouchevent_p.h"
 
 UG_NAMESPACE_BEGIN
 

@@ -25,11 +25,10 @@
 //     the trade-off between shader cycles and bandwidth requirements needs to be precisely
 //     evaluated.
 
-#include <math.h>
 #include "ucubuntushape_p.h"
-#include "ucunits_p.h"
-#include "ubuntutoolkitglobal.h"
-#include "quickutils_p.h"
+
+#include <math.h>
+
 #include <QtCore/QPointer>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlInfo>
@@ -38,6 +37,10 @@
 #define emit Q_EMIT
 #include <QtQuick/private/qquickimage_p.h>
 #undef emit
+
+#include "quickutils_p.h"
+#include "ubuntutoolkitglobal.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -408,7 +411,8 @@ bool UCUbuntuShape::isVersionGreaterThanOrEqual(Version version)
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
-  const Radius newRadius = (radius == "medium") ? Medium : ((radius == "large") ? Large : Small);
+    const Radius newRadius = (radius == QStringLiteral("medium")) ?
+        Medium : ((radius == QStringLiteral("large")) ? Large : Small);
     if (m_radius != newRadius) {
         m_radius = newRadius;
         update();
@@ -852,9 +856,9 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 
     if (!(m_flags & AspectSet)) {
         quint8 aspect;
-        if (borderSource.endsWith(QString("radius_idle.sci"))) {
+        if (borderSource.endsWith(QStringLiteral("radius_idle.sci"))) {
             aspect = Inset;
-        } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
+        } else if (borderSource.endsWith(QStringLiteral("radius_pressed.sci"))) {
             aspect = Pressed;
         } else {
             aspect = Flat;

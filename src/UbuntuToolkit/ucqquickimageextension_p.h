@@ -16,16 +16,17 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef QQUICKIMAGEEXTENSION_H
-#define QQUICKIMAGEEXTENSION_H
+#ifndef UCQQUICKIMAGEEXTENSION_P_H
+#define UCQQUICKIMAGEEXTENSION_P_H
 
-#include <QtCore/QObject>
-#include <QtCore/QUrl>
 #include <QtCore/QByteArray>
-#include <QtCore/QTextStream>
-#include <QtCore/QTemporaryFile>
+#include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
-#include "ubuntutoolkitglobal.h"
+#include <QtCore/QTemporaryFile>
+#include <QtCore/QTextStream>
+#include <QtCore/QUrl>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickImageBase;
 
@@ -61,4 +62,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // QQUICKIMAGEEXTENSION_H
+#endif // UCQQUICKIMAGEEXTENSION_P_H

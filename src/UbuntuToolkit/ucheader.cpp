@@ -15,10 +15,12 @@
  */
 
 #include "ucheader_p.h"
-#include <QDebug>
-#include <QtQuick/private/qquickflickable_p.h>
+
+#include <QtCore/QDebug>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickflickable_p.h>
+
 #include "ucubuntuanimation_p.h"
 #include "ucunits_p.h"
 
@@ -87,7 +89,7 @@ UCHeader::UCHeader(QQuickItem *parent)
 {
     m_showHideAnimation->setParent(this);
     m_showHideAnimation->setTargetObject(this);
-    m_showHideAnimation->setProperty("y");
+    m_showHideAnimation->setProperty(QStringLiteral("y"));
     m_showHideAnimation->setEasing(s_ubuntuAnimation->StandardEasing());
     m_showHideAnimation->setDuration(s_ubuntuAnimation->BriskDuration());
 

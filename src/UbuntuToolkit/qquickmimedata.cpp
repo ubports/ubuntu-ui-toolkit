@@ -16,14 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include <QtGui/QClipboard>
-#include <QtGui/QGuiApplication>
+#include "qquickmimedata_p.h"
+
 #include <QtCore/QMimeData>
 #include <QtCore/QMimeDatabase>
 #include <QtCore/QMimeType>
-#include "qquickmimedata_p.h"
-
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtGui/QClipboard>
+#include <QtGui/QGuiApplication>
 
 UT_NAMESPACE_BEGIN
 
@@ -198,11 +198,14 @@ static bool setMimeType(QMimeData *mimeData, QVariantList &mlist)
     QMimeDatabase db;
     for (int i = 0; i < mlist.length() / 2; i++) {
         QString type = mlist[2 * i].toString();
-        if (db.mimeTypeForName(type).isValid() || type == "application/x-color") {
+        // FIXME(loicm) Just went through that while converting the code base to
+        //     QStringLiteral, the else can't be executed here and that smells
+        //     like a bug.
+        if (db.mimeTypeForName(type).isValid() || type == QStringLiteral("application/x-color")) {
             QByteArray data = mlist[2 * i + 1].toByteArray();
             mimeData->setData(type, data);
             ret = true;
-        } else if (type == "application/x-color") {
+        } else if (type == QStringLiteral("application/x-color")) {
             // for some reason colors are not taken in other way...
             mimeData->setColorData(mlist[2 * i + 1]);
             ret = true;

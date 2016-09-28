@@ -20,10 +20,11 @@
 #define UBUNTUTOOLKITMODULE_H
 
 #include <QtCore/QObject>
-#include <QtQml/QQmlEngine>
+#include <QtQml/QtQml>
 #include <QtQml/QJSEngine>
-#include <qqml.h>
-#include <ubuntutoolkitglobal.h>
+#include <QtQml/QQmlEngine>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlEngine;
 class QWindow;

@@ -226,6 +226,7 @@ Item {
                 styleName: "IconButtonStyle"
                 action: modelData
                 height: greenButtonsBar.height
+                activeFocusOnTab: true
                 StyleHints {
                     foregroundColor: UbuntuColors.green
                 }

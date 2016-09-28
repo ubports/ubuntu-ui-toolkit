@@ -17,10 +17,12 @@
  */
 
 #include "ucthemingextension_p.h"
-#include "uctheme_p.h"
-#include <QtQuick/private/qquickitem_p.h>
-#include <QtQml/private/qqmlcomponentattached_p.h>
+
 #include <QtGui/QGuiApplication>
+#include <QtQml/private/qqmlcomponentattached_p.h>
+#include <QtQuick/private/qquickitem_p.h>
+
+#include "uctheme_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -224,8 +226,9 @@ UCTheme *UCThemingExtension::getTheme()
     if (!theme) {
         theme = UCTheme::defaultTheme(qmlEngine(themedItem));
         if (!theme) {
-            QString msg = QStringLiteral("The item %1 was created without a valid QML Engine. Styling will not be possible.")
-                    .arg(themedItem->metaObject()->className());
+            QString msg = QStringLiteral(
+                "The item %1 was created without a valid QML Engine. Styling will not be possible.")
+                .arg(QString::fromLatin1(themedItem->metaObject()->className()));
             qCritical().noquote() << msg;
             return Q_NULLPTR;
         }

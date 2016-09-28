@@ -17,37 +17,35 @@
  *          Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ubuntutoolkitglobal.h"
 #include "uctheme_p.h"
-#include "listener_p.h"
-#include "quickutils_p.h"
-#include "i18n_p.h"
-#include "ucfontutils_p.h"
-#include "ucstyleditembase_p_p.h"
-#include "ucthemingextension_p.h"
 
-#include <QtQml/qqml.h>
-#include <QtQml/qqmlinfo.h>
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlContext>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-#include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QStandardPaths>
-#include <QtGui/QGuiApplication>
+#include <QtCore/QTextStream>
 #include <QtGui/QFont>
-
+#include <QtGui/QGuiApplication>
+#include <QtQml/QtQml>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 #include <QtQml/private/qqmlproperty_p.h>
 #include <QtQml/private/qqmlabstractbinding_p.h>
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
 
+#include "i18n_p.h"
+#include "listener_p.h"
+#include "quickutils_p.h"
+#include "ubuntutoolkitglobal.h"
+#include "ucfontutils_p.h"
+#include "ucstyleditembase_p_p.h"
+#include "ucthemingextension_p.h"
+
 UT_NAMESPACE_BEGIN
 
-const char *CONTEXT_THEME = "theme";
-quint16 UCTheme::previousVersion = 0;
 /*!
  * \qmltype ThemeSettings
  * \instantiates UCTheme
@@ -147,19 +145,25 @@ quint16 UCTheme::previousVersion = 0;
  * \sa {StyledItem}
  */
 
-const QString THEME_FOLDER_FORMAT("%1/%2/");
-const QString PARENT_THEME_FILE("parent_theme");
+static const QString contextTheme = QStringLiteral("theme");
+static const QString themeFolderFormat = QStringLiteral("%1/%2/");
+static const QString parentThemeFile = QStringLiteral("parent_theme");
 
-static inline void updateBinding (QQmlAbstractBinding *binding)
-{
+quint16 UCTheme::previousVersion = 0;
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+static inline void updateBinding(const QQmlAbstractBinding::Ptr &binding)
+{
     if (binding->isValueTypeProxy())
         return;
-    static_cast<QQmlBinding *>(binding)->update();
-#else
-    binding->update();
-#endif
+    static_cast<QQmlBinding*>(binding.data())->update();
 }
+#else
+static inline void updateBinding (const QQmlAbstractBinding *binding)
+{
+    const_cast<QQmlAbstractBinding*>(binding)->update();
+}
+#endif
 
 QStringList themeSearchPath()
 {
@@ -177,7 +181,7 @@ QStringList themeSearchPath()
     }
 
     // append QML import path(s); we must explicitly support env override here
-    QString qml2ImportPath(getenv("QML2_IMPORT_PATH"));
+    const QString qml2ImportPath = QString::fromLocal8Bit(getenv("QML2_IMPORT_PATH"));
     if (!qml2ImportPath.isEmpty()) {
         pathList << qml2ImportPath.split(':', QString::SkipEmptyParts);
     }
@@ -201,7 +205,7 @@ UCTheme::ThemeRecord pathFromThemeName(QString themeName)
     themeName.replace('.', '/');
     QStringList pathList = themeSearchPath();
     Q_FOREACH(const QString &path, pathList) {
-        QString themeFolder = THEME_FOLDER_FORMAT.arg(path, themeName);
+        QString themeFolder = themeFolderFormat.arg(path, themeName);
         // QUrl needs a trailing slash to understand it's a directory
         QString absoluteThemeFolder = QDir(themeFolder).absolutePath().append('/');
         if (QDir(absoluteThemeFolder).exists()) {
@@ -220,7 +224,7 @@ QString parentThemeName(const UCTheme::ThemeRecord& themePath)
     if (!themePath.isValid()) {
         qWarning() << qPrintable(QStringLiteral("Theme not found: \"%1\"").arg(themePath.name));
     } else {
-        QFile file(themePath.path.resolved(PARENT_THEME_FILE).toLocalFile());
+        QFile file(themePath.path.resolved(parentThemeFile).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             parentTheme = in.readLine();
@@ -263,11 +267,14 @@ void UCTheme::PaletteConfig::restorePalette()
         // restore the config binding to the config target
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         if (config.configBinding && !config.configBinding->isValueTypeProxy()) {
+            QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding.data());
+            qmlBinding->removeFromObject();
+            QQmlPropertyPrivate::removeBinding(config.paletteProperty);
 #else
         if (config.configBinding && config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
-#endif
             QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
             qmlBinding->removeFromObject();
+#endif
             qmlBinding->setTarget(config.configProperty);
         }
 
@@ -275,7 +282,7 @@ void UCTheme::PaletteConfig::restorePalette()
             // restore the binding to the palette
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             QQmlAbstractBinding::Ptr prev(QQmlPropertyPrivate::binding(config.paletteProperty));
-            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding.data());
 #else
             QQmlAbstractBinding *prev = QQmlPropertyPrivate::setBinding(config.paletteProperty, config.paletteBinding);
 #endif
@@ -293,7 +300,7 @@ void UCTheme::PaletteConfig::restorePalette()
         }
 
         config.paletteProperty = QQmlProperty();
-        config.paletteBinding = NULL;
+        config.paletteBinding = Q_NULLPTR;
         config.paletteValue.clear();
     }
 
@@ -306,17 +313,18 @@ void UCTheme::PaletteConfig::buildConfig()
     if (!palette) {
         return;
     }
-    const char *valueSetList[10] = {"normal", "selected"};
+    const char* valueSetString[2] = { "normal", "selected" };
+    const QString valueSetQString[2] = { QStringLiteral("normal"), QStringLiteral("selected") };
     QQmlContext *configContext = qmlContext(palette);
 
     for (int i = 0; i < 2; i++) {
-        const char *valueSet = valueSetList[i];
-        QObject *configObject = palette->property(valueSet).value<QObject*>();
+        QObject *configObject = palette->property(valueSetString[i]).value<QObject*>();
         const QMetaObject *mo = configObject->metaObject();
 
         for (int ii = mo->propertyOffset(); ii < mo->propertyCount(); ii++) {
             const QMetaProperty prop = mo->property(ii);
-            QString propertyName = QString("%1.%2").arg(valueSet).arg(prop.name());
+            QString propertyName = QStringLiteral("%1.%2")
+                .arg(valueSetQString[i]).arg(QString::fromLatin1(prop.name()));
             QQmlProperty configProperty(palette, propertyName, configContext);
 
             // first we need to check whether the property has a binding or not
@@ -346,6 +354,10 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
         config.paletteBinding = QQmlPropertyPrivate::binding(config.paletteProperty);
         if (!config.paletteBinding) {
             config.paletteValue = config.paletteProperty.read();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        } else {
+            QQmlPropertyPrivate::removeBinding(config.paletteProperty);
+#endif
         }
 
         // apply configuration
@@ -353,17 +365,26 @@ void UCTheme::PaletteConfig::apply(QObject *themePalette)
             // transfer binding's target
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             if (!config.configBinding->isValueTypeProxy()) {
+                QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding.data());
 #else
             if (config.configBinding->bindingType() == QQmlAbstractBinding::Binding) {
-#endif
                 QQmlBinding *qmlBinding = static_cast<QQmlBinding*>(config.configBinding);
+#endif
                 qmlBinding->setTarget(config.paletteProperty);
             }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            QQmlPropertyPrivate::setBinding(config.paletteProperty, config.configBinding.data());
+#else
             QQmlPropertyPrivate::setBinding(config.paletteProperty, config.configBinding);
+#endif
         } else {
             if (config.paletteBinding) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+                QQmlPropertyPrivate::removeBinding(config.paletteProperty);
+#else
                 // remove binding so the property doesn't clear it
                 QQmlPropertyPrivate::setBinding(config.paletteProperty, 0);
+#endif
             }
             config.paletteProperty.write(config.configProperty.read());
         }
@@ -390,7 +411,7 @@ UCTheme *UCTheme::defaultTheme(QQmlEngine *engine)
     }
     UCTheme *theme = Q_NULLPTR;
     for (int tryCount = 0; !theme && tryCount < 2; tryCount++) {
-        theme = engine->rootContext()->contextProperty(CONTEXT_THEME).value<UCTheme*>();
+        theme = engine->rootContext()->contextProperty(contextTheme).value<UCTheme*>();
         if (!theme) {
             createDefaultTheme(engine);
         }
@@ -403,11 +424,11 @@ void UCTheme::setupDefault()
     // FIXME: move this into QPA
     // set the default font
     QFont defaultFont = QGuiApplication::font();
-    defaultFont.setFamily("Ubuntu");
-    defaultFont.setPixelSize(UCFontUtils::instance()->sizeToPixels("medium"));
+    defaultFont.setFamily(QStringLiteral("Ubuntu"));
+    defaultFont.setPixelSize(UCFontUtils::instance()->sizeToPixels(QStringLiteral("medium")));
     defaultFont.setWeight(QFont::Light);
     QGuiApplication::setFont(defaultFont);
-    setObjectName("default");
+    setObjectName(QStringLiteral("default"));
 }
 
 void UCTheme::init()
@@ -584,7 +605,7 @@ void UCTheme::setPalette(QObject *config)
     if (config == m_palette || config == m_config.palette) {
         return;
     }
-    if (config && !QuickUtils::inherits(config, "Palette")) {
+    if (config && !QuickUtils::inherits(config, QStringLiteral("Palette"))) {
         qmlInfo(config) << QStringLiteral("Not a Palette component.");
         return;
     }
@@ -671,13 +692,13 @@ void UCTheme::createDefaultTheme(QQmlEngine* engine)
 
     UCTheme *theme = new UCTheme(engine);
     QQmlEngine::setContextForObject(theme, context);
-    context->setContextProperty(CONTEXT_THEME, theme);
+    context->setContextProperty(contextTheme, theme);
 
     theme->setupDefault();
     theme->updateEnginePaths(engine);
 
     ContextPropertyChangeListener *listener =
-        new ContextPropertyChangeListener(context, CONTEXT_THEME);
+        new ContextPropertyChangeListener(context, contextTheme);
     QObject::connect(theme, &UCTheme::nameChanged,
                      listener, &ContextPropertyChangeListener::updateContextProperty);
 }
@@ -776,7 +797,8 @@ void UCTheme::loadPalette(QQmlEngine *engine, bool notify)
         m_palette = 0;
     }
     // theme may not have palette defined
-    QUrl paletteUrl = styleUrl("Palette.qml", previousVersion ? previousVersion : LATEST_UITK_VERSION);
+    QUrl paletteUrl = styleUrl(
+        QStringLiteral("Palette.qml"), previousVersion ? previousVersion : LATEST_UITK_VERSION);
     if (paletteUrl.isValid()) {
         m_palette = QuickUtils::instance()->createQmlObject(paletteUrl, engine);
         if (m_palette) {

@@ -1,40 +1,31 @@
-TEMPLATE=lib
-TARGET=UbuntuGestures
+TARGET = UbuntuGestures
+QT = core-private gui-private qml-private quick-private
 
-QT *= core-private gui-private qml qml-private quick quick-private
+HEADERS += \
+    $$PWD/candidateinactivitytimer_p.h \
+    $$PWD/damper_p.h \
+    $$PWD/debughelpers_p.h \
+    $$PWD/pool_p.h \
+    $$PWD/timer_p.h \
+    $$PWD/timesource_p.h \
+    $$PWD/touchownershipevent_p.h \
+    $$PWD/touchregistry_p.h \
+    $$PWD/ubuntugesturesglobal.h \
+    $$PWD/ubuntugesturesmodule.h \
+    $$PWD/ucswipearea_p.h \
+    $$PWD/ucswipearea_p_p.h \
+    $$PWD/unownedtouchevent_p.h
 
-CONFIG += dll no_keywords c++11
+SOURCES += \
+    $$PWD/candidateinactivitytimer.cpp \
+    $$PWD/damper.cpp \
+    $$PWD/debughelpers.cpp \
+    $$PWD/timer.cpp \
+    $$PWD/timesource.cpp \
+    $$PWD/touchownershipevent.cpp \
+    $$PWD/touchregistry.cpp \
+    $$PWD/ubuntugesturesmodule.cpp \
+    $$PWD/ucswipearea.cpp \
+    $$PWD/unownedtouchevent.cpp
 
-INCLUDEPATH+=$$PWD
-
-DEFINES += UBUNTUGESTURES_LIBRARY
-
-load(qt_build_config)
 load(ubuntu_qt_module)
-
-HEADERS += candidateinactivitytimer_p.h \
-           debughelpers_p.h \
-           timer_p.h \
-           timesource_p.h \
-           touchownershipevent_p.h \
-           touchregistry_p.h \
-           unownedtouchevent_p.h \
-           ubuntugesturesglobal.h \
-           pool_p.h \
-           ucswipearea_p.h \
-           ucswipearea_p_p.h \
-           damper_p.h \
-           ubuntugesturesmodule.h
-
-
-SOURCES += candidateinactivitytimer.cpp \
-           debughelpers.cpp \
-           timer.cpp \
-           timesource.cpp \
-           touchownershipevent.cpp \
-           touchregistry.cpp \
-           unownedtouchevent.cpp \
-           ucswipearea.cpp \
-           damper.cpp \
-           ubuntugesturesmodule.cpp
-

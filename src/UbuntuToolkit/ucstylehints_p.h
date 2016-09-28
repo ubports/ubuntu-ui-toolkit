@@ -16,17 +16,18 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCSTYLEHINTS_H
-#define UCSTYLEHINTS_H
+#ifndef UCSTYLEHINTS_P_H
+#define UCSTYLEHINTS_P_H
 
 #include <QtCore/QObject>
 #define foreach Q_FOREACH
+#include <QtQml/private/qpodvector_p.h>
 #include <QtQml/private/qqmlcustomparser_p.h>
-#include <private/qv4engine_p.h>
-#include <private/qpodvector_p.h>
+#include <QtQml/private/qv4engine_p.h>
 #undef foreach
 #include <QtQml/private/qqmlcompiler_p.h>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
@@ -95,4 +96,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCSTYLEHINTS_H
+#endif // UCSTYLEHINTS_P_H

@@ -16,12 +16,13 @@
  * Authors: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCDEPRECATEDTHEME_H
-#define UCDEPRECATEDTHEME_H
+#ifndef UCDEPRECATEDTHEME_P_H
+#define UCDEPRECATEDTHEME_P_H
 
-#include <QtCore/QObject>
 #include <QtCore/QHash>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QObject>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlComponent;
 class QQmlContext;
@@ -59,4 +60,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCDEPRECATEDTHEME_H
+#endif // UCDEPRECATEDTHEME_P_H

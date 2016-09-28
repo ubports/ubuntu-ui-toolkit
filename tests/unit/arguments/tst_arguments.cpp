@@ -16,19 +16,18 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include <QtCore/QDebug>
+#include <QtCore/QString>
+#include <QtCore/QTextCodec>
+#include <QtQml/QQmlEngine>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QTest>
+#include <UbuntuToolkit/private/i18n_p.h>
 #define protected public
 #include <UbuntuToolkit/private/ucarguments_p.h>
 #undef protected
 
-#include <QtCore/QString>
-#include <QtCore/QTextCodec>
-#include <QtCore/QDebug>
-#include <QtTest/QTest>
-#include <QtTest/QSignalSpy>
-
 #include "uctestcase.h"
-#include <QtQml/QQmlEngine>
-#include <UbuntuToolkit/private/i18n_p.h>
 
 UT_USE_NAMESPACE
 

@@ -18,12 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSORTFILTERPROXYMODELQML_H
-#define QSORTFILTERPROXYMODELQML_H
+#ifndef SORTFILTERMODEL_P_H
+#define SORTFILTERMODEL_P_H
 
-#include <QSortFilterProxyModel>
-#include "sortbehavior_p.h"
-#include "filterbehavior_p.h"
+#include <QtCore/QSortFilterProxyModel>
+
+#include <UbuntuToolkit/private/sortbehavior_p.h>
+#include <UbuntuToolkit/private/filterbehavior_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -73,4 +74,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // QSORTFILTERPROXYMODELQML_H
+#endif // SORTFILTERMODEL_P_H

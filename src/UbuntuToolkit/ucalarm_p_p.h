@@ -16,14 +16,16 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCALARM_P_H
-#define UCALARM_P_H
+#ifndef UCALARM_P_P_H
+#define UCALARM_P_P_H
 
-#include "ucalarm_p.h"
-#include "alarmmanager_p_p.h"
+#include <UbuntuToolkit/private/ucalarm_p.h>
+
 #include <QtCore/QDateTime>
 #include <QtCore/QPointer>
 #include <QtQml/QQmlListProperty>
+
+#include <UbuntuToolkit/private/alarmmanager_p_p.h>
 
 UT_NAMESPACE_BEGIN
 

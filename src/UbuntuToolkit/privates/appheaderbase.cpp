@@ -15,6 +15,7 @@
  */
 
 #include "appheaderbase_p.h"
+
 #include "ucstyleditembase_p_p.h"
 
 UT_NAMESPACE_BEGIN
@@ -35,7 +36,7 @@ UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
     , m_animate(true)
 {
     connect(this, &UCHeader::themeChanged, this, &UCAppHeaderBase::themeChanged2);
-    UCStyledItemBasePrivate::get(this)->styleDocument = "PageHeadStyle";
+    UCStyledItemBasePrivate::get(this)->styleDocument = QStringLiteral("PageHeadStyle");
 }
 
 UCTheme* UCAppHeaderBase::theme2()

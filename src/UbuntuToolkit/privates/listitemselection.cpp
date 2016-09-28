@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listitemselection_p.h"
+#include "privates/listitemselection_p.h"
+
 #include "uclistitem_p_p.h"
 
 UT_NAMESPACE_BEGIN

@@ -16,11 +16,12 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
-#ifndef UCSCROLLBARUTILS_H
-#define UCSCROLLBARUTILS_H
+#ifndef UCSCROLLBARUTILS_P_H
+#define UCSCROLLBARUTILS_P_H
 
-#include <QObject>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QObject>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 
@@ -38,4 +39,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCSCROLLBARUTILS_H
+#endif // UCSCROLLBARUTILS_P_H

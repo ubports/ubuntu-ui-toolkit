@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TREE_H
-#define TREE_H
+#ifndef TREE_P_H
+#define TREE_P_H
 
-#include <QObject>
-#include <QVariant>
-#include "ubuntutoolkitglobal.h"
+#include <QtCore/QObject>
+#include <QtCore/QVariant>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -45,4 +46,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // TREE_H
+#endif // TREE_P_H

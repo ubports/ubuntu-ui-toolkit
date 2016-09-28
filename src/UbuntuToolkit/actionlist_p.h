@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACTIONLIST_H
-#define ACTIONLIST_H
+#ifndef ACTIONLIST_P_H
+#define ACTIONLIST_P_H
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <QtQml/QQmlListProperty>
-#include "ubuntutoolkitglobal.h"
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -28,7 +29,9 @@ class UBUNTUTOOLKIT_EXPORT ActionList : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> actions READ actions)
-    Q_CLASSINFO("DefaultProperty", "actions")
+    // children alias
+    Q_PROPERTY(QQmlListProperty<UT_PREPEND_NAMESPACE(UCAction)> children READ actions NOTIFY childrenChanged)
+    Q_CLASSINFO("DefaultProperty", "children")
 public:
     explicit ActionList(QObject *parent = 0);
 
@@ -41,6 +44,7 @@ public Q_SLOTS:
     void removeAction(UT_PREPEND_NAMESPACE(UCAction) *action);
 
 Q_SIGNALS:
+    void childrenChanged();
     void added(UCAction *action);
     void removed(UCAction *action);
 
@@ -55,4 +59,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // ACTIONLIST_H
+#endif // ACTIONLIST_P_H

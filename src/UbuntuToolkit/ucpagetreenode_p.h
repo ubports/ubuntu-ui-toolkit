@@ -13,10 +13,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UCPAGETREENODE_H
-#define UCPAGETREENODE_H
 
-#include "ucstyleditembase_p.h"
+#ifndef UCPAGETREENODE_P_H
+#define UCPAGETREENODE_P_H
+
+#include <UbuntuToolkit/private/ucstyleditembase_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -99,4 +100,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCPAGETREENODE_H
+#endif // UCPAGETREENODE_P_H

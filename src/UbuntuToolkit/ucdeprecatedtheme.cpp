@@ -17,13 +17,15 @@
  */
 
 #include "ucdeprecatedtheme_p.h"
-#include "uctheme_p.h"
-#include "quickutils_p.h"
-#include "listener_p.h"
+
 #include <QtQml/QQmlComponent>
 #include <QtQml/QQmlContext>
-#include <QtQml/QQmlInfo>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
+
+#include "listener_p.h"
+#include "quickutils_p.h"
+#include "uctheme_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -89,13 +91,14 @@ void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
 
     QQmlContext ctx(QQmlEngine::contextForObject(onItem));
     // No warnings due to deprecated code used in the components themselves
-    if (ctx.baseUrl().toString().contains("/Ubuntu/Components/"))
+    if (ctx.baseUrl().toString().contains(QStringLiteral("/Ubuntu/Components/")))
         return;
     // Warnings without a filename are not helpful
     if (ctx.baseUrl().isEmpty())
         return;
 
-    QString noteId(QString("%1.%2").arg(note).arg(onItem->metaObject()->className()));
+    QString noteId(QStringLiteral("%1.%2").arg(
+        QString::fromLatin1(note)).arg(QString::fromLatin1(onItem->metaObject()->className())));
     if (m_notes.contains(noteId))
         return;
     QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
@@ -158,10 +161,10 @@ void UCDeprecatedTheme::registerToContext(QQmlContext* context)
     QQmlEngine::setContextForObject(oldTheme, context);
 
     // register deprecated Theme property
-    context->setContextProperty("Theme", oldTheme);
+    context->setContextProperty(QStringLiteral("Theme"), oldTheme);
 
     ContextPropertyChangeListener *themeChangeListener =
-        new ContextPropertyChangeListener(context, "Theme");
+        new ContextPropertyChangeListener(context, QStringLiteral("Theme"));
     QObject::connect(oldTheme, SIGNAL(nameChanged()),
                      themeChangeListener, SLOT(updateContextProperty()));
 }

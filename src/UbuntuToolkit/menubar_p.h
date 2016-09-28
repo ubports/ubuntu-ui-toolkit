@@ -12,16 +12,15 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef MENUBAR_P_H
 #define MENUBAR_P_H
 
-#include "menu_p.h"
-#include <ubuntutoolkitglobal.h>
+#include <QtQml/QQmlParserStatus>
 
-#include <QQmlParserStatus>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/menu_p.h>
 
 class QPlatformMenuBar;
 

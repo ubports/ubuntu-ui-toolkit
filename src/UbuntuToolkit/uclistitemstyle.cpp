@@ -15,13 +15,15 @@
  */
 
 #include "uclistitemstyle_p.h"
-#include "i18n_p.h"
-#include "uclistitem_p_p.h"
-#include <QtQml/QQmlEngine>
+
 #include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+
+#include "uclistitem_p_p.h"
+#include "i18n_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -54,10 +56,11 @@ void UCListItemStyle::classBegin()
     // grab the animated context property and transfer it to the property
     QQuickItem::classBegin();
     QQmlContext *context = qmlContext(this);
-    if (context && context->contextProperty("animated").isValid()) {
-        setAnimatePanels(context->contextProperty("animated").toBool());
+    if (context && context->contextProperty(QStringLiteral("animated")).isValid()) {
+        setAnimatePanels(context->contextProperty(QStringLiteral("animated")).toBool());
     }
-    m_listItem = qmlContext(this)->contextProperty("styledItem").value<UCListItem*>();
+    m_listItem = qmlContext(this)->contextProperty(
+        QStringLiteral("styledItem")).value<UCListItem*>();
     // get the flickable value
     if (m_listItem) {
         m_flickable = UCListItemPrivate::get(m_listItem)->flickable.data();

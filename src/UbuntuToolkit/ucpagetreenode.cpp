@@ -16,7 +16,7 @@
 
 #include "ucpagetreenode_p_p.h"
 
-#include <QQmlEngine>
+#include <QtQml/QQmlEngine>
 
 Q_LOGGING_CATEGORY(ucPageTreeNode, "ubuntu.components.PageTreeNode", QtMsgType::QtWarningMsg)
 
@@ -293,36 +293,36 @@ void UCPageTreeNodePrivate::dumpNode (const Node &n, const QString &oldDepth,con
     //print the current nodes properties we are interested in
     switch(QQmlEngine::objectOwnership(currNode)) {
         case QQmlEngine::CppOwnership:
-            PT_TRACE(QString("%1|  ->ownership: ").arg(depth)<<"C++");
+            PT_TRACE(QStringLiteral("%1|  ->ownership: ").arg(depth)<<"C++");
         break;
         case QQmlEngine::JavaScriptOwnership:
-            PT_TRACE(QString("%1|  ->ownership: ").arg(depth)<<"JS");
+            PT_TRACE(QStringLiteral("%1|  ->ownership: ").arg(depth)<<"JS");
         break;
     }
 
-    PT_TRACE(QString("%1|  ->parentNode: ").arg(depth)<<currNode->parentNode());
-    PT_TRACE(QString("%1|  ->parent: ").arg(depth)<<currNode->parent());
-    PT_TRACE(QString("%1|  ->pageStack: ").arg(depth)<<currNode->pageStack()
+    PT_TRACE(QStringLiteral("%1|  ->parentNode: ").arg(depth)<<currNode->parentNode());
+    PT_TRACE(QStringLiteral("%1|  ->parent: ").arg(depth)<<currNode->parent());
+    PT_TRACE(QStringLiteral("%1|  ->pageStack: ").arg(depth)<<currNode->pageStack()
                                <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPageStack) ? true : false));
-    PT_TRACE(QString("%1|  ->propagated: ").arg(depth)<<currNode->propagated()
+    PT_TRACE(QStringLiteral("%1|  ->propagated: ").arg(depth)<<currNode->propagated()
                                <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomPropagated) ? true : false));
-    PT_TRACE(QString("%1|  ->active: ").arg(depth)<<currNode->active()
+    PT_TRACE(QStringLiteral("%1|  ->active: ").arg(depth)<<currNode->active()
                                <<" custom:"<<((currNode->d_func()->m_flags & UCPageTreeNodePrivate::CustomActive) ? true : false));
-    PT_TRACE(QString("%1|  ->activeLeaf: ").arg(depth)<<currNode->activeLeafNode());
+    PT_TRACE(QStringLiteral("%1|  ->activeLeaf: ").arg(depth)<<currNode->activeLeafNode());
 
     if (n.m_children.length())
-        PT_TRACE(QString("%1|  ->isLeaf: ").arg(depth)<<currNode->isLeaf());
+        PT_TRACE(QStringLiteral("%1|  ->isLeaf: ").arg(depth)<<currNode->isLeaf());
     else
-        PT_TRACE(QString("%1└  ->isLeaf: ").arg(depth)<<currNode->isLeaf());
+        PT_TRACE(QStringLiteral("%1└  ->isLeaf: ").arg(depth)<<currNode->isLeaf());
 
     //print the current nodes children
     for (int i = 0; i < n.m_children.length(); i++) {
         QString subDepth = depth;
 
         if (i == n.m_children.length() - 1 ) //last
-            subDepth.append("   ");
+            subDepth.append(QStringLiteral("   "));
         else
-            subDepth.append("|  ");
+            subDepth.append(QStringLiteral("|  "));
 
         dumpNode(n.m_children.at(i), depth, subDepth, false);
     }

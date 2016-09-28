@@ -18,10 +18,13 @@
 #ifndef EVENTS_P_H
 #define EVENTS_P_H
 
-#include "events.h"
-#include "ubuntumetricsglobal_p.h"
-#include <QtCore/QElapsedTimer>
+#include <UbuntuMetrics/events.h>
+
 #include <sys/times.h>
+
+#include <QtCore/QElapsedTimer>
+
+#include <UbuntuMetrics/private/ubuntumetricsglobal_p.h>
 
 class UBUNTU_METRICS_PRIVATE_EXPORT EventUtilsPrivate
 {

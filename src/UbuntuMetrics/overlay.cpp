@@ -16,11 +16,14 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include "overlay_p.h"
-#include "ubuntumetricsglobal_p.h"
-#include <QtCore/QSysInfo>
-#include <QtGui/QGuiApplication>
+
 #include <unistd.h>
 #include <fcntl.h>
+
+#include <QtCore/QSysInfo>
+#include <QtGui/QGuiApplication>
+
+#include "ubuntumetricsglobal_p.h"
 
 static const QPointF position = QPointF(5.0f, 5.0f);
 static const float opacity = 0.85f;
@@ -93,7 +96,7 @@ Overlay::Overlay(const char* text, int windowId)
 {
     DASSERT(text);
 
-    m_buffer = aligned_alloc(bufferAlignment, bufferSize);
+    m_buffer = alignedAlloc(bufferAlignment, bufferSize);
     memset(&m_processEvent, 0, sizeof(m_processEvent));
     m_processEvent.type = UMEvent::Process;
 }

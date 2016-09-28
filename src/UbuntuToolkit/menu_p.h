@@ -12,18 +12,17 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef MENU_P_H
 #define MENU_P_H
 
-#include <QQmlListProperty>
-#include <QLoggingCategory>
-#include <QPointer>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QLoggingCategory>
+#include <QtCore/QPointer>
+#include <QtQml/QQmlListProperty>
 
-#include "ucaction_p.h"
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucaction_p.h>
 
 Q_DECLARE_LOGGING_CATEGORY(ucMenu);
 

@@ -15,9 +15,10 @@
  */
 
 #include "ucactionmanager_p.h"
+
 #include "adapters/actionsproxy_p.h"
-#include "ucactioncontext_p.h"
 #include "ucaction_p.h"
+#include "ucactioncontext_p.h"
 
 UT_NAMESPACE_BEGIN
 

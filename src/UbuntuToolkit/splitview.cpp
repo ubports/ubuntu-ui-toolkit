@@ -16,16 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include <QtQuick/private/qquickitem_p.h>
-#include <QtQuick/private/qquickanchors_p.h>
-#include <QtQml/QQmlInfo>
-
-#include "splitview_p.h"
 #include "splitview_p_p.h"
+
+#include <QtQml/QQmlInfo>
+#include <QtQuick/private/qquickanchors_p.h>
+#include <QtQuick/private/qquickitem_p.h>
+
 #include "ucunits_p.h"
 #include "ucpagetreenode_p.h"
-
-#include "privates/splitviewhandler_p_p.h"
+#include "privates/splitviewhandler_p.h"
 
 #define DEFAULT_SPACING_DP      4
 

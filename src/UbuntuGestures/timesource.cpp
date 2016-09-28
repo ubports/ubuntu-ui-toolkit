@@ -16,9 +16,9 @@
  * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
-#include <UbuntuGestures/private/timesource_p.h>
+#include "timesource_p.h"
 
-#include <QElapsedTimer>
+#include <QtCore/QElapsedTimer>
 
 UG_NAMESPACE_BEGIN
 

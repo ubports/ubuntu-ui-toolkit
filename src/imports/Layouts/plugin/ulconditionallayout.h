@@ -19,8 +19,8 @@
 #ifndef ULCONDITIONALLAYOUT_H
 #define ULCONDITIONALLAYOUT_H
 
-#include <QtQml/QQmlComponent>
 #include <QtCore/QStringList>
+#include <QtQml/QQmlComponent>
 #include <QtQml/QQmlScriptString>
 
 class QQmlBinding;

@@ -15,11 +15,13 @@
  */
 
 #include "ucserviceproperties_p_p.h"
-#include "i18n_p.h"
-#include <QtQml/QQmlInfo>
+
 #include <QtCore/QMetaProperty>
+#include <QtQml/QQmlInfo>
 #include <QtQml/QQmlProperty>
 #include <QtQml/private/qqmlproperty_p.h>
+
+#include "i18n_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -46,10 +48,10 @@ void UCServicePropertiesPrivate::warning(const QString &message)
     if (error.isEmpty()) {
         setError(message);
     } else {
-        setError(QString("%1\n%2").arg(error).arg(message));
+        setError(QStringLiteral("%1\n%2").arg(error).arg(message));
     }
-    QString env = qgetenv("SHOW_SERVICEPROPERTIES_WARNINGS");
-    if (!env.isEmpty() && (env == "1" || env.toLower() == "true")) {
+    QString env = QString::fromLocal8Bit(qgetenv("SHOW_SERVICEPROPERTIES_WARNINGS"));
+    if (!env.isEmpty() && (env == QStringLiteral("1") || env.toLower() == QStringLiteral("true"))) {
         qmlInfo(q_ptr) << message;
     }
 }
@@ -152,7 +154,7 @@ void UCServiceProperties::componentComplete()
     const QMetaObject *mo = metaObject();
     for (int i = mo->propertyOffset(); i < mo->propertyCount(); i++) {
         const QMetaProperty prop = mo->property(i);
-        QString property(prop.name());
+        QString property(QString::fromLatin1(prop.name()));
 
         // check the binding on the property and warn if there is one.
         QQmlProperty qmlProperty(this, property);

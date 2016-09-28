@@ -16,15 +16,16 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCPERFORMANCE_MONITOR_H
-#define UCPERFORMANCE_MONITOR_H
+#ifndef UCPERFORMANCEMONITOR_P_H
+#define UCPERFORMANCEMONITOR_P_H
 
-#include <QtCore/QObject>
-#include <QtCore/QSharedPointer>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QLoggingCategory>
+#include <QtCore/QObject>
+#include <QtCore/QSharedPointer>
 #include <QtQuick/QQuickWindow>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -57,4 +58,4 @@ UT_NAMESPACE_END
 
 Q_DECLARE_LOGGING_CATEGORY(ucPerformance)
 
-#endif // UCPERFORMANCE_MONITOR_H
+#endif // UCPERFORMANCEMONITOR_P_H

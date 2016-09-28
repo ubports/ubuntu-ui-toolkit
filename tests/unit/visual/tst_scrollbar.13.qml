@@ -155,6 +155,7 @@ Item {
         }
     }
 
+    // FIXME: Tests failing with Qt 5.6. See bug #1624337.
     ScrollbarTestCase13 {
         name: "Scrollbar"
 
@@ -797,7 +798,7 @@ Item {
                         flickable.contentHeight + flickable.bottomMargin - flickable.height,
                         "Vertical thumb mouse drag: wrong contentProp after dragging to the end")
 
-                var sceneThumbY = thumb.mapToItem(column).y
+                var sceneThumbY = thumb.mapToItem(column, 0, 0).y
 
                 //Cannot use mouseDrag here, because the thumb is at the end of the trough.
                 //mouseDrag uses
@@ -835,7 +836,7 @@ Item {
                         flickable.contentWidth + flickable.rightMargin - flickable.width,
                         "Horizontal thumb mouse drag: wrong contentProp after dragging to the end")
 
-                var sceneThumbX = thumb.mapToItem(column).x
+                var sceneThumbX = thumb.mapToItem(column, 0, 0).x
                 //Can't use mouseDrag here, see the explanation inside the "if" branch
                 mousePress(thumb, thumb.width/2, thumb.height/2)
                 mouseMove(thumb, 0, thumb.height/2  )
@@ -1202,7 +1203,7 @@ Item {
             compare(style.troughColorThumbStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
             compare(style.troughColorSteppersStyle, theme.palette.normal.foreground, "Wrong styling property default value.")
             compare(style.stepperBgColor, theme.palette.normal.base, "Wrong styling property default value.")
-            compare(style.sliderColor, theme.palette.normal.foregroundText, "Wrong styling property default value.")
+            compare(style.sliderColor, theme.palette.normal.overlayText, "Wrong styling property default value.")
             compare(style.sliderRadius, units.dp(3), "Wrong styling property default value.")
             compare(style.thumbThickness, units.gu(1), "Wrong styling property default value.")
             compare(style.indicatorThickness, units.dp(3), "Wrong styling property default value.")

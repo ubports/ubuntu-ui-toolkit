@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTU_GESTURES_DAMPER_H
-#define UBUNTU_GESTURES_DAMPER_H
+#ifndef DAMPER_P_H
+#define DAMPER_P_H
 
 #include <QtCore/QPointF>
 
@@ -86,4 +86,4 @@ private:
 
 QDebug operator<<(QDebug dbg, const DampedPointF &p);
 
-#endif // UBUNTU_GESTURES_DAMPER_H
+#endif // DAMPER_P_H

@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTU_TOUCHOWNERSHIPEVENT_H
-#define UBUNTU_TOUCHOWNERSHIPEVENT_H
+#ifndef TOUCHOWNERSHIPEVENT_P_H
+#define TOUCHOWNERSHIPEVENT_P_H
 
-#include <QEvent>
-#include "ubuntugesturesglobal.h"
+#include <QtCore/QEvent>
+
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 
 UG_NAMESPACE_BEGIN
 /*
@@ -50,4 +51,4 @@ private:
 
 UG_NAMESPACE_END
 
-#endif // UBUNTU_TOUCHOWNERSHIPEVENT_H
+#endif // TOUCHOWNERSHIPEVENT_P_H

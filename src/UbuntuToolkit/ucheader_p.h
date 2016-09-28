@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCHEADER_H
-#define UCHEADER_H
+#ifndef UCHEADER_P_H
+#define UCHEADER_P_H
 
-#include "ucstyleditembase_p.h"
 #include <QtCore/QPointer>
+
+#include <UbuntuToolkit/private/ucstyleditembase_p.h>
 
 class QQuickFlickable;
 class QQuickNumberAnimation;
@@ -80,4 +81,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCHEADER_H
+#endif // UCHEADER_P_H

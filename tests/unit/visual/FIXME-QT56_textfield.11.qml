@@ -164,6 +164,7 @@ Item {
             compare(textField.cursorPosition, 0, "cursorPosition 0 by default")
         }
 
+        // FIXME: Fails with Qt 5.6. See bug #1624340.
         function test_0_cursorRectangle() {
             compare(textField.cursorRectangle, Qt.rect(0, 0, 0, 0), "cursorRectangle 0 by default")
         }

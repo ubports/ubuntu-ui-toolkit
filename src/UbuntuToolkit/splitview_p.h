@@ -21,7 +21,7 @@
 
 #include <QtQuick/private/qquickpositioners_p.h>
 
-#include "ubuntutoolkitglobal.h"
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 

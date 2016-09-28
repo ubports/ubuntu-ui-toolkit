@@ -17,11 +17,13 @@
  */
 
 #include "ucstyleditembase_p_p.h"
-#include "uctheme_p.h"
-#include "ucstylehints_p.h"
-#include "ucthemingextension_p.h"
+
 #include <QtQml/QQmlEngine>
 #include <QtQuick/private/qquickanchors_p.h>
+
+#include "ucstylehints_p.h"
+#include "uctheme_p.h"
+#include "ucthemingextension_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -384,8 +386,8 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
     }
     styleItemContext = new QQmlContext(creationContext);
     styleItemContext->setContextObject(q);
-    styleItemContext->setContextProperty("styledItem", q);
-    styleItemContext->setContextProperty("animated", animated);
+    styleItemContext->setContextProperty(QStringLiteral("styledItem"), q);
+    styleItemContext->setContextProperty(QStringLiteral("animated"), animated);
     QObject *object = component->beginCreate(styleItemContext);
     if (!object) {
         delete styleItemContext;
@@ -413,7 +415,7 @@ bool UCStyledItemBasePrivate::loadStyleItem(bool animated)
 
     // make sure we reset the animated property to true
     if (!animated) {
-        styleItemContext->setContextProperty("animated", true);
+        styleItemContext->setContextProperty(QStringLiteral("animated"), true);
     }
 
     // set implicit size

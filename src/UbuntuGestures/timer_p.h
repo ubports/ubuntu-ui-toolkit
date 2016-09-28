@@ -14,15 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTUGESTURES_TIMER_H
-#define UBUNTUGESTURES_TIMER_H
+#ifndef TIMER_P_H
+#define TIMER_P_H
 
-#include "ubuntugesturesglobal.h"
+#include <QtCore/QObject>
+#include <QtCore/QPointer>
+#include <QtCore/QTimer>
+
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 #include <UbuntuGestures/private/timesource_p.h>
-
-#include <QObject>
-#include <QPointer>
-#include <QTimer>
 
 UG_NAMESPACE_BEGIN
 
@@ -114,4 +114,4 @@ private:
 
 UG_NAMESPACE_END
 
-#endif // UBUNTUGESTURES_TIMER_H
+#endif // TIMER_P_H

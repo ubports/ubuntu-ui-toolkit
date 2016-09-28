@@ -16,15 +16,15 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
+#include "ucqquickimageextension_p.h"
+
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
-#include <QtCore/QDir>
 #include <QtGui/QGuiApplication>
 #include <QtQuick/private/qquickimagebase_p.h>
 
-#include "ucqquickimageextension_p.h"
 #include "ucunits_p.h"
-
 
 UT_NAMESPACE_BEGIN
 
@@ -87,14 +87,15 @@ void UCQQuickImageExtension::reloadSource()
         return;
     }
 
-    int separatorPosition = resolved.indexOf("/");
+    int separatorPosition = resolved.indexOf(QStringLiteral("/"));
     QString scaleFactor = resolved.left(separatorPosition);
     QString selectedFilePath = resolved.mid(separatorPosition+1);
-    QString fragment(m_source.hasFragment() ? "#" + m_source.fragment() : QString(""));
+    QString fragment(m_source.hasFragment() ? "#" + m_source.fragment() : QStringLiteral(""));
 
-    if (scaleFactor == "1") {
+    if (scaleFactor == QStringLiteral("1")) {
         if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)
-                || selectedFilePath.endsWith(".svg") || selectedFilePath.endsWith(".svgz")) {
+            || selectedFilePath.endsWith(QStringLiteral(".svg"))
+            || selectedFilePath.endsWith(QStringLiteral(".svgz"))) {
             // Take care to pass the original fragment
             QUrl selectedFileUrl(QUrl::fromLocalFile(selectedFilePath));
             selectedFileUrl.setFragment(fragment);
@@ -109,8 +110,8 @@ void UCQQuickImageExtension::reloadSource()
         }
     } else {
         // Prepend "image://scaling" for the image to be loaded by UCScalingImageProvider.
-        if (!m_source.path().endsWith(".sci")) {
-            // Regular image file
+        if (!m_source.path().endsWith(QStringLiteral(".sci"))) {
+          // Regular image file
             m_image->setSource(QUrl("image://scaling/" + resolved + fragment));
         } else {
             // .sci image file. Rewrite the .sci file into a temporary file.
@@ -161,9 +162,9 @@ bool UCQQuickImageExtension::rewriteSciFile(const QString &sciFilePath, const QS
         QTextStream sciStream(&sciFile);
         while (!sciStream.atEnd()) {
             QString line = sciStream.readLine();
-            if (line.startsWith("border")) {
+            if (line.startsWith(QStringLiteral("border"))) {
                 output << scaledBorder(line, scaleFactor) << endl;
-            } else if (line.startsWith("source")) {
+            } else if (line.startsWith(QStringLiteral("source"))) {
                 output << scaledSource(line, sciFilePath, scaleFactor) << endl;
             } else {
                 output << line << endl;
@@ -178,7 +179,7 @@ bool UCQQuickImageExtension::rewriteSciFile(const QString &sciFilePath, const QS
 QString UCQQuickImageExtension::scaledBorder(const QString &border, const QString &scaleFactor)
 {
     // Rewrite the border line with a scaled border value
-    QStringList parts = border.split(":");
+    QStringList parts = border.split(QStringLiteral(":"));
     float scaledValue = parts[1].toFloat() * scaleFactor.toFloat();
     return parts[0] + ": " + QString::number(qRound(scaledValue));
 }
@@ -200,7 +201,8 @@ QString UCQQuickImageExtension::scaledSource(QString source, const QString &sciF
         source.remove(quoteLastIndex, 1);
     }
 
-    return source.replace("source: ", "source: " + QString(quote) + baseUrl).append(quote);
+    return source.replace(
+        QStringLiteral("source: "), "source: " + QString(quote) + baseUrl).append(quote);
 }
 
 UT_NAMESPACE_END

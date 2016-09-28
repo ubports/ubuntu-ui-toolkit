@@ -13,11 +13,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UCLISTITEMSTYLE_H
-#define UCLISTITEMSTYLE_H
+
+#ifndef UCLISTITEMSTYLE_P_H
+#define UCLISTITEMSTYLE_P_H
 
 #include <QtQuick/QQuickItem>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlComponent;
 class QQuickAbstractAnimation;
@@ -122,4 +124,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCLISTITEMSTYLE_H
+#endif // UCLISTITEMSTYLE_P_H

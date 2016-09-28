@@ -16,11 +16,13 @@
  * Author Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef LISTVIEWEXTENSIONS_H
-#define LISTVIEWEXTENSIONS_H
+#ifndef LISTVIEWEXTENSIONS_P_H
+#define LISTVIEWEXTENSIONS_P_H
 
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QPointer>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickFlickable;
 class QQuickItem;
@@ -56,11 +58,14 @@ protected:
     bool focusInEvent(QFocusEvent *event);
     bool keyPressEvent(QKeyEvent *event);
     void setKeyNavigationForListView(bool value);
+    Q_SLOT void onCurrentItemChanged();
 private:
     QQuickFlickable *listView;
+    QPointer<QQuickItem> _currentItem;
     bool isEventFilter:1;
+    bool keyNavigation:1;
 };
 
 UT_NAMESPACE_END
 
-#endif // LISTVIEWEXTENSIONS_H
+#endif // LISTVIEWEXTENSIONS_P_H

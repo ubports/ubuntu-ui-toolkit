@@ -13,10 +13,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UCACTIONITEM_H
-#define UCACTIONITEM_H
 
-#include "ucstyleditembase_p.h"
+#ifndef UCACTIONITEM_P_H
+#define UCACTIONITEM_P_H
+
+#include <UbuntuToolkit/private/ucstyleditembase_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -79,4 +80,4 @@ protected:
 
 UT_NAMESPACE_END
 
-#endif // UCACTIONITEM_H
+#endif // UCACTIONITEM_P_H

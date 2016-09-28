@@ -12,14 +12,13 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#include <QtTest/QtTest>
 #include <QtCore/QCoreApplication>
 #include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtTest/QtTest>
 
 class RecreateViewTest : public QObject
 {

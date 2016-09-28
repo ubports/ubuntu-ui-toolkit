@@ -17,13 +17,14 @@
  */
 
 #include "propertychanges_p.h"
+
+#include <QtQml/QQmlInfo>
+#include <QtQml/private/qqmlcontext_p.h>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/private/qquickanchors_p.h>
+
 #include "ullayouts_p.h"
 #include "ullayouts.h"
-#include <QtQuick/QQuickItem>
-#include <QtQml/QQmlInfo>
-
-#include <QtQml/private/qqmlcontext_p.h>
-#include <QtQuick/private/qquickanchors_p.h>
 
 /******************************************************************************
  * PropertyAction

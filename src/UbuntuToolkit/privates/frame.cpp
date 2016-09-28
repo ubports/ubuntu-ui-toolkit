@@ -16,10 +16,12 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "frame_p.h"
-#include "textures_p.h"
+#include "privates/frame_p.h"
+
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
+
+#include "privates/textures_p.h"
 
 UT_NAMESPACE_BEGIN
 

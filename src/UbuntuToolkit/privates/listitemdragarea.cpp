@@ -15,14 +15,16 @@
  */
 
 #include "listitemdragarea_p.h"
-#include "listitemdraghandler_p.h"
-#include "uclistitem_p_p.h"
-#include "ucunits_p.h"
-#include "i18n_p.h"
+
 #include <QtCore/QtMath>
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
+
+#include "privates/listitemdraghandler_p.h"
+#include "uclistitem_p_p.h"
+#include "ucunits_p.h"
+#include "i18n_p.h"
 
 #define IMPLICIT_DRAG_WIDTH_GU  5
 #define DRAG_SCROLL_TIMEOUT     15
@@ -46,7 +48,7 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     setAcceptedMouseButtons(Qt::LeftButton);
 
     // for testing purposes
-    setObjectName("drag_area");
+    setObjectName(QStringLiteral("drag_area"));
 }
 
 void ListItemDragArea::init(UCViewItemsAttached *viewItems)

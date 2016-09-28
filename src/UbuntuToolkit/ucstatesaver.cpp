@@ -17,17 +17,19 @@
  */
 
 #include "ucstatesaver_p_p.h"
-#include "statesaverbackend_p.h"
-#include "i18n_p.h"
-#include "quickutils_p.h"
+
+#include <QtGui/QGuiApplication>
 #include <QtQml/QQmlComponent>
+#include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlProperty>
-#include <QtQml/QQmlEngine>
-#include <QtGui/QGuiApplication>
-#include "private/qqmldata_p.h"
-#include "private/qqmlcontext_p.h"
-#include <private/qqmlcomponentattached_p.h>
+#include <QtQml/private/qqmlcomponentattached_p.h>
+#include <QtQml/private/qqmlcontext_p.h>
+#include <QtQml/private/qqmldata_p.h>
+
+#include "i18n_p.h"
+#include "quickutils_p.h"
+#include "statesaverbackend_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -100,7 +102,7 @@ QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
     QObject *parent = m_attachee->parent();
 
     // check whether we have an "index" context property defined
-    QVariant indexValue = attacheeContext->contextProperty("index");
+    QVariant indexValue = attacheeContext->contextProperty(QStringLiteral("index"));
     if (indexValue.isValid() && (indexValue.type() == QVariant::Int)) {
         path += indexValue.toString();
     }

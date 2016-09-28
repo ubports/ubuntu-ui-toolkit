@@ -16,13 +16,15 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#include "splitviewhandler_p_p.h"
+#include "privates/splitviewhandler_p.h"
+
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickevents_p_p.h>
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlInfo>
-#include <splitview_p_p.h>
+
+#include "splitview_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -30,7 +32,7 @@ SplitViewHandler::SplitViewHandler(QQuickItem *parent)
     : QQuickMouseArea(parent)
 {
     // for testing purposes
-    setObjectName("resize_handle");
+    setObjectName(QStringLiteral("resize_handle"));
     setFlag(ItemHasContents);
     setHoverEnabled(true);
     setAcceptedButtons(Qt::LeftButton);
@@ -113,7 +115,7 @@ void SplitViewHandler::onDelegateChanged()
     // and set the new delegate - if any
     if (SplitViewPrivate::get(view)->handleDelegate) {
         QQmlContext *context = new QQmlContext(qmlContext(this), this);
-        context->setContextProperty("handle", QVariant::fromValue(this));
+        context->setContextProperty(QStringLiteral("handle"), QVariant::fromValue(this));
         QObject *object = SplitViewPrivate::get(view)->handleDelegate->beginCreate(context);
         if (object) {
             QQuickItem *item = qobject_cast<QQuickItem*>(object);

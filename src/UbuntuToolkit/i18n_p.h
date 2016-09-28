@@ -16,11 +16,12 @@
  * Author: Tim Peeters <tim.peeters@canonical.com>
  */
 
-#ifndef UBUNTU_COMPONENTS_I18N_H
-#define UBUNTU_COMPONENTS_I18N_H
+#ifndef I18N_P_H
+#define I18N_P_H
 
 #include <QtCore/QObject>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlContext;
 class QQmlEngine;
@@ -80,4 +81,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UBUNTU_COMPONENTS_I18N_H
+#endif // I18N_P_H

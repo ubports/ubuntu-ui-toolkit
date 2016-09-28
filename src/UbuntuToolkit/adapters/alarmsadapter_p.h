@@ -19,13 +19,14 @@
 #ifndef ALARMSADAPTER_P_H
 #define ALARMSADAPTER_P_H
 
-#include "private/ucalarm_p_p.h"
-#include "private/alarmmanager_p_p.h"
+#include <QtOrganizer/QOrganizerManager>
+#include <QtOrganizer/QOrganizerAbstractRequest>
+#include <QtOrganizer/QOrganizerItemFetchRequest>
+#include <QtOrganizer/QOrganizerTodo>
 
-#include <qorganizer.h>
-#include <qorganizermanager.h>
-#include <qorganizertodo.h>
-#include <ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucalarm_p_p.h>
+#include <UbuntuToolkit/private/alarmmanager_p_p.h>
 
 QTORGANIZER_USE_NAMESPACE
 

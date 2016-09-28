@@ -162,14 +162,10 @@ Style.ActionBarStyle {
                                                 : actionBarStyle.scrollButtons.backgroundColor
                 }
                 Icon {
-                    // FIXME: Use new theme icon from
-                    //  https://code.launchpad.net/~tiheum/ubuntu-themes/toolkit-arrows/+merge/298609
-                    //  after it lands in overlay and archive.
                     anchors.centerIn: parent
                     width: units.gu(1)
                     height: units.gu(1)
-                    rotation: iconRotation
-                    name: "chevron"
+                    name: scrollDirection === 1 ? "toolkit_arrow-left" : "toolkit_arrow-right"
                     color: scrollButton.pressed ? actionBarStyle.scrollButtons.pressedForegroundColor
                                                 : actionBarStyle.scrollButtons.foregroundColor
                 }
@@ -182,7 +178,6 @@ Style.ActionBarStyle {
                 bottom: parent.bottom
             }
             sourceComponent: scrollButtonComponent
-            property int iconRotation: 180
             property real buttonOpacity: actionsListView.atXBeginning ? 0.0 : 1.0
             property int scrollDirection: 1
             property string buttonName: "leading_scroll_button"
@@ -194,7 +189,6 @@ Style.ActionBarStyle {
                 bottom: parent.bottom
             }
             sourceComponent: scrollButtonComponent
-            property int iconRotation: 0
             property real buttonOpacity: actionsListView.atXEnd ? 0.0 : 1.0
             property int scrollDirection: -1
             property string buttonName: "trailing_scroll_button"

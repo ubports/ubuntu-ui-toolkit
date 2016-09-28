@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCPAGEWRAPPER_P_H
-#define UCPAGEWRAPPER_P_H
+#ifndef UCPAGEWRAPPER_P_P_H
+#define UCPAGEWRAPPER_P_P_H
 
-#include <ubuntutoolkitglobal.h>
-#include "ucpagetreenode_p_p.h"
-#include "ucpagewrapper_p.h"
+#include <UbuntuToolkit/private/ucpagewrapper_p.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/ucpagetreenode_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -80,4 +81,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCPAGEWRAPPER_P_H
+#endif // UCPAGEWRAPPER_P_P_H

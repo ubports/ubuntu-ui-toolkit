@@ -16,10 +16,10 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef PLUGIN_PLUGIN_H
-#define PLUGIN_PLUGIN_H
+#ifndef ULPLUGIN_H
+#define ULPLUGIN_H
 
-#include <QQmlExtensionPlugin>
+#include <QtQml/QQmlExtensionPlugin>
 
 class PluginPlugin : public QQmlExtensionPlugin
 {
@@ -32,5 +32,4 @@ private:
     void registerTypeVersions(const char *uri, int major, int minor);
 };
 
-#endif // PLUGIN_PLUGIN_H
-
+#endif // ULPLUGIN_H

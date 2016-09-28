@@ -101,22 +101,22 @@ Item {
 
         function test_noScrollingNeeded() {
             var item = findChild(expandablesColumn, "expandable1");
-            compare(expandablesColumn.mapFromItem(item).y, item.collapsedHeight);
+            compare(expandablesColumn.mapFromItem(item, 0, 0).y, item.collapsedHeight);
 
             expandItem(item);
 
-            compare(expandablesColumn.mapFromItem(item).y, item.collapsedHeight);
+            compare(expandablesColumn.mapFromItem(item, 0, 0).y, item.collapsedHeight);
         }
 
         function test_scrollToTop() {
             expandablesColumn.height = units.gu(30);
 
             var item = findChild(expandablesColumn, "expandable1");
-            compare(expandablesColumn.mapFromItem(item).y, item.collapsedHeight);
+            compare(expandablesColumn.mapFromItem(item, 0, 0).y, item.collapsedHeight);
 
             expandItem(item);
 
-            compare(expandablesColumn.mapFromItem(item).y, 0);
+            compare(expandablesColumn.mapFromItem(item, 0, 0).y, 0);
         }
 
         function test_scrollIntoView() {
@@ -124,7 +124,7 @@ Item {
             expandItem(item);
 
             // The item must be scrolled upwards, leaving space for one other item at the bottom
-            compare(expandablesColumn.mapFromItem(item).y, expandablesColumn.height - item.collapsedHeight - item.expandedHeight);
+            compare(expandablesColumn.mapFromItem(item, 0, 0).y, expandablesColumn.height - item.collapsedHeight - item.expandedHeight);
         }
 
         function test_collapseByClickingOutside() {

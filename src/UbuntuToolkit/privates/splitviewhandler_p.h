@@ -16,13 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef SPLITVIEWHANDLER_H
-#define SPLITVIEWHANDLER_H
+#ifndef SPLITVIEWHANDLER_P_H
+#define SPLITVIEWHANDLER_P_H
 
-#include <QtQuick/QQuickItem>
 #include <QtCore/QPointer>
+#include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquickmousearea_p.h>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -49,4 +50,4 @@ private Q_SLOTS:
 
 UT_NAMESPACE_END
 
-#endif // SPLITVIEWHANDLER_H
+#endif // SPLITVIEWHANDLER_P_H

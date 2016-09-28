@@ -14,12 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTUGESTURES_POOL_H
-#define UBUNTUGESTURES_POOL_H
+#ifndef POOL_P_H
+#define POOL_P_H
 
-#include <QVector>
+#include <QtCore/QVector>
 
-#include "ubuntugesturesglobal.h"
+#include <UbuntuGestures/ubuntugesturesglobal.h>
 
 /*
   An object pool.
@@ -129,4 +129,4 @@ private:
     int m_lastUsedIndex;
 };
 
-#endif // UBUNTUGESTURES_POOL_H
+#endif // POOL_P_H

@@ -17,7 +17,8 @@
  */
 
 #include "upmrenderingtimes.h"
-#include <QtCore/qmath.h>
+
+#include <QtCore/QtMath>
 
 UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),

@@ -18,18 +18,17 @@
 
 #include "ucunits_p.h"
 
-#include <QtQml/QQmlContext>
-#include <QtQml/QQmlFile>
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 #include <QtCore/QRegularExpression>
-#include <QtCore/qmath.h>
+#include <QtCore/QtMath>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QScreen>
-
 #include <QtGui/qpa/qplatformnativeinterface.h>
 #include <QtGui/qpa/qplatformwindow.h>
 #include <QtGui/qpa/qplatformscreen.h>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlFile>
 
 #define ENV_GRID_UNIT_PX "GRID_UNIT_PX"
 #define DEFAULT_GRID_UNIT_PX 8
@@ -250,7 +249,7 @@ QString UCUnits::suffixForGridUnit(float gridUnit)
 
 float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
 {
-    QRegularExpression re("^.*@([0-9]*).*$");
+    QRegularExpression re(QStringLiteral("^.*@([0-9]*).*$"));
     QRegularExpressionMatch match = re.match(fileName);
     if (match.hasMatch()) {
         return match.captured(1).toFloat();
@@ -282,13 +281,13 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
      */
     if (qGuiApp->allWindows().count() > 1) {
         if (window && window->screen()
-                && window->screen()->name().contains("LVDS")) {
+            && window->screen()->name().contains(QStringLiteral("LVDS"))) {
             return;
         }
     }
 
     auto nativeInterface = qGuiApp->platformNativeInterface();
-    QVariant scaleVal = nativeInterface->windowProperty(window, "scale");
+    QVariant scaleVal = nativeInterface->windowProperty(window, QStringLiteral("scale"));
     if (!scaleVal.isValid()) {
         return;
     }

@@ -19,12 +19,11 @@
 
 #include "mousetouchadaptor_p_p.h"
 
-#include <qpa/qplatformnativeinterface.h>
-#include <qpa/qwindowsysteminterface.h>
-
-#include <QCoreApplication>
-#include <QMouseEvent>
-#include <QTest>
+#include <QtCore/QDebug>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QMouseEvent>
+#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <QtGui/qpa/qwindowsysteminterface.h>
 
 #ifdef UBUNTUTOOLKIT_ENABLE_X11_TOUCH_EMULATION
     #define ENABLE_TOUCH_EMULATION

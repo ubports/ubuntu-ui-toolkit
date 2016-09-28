@@ -18,7 +18,7 @@
 #ifndef UBUNTUMETRICSGLOBAL_P_H
 #define UBUNTUMETRICSGLOBAL_P_H
 
-#include "ubuntumetricsglobal.h"
+#include <UbuntuMetrics/ubuntumetricsglobal.h>
 
 // Logging macros, debug macros are compiled out for release builds.
 #define LOG(...) qDebug(__VA_ARGS__)
@@ -50,5 +50,9 @@ template<typename T, size_t N> constexpr size_t ARRAY_SIZE(T (&)[N]) { return N;
 #define IS_POWER_OF_TWO(n) !((n) & ((n) - 1))
 
 #define UBUNTU_METRICS_PRIVATE_EXPORT UBUNTU_METRICS_EXPORT
+
+// Allocates size bytes and returns an pointer to the aligned memory. alignment
+// must be a power-of-two and size a multiple of alignment.
+void* alignedAlloc(size_t alignment, size_t size);
 
 #endif  // UBUNTUMETRICSGLOBAL_P_H

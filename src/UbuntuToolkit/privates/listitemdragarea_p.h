@@ -14,13 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LISTITEMDRAGAREA_H
-#define LISTITEMDRAGAREA_H
+#ifndef LISTITEMDRAGAREA_P_H
+#define LISTITEMDRAGAREA_P_H
 
-#include <ubuntutoolkitglobal.h>
-#include "uclistitem_p.h"
 #include <QtCore/QBasicTimer>
 #include <QtCore/QPointer>
+
+#include <UbuntuToolkit/private/uclistitem_p.h>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickFlickable;
 
@@ -58,4 +59,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // LISTITEMDRAGAREA_H
+#endif // LISTITEMDRAGAREA_P_H

@@ -14,12 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCMARGINS_H
-#define UCMARGINS_H
+#ifndef UCMARGINS_P_H
+#define UCMARGINS_P_H
 
 #include <QtCore/QObject>
 #include <QtQuick/QQuickItem>
-#include <ubuntutoolkitglobal.h>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -78,4 +79,4 @@ inline qreal UCMargins::bottom() const
 
 UT_NAMESPACE_END
 
-#endif // UCMARGINS_H
+#endif // UCMARGINS_P_H

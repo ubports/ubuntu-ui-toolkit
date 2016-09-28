@@ -16,11 +16,12 @@
  * Author: Andrea Bernabei <andrea.bernabei@canonical.com>
  */
 
+#include "ucslotslayout_p_p.h"
+
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlInfo>
 
 #include "ucunits_p.h"
-#include "ucslotslayout_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -50,8 +51,10 @@ void UCSlotsLayoutPrivate::init()
 
     QObject::connect(&padding, SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
     QObject::connect(&padding, SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_relayout()));
+
+    //we're assuming _q_updateSize will call _q_relayout()
+    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_updateSize()));
 
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 

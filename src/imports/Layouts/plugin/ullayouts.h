@@ -20,6 +20,7 @@
 #define ULLAYOUTS_H
 
 #include <QtQuick/QQuickItem>
+
 #include "ulconditionallayout.h"
 
 class ULLayoutsAttached : public QObject

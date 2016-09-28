@@ -12,19 +12,19 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include "ucmouse_p.h"
-#include "ucinversemouse_p.h"
-#include <QtQml/QQmlInfo>
-#include <QtGui/QGuiApplication>
-#include <private/qqmlglobal_p.h>
-#include <QtQuick/private/qquickmousearea_p.h>
-#include "inversemouseareatype_p.h"
-#include "i18n_p.h"
 
+#include <QtGui/QGuiApplication>
+#include <QtQml/QQmlInfo>
+#include <QtQml/private/qqmlglobal_p.h>
+#include <QtQuick/private/qquickmousearea_p.h>
+
+#include "i18n_p.h"
+#include "inversemouseareatype_p.h"
 #include "quickutils_p.h"
+#include "ucinversemouse_p.h"
 #include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
@@ -400,7 +400,7 @@ UCMouse::UCMouse(QObject *parent)
 
 UCMouse *UCMouse::qmlAttachedProperties(QObject *owner)
 {
-    return createAttachedFilter<UCMouse>(owner, "Mouse");
+    return createAttachedFilter<UCMouse>(owner, QStringLiteral("Mouse"));
 }
 
 bool UCMouse::eventFilter(QObject *target, QEvent *event)
@@ -1037,7 +1037,7 @@ UCInverseMouse::UCInverseMouse(QObject *parent)
 
 UCInverseMouse *UCInverseMouse::qmlAttachedProperties(QObject *owner)
 {
-    return createAttachedFilter<UCInverseMouse>(owner, "InverseMouse");
+    return createAttachedFilter<UCInverseMouse>(owner, QStringLiteral("InverseMouse"));
 }
 
 QMouseEvent UCInverseMouse::mapMouseToOwner(QObject *target, QMouseEvent* event)

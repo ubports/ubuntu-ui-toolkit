@@ -1,15 +1,6 @@
-QT *= qml quick
-CONFIG += no_keywords
-
-QMAKE_CXXFLAGS += -Werror
-
-QT *= quick-private gui-private
-QT *= qml-private core-private
-
-DEFINES += QT_USE_QSTRINGBUILDER
-
+QT *= core-private gui-private quick-private qml-private
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
-    QT += v8-private
+    QT *= v8-private
 }
 
 # Input

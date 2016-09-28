@@ -16,12 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGEREGION_P
-#define UCBOTTOMEDGEREGION_P
+#ifndef UCBOTTOMEDGEREGION_P_P_H
+#define UCBOTTOMEDGEREGION_P_P_H
 
-#include "ucbottomedgeregion_p.h"
-#include <UbuntuToolkit/private/asyncloader_p_p.h>
+#include <UbuntuToolkit/private/ucbottomedgeregion_p.h>
+
 #include <QtCore/private/qobject_p.h>
+
+#include <UbuntuToolkit/private/asyncloader_p_p.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -82,4 +84,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCBOTTOMEDGEREGION_P
+#endif // UCBOTTOMEDGEREGION_P_P_H

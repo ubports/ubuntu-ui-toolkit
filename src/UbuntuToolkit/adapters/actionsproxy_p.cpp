@@ -14,10 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "actionsproxy_p.h"
-#include "ucactioncontext_p.h"
+#include "adapters/actionsproxy_p.h"
 
-#include <QDebug>
+#include <QtCore/QDebug>
+
+#include "ucactioncontext_p.h"
 
 Q_LOGGING_CATEGORY(ucActionProxy, "ubuntu.components.ActionProxy", QtMsgType::QtWarningMsg)
 
@@ -29,7 +30,7 @@ ActionProxy::ActionProxy()
     : globalContext(new UCActionContext)
 {
     // for testing purposes
-    globalContext->setObjectName("GlobalActionContext");
+    globalContext->setObjectName(QStringLiteral("GlobalActionContext"));
 }
 ActionProxy::~ActionProxy()
 {

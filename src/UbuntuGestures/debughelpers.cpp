@@ -14,9 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <UbuntuGestures/private/debughelpers_p.h>
-#include <QTouchEvent>
-#include <QMouseEvent>
+#include "debughelpers_p.h"
+
+#include <QtGui/QMouseEvent>
+#include <QtGui/QTouchEvent>
 
 QString touchPointStateToString(Qt::TouchPointState state)
 {

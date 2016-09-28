@@ -15,13 +15,15 @@
  */
 
 #include "uclistitemactions_p_p.h"
-#include "uclistitem_p_p.h"
-#include "quickutils_p.h"
-#include "i18n_p.h"
+
 #include <QtQml/QQmlInfo>
+
+#include "i18n_p.h"
+#include "quickutils_p.h"
 #include "ucaction_p.h"
-#include "ucunits_p.h"
+#include "uclistitem_p_p.h"
 #include "uclistitemstyle_p.h"
+#include "ucunits_p.h"
 
 UT_NAMESPACE_BEGIN
 

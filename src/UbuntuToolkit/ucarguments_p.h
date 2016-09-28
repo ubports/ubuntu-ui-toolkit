@@ -16,17 +16,18 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCARGUMENTS_H
-#define UCARGUMENTS_H
+#ifndef UCARGUMENTS_P_H
+#define UCARGUMENTS_P_H
 
-#include "ucargument_p.h"
-#include <QtCore/QObject>
-#include <QtCore/QList>
-#include <QtCore/QStringList>
 #include <QtCore/QHash>
-#include <QtQml/QQmlPropertyMap>
+#include <QtCore/QList>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 #include <QtQml/QQmlListProperty>
 #include <QtQml/QQmlParserStatus>
+#include <QtQml/QQmlPropertyMap>
+
+#include <UbuntuToolkit/private/ucargument_p.h>
 
 UT_NAMESPACE_BEGIN
 

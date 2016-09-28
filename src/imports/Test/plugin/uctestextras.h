@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TESTEXTRAS_H
-#define TESTEXTRAS_H
+#ifndef UCTESTEXTRAS_H
+#define UCTESTEXTRAS_H
 
 #include <QtCore/QObject>
 
@@ -58,4 +58,4 @@ private:
     friend class UCMouseTouchAdaptor;
 };
 
-#endif // TESTEXTRAS_H
+#endif // UCTESTEXTRAS_H

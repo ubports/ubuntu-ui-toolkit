@@ -14,14 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCPAGEWRAPPERINCUBATOR_H
-#define UCPAGEWRAPPERINCUBATOR_H
+#ifndef UCPAGEWRAPPERINCUBATOR_P_H
+#define UCPAGEWRAPPERINCUBATOR_P_H
 
-#include <QObject>
-#include <QQmlIncubator>
-#include <QJSValue>
-#include <QVariant>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QObject>
+#include <QtCore/QVariant>
+#include <QtQml/QQmlIncubator>
+#include <QtQml/QJSValue>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 UT_NAMESPACE_BEGIN
 
@@ -61,4 +62,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // UCPAGEWRAPPERINCUBATOR_H
+#endif // UCPAGEWRAPPERINCUBATOR_P_H

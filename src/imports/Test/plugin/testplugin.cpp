@@ -15,9 +15,11 @@
  */
 
 #include "testplugin.h"
-#include <QtQml>
-#include "uctestextras.h"
+
+#include <QtQml/QtQml>
 #include <UbuntuToolkit/private/mousetouchadaptor_p.h>
+
+#include "uctestextras.h"
 
 UT_USE_NAMESPACE
 

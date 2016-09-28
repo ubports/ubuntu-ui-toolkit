@@ -17,7 +17,7 @@
 #ifndef TESTPLUGIN_H
 #define TESTPLUGIN_H
 
-#include <QQmlExtensionPlugin>
+#include <QtQml/QQmlExtensionPlugin>
 
 class TestPlugin : public QQmlExtensionPlugin
 {

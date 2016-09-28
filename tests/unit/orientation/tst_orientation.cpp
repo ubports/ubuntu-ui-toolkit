@@ -16,18 +16,17 @@
  * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
+#include <QtCore/QCoreApplication>
+#include <QtGui/QMatrix4x4>
+#include <QtGui/QQuaternion>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlProperty>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
 #include <QtTest/QtTest>
 #include <QtTest/QSignalSpy>
-#include <QtCore/QCoreApplication>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickView>
-#include <QtQuick/QQuickItem>
-#include <QVector3D>
-#include <QVector4D>
-#include <QQuaternion>
-#include <QMatrix4x4>
-#include <QtQuick/QQuickItem>
-#include <QtQml/QQmlProperty>
 
 #include "uctestcase.h"
 
@@ -53,12 +52,12 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("ManualAngle.qml"));
         QQuickItem *helper = testCase->findItem<QQuickItem*>("helper");
         // No warning about "window" being undefined must appear
-        QSKIP("TypeError: Cannot set property 'contentOrientation' of null");
+        QSKIP("FIXME: We have no valid effectiveness tests for OrientationHelper. See bug #1626063.");
         QCOMPARE(testCase->warnings(), 0);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
         // Verify expected values
         QQuickItem *checkpoint = testCase->findItem<QQuickItem*>("checkpoint");
-        // window.contentOrientation 
+        // window.contentOrientation
         QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
     }
 };

@@ -17,14 +17,14 @@
 #ifndef PROPERTYCHANGE_P_H
 #define PROPERTYCHANGE_P_H
 
-#include <QtCore/QVariant>
 #include <QtCore/QObject>
-#include <QtQml/QQmlProperty>
-
+#include <QtCore/QVariant>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
 #include <QtCore/QExplicitlySharedDataPointer>
 #endif
-#include <ubuntutoolkitglobal.h>
+#include <QtQml/QQmlProperty>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQmlAbstractBinding;
 

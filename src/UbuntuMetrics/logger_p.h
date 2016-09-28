@@ -18,11 +18,13 @@
 #ifndef LOGGER_P_H
 #define LOGGER_P_H
 
-#include "logger.h"
-#include "ubuntumetricsglobal_p.h"
-#include "events.h"
+#include <UbuntuMetrics/logger.h>
+
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+
+#include <UbuntuMetrics/events.h>
+#include <UbuntuMetrics/private/ubuntumetricsglobal_p.h>
 
 class UBUNTU_METRICS_PRIVATE_EXPORT UMFileLoggerPrivate
 {

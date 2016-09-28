@@ -20,10 +20,12 @@
 #define UPMCPUUSAGE_H
 
 #include <sys/times.h>
-#include <QtQuick/QQuickItem>
-#include <QtQuick/QQuickWindow>
+
 #include <QtCore/QObject>
 #include <QtCore/QTimer>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickWindow>
+
 #include "upmgraphmodel.h"
 
 class UPMCpuUsage : public QQuickItem

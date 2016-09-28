@@ -16,10 +16,11 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
+#include "qquickclipboard_p_p.h"
+
 #include <QtGui/QClipboard>
 #include <QtGui/QGuiApplication>
 
-#include "qquickclipboard_p_p.h"
 #include "qquickmimedata_p.h"
 
 UT_NAMESPACE_BEGIN

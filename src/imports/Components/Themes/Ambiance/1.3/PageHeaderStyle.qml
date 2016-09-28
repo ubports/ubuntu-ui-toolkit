@@ -97,6 +97,7 @@ Style.PageHeaderStyle {
         objectName: action.objectName + "_button"
         height: internal.titleAreaHeight
         action: modelData
+        activeFocusOnTab: true
         StyleHints {
             foregroundColor: button.pressed ?
                                  pageHeaderStyle.buttons.pressedForegroundColor :

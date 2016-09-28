@@ -14,12 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTUGESTURES_DEBUG_HELPER_H
-#define UBUNTUGESTURES_DEBUG_HELPER_H
+#ifndef DEBUGHELPERS_P_H
+#define DEBUGHELPERS_P_H
 
-#include <QString>
-
-#include "ubuntugesturesglobal.h"
+#include <QtCore/QString>
 
 class QMouseEvent;
 class QTouchEvent;
@@ -28,4 +26,4 @@ QString touchPointStateToString(Qt::TouchPointState state);
 QString touchEventToString(const QTouchEvent *ev);
 QString mouseEventToString(const QMouseEvent *ev);
 
-#endif // UBUNTUGESTURES_DEBUG_HELPER_H
+#endif // DEBUGHELPERS_P_H

@@ -16,13 +16,14 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCBOTTOMEDGE_H
-#define UCBOTTOMEDGE_H
+#ifndef UCBOTTOMEDGE_P_H
+#define UCBOTTOMEDGE_P_H
 
-#include "ucstyleditembase_p.h"
+#include <QtCore/QLoggingCategory>
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickitemchangelistener_p.h>
-#include <QtCore/QLoggingCategory>
+
+#include <UbuntuToolkit/private/ucstyleditembase_p.h>
 
 class QQuickAbstractAnimation;
 
@@ -129,4 +130,4 @@ Q_DECLARE_LOGGING_CATEGORY(ucBottomEdge)
 
 #define LOG     qCDebug(ucBottomEdge) << "[BottomEdge]"
 
-#endif // UCBOTTOMEDGE_H
+#endif // UCBOTTOMEDGE_P_H

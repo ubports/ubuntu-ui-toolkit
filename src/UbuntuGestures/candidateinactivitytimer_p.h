@@ -14,14 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTUGESTURES_CANDIDATE_INACTIVITY_TIMER_H
-#define UBUNTUGESTURES_CANDIDATE_INACTIVITY_TIMER_H
+#ifndef CANDIDATEINACTIVITYTIMER_P_H
+#define CANDIDATEINACTIVITYTIMER_P_H
 
-#include <QObject>
-
-class QQuickItem;
+#include <QtCore/QObject>
 
 #include <UbuntuGestures/private/timer_p.h>
+
+class QQuickItem;
 
 UG_NAMESPACE_BEGIN
 
@@ -48,4 +48,4 @@ private:
 
 UG_NAMESPACE_END
 
-#endif // UBUNTUGESTURES_CANDIDATE_INACTIVITY_TIMER_H
+#endif // CANDIDATEINACTIVITYTIMER_P_H

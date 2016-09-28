@@ -16,6 +16,7 @@
 // along with Ubuntu UI Toolkit. If not, see <http://www.gnu.org/licenses/>.
 
 #include "applicationmonitor_p.h"
+
 #include <QtCore/QTimer>
 #include <QtGui/QGuiApplication>
 #include <QtQuick/QQuickWindow>
@@ -35,10 +36,10 @@ LoggingThread::LoggingThread()
     , m_flags(0)
 {
     m_queue = static_cast<UMEvent*>(
-        aligned_alloc(logQueueAlignment, logQueueSize * sizeof(UMEvent)));
+        alignedAlloc(logQueueAlignment, logQueueSize * sizeof(UMEvent)));
 
 #if !defined(QT_NO_DEBUG)
-    setObjectName(QString::fromLatin1("UbuntuMetrics logging", 21));  // Thread name.
+    setObjectName(QStringLiteral("UbuntuMetrics logging"));  // Thread name.
 #endif
     start();
 }

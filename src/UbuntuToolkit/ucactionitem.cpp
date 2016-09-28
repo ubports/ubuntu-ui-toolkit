@@ -15,11 +15,13 @@
  */
 
 #include "ucactionitem_p_p.h"
-#include "ucaction_p.h"
-#include "ucstyleditembase_p_p.h"
+
 #define foreach Q_FOREACH
 #include <QtQml/private/qqmlbinding_p.h>
 #undef foreach
+
+#include "ucaction_p.h"
+#include "ucstyleditembase_p_p.h"
 
 UT_NAMESPACE_BEGIN
 
@@ -279,7 +281,8 @@ QUrl UCActionItem::iconSource()
     if (d->action) {
         return d->action->m_iconSource;
     }
-    return !iconName().isEmpty() ? QUrl(QString("image://theme/%1").arg(iconName())) : QUrl();
+    return !iconName().isEmpty() ?
+        QUrl(QStringLiteral("image://theme/%1").arg(iconName())) : QUrl();
 }
 void UCActionItem::setIconSource(const QUrl &iconSource)
 {

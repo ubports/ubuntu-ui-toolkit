@@ -12,17 +12,16 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef EXCLUSIVEGROUP_H
-#define EXCLUSIVEGROUP_H
+#ifndef EXCLUSIVEGROUP_P_H
+#define EXCLUSIVEGROUP_P_H
 
-#include "actionlist_p.h"
-#include "ubuntutoolkitglobal.h"
+#include <QtCore/QMetaMethod>
+#include <QtCore/QPointer>
 
-#include <QMetaMethod>
-#include <QPointer>
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
+#include <UbuntuToolkit/private/actionlist_p.h>
 
 class QSignalMapper;
 
@@ -59,4 +58,4 @@ private:
 
 UT_NAMESPACE_END
 
-#endif // EXCLUSIVEGROUP_H
+#endif // EXCLUSIVEGROUP_P_H

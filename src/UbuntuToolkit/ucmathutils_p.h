@@ -12,14 +12,14 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-#ifndef UCMATHUTILS_H
-#define UCMATHUTILS_H
+#ifndef UCMATHUTILS_P_H
+#define UCMATHUTILS_P_H
 
-#include <QObject>
-#include <ubuntutoolkitglobal.h>
+#include <QtCore/QObject>
+
+#include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 QT_FORWARD_DECLARE_CLASS(QQmlEngine)
 QT_FORWARD_DECLARE_CLASS(QJSEngine)
@@ -40,4 +40,4 @@ public:
 
 UT_NAMESPACE_END
 
-#endif // UCMATHUTILS_H
+#endif // UCMATHUTILS_P_H
