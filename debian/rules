@@ -12,7 +12,7 @@ DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_SERIES ?= $(shell lsb_release -c -s)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := powerpc arm64 ppc64el s390x
+testskip_architectures := powerpc ppc64el s390x
 testskip_series := 
 
 override_dh_auto_configure:
@@ -27,10 +27,12 @@ override_dh_auto_test:
 	echo $(testskip_series)
 ifneq ($(DEB_HOST_SERIES),$(findstring $(DEB_HOST_SERIES), $(testskip_series)))
 ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
+ifneq ("$(DEB_HOST_ARCH)$(DEB_HOST_SERIES)","arm64vivid")
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
 	chmod +x tests/xvfb.sh
 	tests/xvfb.sh dh_auto_test || exit $?
+endif
 endif
 endif
 endif

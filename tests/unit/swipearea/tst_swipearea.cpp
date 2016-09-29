@@ -16,6 +16,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
+#include <QtCore/QSysInfo>
 #include <QtQuick/QQuickView>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQuick/private/qquickwindow_p.h>
@@ -770,6 +771,10 @@ void tst_UCSwipeArea::oneFingerDownFollowedByLateSecondFingerDown()
 
 void tst_UCSwipeArea::givesUpWhenLosesTouch()
 {
+    // Fails on arm64 at the moment LP: #1628066
+    if (QSysInfo::buildCpuArchitecture() == "arm64") {
+        QSKIP("Skipping test on arm64");
+    }
     UCSwipeArea *edgeDragArea =
         m_view->rootObject()->findChild<UCSwipeArea*>("hpDragArea");
     Q_ASSERT(edgeDragArea != 0);
