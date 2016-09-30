@@ -129,13 +129,13 @@ void EventUtilsPrivate::updateProcStatMetrics(UMEvent* event)
     unsigned long vsize;
     long threadCount, rss;
 #if !defined(QT_NO_DEBUG)
-    int value =  std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
+    int value =  sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
     ASSERT(value == 1);
-    value =  std::sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
+    value =  sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
     ASSERT(value == 2);
 #else
-    std::sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
-    std::sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
+    sscanf(&m_buffer[entryIndices[numThreadsEntry-1]], "%ld", &threadCount);
+    sscanf(&m_buffer[entryIndices[vsizeEntry-1]], "%lu %ld", &vsize, &rss);
 #endif
 
     event->process.vszMemory = vsize >> 10;
