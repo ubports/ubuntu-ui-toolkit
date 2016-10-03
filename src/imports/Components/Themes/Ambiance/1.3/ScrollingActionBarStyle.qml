@@ -112,6 +112,13 @@ Style.ActionBarStyle {
             delegate: styledItem.delegate
             model: listViewContainer.visibleActions
 
+            highlight: Rectangle {
+                color: theme.palette.focused.background
+                visible: actionsListView.activeFocus
+                width: actionsListView.currentItem.width
+                height: actionsListView.currentItem.height
+            }
+
             // This gives the correct behavior when scrollButtons.width is
             //  larger/smaller/equal compared to the width of the delegate.
             onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
