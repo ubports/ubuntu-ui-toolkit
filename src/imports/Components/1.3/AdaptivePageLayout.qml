@@ -372,6 +372,18 @@ PageTreeNode {
             d.relayout();
         }
         if (primaryPageSource) {
+            /*
+              From Qt5.6 onwards, the change signal for a var type property (see
+              bug https://bugreports.qt.io/browse/QTBUG-42255) comes after the
+              component completion, due to elements being processed in parallel
+              by the compiler. This causes the page to be created twice for the
+              primaryPage, which ends up in failure for the second time that causes
+              the primaryPage to be set to null. Thus no other page can be added
+              afterwards.
+              */
+            if (d.prevPrimaryPageSource === undefined) {
+                d.prevPrimaryPageSource = primaryPageSource;
+            }
             d.createPrimaryPage(primaryPageSource);
         } else if (primaryPage) {
             d.createPrimaryPage(primaryPage);
@@ -392,11 +404,20 @@ PageTreeNode {
         }
     }
     onPrimaryPageSourceChanged: {
-        if (!d.completed || d.internalUpdate) {
+        if (!d.completed) {
             return;
         }
+        if (d.internalUpdate) {
+            d.prevPrimaryPageSource = primaryPageSource;
+            return;
+        }
+        if (d.prevPrimaryPageSource === primaryPageSource) {
+            return;
+        }
+
         // remove all pages first
         d.purgeLayout();
+        d.prevPrimaryPageSource = primaryPageSource;
         // create the new primary page if a valid component is specified
         if (primaryPageSource) {
             d.createPrimaryPage(primaryPageSource);
@@ -428,6 +449,7 @@ PageTreeNode {
         property PageColumnsLayout activeLayout: null
         property list<PageColumnsLayout> prevLayouts
         property Page prevPrimaryPage
+        property var prevPrimaryPageSource
 
         /*! internal */
         onColumnsChanged: {
@@ -438,7 +460,7 @@ PageTreeNode {
             d.relayout();
         }
         property real defaultColumnWidth: units.gu(40)
-        onDefaultColumnWidthChanged: body.applyMetrics()
+        onDefaultColumnWidthChanged: body.updateHeaderHeight(0)
 
         function internalPropertyUpdate(propertyName, value) {
             internalUpdate = true;
@@ -685,15 +707,6 @@ PageTreeNode {
     }
 
 
-    // default metrics
-    Component {
-        id: defaultMetrics
-        PageColumn {
-            fillWidth: __column == d.columns
-            minimumWidth: d.defaultColumnWidth
-        }
-    }
-
     // An instance will be added to each Page with
     Component {
         id: backActionComponent
@@ -738,10 +751,20 @@ PageTreeNode {
             id: holder
             active: false
             objectName: "ColumnHolder" + column
-            property var pageWrapper: pageWrapperComponent.createObject()
+            property PageWrapper pageWrapper: PageWrapper{}
+
             property int column
             property alias config: subHeader.config
-            property PageColumn metrics: getDefaultMetrics()
+            property PageColumn metrics: (d.activeLayout && d.activeLayout.data[column])
+                                         ? d.activeLayout.data[column]
+                                         : defaultMetrics
+
+            PageColumn {
+                id: defaultMetrics
+                fillWidth: (holder.column + 1) == d.columns
+                minimumWidth: d.defaultColumnWidth
+            }
+
             readonly property real dividerThickness: units.dp(1)
             readonly property alias hiddenPool: hiddenItem
 
@@ -939,12 +962,6 @@ PageTreeNode {
                 wrapper.pageHolder = null;
                 return wrapper;
             }
-
-            function getDefaultMetrics() {
-                var result = defaultMetrics.createObject(holder);
-                result.__column = Qt.binding(function() { return holder.column + 1; });
-                return result;
-            }
         }
     }
 
@@ -1012,20 +1029,7 @@ PageTreeNode {
             for (var i = 0; i < children.length; i++) {
                 children[i].column = i;
             }
-            applyMetrics();
-        }
-
-        function applyMetrics() {
-            for (var i = 0; i < children.length; i++) {
-                var holder = children[i];
-                // search for the column metrics
-                var metrics = d.activeLayout ? d.activeLayout.data[i] : null;
-                if (!metrics) {
-                    metrics = holder.getDefaultMetrics();
-                }
-                holder.metrics = metrics;
-                updateHeaderHeight(0);
-            }
+            updateHeaderHeight(0);
         }
     }
 }

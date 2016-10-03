@@ -96,7 +96,7 @@ Overlay::Overlay(const char* text, int windowId)
 {
     DASSERT(text);
 
-    m_buffer = aligned_alloc(bufferAlignment, bufferSize);
+    m_buffer = alignedAlloc(bufferAlignment, bufferSize);
     memset(&m_processEvent, 0, sizeof(m_processEvent));
     m_processEvent.type = UMEvent::Process;
 }

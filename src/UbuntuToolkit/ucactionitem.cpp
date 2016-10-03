@@ -281,7 +281,8 @@ QUrl UCActionItem::iconSource()
     if (d->action) {
         return d->action->m_iconSource;
     }
-    return !iconName().isEmpty() ? QUrl(QString("image://theme/%1").arg(iconName())) : QUrl();
+    return !iconName().isEmpty() ?
+        QUrl(QStringLiteral("image://theme/%1").arg(iconName())) : QUrl();
 }
 void UCActionItem::setIconSource(const QUrl &iconSource)
 {

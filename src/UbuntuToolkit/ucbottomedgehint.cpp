@@ -59,7 +59,7 @@ void UCBottomEdgeHintPrivate::init()
      * Therefore we simply set the style name default. Style loading will
      * happen during component completion.
      */
-    styleDocument = "BottomEdgeHintStyle";
+    styleDocument = QStringLiteral("BottomEdgeHintStyle");
 
     // connect old stateChanged
     QObject::connect(q, &QQuickItem::stateChanged, q, &UCBottomEdgeHint::stateChanged);
@@ -70,6 +70,9 @@ void UCBottomEdgeHintPrivate::init()
 
     // accept mouse events
     q->setAcceptedMouseButtons(Qt::LeftButton);
+
+    // set focusOnTab
+    q->setActiveFocusOnTab(true);
 }
 
 /*!
@@ -179,7 +182,7 @@ void UCBottomEdgeHint::itemChange(ItemChange change, const ItemChangeData &data)
 {
     UCActionItem::itemChange(change, data);
     if (change == ItemParentHasChanged) {
-        QQmlProperty bottomAnchors(this, "anchors.bottom", qmlContext(this));
+        QQmlProperty bottomAnchors(this, QStringLiteral("anchors.bottom"), qmlContext(this));
         if (data.item && !QQmlPropertyPrivate::binding(bottomAnchors)) {
             QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
             anchors->setBottom(QQuickItemPrivate::get(data.item)->bottom());
@@ -357,10 +360,10 @@ void UCBottomEdgeHint::setState(const QString &state)
     if (!style) {
         return;
     }
-    if (state == "Hidden") {
+    if (state == QStringLiteral("Hidden")) {
         setStatus(Hidden);
     }
-    if (state == "Visible") {
+    if (state == QStringLiteral("Visible")) {
         setStatus(Inactive);
     }
 }

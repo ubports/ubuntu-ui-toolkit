@@ -194,16 +194,18 @@ bool shortcutContextMatcher(QObject* object, Qt::ShortcutContext context)
  *
  * Mnemonics are shortcuts prefixed in the text with \&. If the text has multiple
  * occurences of the \& character, the first one will be considered for the shortcut.
+ * However \&\& can be used for a single \& in the text, not as a mnemonic.
  * The \& character cannot be used as shortcut.
  */
 QString UCAction::text()
 {
+    QString displayText(m_text);
     // if we have a mnemonic, underscore it
     if (!m_mnemonic.isEmpty()) {
 
-        QString mnemonic = "&" + m_mnemonic.toString().remove("Alt+");
+        QString mnemonic = "&" + m_mnemonic.toString().remove(QStringLiteral("Alt+"));
         // patch special cases
-        mnemonic.replace("Space", " ");
+        mnemonic.replace(QStringLiteral("Space"), QStringLiteral(" "));
         int mnemonicIndex = m_text.indexOf(mnemonic);
         if (mnemonicIndex < 0) {
             // try lower case
@@ -211,7 +213,6 @@ QString UCAction::text()
             mnemonicIndex = m_text.indexOf(mnemonic);
         }
         ACT_TRACE("MNEM" << mnemonic);
-        QString displayText(m_text);
         // FIXME: we need QInputDeviceInfo to detect the keyboard attechment
         // https://bugs.launchpad.net/ubuntu/+source/ubuntu-ui-toolkit/+bug/1276808
         if (QuickUtils::instance()->keyboardAttached()) {
@@ -220,9 +221,10 @@ QString UCAction::text()
         } else {
             displayText.remove(mnemonicIndex, 1);
         }
-        return displayText;
     }
-    return m_text;
+    // Escape ampersands
+    displayText.replace(QStringLiteral("&&"), QStringLiteral("&amp;"));
+    return displayText;
 }
 void UCAction::setText(const QString &text)
 {
@@ -311,7 +313,7 @@ bool UCAction::isValidType(QVariant::Type valueType)
 void UCAction::generateName()
 {
     static int id = 0;
-    m_name = QString("unity-action-%1").arg(id++);
+    m_name = QStringLiteral("unity-action-%1").arg(id++);
 }
 
 /*!

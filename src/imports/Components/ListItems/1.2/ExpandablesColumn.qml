@@ -75,7 +75,7 @@ Flickable {
 
         var maxExpandedHeight = root.height - item.collapsedHeight;
         var expandedItemHeight = Math.min(item.expandedHeight, maxExpandedHeight);
-        var bottomIntersect = root.mapFromItem(item).y + expandedItemHeight - maxExpandedHeight;
+        var bottomIntersect = root.mapFromItem(item, 0, 0).y + expandedItemHeight - maxExpandedHeight;
         if (bottomIntersect > 0) {
             contentY += bottomIntersect;
         }
@@ -117,14 +117,14 @@ Flickable {
 
     MouseArea {
         anchors { left: parent.left; right: parent.right; top: parent.top }
-        height: root.mapFromItem(priv.expandedItem).y + root.contentY
+        height: root.mapFromItem(priv.expandedItem, 0, 0).y + root.contentY
         enabled: priv.expandedItem != null
         onClicked: root.collapse();
     }
 
     MouseArea {
         anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
-        height: priv.expandedItem != null ? root.contentHeight - (root.mapFromItem(priv.expandedItem).y + root.contentY + priv.expandedItem.height) : 0
+        height: priv.expandedItem != null ? root.contentHeight - (root.mapFromItem(priv.expandedItem, 0, 0).y + root.contentY + priv.expandedItem.height) : 0
         enabled: priv.expandedItem != null
         onClicked: root.collapse();
     }

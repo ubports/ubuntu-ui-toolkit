@@ -7,8 +7,11 @@ contains(QT_CONFIG, opengles2) {
     DEFINES += MESA_EGL_NO_X11_HEADERS
 }
 
-DEFINES += LTTNG_PLUGIN_INSTALL_PATH=\\\"$$[QT_INSTALL_PLUGINS]/ubuntu/metrics/libumlttng.so\\\"
-DEFINES += LTTNG_PLUGIN_BUILD_PATH=\\\"$$OUT_PWD/lttng/libumlttng.so\\\"
+linux {
+    DEFINES += \
+        LTTNG_PLUGIN_INSTALL_PATH=\\\"$$[QT_INSTALL_PLUGINS]/ubuntu/metrics/libumlttng.so\\\"
+    DEFINES += LTTNG_PLUGIN_BUILD_PATH=\\\"$$OUT_PWD/lttng/libumlttng.so\\\"
+}
 
 HEADERS += \
     $$PWD/applicationmonitor.h \
@@ -30,6 +33,7 @@ SOURCES += \
     $$PWD/events.cpp \
     $$PWD/gputimer.cpp \
     $$PWD/logger.cpp \
-    $$PWD/overlay.cpp
+    $$PWD/overlay.cpp \
+    $$PWD/ubuntumetricsglobal.cpp
 
 load(ubuntu_qt_module)

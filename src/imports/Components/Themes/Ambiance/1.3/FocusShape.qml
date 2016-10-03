@@ -35,11 +35,4 @@ Frame {
             duration: UbuntuAnimation.FastDuration
         }
     }
-
-    Binding {
-        target: styledItem
-        property: "activeFocusOnTab"
-        value: true
-        when: styledItem
-    }
 }

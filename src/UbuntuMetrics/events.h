@@ -155,7 +155,7 @@ public:
 
 private:
     EventUtilsPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(EventUtils);
+    Q_DECLARE_PRIVATE(EventUtils)
 };
 
 #endif  // EVENTS_H

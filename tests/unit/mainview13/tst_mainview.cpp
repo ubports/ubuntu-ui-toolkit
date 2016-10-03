@@ -209,13 +209,6 @@ private Q_SLOTS:
         QCOMPARE(QString("Far far away"), page->property("title").toString());
         QCOMPARE(testCase->title(), page->property("title").toString());
     }
-
-    void testWindowTitleFromTabs() {
-        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TabsTitle.qml"));
-        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
-        QCOMPARE(QString("Long long ago"), page->property("title").toString());
-        QCOMPARE(testCase->title(), page->property("title").toString());
-    }
 };
 
 QTEST_MAIN(tst_MainView)

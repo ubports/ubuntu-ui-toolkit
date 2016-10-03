@@ -40,7 +40,6 @@ MainView {
         stack.push(pageComponent)
     }
 
-    // FIXME: Tests failing with Qt 5.6. See bug #1624337.
     UbuntuTestCase {
         id: testCase
         name: "Page.head.sections"

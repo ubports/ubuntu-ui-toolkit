@@ -1,3 +1,85 @@
+ubuntu-ui-toolkit (1.3.2135+16.10) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Fix warning about using implicit char* to QString conversion.
+  * __styleInstance may be null, when doesn't handle that. Fixes LP: #1586013
+  * Focus ring, arrow keys and space to expand OptionSelector. 
+    Fixes LP: #1514860
+  * Use QStringLiteral with QString.replace. Fixes LP: #1625507
+  * Use displayText to determine if the clear button should show. 
+    Fixes LP: #1461571
+  * && escapes an ampersand used in a mnemonic label. Fixes LP: #1587580
+  * Try harder to pass an item to QuickUtils.rootItem. Fixes LP: #1586013
+  
+  [ Timo Jyrinki ]
+  * Enable arm64 unit tests on xenial and newer. Fixes LP: #1580172.
+  * Add initial snapcraft.yaml
+  
+  [ Marco Trevisan ]
+  * UCSlotsLayout: update the size of the element when top/bottom paddings change.
+    Fixes LP: #1628161
+  
+  [ Tim Peeters ]
+  * Ensure that the model in TabBarStyle is a list and not null. 
+    Fixes LP: #1622577.
+  * Initialize the 'window' context property with null and add MainView 1.3 unit
+    tests. Fixes LP: #1610231, LP: #1621509, LP: #1625993.
+  * Fix libpng sRGB profile warnings on Yakkety. Fixes LP: #1625137.
+  * Disable layouts unit test to work around bug 1625137 on Yakkety.
+  
+  [ Zsombor Egri ]
+  * Fix AdaptivePageLayout behavior on Qt5.6. Fixes LP: #1585996.
+  * Fix property binding restore on theme palette values. Fixes LP: #1570478.
+  * Move activeFocusOnTab from style into components. Fixes LP: #1590005.
+
+  [ Loïc Molinari ]
+  * Added public headers extra robustness checks. Made use of the qmake 
+    headersclean feature to check the robustness of our public headers.
+  * Excluded LTTng features from non-Linux builds.
+  * Moved common C++ configs to ubuntu_common.prf. The common config file 
+    doesn't add -Werror directly to QMAKE_CXXFLAGS anymore, it sets the 
+    warnings_are_errors variable so that it is correctly handled by different 
+    compilers (not just GCC). That allows to remove the 
+    -Werror=deprecated-declarations flag since warnings_are_errors defines it 
+    for us. Removed the DEFINES += QT_USE_QSTRINGBUILDER lines since it's 
+    already handled by qt_module.prf. Set the -Wsuggest-override warning to 
+    QMAKE_CXXFLAGS_WARN_ON instead of QMAKE_CXXFLAGS directly.
+  * Cleaned up qmake Ubuntu packaging variables. The qtbase packaging for Ubuntu
+    exports the CFLAGS, CXXFLAGS and LFLAGS variables in the environment before 
+    running configure so that the qtbase shared libraries can be compiled with 
+    the required distribution defined compiler flags. That is fine (though I 
+    guess that could be handled better at the qtbase packaging level with maybe
+    a dedicated prf) but it results in qt_build_config.prf defining the 
+    QMAKE_CFLAGS, QMAKE_CXXFLAGS and QMAKE_LFLAGS variables with these 
+    distribution specific flags. Since we load this prf, these variables end up
+    being defined when building the toolkit for development purpose. This is 
+    problematic because -O2 and -g are always defined (whatever the debug or 
+    release config chosen by the developer), also these are GCC specific flags 
+    which makes our build break with other compilers. This is also ugly because 
+    preprocessor defines are directly set in the QMAKE_C*FLAGS. In order to 
+    workaround these issues, we unset these variables and set the different 
+    flags apart from -g and -O2 in the right qmake variables. This allows to 
+    keep compiling with the Debian flags but in a more flexible way. For the 
+    Debian packaging, we keep the former behaviour by simply passing the 
+    debian_build config.
+  * Optimised QString code gen for ASCII strings known at compile-time. That
+    allows the compiler to optimise our code better by putting all these
+    QStrings known at compile time in the .rodata section of the binary as well
+    as preventing a bunch of useless processing on them. That also allows us to
+    remove "DEFINES -= QT_ASCII_CAST_WARNINGS" from the UbuntuToolkit pro file.
+  
+  [ Zoltán Balogh ]
+  * Explicit include of cstdio.
+  
+  [ Andrea Bernabei ]
+  * Qt5.6: Fix expandablescolumn.11 and expandables.11 unit tests
+  * Qt5.6 fixes QTBUG-41686 and requires x/y to be explicitly passed.
+    Fixes LP: #1610230.
+  * Qt5.6: fix Scrollbar unit tests
+  * Qt5.6: fix ubuntulistview.10 unit test
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Mon, 03 Oct 2016 12:18:46 +0300
+
 ubuntu-ui-toolkit (1.3.2104+16.10.20160929) yakkety; urgency=medium
 
   * Enable arm64 unit tests on xenial and newer. (LP: #1580172)

@@ -167,17 +167,17 @@ Toolkit.MainViewBase {
 
             // 'window' is defined by QML between startup and showing on the screen.
             // There is no signal for when it becomes available and re-declaring it is not safe.
-            property bool windowActive: typeof window != 'undefined'
-            onWindowActiveChanged: {
-                window.title = headerItem.title
-            }
-
-            Connections {
-                target: headerItem
-                onTitleChanged: {
-                    if (headerItem.windowActive)
-                        window.title = headerItem.title
+            property bool windowActive: window !== null
+            function updateWindowTitle() {
+                if (window) {
+                    window.title = headerItem.title;
                 }
+            }
+            onWindowActiveChanged: {
+                updateWindowTitle();
+            }
+            onTitleChanged: {
+                updateWindowTitle();
             }
         }
 
