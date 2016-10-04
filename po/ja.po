@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2016-09-30 06:11+0000\n"
-"X-Generator: Launchpad (build 18204)\n"
+"X-Launchpad-Export-Date: 2016-10-04 06:53+0000\n"
+"X-Generator: Launchpad (build 18217)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
@@ -66,15 +66,13 @@ msgstr ""
 #, qt-format
 msgid "%1 minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1分前"
 
 #: Ubuntu/Components/plugin/i18n.cpp:277
 #, qt-format
 msgid "%1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1分"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
@@ -86,7 +84,7 @@ msgstr "h:mm ap"
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:287
 msgid "HH:mm"
-msgstr ""
+msgstr "HH:mm"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
