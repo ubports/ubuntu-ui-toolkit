@@ -149,24 +149,16 @@ Template {
         TemplateRow {
             width: parent.width
             title: i18n.tr("Enabled")
-
             Toolbar {
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
+                width: parent.width
                 trailingActionBar.actions: actionList
                 leadingActionBar.actions: deleteActionList
             }
         }
         TemplateRow {
             title: i18n.tr("Disabled")
-
             Toolbar {
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
+                width: parent.width
                 trailingActionBar.actions: actionList
                 leadingActionBar.actions: deleteActionList
                 enabled: false
@@ -180,24 +172,16 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Enabled")
-
             Toolbar {
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
+                width: parent.width
                 trailingActionBar.actions: longActionList
                 leadingActionBar.actions: deleteActionList
             }
         }
         TemplateRow {
             title: i18n.tr("Disabled")
-
             Toolbar {
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
+                width: parent.width
                 trailingActionBar.actions: longActionList
                 leadingActionBar.actions: deleteActionList
                 enabled: false
