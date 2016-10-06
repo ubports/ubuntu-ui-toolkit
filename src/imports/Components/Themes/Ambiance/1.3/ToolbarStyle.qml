@@ -24,6 +24,16 @@ Style.ToolbarStyle {
     // reduce toolbar height on phone in landscape orientation:
     implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
+    backgroundColor: theme.palette.normal.background
+    buttons {
+        foregroundColor: theme.palette.normal.backgroundText
+        pressedForegroundColor: buttons.foregroundColor
+        disabledForegroundColor: theme.palette.disabled.backgroundText
+        backgroundColor: "transparent" // background is already colored
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
+
     /*!
       The default action delegate if the styled item does
       not provide a delegate.
@@ -38,20 +48,25 @@ Style.ToolbarStyle {
             id: button
             anchors.fill: parent
             style: IconButtonStyle {
-//                foregroundColor: button.pressed ?
-//                                     actionBarStyle.buttons.pressedForegroundColor :
-//                                     button.enabled ?
-//                                         actionBarStyle.buttons.foregroundColor :
-//                                         actionBarStyle.buttons.disabledForegroundColor
-//                backgroundColor: button.pressed ?
-//                                     actionBarStyle.buttons.pressedBackgroundColor :
-//                                     button.enabled ?
-//                                         actionBarStyle.buttons.backgroundColor :
-//                                         actionBarStyle.buttons.disabledBackgroundColor
+                foregroundColor: button.pressed ?
+                                     toolbarStyle.buttons.pressedForegroundColor :
+                                     button.enabled ?
+                                         toolbarStyle.buttons.foregroundColor :
+                                         toolbarStyle.buttons.disabledForegroundColor
+                backgroundColor: button.pressed ?
+                                     toolbarStyle.buttons.pressedBackgroundColor :
+                                     button.enabled ?
+                                         toolbarStyle.buttons.backgroundColor :
+                                         toolbarStyle.buttons.disabledBackgroundColor
             }
             action: modelData
             activeFocusOnTab: false
         }
         divider.visible: false
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: toolbarStyle.backgroundColor
     }
 }

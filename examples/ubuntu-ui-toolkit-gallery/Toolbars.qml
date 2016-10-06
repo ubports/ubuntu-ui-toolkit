@@ -226,4 +226,28 @@ Template {
             }
         }
     }
+
+    TemplateSection {
+        title: "Colored"
+        className: "ActionBarStyle"
+
+        TemplateRow {
+            title: "Blue"
+            Toolbar {
+                width: parent.width
+                trailingActionBar.actions: longActionList
+                leadingActionBar.actions: deleteActionList
+                StyleHints {
+                    ignoreUnknownProperties: false
+                    backgroundColor: UbuntuColors.red
+                    buttons {
+                        foregroundColor: "white"
+                        disabledForegroundColor: UbuntuColors.silk
+                        pressedBackgroundColor: UbuntuColors.ash
+                        disabledBackgroundColor: UbuntuColors.slate
+                    }
+                }
+            }
+        }
+    }
 }
