@@ -48,17 +48,6 @@ Template {
         }
     ]
 
-    property list<Action> shortActionList: [
-        Action {
-            iconName: "share"
-            text: "Share"
-        },
-        Action {
-            iconName: "starred"
-            text: "Favorite"
-        }
-    ]
-
     property list<Action> longActionList:  [
         Action {
             iconName: "alarm-clock"
@@ -115,6 +104,46 @@ Template {
             iconName: "lock-broken"
             text: "Unlock"
             onTriggered: print("unlock")
+        },
+        Action {
+            iconName: "compose"
+            text: "Edit"
+            onTriggered: print("edit")
+        },
+        Action {
+            iconName: "contact-new"
+            text: "Add user"
+            onTriggered: print("useradd")
+        },
+        Action {
+            iconName: "crop"
+            text: "Crop"
+            onTriggered: print("crop")
+        },
+        Action {
+            iconName: "edit-cut"
+            text: "Cut"
+            onTriggered: print("cut")
+        },
+        Action {
+            iconName: "image-quality"
+            text: "Image quality"
+            onTriggered: print("image quality")
+        },
+        Action {
+            iconName: "import"
+            text: "Import"
+            onTriggered: print("import")
+        },
+        Action {
+            iconName: "history"
+            text: "History"
+            onTriggered: print("history")
+        },
+        Action {
+            iconName: "media-eject"
+            text: "Eject"
+            onTriggered: print("eject")
         }
     ]
 
@@ -124,22 +153,31 @@ Template {
             text: "Delete"
             onTriggered: print("delete")
         }
-
     ]
 
     header: PageHeader {
         id: h
         title: toolbarTemplate.title
+        property bool longList: false
         extension: Toolbar {
+            id: headerToolbar
             anchors {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
             }
             leadingActionBar.actions: deleteActionList
-            trailingActionBar.actions: longActionList
+            trailingActionBar.actions: h.longList ? longActionList : actionList
         }
-        trailingActionBar.actions: shortActionList
+        trailingActionBar.actions: [
+            Action {
+                iconName: h.longList ? "remove" : "add"
+                text: h.longList ? "less" : "more"
+                onTriggered: {
+                    h.longList = !h.longList;
+                }
+            }
+        ]
     }
 
     TemplateSection {

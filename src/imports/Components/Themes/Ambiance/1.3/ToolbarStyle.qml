@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,12 +28,30 @@ Style.ToolbarStyle {
       The default action delegate if the styled item does
       not provide a delegate.
      */
-    defaultDelegate: AbstractButton {
-        style: IconButtonStyle { }
-        objectName: action.objectName + "_button"
-        height: parent ? parent.height : undefined
+    defaultDelegate: ListItem {
         width: units.gu(4)
-        action: modelData
-        activeFocusOnTab: true
+        height: toolbarStyle.height
+        enabled: modelData.enabled
+        objectName: modelData.objectName + "_button"
+        onClicked: button.trigger()
+        AbstractButton {
+            id: button
+            anchors.fill: parent
+            style: IconButtonStyle {
+//                foregroundColor: button.pressed ?
+//                                     actionBarStyle.buttons.pressedForegroundColor :
+//                                     button.enabled ?
+//                                         actionBarStyle.buttons.foregroundColor :
+//                                         actionBarStyle.buttons.disabledForegroundColor
+//                backgroundColor: button.pressed ?
+//                                     actionBarStyle.buttons.pressedBackgroundColor :
+//                                     button.enabled ?
+//                                         actionBarStyle.buttons.backgroundColor :
+//                                         actionBarStyle.buttons.disabledBackgroundColor
+            }
+            action: modelData
+            activeFocusOnTab: false
+        }
+        divider.visible: false
     }
 }
