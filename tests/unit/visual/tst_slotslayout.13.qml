@@ -317,6 +317,26 @@ Item {
         }
     }
 
+    Component {
+        id: mainSlotImplicitWidthComponent
+        SlotsLayout {
+            id: mainSlotImplicitSizeTest
+            //by forcing 2gu width and 2gu+2gu padding we force the mainSlot to have a negative size
+            //which is the condition that triggers bug #1630167
+            width: units.gu(2)
+            padding {
+                leading: units.gu(2)
+                trailing: units.gu(2)
+            }
+            mainSlot: Column {
+                Item {
+                    width: parent.width
+                    height: 5
+                }
+            }
+        }
+    }
+
     UbuntuTestCase {
         name: "SlotsLayout"
         when: windowShown
@@ -984,6 +1004,14 @@ Item {
             compare(layoutMultilineLabels.summary.lineCount, 2,
                     "Multiline labels positioning: wrong summary lineCount")
             checkLabelsY(layoutMultilineLabels)
+        }
+
+        //Bug #1630167: this test will trigger an endless loop in case of regression
+        function test_implicitMainSlotWidthLoop() {
+            console.log("Bug #1630167 if no ouput after this line")
+            var obj = mainSlotImplicitWidthComponent.createObject(main);
+            waitForRendering(obj);
+            verify(obj !== null, "test_implicitMainSlotWidthLoop, dynamic object creation.");
         }
     }
 }

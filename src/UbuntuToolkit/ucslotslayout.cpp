@@ -540,7 +540,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
             qmlInfo(q) << "Invalid attached property!";
             return;
         }
-        mainSlot->setImplicitWidth(q->width() - totalSlotsWidth
+        mainSlot->setWidth(q->width() - totalSlotsWidth
                                    - attachedProps->padding()->leading()
                                    - attachedProps->padding()->trailing()
                                    - padding.leading() - padding.trailing());
