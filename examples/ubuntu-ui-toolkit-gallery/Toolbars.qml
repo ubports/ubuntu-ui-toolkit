@@ -232,14 +232,14 @@ Template {
         className: "ActionBarStyle"
 
         TemplateRow {
-            title: "Blue"
+            title: "Green"
             Toolbar {
                 width: parent.width
                 trailingActionBar.actions: longActionList
                 leadingActionBar.actions: deleteActionList
                 StyleHints {
                     ignoreUnknownProperties: false
-                    backgroundColor: UbuntuColors.red
+                    backgroundColor: UbuntuColors.green
                     buttons {
                         foregroundColor: "white"
                         disabledForegroundColor: UbuntuColors.silk
