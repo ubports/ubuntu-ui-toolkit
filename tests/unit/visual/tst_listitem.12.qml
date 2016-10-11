@@ -16,9 +16,9 @@
 
 import QtQuick 2.4
 import QtTest 1.0
-import Ubuntu.Test 1.3
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Styles 1.3
+import Ubuntu.Test 1.0
+import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 import QtQml.Models 2.1
 
 Item {
@@ -172,9 +172,9 @@ Item {
         }
     }
 
-    ListItemTestCase13 {
+    ListItemTestCase12 {
         id: testCase
-        name: "ListItem13API"
+        name: "ListItemAPI"
         when: windowShown
 
         SignalSpy {
@@ -247,7 +247,7 @@ Item {
         function test_0_defaults() {
             verify(defaults.contentItem !== null, "Defaults is null");
             compare(defaults.color.toString(), Qt.rgba(0.0, 0.0, 0.0, 0.0).toString(), "Transparent by default");
-            compare(defaults.highlightColor, theme.palette.selected.background, "theme.palette.selected.background color by default")
+            compare(defaults.highlightColor, theme.palette.highlighted.background, "theme.palette.selected.background color by default")
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
@@ -303,26 +303,6 @@ Item {
             clickSpy.wait();
         }
 
-        SignalSpy {
-            id: visibleSpy
-            signalName: "visibleChanged"
-        }
-
-        function test_context_menu() {
-            mouseClick(testItem, testItem.width / 2, testItem.height / 2, Qt.RightButton);
-            wait(1000);
-            compare(testItem.highlighted, true, "List item didn't highlight on right-click");
-            var context_menu = findChild(main, "listItemContextMenu");
-            verify(context_menu, "Context menu didn't open on right-click");
-            waitForRendering(context_menu);
-            var edit = findChildWithProperty(context_menu, "text", "Edit");
-            verify(edit, "Context menu has no 'Edit' item");
-            visibleSpy.target = context_menu;
-            mouseClick(edit, edit.width / 2, edit.height / 2);
-            compare(edit.text, 'Edit Again', "Item wasn't triggered'");
-            visibleSpy.wait()
-        }
-
         function test_no_click_when_swiped() {
             var item = findChild(listView, "listItem0");
             clickSpy.target = item;
@@ -351,21 +331,6 @@ Item {
             movingSpy.wait();
         }
 
-        function test_release_outside() {
-            var listItem = defaults;
-            clickSpy.target = listItem;
-            clickSpy.clear();
-            highlightedSpy.target = listItem;
-            highlightedSpy.clear();
-
-            mousePress(listItem, listItem.width / 2, listItem.height / 2);
-            highlightedSpy.wait();
-            mouseMove(listView, 0, 0, 100);
-            mouseRelease(listView, 0, 0);
-            highlightedSpy.wait();
-            compare(clickSpy.count, 0, "Click must be suppressed when releasing outside of item");
-        }
-
         function test_vertical_listview_move_cancels_highlight_data() {
             return [
                 {tag: "With touch", mouse: false},
@@ -376,17 +341,11 @@ Item {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
 
-            clickSpy.target = listItem;
-            clickSpy.clear();
-            highlightedSpy.target = listItem;
-            highlightedSpy.clear();
-
             // convert positions and use the listView to move
             var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
             if (data.mouse) {
                 // provide slow move
                 mousePress(listView, pos.x, pos.y);
-                highlightedSpy.wait();
                 for (var i = 1; i < 4; i++) {
                     pos.y += i * units.gu(0.5);
                     mouseMove(listView, pos.x, pos.y, 100);
@@ -397,7 +356,6 @@ Item {
                 // convert pos to point otherwise touch functions will get (0,0) points!!!
                 var pt = Qt.point(pos.x, pos.y);
                 TestExtras.touchPress(0, listView, pt);
-                highlightedSpy.wait();
                 for (i = 1; i < 4; i++) {
                     pt.y += i * units.gu(0.5);
                     TestExtras.touchMove(0, listView, pt);
@@ -406,7 +364,6 @@ Item {
                 compare(listItem.highlighted, false, "highlighted still!");
                 TestExtras.touchRelease(0, listView, pt);
             }
-            compare(clickSpy.count, 0, "Click must be suppressed when releasing outside of item");
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -476,6 +433,7 @@ Item {
             rebound(data.clickOn, data.item)
         }
 
+        // the function tests whether the Flickable/ListView moves when the ListItem is swiped
         function test_listview_not_interactive_while_tugged_data() {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
@@ -669,7 +627,7 @@ Item {
             wait(2000);
             verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
 
-            var panel = panelItem(data.item, "Leading");
+            var panel = panelItem(data.item, true);
             var action = findChild(panel, "leading_2");
             verify(action, "actions panel cannot be reached");
             // we test the action closest to the list item's contentItem
@@ -768,7 +726,7 @@ Item {
             // tug leading
             swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
             // check if interactive got changed
-            expectFailContinue("", "Flickable should not move.");
+            expectFailContinue("", "Flickable should not move");
             flickableSpy.wait(200);
 
             // cleanup!!!
@@ -1231,7 +1189,7 @@ Item {
 
             var icon = findChild(testItem, data.action);
             verify(icon);
-            compare(icon.width, units.gu(6), "icon width should be the same no matter of the height set");
+            compare(icon.width, units.gu(5), "icon width should be the same no matter of the height set");
 
             rebound(testItem);
 
