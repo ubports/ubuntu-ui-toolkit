@@ -31,6 +31,8 @@ ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
     , listView(listView)
     , _currentItem(Q_NULLPTR)
+    , isEventFilter(false)
+    , keyNavigation(false)
 {
     connect(listView, SIGNAL(currentItemChanged()), this, SLOT(onCurrentItemChanged()), Qt::DirectConnection);
     onCurrentItemChanged();
