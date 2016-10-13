@@ -1,3 +1,21 @@
+ubuntu-ui-toolkit (1.3.2141+16.10) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * Do not show focus frame on ListItem when clicked. Fixes LP: #1628855
+  * Fix color used to test ListItem.highlighted. Fixes LP: #1624328
+
+  [ Christian Dywan ]
+  * Don't skip the entirety of tst_textfield.11.qml. Fixes LP: #1624340
+
+  [ Andrea Bernabei ]
+  * SlotsLayout: do not set mainSlot's implicitSize, set its real size instead
+    Fixes LP: #1630167.
+
+  [ Tim Peeters ]
+  * Enable proper focus handling in the scrolling ActionBar. Fixes LP: #1575893
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 13 Oct 2016 14:00:19 +0300
+
 ubuntu-ui-toolkit (1.3.2135+16.10.20161003.1) yakkety; urgency=medium
 
   [ Christian Dywan ]

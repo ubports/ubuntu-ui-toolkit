@@ -12,7 +12,7 @@ DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_SERIES ?= $(shell lsb_release -c -s)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := powerpc ppc64el s390x
+testskip_architectures := arm64 powerpc ppc64el s390x
 testskip_series := 
 
 override_dh_auto_configure:
