@@ -29,15 +29,22 @@ Item {
         id: testView
         anchors.fill: parent
         model: 50
-        currentIndex: 10
+        currentIndex: -1
         delegate: ListItem { width: testView.width; height: units.gu(7)
             objectName: "listItem" + index
-            enabled: index > 20 && index < 25
+            enabled: index == 4 || (index > 20 && index < 25)
             Label {
                 anchors.centerIn: parent
                 text: (parent.enabled ? "enabled" : "disabled") + index
             }
+            onClicked: testView.currentIndex = index
         }
+    }
+
+    SignalSpy {
+        id: currentItemSpy
+        target: testView
+        signalName: "currentItemChanged"
     }
 
     UbuntuTestCase {
@@ -45,6 +52,14 @@ Item {
 
         function cleanup() {
             main.forceActiveFocus();
+            currentItemSpy.clear();
+        }
+
+        function test_0_first_time_focus_on_listview_bug1628855() {
+            var listItem = findChild(testView, "listItem4");
+            mouseClick(listItem, centerOf(listItem).x, centerOf(listItem).y);
+            currentItemSpy.wait();
+            compare(listItem.keyNavigationFocus, false);
         }
 
         function test_focus_bug1611327_data() {
