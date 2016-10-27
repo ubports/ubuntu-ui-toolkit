@@ -20,6 +20,9 @@ import Ubuntu.Components 1.1
 
 TestCase {
      name: "SliderAPI"
+     when: windowShown
+
+     property bool enableRTL: false
 
      function test_live() {
         compare(slider.live,false,"Live is boolean and false by default")
@@ -50,6 +53,23 @@ TestCase {
          compare(slider.value,newValue,"can set/get")
      }
 
+     function test_bar_rtl() {
+         verify(slider.bar);
+         slider.minimumValue = 0.0;
+         slider.maximumValue = 1.0;
+         slider.value = 0.3;
+
+         // check for LTR
+         verify(slider.value >= slider.bar.width)
+
+         // check for RTL
+         enableRTL = true;
+         verify(slider.value >= slider.bar.width)
+
+         // restore the mirroring
+         enableRTL = false;
+     }
+
      // SliderUtils API tests
      function test_zzz_liveValue()
      {
@@ -76,7 +96,11 @@ TestCase {
      }
 
      Slider {
+        LayoutMirroring.enabled: enableRTL
+        LayoutMirroring.childrenInherit: enableRTL
+
         id: slider
+        readonly property rect bar: slider.__styleInstance && slider.__styleInstance.bar ? slider.__styleInstance.bar.overlayRect : null
         SignalSpy {
             id: signalSpy
             target: parent
