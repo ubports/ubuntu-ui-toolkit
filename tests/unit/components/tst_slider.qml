@@ -22,8 +22,6 @@ TestCase {
      name: "SliderAPI"
      when: windowShown
 
-     property bool enableRTL: false
-
      function test_live() {
         compare(slider.live,false,"Live is boolean and false by default")
          var newLive = true
@@ -63,11 +61,11 @@ TestCase {
          verify(slider.value >= slider.bar.width)
 
          // check for RTL
-         enableRTL = true;
+         slider.enableRTL = true;
          verify(slider.value >= slider.bar.width)
 
          // restore the mirroring
-         enableRTL = false;
+         slider.enableRTL = false;
      }
 
      // SliderUtils API tests
@@ -96,6 +94,7 @@ TestCase {
      }
 
      Slider {
+        property bool enableRTL: false
         LayoutMirroring.enabled: enableRTL
         LayoutMirroring.childrenInherit: enableRTL
 
