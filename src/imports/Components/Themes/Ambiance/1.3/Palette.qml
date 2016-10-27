@@ -58,7 +58,7 @@ Palette {
                 positiveText: "#FFFFFF",
                 negativeText: "#FFFFFF",
                 activityText: "#FFFFFF",
-                focused: UbuntuColors.blue,
+                focus: UbuntuColors.blue,
                 focusText: "#FFFFFF",
                 field: "#FFFFFF",
                 position: "#00000000"
