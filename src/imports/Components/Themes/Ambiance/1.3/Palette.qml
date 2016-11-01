@@ -51,8 +51,6 @@ Palette {
         Component.onCompleted: {
             // specific selected-disabled colors
             var diff = {
-//                background: UbuntuColors.porcelain,
-//                base: UbuntuColors.ash,
                 foreground: UbuntuColors.porcelain,
                 selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
                 positiveText: "#FFFFFF",
