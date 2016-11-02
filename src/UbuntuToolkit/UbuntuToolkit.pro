@@ -2,6 +2,9 @@ TARGET = UbuntuToolkit
 QT = core-private gui-private qml-private quick-private testlib dbus svg organizer \
      UbuntuGestures-private UbuntuMetrics
 
+#Qt SystemInfo
+QT *= systeminfo
+
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus

@@ -20,6 +20,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtQuick/QQuickView>
+#include <QtSystemInfo/QInputInfoManager>
 
 #include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
@@ -87,6 +88,7 @@ private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickWindow> m_rootWindow;
     QPointer<QQuickView> m_rootView;
+    QInputInfoManager m_inputInfo;
     QStringList m_omitIM;
     bool m_mouseAttached;
     bool m_keyboardAttached;
@@ -94,6 +96,10 @@ private:
     static QuickUtils *m_instance;
 
     void lookupQuickView();
+    void toggleDeviceAdded(QInputDevice *device, bool added);
+private Q_SLOTS:
+    void onDeviceAdded(QInputDevice *device);
+    void onDeviceRemoved(const QString deviceId);
 };
 
 #define UC_QML_DEPRECATION_WARNING(msg) \
