@@ -3,7 +3,7 @@ QT = core-private gui-private qml-private quick-private testlib dbus svg organiz
      UbuntuGestures-private UbuntuMetrics
 
 #Qt SystemInfo
-QT *= systeminfo
+QT *= systeminfo systeminfo-private
 
 unix {
     CONFIG += link_pkgconfig

@@ -88,7 +88,7 @@ private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickWindow> m_rootWindow;
     QPointer<QQuickView> m_rootView;
-    QInputInfoManager m_inputInfo;
+    QInputInfoManager *m_inputInfo;
     QStringList m_omitIM;
     bool m_mouseAttached;
     bool m_keyboardAttached;
@@ -98,6 +98,7 @@ private:
     void lookupQuickView();
     void toggleDeviceAdded(QInputDevice *device, bool added);
 private Q_SLOTS:
+    void onInputInfoReady();
     void onDeviceAdded(QInputDevice *device);
     void onDeviceRemoved(const QString deviceId);
 };
