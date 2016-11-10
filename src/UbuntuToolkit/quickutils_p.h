@@ -20,13 +20,14 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtQuick/QQuickView>
-#include <QtSystemInfo/QInputInfoManager>
 
 #include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
 class QQuickItem;
 class QQmlEngine;
 class QQmlComponent;
+class QInputInfoManager;
+class QInputDevice;
 
 UT_NAMESPACE_BEGIN
 
@@ -36,8 +37,8 @@ class UBUNTUTOOLKIT_EXPORT QuickUtils : public QObject
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
     Q_PROPERTY(bool touchScreenAvailable READ touchScreenAvailable NOTIFY touchScreenAvailableChanged)
-    Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached NOTIFY mouseAttachedChanged)
-    Q_PROPERTY(bool keyboardAttached MEMBER m_keyboardAttached NOTIFY keyboardAttachedChanged)
+    Q_PROPERTY(bool mouseAttached MEMBER m_mouseAttached WRITE setMouseAttached NOTIFY mouseAttachedChanged)
+    Q_PROPERTY(bool keyboardAttached MEMBER m_keyboardAttached WRITE setKeyboardAttached NOTIFY keyboardAttachedChanged)
 public:
     static QuickUtils *instance(QObject *parent = Q_NULLPTR)
     {
@@ -90,13 +91,19 @@ private:
     QPointer<QQuickView> m_rootView;
     QInputInfoManager *m_inputInfo;
     QStringList m_omitIM;
-    bool m_mouseAttached;
-    bool m_keyboardAttached;
+    QSet<QString> m_mouses;
+    QSet<QString> m_keyboards;
+    bool m_mouseAttached:1;
+    bool m_keyboardAttached:1;
+    bool m_explicitMouseAttached:1;
+    bool m_explicitKeyboardAttached:1;
 
     static QuickUtils *m_instance;
 
     void lookupQuickView();
-    void toggleDeviceAdded(QInputDevice *device, bool added);
+    void registerDevice(QInputDevice *device, const QString &deviceId);
+    void setMouseAttached(bool set);
+    void setKeyboardAttached(bool set);
 private Q_SLOTS:
     void onInputInfoReady();
     void onDeviceAdded(QInputDevice *device);

@@ -27,6 +27,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquicktextinput_p.h>
 #include <QtQuick/private/qquicktextedit_p.h>
+#include <QtSystemInfo/QInputInfoManager>
 
 UT_NAMESPACE_BEGIN
 
@@ -37,7 +38,9 @@ QuickUtils::QuickUtils(QObject *parent) :
     m_rootWindow(0),
     m_rootView(0),
     m_mouseAttached(false),
-    m_keyboardAttached(false)
+    m_keyboardAttached(false),
+    m_explicitMouseAttached(false),
+    m_explicitKeyboardAttached(false)
 {
     QGuiApplication::instance()->installEventFilter(this);
     m_omitIM << QStringLiteral("ibus") << QStringLiteral("none") << QStringLiteral("compose");
@@ -54,37 +57,81 @@ QuickUtils::QuickUtils(QObject *parent) :
 
 void QuickUtils::onInputInfoReady()
 {
-//    for (auto device : m_inputInfo->deviceMap()) {
-//        toggleDeviceAdded(device, true);
-//    }
+    QMapIterator<QString, QInputDevice*> i(m_inputInfo->deviceMap());
+    while (i.hasNext()) {
+        i.next();
+        registerDevice(i.value(), i.key());
+    }
+
     m_inputInfo->setFilter(QInputDevice::Mouse | QInputDevice::TouchPad | QInputDevice::Keyboard);
 }
 
 void QuickUtils::onDeviceAdded(QInputDevice *device)
 {
-    toggleDeviceAdded(device, true);
+    QMapIterator<QString, QInputDevice*> i(m_inputInfo->deviceMap());
+    while (i.hasNext()) {
+        i.next();
+        if (i.value() == device) {
+            registerDevice(device, i.key());
+            break;
+        }
+    }
 }
 
 void QuickUtils::onDeviceRemoved(const QString deviceId)
 {
-    QInputDevice *device = m_inputInfo->deviceMap().find(deviceId).value();
-    toggleDeviceAdded(device, false);
+    // the device info is removed by now, so we must look at the internal cache
+    if (m_keyboards.remove(deviceId)) {
+        if (!m_explicitKeyboardAttached && !m_keyboards.size()) {
+            m_keyboardAttached = false;
+            Q_EMIT keyboardAttachedChanged();
+        }
+    }
+    if (m_mouses.remove(deviceId)) {
+        if (!m_explicitMouseAttached && !m_mouses.size()) {
+            m_mouseAttached = false;
+            Q_EMIT mouseAttachedChanged();
+        }
+    }
 }
 
-void QuickUtils::toggleDeviceAdded(QInputDevice *device, bool added)
+void QuickUtils::registerDevice(QInputDevice *device, const QString &deviceId)
 {
-    qDebug() << "device" << device->properties() << device->types() << added;
-    bool isKeyboard = device->types().testFlag(QInputDevice::Keyboard);
-    if (isKeyboard && (added != m_keyboardAttached)) {
-        m_keyboardAttached = added;
-        Q_EMIT keyboardAttachedChanged();
+    if (device->types().testFlag(QInputDevice::Keyboard)) {
+        m_keyboards.insert(deviceId);
+        if (!m_explicitKeyboardAttached && !m_keyboardAttached) {
+            m_keyboardAttached = true;
+            Q_EMIT keyboardAttachedChanged();
+        }
     }
-    bool isMouse = device->types().testFlag(QInputDevice::Mouse)
-                   || device->types().testFlag(QInputDevice::TouchPad);
-    if (isMouse && (added != m_mouseAttached)) {
-        m_mouseAttached = added;
-        Q_EMIT mouseAttachedChanged();
+    if (device->types().testFlag(QInputDevice::Mouse)
+            || device->types().testFlag(QInputDevice::TouchPad)) {
+        m_mouses.insert(deviceId);
+        if (!m_explicitMouseAttached && !m_mouseAttached) {
+            m_mouseAttached = true;
+            Q_EMIT mouseAttachedChanged();
+        }
     }
+}
+
+void QuickUtils::setMouseAttached(bool set)
+{
+    m_explicitMouseAttached = true;
+    if (set == m_mouseAttached) {
+        return;
+    }
+    m_mouseAttached = set;
+    Q_EMIT mouseAttachedChanged();
+}
+
+void QuickUtils::setKeyboardAttached(bool set)
+{
+    m_explicitKeyboardAttached = true;
+    if (set == m_keyboardAttached) {
+        return;
+    }
+    m_keyboardAttached = true;
+    Q_EMIT keyboardAttachedChanged();
 }
 
 /*!
