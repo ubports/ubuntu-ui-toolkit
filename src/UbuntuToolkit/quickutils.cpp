@@ -87,8 +87,8 @@ void QuickUtils::onDeviceRemoved(const QString deviceId)
             Q_EMIT keyboardAttachedChanged();
         }
     }
-    if (m_mouses.remove(deviceId)) {
-        if (!m_explicitMouseAttached && !m_mouses.size()) {
+    if (m_mice.remove(deviceId)) {
+        if (!m_explicitMouseAttached && !m_mice.size()) {
             m_mouseAttached = false;
             Q_EMIT mouseAttachedChanged();
         }
@@ -106,7 +106,7 @@ void QuickUtils::registerDevice(QInputDevice *device, const QString &deviceId)
     }
     if (device->types().testFlag(QInputDevice::Mouse)
             || device->types().testFlag(QInputDevice::TouchPad)) {
-        m_mouses.insert(deviceId);
+        m_mice.insert(deviceId);
         if (!m_explicitMouseAttached && !m_mouseAttached) {
             m_mouseAttached = true;
             Q_EMIT mouseAttachedChanged();

@@ -91,7 +91,7 @@ private:
     QPointer<QQuickView> m_rootView;
     QInputInfoManager *m_inputInfo;
     QStringList m_omitIM;
-    QSet<QString> m_mouses;
+    QSet<QString> m_mice;
     QSet<QString> m_keyboards;
     bool m_mouseAttached:1;
     bool m_keyboardAttached:1;
