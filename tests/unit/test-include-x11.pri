@@ -3,5 +3,5 @@ include( layout_dependency.pri )
 include( add_makecheck_x11.pri )
 
 TEMPLATE = app
-QT += testlib qml quick UbuntuToolkit UbuntuToolkit-private
+QT += testlib qml quick systeminfo UbuntuToolkit UbuntuToolkit-private
 CONFIG += no_keywords c++11

@@ -89,6 +89,14 @@ MainView {
                 }
             }
         }
+        Slider {
+           property bool enableRTL: false
+           LayoutMirroring.enabled: enableRTL
+           LayoutMirroring.childrenInherit: enableRTL
+
+           id: slider
+           readonly property rect bar: slider.__styleInstance && slider.__styleInstance.bar ? slider.__styleInstance.bar.overlayRect : null
+        }
     }
 
     UbuntuTestCase {
@@ -107,6 +115,7 @@ MainView {
         function cleanup() {
             flickSpy.target = null;
             flickSpy.clear();
+            slider.enableRTL = false;
         }
 
         function test_slider_blocks_flickable_data() {
@@ -159,6 +168,22 @@ MainView {
             if (to != from)
                 valueSpy.wait();
             compare(slider.value, to, "Slider has the wrong value!");
+        }
+
+        function test_bar_rtl() {
+            verify(slider.bar);
+            slider.minimumValue = 0.0;
+            slider.maximumValue = 1.0;
+            slider.value = 0.3;
+
+            // check for LTR
+            print("Slider width:", slider.bar.width)
+            verify(slider.value >= slider.bar.width)
+
+            // check for RTL
+            slider.enableRTL = true;
+            print("Slider RTL width:", slider.bar.width)
+            verify(slider.value >= slider.bar.width)
         }
     }
 }
