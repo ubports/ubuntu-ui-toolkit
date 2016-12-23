@@ -767,7 +767,12 @@ Ubuntu.StyledItem {
     QtObject {
         id: internal
         // public property locals enabling aliasing
-        property string displayText: editor.getText(0, editor.length)
+        property string displayText: {
+            var plainText = editor.getText(0, editor.length);
+            if (editor.hasOwnProperty('preeditText'))
+                plainText += editor.preeditText;
+            return plainText;
+        }
         property real frameSpacing: control.__styleInstance.frameSpacing
         property real minimumSize: units.gu(4)
         property real scrollbarSpacing: rightScrollbar.__interactive ? units.gu(2) : 0

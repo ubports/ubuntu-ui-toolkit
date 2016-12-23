@@ -52,6 +52,7 @@ def pre_commit_hook(local, master, old_revno, old_revid, future_revno,
 
     subprocess.call(["rm", "-rf", "debian-packaging-wraptest-temporary"])
 
+
 branch.Branch.hooks.install_named_hook("pre_commit",
                                        pre_commit_hook,
                                        "Check packaging sorting")

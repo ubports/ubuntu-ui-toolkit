@@ -25,19 +25,19 @@ Palette {
         Component.onCompleted: {
             // specific disabled colors
             var diff = {
-                field: UbuntuColors.porcelain,
                 selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
                 positiveText: "#FFFFFF",
                 negativeText: "#FFFFFF",
                 activityText: "#FFFFFF",
-                focusText: "#FFFFFF"
+                focusText: "#FFFFFF",
+                position: "#00000000"
             };
             for (var p in normal) {
                 // skip objectName and all change signals
                 if (p === "objectName" || p.indexOf("Changed") > 0) continue;
                 disabled[p] = diff[p] || (
-                    // if not specific, colors are 30% opaque normal
-                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, normal[p].a * 0.5)
+                    // if not specific, colors are 40% opaque normal
+                    Qt.rgba(normal[p].r, normal[p].g, normal[p].b, normal[p].a * 0.4)
                 );
             }
         }
@@ -51,21 +51,22 @@ Palette {
         Component.onCompleted: {
             // specific selected-disabled colors
             var diff = {
-                background: UbuntuColors.porcelain,
-                base: UbuntuColors.porcelain,
                 foreground: UbuntuColors.porcelain,
                 selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.1),
                 positiveText: "#FFFFFF",
                 negativeText: "#FFFFFF",
                 activityText: "#FFFFFF",
-                focusText: "#FFFFFF"
+                focus: UbuntuColors.blue,
+                focusText: "#FFFFFF",
+                field: "#FFFFFF",
+                position: "#00000000"
             };
             for (var p in selected) {
                 // skip objectName and all change signals
                 if (p === "objectName" || p.indexOf("Changed") > 0) continue;
                 selectedDisabled[p] = diff[p] || (
-                    // if not specific, colors are 30% opaque normal
-                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, normal[p].a * 0.5)
+                    // if not specific, colors are 40% opaque normal
+                    Qt.rgba(selected[p].r, selected[p].g, selected[p].b, normal[p].a * 0.4)
                 );
             }
         }
@@ -74,7 +75,7 @@ Palette {
     highlighted: AmbianceNormal {
         background: UbuntuColors.silk
         base: UbuntuColors.ash
-        baseText: UbuntuColors.inkstone
+        baseText: UbuntuColors.jet
         foreground: UbuntuColors.silk
         raised: UbuntuColors.silk
         raisedText: UbuntuColors.inkstone

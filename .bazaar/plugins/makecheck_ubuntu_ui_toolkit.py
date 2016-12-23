@@ -35,6 +35,7 @@ def execute_makecheck(local_branch, master_branch, old_revision_number,
     if (subprocess.call("make check", shell=True) != 0):
         raise errors.BzrError("Tests failed, fix them before commit!")
 
+
 branch.Branch.hooks.install_named_hook('pre_commit',
                                        execute_makecheck,
                                        'make check pre-commit')

@@ -61,7 +61,7 @@ public:
     // use this API only in tests!
     static void initializeContextProperties(QQmlEngine*);
 private:
-    explicit UbuntuToolkitModule(QObject *parent = 0);
+    explicit UbuntuToolkitModule(QObject *parent = Q_NULLPTR);
     static UbuntuToolkitModule* create(QQmlEngine *engine, const QUrl &baseUrl);
     void registerWindowContextProperty();
     Q_SLOT void setWindowContextProperty(QWindow* focusWindow);

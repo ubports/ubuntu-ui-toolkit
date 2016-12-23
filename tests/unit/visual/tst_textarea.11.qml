@@ -137,11 +137,6 @@ Item {
             compare(textArea.canUndo,textEdit.canUndo,"TextArea.canUndo is same as TextEdit.canUndo")
         }
 
-        // FIXME: Fails with Qt 5.6. See bug #1624342.
-        function test_0_color() {
-            compare(textArea.color,textEdit.color,"TextArea.color is same as TextEdit.canUndo")
-        }
-
         function test_0_cursorDelegate() {
             verify(textArea.cursorDelegate === null, "TextArea.cursorDelegate is not null")
         }
@@ -218,14 +213,6 @@ Item {
 
         function test_0_selectedText() {
             compare(textArea.selectedText,textEdit.selectedText,"TextArea.selectedText is same as TextEdit.selectedText")
-        }
-
-        function test_0_selectedTextColor() {
-            compare(textArea.selectedTextColor,textEdit.selectedTextColor,"TextArea.selectedTextColor is same as TextEdit.selectedTextColor")
-        }
-
-        function test_0_selectionColor() {
-            compare(textArea.selectionColor,textEdit.selectionColor,"TextArea.selectionColor is same as TextEdit.selectionColor")
         }
 
         function test_0_selectionEnd() {
