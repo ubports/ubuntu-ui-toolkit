@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.3.2151+16.10) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.3.2151+17.04.20161223) zesty; urgency=medium
 
   [ Zsombor Egri ]
   * Enable mouse, touchpad and keyboard detection in UITK. Fixes LP: #1536669
@@ -18,7 +18,7 @@ ubuntu-ui-toolkit (1.3.2151+16.10) UNRELEASED; urgency=medium
   [ Lukáš Tinkl ]
   * Fix slider progress rect with RTL languages.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 20 Dec 2016 10:35:25 +0200
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Fri, 23 Dec 2016 14:52:55 +0000
 
 ubuntu-ui-toolkit (1.3.2141+16.10.20161013.5) yakkety; urgency=medium
 
