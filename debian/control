@@ -353,6 +353,7 @@ Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
 Depends: qml-module-qt-labs-folderlistmodel,
+         qml-module-qtqml-models2,
          qml-module-qtquick-xmllistmodel,
          qml-module-ubuntu-components (= ${binary:Version}) | qml-module-ubuntu-components-gles,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
