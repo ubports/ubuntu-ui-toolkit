@@ -21,10 +21,10 @@ import Ubuntu.Components.Themes 1.3
 PaletteValues {
     background: "#FFFFFF"
     backgroundText: UbuntuColors.jet
-    backgroundSecondaryText: UbuntuColors.slate
-    backgroundTertiaryText: UbuntuColors.ash
+    backgroundSecondaryText: UbuntuColors.inkstone
+    backgroundTertiaryText: UbuntuColors.graphite
     base: UbuntuColors.silk
-    baseText: UbuntuColors.graphite
+    baseText: UbuntuColors.inkstone
     foreground: UbuntuColors.porcelain
     foregroundText: UbuntuColors.jet
     raised: "#FFFFFF"
@@ -35,7 +35,7 @@ PaletteValues {
     overlaySecondaryText: UbuntuColors.silk
     field: "#FFFFFF"
     fieldText: UbuntuColors.jet
-    focus: UbuntuColors.orange
+    focus: UbuntuColors.blue
     focusText: "#FFFFFF"
     selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
     selectionText: UbuntuColors.jet

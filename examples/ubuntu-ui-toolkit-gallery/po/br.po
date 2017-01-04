@@ -1,16 +1,16 @@
-# Spanish translation for ubuntu-ui-toolkit
-# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# Breton translation for ubuntu-ui-toolkit
+# Copyright (c) 2016 Rosetta Contributors and Canonical Ltd 2016
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-11-05 10:04+0100\n"
-"PO-Revision-Date: 2015-03-28 06:18+0000\n"
-"Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"PO-Revision-Date: 2016-10-14 08:19+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Breton <br@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 #: About.qml:34
 msgid "About..."
-msgstr "Acerca de...."
+msgstr "Diwar-benn..."
 
 #: ActionBars.qml:68
 msgid "Short list"
-msgstr "Lista corta"
+msgstr "Roll berr"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
@@ -31,12 +31,12 @@ msgstr ""
 
 #: ActionBars.qml:92
 msgid "Long list"
-msgstr "Lista larga"
+msgstr "Roll hir"
 
 #: ActionBars.qml:102 Buttons.qml:91 Sections.qml:45 TextInputs.qml:90
 #: Toggles.qml:45 Toggles.qml:83
 msgid "Disabled"
-msgstr "Desactivado"
+msgstr "Diweredekaet"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
@@ -46,100 +46,100 @@ msgstr ""
 #: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
 #: Sliders.qml:28 TextInputs.qml:46
 msgid "Standard"
-msgstr "Estándar"
+msgstr ""
 
 #: Animations.qml:58
 msgid "Standard Durations"
-msgstr "Duraciones estándares"
+msgstr ""
 
 #: Animations.qml:62
 msgid "Snap"
-msgstr "Ajustar"
+msgstr ""
 
 #: Animations.qml:98
 msgid "Fast"
-msgstr "Rápido"
+msgstr "Prim"
 
 #: Animations.qml:134
 msgid "Slow"
-msgstr "Lento"
+msgstr "Gorrek"
 
 #: Animations.qml:159
 msgid "Sleepy"
-msgstr "Dormilón"
+msgstr ""
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
-msgstr "Llamar"
+msgstr ""
 
 #: Buttons.qml:37
 msgid "Stroke"
-msgstr "Trazo"
+msgstr ""
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
-msgstr "Color"
+msgstr "Liv"
 
 #: Buttons.qml:53
 #, qt-format
 msgid "Call %1"
-msgstr "Llamar %1"
+msgstr "Gervel %1"
 
 #: Buttons.qml:63 Buttons.qml:120 ListItems.qml:43
 msgid "Icon"
-msgstr "Icono"
+msgstr "Arlun"
 
 #: Buttons.qml:72 Buttons.qml:134
 msgid "Icon+Text"
-msgstr "Icono y texto"
+msgstr ""
 
 #: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
-msgstr "Contraído"
+msgstr ""
 
 #: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
 msgid "Expanded"
-msgstr "Expandido"
+msgstr ""
 
 #: Colors.qml:30
 msgid "Orange"
-msgstr "Naranja"
+msgstr "Orañjez"
 
 #: Colors.qml:36
 msgid "Light grey"
-msgstr "Gris claro"
+msgstr "Griz-sklaer"
 
 #: Colors.qml:42
 msgid "Dark grey"
-msgstr "Gris oscuro"
+msgstr "Griz-teñval"
 
 #: Colors.qml:48
 msgid "Red"
-msgstr "Rojo"
+msgstr "Ruz"
 
 #: Colors.qml:54
 msgid "Green"
-msgstr "Verde"
+msgstr "Gwer"
 
 #: Colors.qml:60
 msgid "Blue"
-msgstr "Azul"
+msgstr "Glas"
 
 #: Colors.qml:66
 msgid "Purple"
-msgstr "Púrpura"
+msgstr "Limestra"
 
 #: Dialog.qml:32 Popover.qml:42 Sheet.qml:43 Sheet.qml:76
 msgid "Open"
-msgstr "Abrir"
+msgstr "Digor"
 
 #: Icons.qml:29
 msgid "Scaling"
-msgstr "Escalado"
+msgstr ""
 
 #: Icons.qml:79
 msgid "Theme"
-msgstr "Tema"
+msgstr "Tem"
 
 #: ListItemLayouts.qml:208 NewListItems.qml:79
 msgid "Leading and trailing actions"
@@ -149,15 +149,15 @@ msgstr ""
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
 #: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
 msgid "Label"
-msgstr "Etiqueta"
+msgstr "Label"
 
 #: ListItems.qml:33
 msgid "Subtitled"
-msgstr "Subtitulado"
+msgstr "Istitlet"
 
 #: ListItems.qml:37
 msgid "Secondary label"
-msgstr "Etiqueta secundaria"
+msgstr ""
 
 #: ListItems.qml:52
 msgid "ThinDivider"
@@ -165,103 +165,103 @@ msgstr ""
 
 #: ListItems.qml:73
 msgid "Progression"
-msgstr "Progreso"
+msgstr "Mont war-raok"
 
 #: ListItems.qml:82
 msgid "Single value"
-msgstr "Valor único"
+msgstr ""
 
 #: ListItems.qml:86
 msgid "Value"
-msgstr "Valor"
+msgstr "Talvoud"
 
 #: ListItems.qml:91
 msgid "Multi value"
-msgstr "Valor múltiple"
+msgstr ""
 
 #: ListItems.qml:95 ListItems.qml:113 ListItems.qml:122 ListItems.qml:132
 #: ListItems.qml:161 ListItems.qml:176 OptionSelectors.qml:33
 #: OptionSelectors.qml:84 OptionSelectors.qml:99
 msgid "Value 1"
-msgstr "Valor 1"
+msgstr "Talvoud 1"
 
 #: ListItems.qml:96 ListItems.qml:114 ListItems.qml:123 ListItems.qml:133
 #: ListItems.qml:162 ListItems.qml:177 OptionSelectors.qml:85
 #: OptionSelectors.qml:100
 msgid "Value 2"
-msgstr "Valor 2"
+msgstr "Talvoud 2"
 
 #: ListItems.qml:97 ListItems.qml:115 ListItems.qml:124 ListItems.qml:134
 #: ListItems.qml:163 ListItems.qml:178 OptionSelectors.qml:86
 #: OptionSelectors.qml:101
 msgid "Value 3"
-msgstr "Valor 3"
+msgstr "Talvoud 3"
 
 #: ListItems.qml:98 ListItems.qml:116 ListItems.qml:125 ListItems.qml:135
 #: ListItems.qml:164 ListItems.qml:179 OptionSelectors.qml:87
 #: OptionSelectors.qml:102
 msgid "Value 4"
-msgstr "Valor 4"
+msgstr "Talvoud 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
-msgstr "Selector de elementos"
+msgstr ""
 
 #: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
-msgstr "Expansible"
+msgstr ""
 
 #: ListItems.qml:129 OptionSelectors.qml:54
 msgid "Multiple Selection"
-msgstr "Selección múltiple"
+msgstr ""
 
 #: ListItems.qml:139 OptionSelectors.qml:62
 msgid "Custom Model"
-msgstr "Modelo personalizado"
+msgstr "Patrom personelaet"
 
 #: ListItems.qml:165 ListItems.qml:180 OptionSelectors.qml:88
 #: OptionSelectors.qml:103
 msgid "Value 5"
-msgstr "Valor 5"
+msgstr "Talvoud 5"
 
 #: ListItems.qml:166 ListItems.qml:181 OptionSelectors.qml:89
 #: OptionSelectors.qml:104
 msgid "Value 6"
-msgstr "Valor 6"
+msgstr "Talvoud 6"
 
 #: ListItems.qml:167 ListItems.qml:182 OptionSelectors.qml:90
 #: OptionSelectors.qml:105
 msgid "Value 7"
-msgstr "Valor 7"
+msgstr "Talvoud 7"
 
 #: ListItems.qml:168 ListItems.qml:183 OptionSelectors.qml:91
 #: OptionSelectors.qml:106
 msgid "Value 8"
-msgstr "Valor 8"
+msgstr "Talvoud 8"
 
 #: ListItems.qml:190
 msgid "Control"
-msgstr "Control"
+msgstr "Kontroll"
 
 #: ListItems.qml:202
 msgid "Removable"
-msgstr "Extraíble"
+msgstr "Lem-laka"
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr "Deslizar para borrar"
+msgstr ""
 
 #: ListItems.qml:215
 msgid "Reset"
-msgstr "Restablecer"
+msgstr "Adderaouekaat"
 
 #: ListItems.qml:226
 msgid "Grouped list"
-msgstr "Lista con grupos"
+msgstr ""
 
 #: ListItems.qml:261
 msgid "UbuntuListView"
-msgstr "UbuntuListView"
+msgstr ""
 
 #: ListItems.qml:321
 msgid "ExpandablesColumn"
@@ -269,15 +269,15 @@ msgstr ""
 
 #: ListItems.qml:364
 msgid "Expandable"
-msgstr "Expansible"
+msgstr ""
 
 #: NewListItems.qml:39
 msgid "Colored"
-msgstr "Coloreado"
+msgstr "Livet"
 
 #: NewListItems.qml:42
 msgid "Highlight color"
-msgstr "Color de resaltado"
+msgstr ""
 
 #: NewListItems.qml:71
 msgid "Leading actions"
@@ -289,80 +289,78 @@ msgstr ""
 
 #: NewListItems.qml:84
 msgid "Custom action delegates"
-msgstr "Delegados de acción personalizados"
+msgstr ""
 
 #: NewListItems.qml:111
 msgid "Edit"
-msgstr "Editar"
+msgstr "Aozañ"
 
 #: NewListItems.qml:114
 msgid "Move"
-msgstr "Mover"
+msgstr "Dilec'hiañ"
 
 #: NewListItems.qml:163
 msgid "Basic"
-msgstr "Básico"
+msgstr "Diazez"
 
 #: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
 #: NewListItems.qml:213 NewListItems.qml:214
 msgid "Colored divider"
-msgstr "Divisor coloreado"
+msgstr ""
 
 #: NewListItems.qml:163
 msgid "Immutable"
-msgstr "No modificable"
+msgstr ""
 
 #: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
 msgid "No divider"
-msgstr "Sin divisor"
+msgstr "Ranner ebet"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
-msgstr "Selector de opciones"
+msgstr ""
 
 #: OptionSelectors.qml:34
 msgid "This is the second value"
-msgstr "Este es el segundo valor"
+msgstr "Hemañ zo an eil talvoud"
 
 #: OptionSelectors.qml:35
 msgid ""
 "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
 "nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 msgstr ""
-"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy "
-"nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
 
 #: OptionSelectors.qml:36
 msgid "Once upon a time there was a story nobody told."
-msgstr "Érase una vez una historia que nadie contó."
+msgstr "Ur wech e oa un istor ha ne oa ket bet kontet gant den ebet."
 
 #: OptionSelectors.qml:83
 msgid "Custom container height"
-msgstr "Altura personalizada de contenedor"
+msgstr ""
 
 #: OptionSelectors.qml:96
 msgid "No initial selection, scrollable."
-msgstr "Sin selección inicial, desplazable."
+msgstr ""
 
 #: Pickers.qml:31
 msgid "Linear"
-msgstr "Lineal"
+msgstr ""
 
 #: Pickers.qml:63
 msgid "Circular"
-msgstr "Circular"
+msgstr "Kelc'hiek"
 
 #: Pickers.qml:100 ProgressBars.qml:49
 msgid "Infinite"
-msgstr "Infinito"
+msgstr "Didermen"
 
 #: Pickers.qml:137
 msgid "Clock"
-msgstr "Reloj"
+msgstr "Horolaj"
 
 #: Pickers.qml:174
 msgid "Overlay"
-msgstr "Superposición"
+msgstr "Gwiskad"
 
 #: Popover.qml:38
 msgid "Flickable"
@@ -370,43 +368,43 @@ msgstr ""
 
 #: Popover.qml:74
 msgid "Action #1"
-msgstr "Acción n.º 1"
+msgstr "Ober niv. 1"
 
 #: Popover.qml:78
 msgid "Action #2"
-msgstr "Acción n.º 2"
+msgstr "Ober niv. 2"
 
 #: Popover.qml:82
 msgid "Action #3"
-msgstr "Acción n.º 3"
+msgstr "Ober niv. 3"
 
 #: Popover.qml:86
 msgid "Action #4"
-msgstr "Acción n.º 4"
+msgstr "Ober niv. 4"
 
 #: Popover.qml:90
 msgid "Action #5"
-msgstr "Acción n.º 5"
+msgstr "Ober niv. 5"
 
 #: ProgressBars.qml:24
 msgid "Progress Bar"
-msgstr "Barra de progreso"
+msgstr "Barrenn mont war-raok"
 
 #: ProgressBars.qml:59
 msgid "No label"
-msgstr "Sin etiqueta"
+msgstr "Label ebet"
 
 #: ProgressBars.qml:81
 msgid "Activity Indicator"
-msgstr "Indicador de actividad"
+msgstr ""
 
 #: ProportionalShape.qml:28
 msgid "Sizes"
-msgstr "Tamaños"
+msgstr "Mentoù"
 
 #: Sections.qml:34
 msgid "Enabled"
-msgstr "Activado"
+msgstr "Gweredekaet"
 
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -414,12 +412,12 @@ msgstr ""
 
 #: Sheet.qml:53 Sheet.qml:86
 msgid "Title"
-msgstr "Título"
+msgstr "Titl"
 
 #: Sliders.qml:36 Sliders.qml:51 Sliders.qml:68 Sliders.qml:93
 #, qt-format
 msgid "Actual value: %1"
-msgstr "Valor real: %1"
+msgstr ""
 
 #: Sliders.qml:42
 msgid "Live Update"
@@ -427,23 +425,23 @@ msgstr ""
 
 #: Sliders.qml:57
 msgid "Range"
-msgstr "Intervalo"
+msgstr ""
 
 #: Sliders.qml:74
 msgid "Labels"
-msgstr "Etiquetas"
+msgstr ""
 
 #: Sliders.qml:85
 msgid "Small"
-msgstr "Pequeño"
+msgstr "Bihan"
 
 #: Sliders.qml:87
 msgid "Medium"
-msgstr "Mediano"
+msgstr "Krenn"
 
 #: Sliders.qml:89
 msgid "Large"
-msgstr "Grande"
+msgstr "Bras"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
@@ -451,15 +449,15 @@ msgstr ""
 
 #: TextInputs.qml:56
 msgid "Password"
-msgstr "Contraseña"
+msgstr "Ger-tremen"
 
 #: TextInputs.qml:67
 msgid "Numbers"
-msgstr "Números"
+msgstr "Niveroù"
 
 #: TextInputs.qml:78
 msgid "Read-only"
-msgstr "Solo lectura"
+msgstr "Da lenn hepken"
 
 #: TextInputs.qml:82
 msgid "Nobody type here"
@@ -467,36 +465,36 @@ msgstr ""
 
 #: TextInputs.qml:94
 msgid "No interaction allowed"
-msgstr "Interacciones no permitidas"
+msgstr ""
 
 #: TextInputs.qml:107
 msgid "Default"
-msgstr "Predeterminado"
+msgstr "Dre ziouer"
 
 #: TextInputs.qml:129
 msgid "Rich Text"
-msgstr "Texto enriquecido"
+msgstr ""
 
 #: Toggles.qml:28 Toggles.qml:66
 msgid "Unchecked"
-msgstr "No activada"
+msgstr "Diasket"
 
 #: Toggles.qml:36 Toggles.qml:74
 msgid "Checked"
-msgstr "Activada"
+msgstr ""
 
 #: UbuntuShape.qml:28
 msgid "Aspect"
-msgstr ""
+msgstr "Neuz"
 
 #: UbuntuShape.qml:73
 msgid "Radius"
-msgstr "Radio"
+msgstr "Skin"
 
 #: UbuntuShape.qml:115
 msgid "Image"
-msgstr "Imagen"
+msgstr "Skeudenn"
 
 #: UbuntuShape.qml:134
 msgid "Gradient"
-msgstr "Gradiente"
+msgstr ""
