@@ -52,6 +52,7 @@ HEADERS += \
     $$PWD/privates/listviewextensions_p.h \
     $$PWD/privates/splitviewhandler_p.h \
     $$PWD/privates/threelabelsslot_p.h \
+    $$PWD/privates/uccontenthub_p.h \
     $$PWD/privates/ucpagewrapper_p.h \
     $$PWD/privates/ucpagewrapper_p_p.h \
     $$PWD/privates/ucpagewrapperincubator_p.h \
@@ -163,6 +164,7 @@ SOURCES += \
     $$PWD/privates/listviewextensions.cpp \
     $$PWD/privates/splitviewhandler.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
+    $$PWD/privates/uccontenthub.cpp \
     $$PWD/privates/ucpagewrapper.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \
     $$PWD/privates/ucscrollbarutils.cpp \
