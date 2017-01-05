@@ -66,6 +66,8 @@ function open(popup, caller, params) {
     }
 
     var popupObject;
+    // If there's an active item, save it so we can restore it later
+    var prevFocusItem = (typeof window !== "undefined") ? window.activeFocusItem : null;
     if (params !== undefined) {
         popupObject = popupComponent.createObject(rootObject, params);
     } else {
@@ -75,8 +77,11 @@ function open(popup, caller, params) {
         print(popupComponent.errorString().slice(0, -1));
         print("PopupUtils.open(): Failed to create the popup object.");
         return;
-    } else if (popupObject.hasOwnProperty("caller") && caller)
+    } else if (popupObject.hasOwnProperty("caller") && caller) {
         popupObject.caller = caller;
+    } else if (popupObject.hasOwnProperty("__setPreviousActiveFocusItem")) {
+        popupObject.__setPreviousActiveFocusItem(prevFocusItem);
+    }
 
     // if caller is specified, connect its cleanup to the popup's close
     // so popups will be removed together with the caller.
