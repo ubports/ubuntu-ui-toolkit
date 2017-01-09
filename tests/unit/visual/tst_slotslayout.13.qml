@@ -158,6 +158,22 @@ Item {
             Item { id: layoutCustomPadding_trailing2; SlotsLayout.position: SlotsLayout.Trailing; width: units.gu(3); height: units.gu(9) }
         }
         ListItemLayout {
+            id: layoutCustomPaddingSet
+            title.text: "Test"
+        }
+        ListItemLayout {
+            id: layoutCustomPaddingChanges
+            readonly property var leadingSlots: []
+            readonly property var trailingSlots: []
+            padding {
+                top: units.gu(2)
+                bottom: units.gu(2)
+                leading: units.gu(2)
+                trailing: units.gu(2)
+            }
+            title.text: "Padded"
+        }
+        ListItemLayout {
             id: layoutTestChangeSlotsSize
             readonly property var leadingSlots: [layoutTestChangeSlotsSize_leading1]
             readonly property var trailingSlots: []
@@ -298,6 +314,26 @@ Item {
             id: layoutTestCustomTextSizeInitializationFromQml
             title.text: "Hello"
             title.textSize: Label.XLarge
+        }
+    }
+
+    Component {
+        id: mainSlotImplicitWidthComponent
+        SlotsLayout {
+            id: mainSlotImplicitSizeTest
+            //by forcing 2gu width and 2gu+2gu padding we force the mainSlot to have a negative size
+            //which is the condition that triggers bug #1630167
+            width: units.gu(2)
+            padding {
+                leading: units.gu(2)
+                trailing: units.gu(2)
+            }
+            mainSlot: Column {
+                Item {
+                    width: parent.width
+                    height: 5
+                }
+            }
         }
     }
 
@@ -505,6 +541,41 @@ Item {
 
             //check that slots are still in the right position
             checkSlotsPosition(data.item)
+        }
+
+        function test_customPaddingSet_data(){
+            return [
+                        { tag: "Custom padding top", item: layoutCustomPaddingSet, position: "top" },
+                        { tag: "Custom padding bottom", item: layoutCustomPaddingSet, position: "bottom" },
+                        { tag: "Custom padding leading", item: layoutCustomPaddingSet, position: "leading" },
+                        { tag: "Custom padding trailing", item: layoutCustomPaddingSet, position: "trailing" },
+                    ]
+        }
+
+        function test_customPaddingSet(data) {
+            var oldValue = data.item.padding[data.position]
+            var newValue = oldValue + units.gu(5)
+            data.item.padding[data.position] = newValue
+            compare(data.item.padding[data.position], newValue, "Changing "+data.position+"padding failed")
+        }
+
+        function test_customPaddingUpdatesHeight_data(){
+            return [
+                        { tag: "Custom padding Smaller", item: layoutCustomPaddingChanges, padding: units.gu(1) },
+                        { tag: "Custom padding Bigger", item: layoutCustomPaddingChanges, padding: units.gu(3) },
+                    ]
+        }
+
+        function test_customPaddingUpdatesHeight(data) {
+            var initialHeight = data.item.height
+            data.item.padding.top = data.padding
+            compare(data.item.height, expectedImplicitHeight(data.item), "Changing top padding doesn't update height")
+            verify(data.item.height !== initialHeight)
+
+            initialHeight = data.item.height
+            data.item.padding.bottom = data.padding
+            compare(data.item.height, expectedImplicitHeight(data.item), "Changing bottom padding doesn't update height")
+            verify(data.item.height !== initialHeight)
         }
 
         function test_relayoutAfterChangingSlotsSize() {
@@ -933,6 +1004,14 @@ Item {
             compare(layoutMultilineLabels.summary.lineCount, 2,
                     "Multiline labels positioning: wrong summary lineCount")
             checkLabelsY(layoutMultilineLabels)
+        }
+
+        //Bug #1630167: this test will trigger an endless loop in case of regression
+        function test_implicitMainSlotWidthLoop() {
+            console.log("Bug #1630167 if no ouput after this line")
+            var obj = mainSlotImplicitWidthComponent.createObject(main);
+            waitForRendering(obj);
+            verify(obj !== null, "test_implicitMainSlotWidthLoop, dynamic object creation.");
         }
     }
 }

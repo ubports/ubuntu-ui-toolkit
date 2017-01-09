@@ -96,10 +96,13 @@ private:
             if (QFileInfo::exists(filename)) {
                 QSettings settings(filename, QSettings::IniFormat);
 
-                Q_FOREACH(const QString &path, settings.value("Icon Theme/Directories").toStringList()) {
+                const QStringList themeDirectories =
+                    settings.value(QStringLiteral("Icon Theme/Directories")).toStringList();
+                Q_FOREACH(const QString &path, themeDirectories) {
                     Directory dir;
                     dir.path = path;
-                    dir.sizeType = sizeTypeFromString(settings.value(path + "/Type", "Fixed").toString());
+                    dir.sizeType = sizeTypeFromString(
+                        settings.value(path + "/Type", QStringLiteral("Fixed")).toString());
                     dir.size = settings.value(path + "/Size", 32).toInt();
                     dir.minSize = settings.value(path + "/MinSize", 0).toInt();
                     dir.maxSize = settings.value(path + "/MaxSize", 0).toInt();
@@ -107,7 +110,9 @@ private:
                     directories.append(dir);
                 }
 
-                Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList()) {
+                const QStringList themeInherits =
+                    settings.value(QStringLiteral("Icon Theme/Inherits")).toStringList();
+                Q_FOREACH(const QString &name, themeInherits) {
                     if (name != QLatin1String("hicolor")) {
                         parents.append(IconTheme::get(name));
                     }
@@ -133,15 +138,13 @@ private:
 
     static QImage loadIcon(const QString &filename, QSize *impsize, const QSize &requestSize)
     {
-        QImage image;
         QImageReader imgio(filename);
 
-        const bool force_scale = imgio.format() == QStringLiteral("svg")
-            || imgio.format() == QStringLiteral("svgz");
-
         if (requestSize.width() > 0 || requestSize.height() > 0) {
+            const bool force_scale = (imgio.format() == "svg") || (imgio.format() == "svgz");
             QSize s = imgio.size();
             qreal ratio = 0.0;
+
             if (requestSize.width() > 0 && (force_scale || requestSize.width() < s.width())) {
                 ratio = qreal(requestSize.width())/s.width();
             }
@@ -160,6 +163,7 @@ private:
         if (impsize)
             *impsize = imgio.scaledSize();
 
+        QImage image;
         if (imgio.read(&image)) {
             if (impsize)
                 *impsize = image.size();

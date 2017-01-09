@@ -30,7 +30,12 @@ UT_NAMESPACE_BEGIN
 ListViewProxy::ListViewProxy(QQuickFlickable *listView, QObject *parent)
     : QObject(parent)
     , listView(listView)
+    , _currentItem(Q_NULLPTR)
+    , isEventFilter(false)
+    , keyNavigation(false)
 {
+    connect(listView, SIGNAL(currentItemChanged()), this, SLOT(onCurrentItemChanged()), Qt::DirectConnection);
+    onCurrentItemChanged();
 }
 ListViewProxy::~ListViewProxy()
 {
@@ -53,7 +58,7 @@ int ListViewProxy::count()
 
 QQuickItem *ListViewProxy::currentItem()
 {
-    return listView->property("currentItem").value<QQuickItem*>();
+    return _currentItem;
 }
 
 int ListViewProxy::currentIndex()
@@ -102,7 +107,7 @@ bool ListViewProxy::eventFilter(QObject *, QEvent *event)
 
 void ListViewProxy::setKeyNavigationForListView(bool value)
 {
-    UCListItem *listItem = qobject_cast<UCListItem*>(currentItem());
+    UCListItem *listItem = qobject_cast<UCListItem*>(_currentItem);
     if (listItem) {
         UCListItemPrivate::get(listItem)->setListViewKeyNavigation(value);
         listItem->update();
@@ -116,8 +121,7 @@ bool ListViewProxy::focusInEvent(QFocusEvent *event)
         case Qt::TabFocusReason:
         case Qt::BacktabFocusReason:
         {
-            QQuickItem *currentItem = this->currentItem();
-            if (!currentItem && count() > 0) {
+            if (!_currentItem && count() > 0) {
                 // set the first one to be the focus
                 setCurrentIndex(0);
                 setKeyNavigationForListView(true);
@@ -137,25 +141,22 @@ bool ListViewProxy::keyPressEvent(QKeyEvent *event)
     int key = event->key();
     Qt::Orientation orientation = this->orientation();
 
-    if ((orientation == Qt::Vertical && key != Qt::Key_Up && key != Qt::Key_Down)
-        || (orientation == Qt::Horizontal && key != Qt::Key_Left && key != Qt::Key_Right)) {
-        return false;
-    }
-    // effectiveLayoutDirection takes into account effectiveLayoutMirror and layoutDirection.
-    bool isRtl = (Qt::RightToLeft == listView->property("effectiveLayoutDirection").toInt());
-    bool isBtt = (QQuickItemView::BottomToTop == listView->property("verticalLayoutDirection").toInt());
-    bool forwards = (isBtt ? key == Qt::Key_Up : key == Qt::Key_Down) || (isRtl ? key == Qt::Key_Left : key == Qt::Key_Right);
-    int oldIndex = this->currentIndex();
-    int currentIndex = this->currentIndex();
-    int count = this->count();
-
-    if (currentIndex >= 0 && count > 0) {
-        currentIndex = qBound<int>(0, forwards ? currentIndex + 1 : currentIndex - 1, count - 1);
-        setCurrentIndex(currentIndex);
-        setKeyNavigationForListView(true);
+    if ((orientation == Qt::Vertical && (key == Qt::Key_Up || key == Qt::Key_Down))
+        || (orientation == Qt::Horizontal && (key == Qt::Key_Left || key == Qt::Key_Right))) {
+        keyNavigation = true;
     }
 
-    return (oldIndex != currentIndex);
+    return false;
+}
+
+void ListViewProxy::onCurrentItemChanged()
+{
+    setKeyNavigationForListView(false);
+    _currentItem = listView->property("currentItem").value<QQuickItem*>();
+    if (_currentItem && _currentItem->isEnabled()) {
+        setKeyNavigationForListView(keyNavigation);
+        keyNavigation = false;
+    }
 }
 
 UT_NAMESPACE_END

@@ -1,11 +1,13 @@
+load(ubuntu_common)
 load(qml_plugin)
+
 CONFIG -= hide_symbols
 
 load(ubuntu_enable_testing)
 
 #hacky hacks to build the qmltypes
 
-!build_with_qt{
+!qt_submodule_build {
     #should be already set by the qml_plugin.prf, but lets be safe
     isEmpty(IMPORT_VERSION): error("Must set IMPORT_VERSION")
 
@@ -71,18 +73,6 @@ load(ubuntu_enable_testing)
     QMAKE_EXTRA_TARGETS += autobld_qmltypes
 }
 
-# when building against the system Qt we pick up the CXX_FLAGS for a release build
-# reset them to the default debug build flags
-!build_with_qt: {
-    CONFIG(debug, debug|release)  {
-        QMAKE_CFLAGS = $$QMAKE_CFLAGS_DEBUG
-        QMAKE_CXXFLAGS = $$QMAKE_CXXFLAGS_DEBUG
-    }
-}
-
-QMAKE_CXXFLAGS += -Werror
-
-#do not warn for deprecated declarations
-QMAKE_CXXFLAGS -= -Werror=deprecated-declarations
-DEFINES -= QT_DEPRECATED_WARNINGS
-
+# warnings_are_errors depending on the compiler version, sometimes it doesn't
+# add the required flags (for instance for recent clang version on old Qt).
+!contains(QMAKE_CXXFLAGS_WARN_ON, -Werror): QMAKE_CXXFLAGS_WARN_ON += -Werror

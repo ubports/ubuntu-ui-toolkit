@@ -32,6 +32,7 @@ check.commands += pep8 $$PWD || exit 1;
 
 #helper files
 OTHER_FILES += \
+    features/ubuntu_common.prf \
     features/ubuntu_qml_module.prf \
     features/ubuntu_qml_plugin.prf \
     features/ubuntu_qt_module.prf \

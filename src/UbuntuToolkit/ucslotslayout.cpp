@@ -51,8 +51,10 @@ void UCSlotsLayoutPrivate::init()
 
     QObject::connect(&padding, SIGNAL(leadingChanged()), q, SLOT(_q_relayout()));
     QObject::connect(&padding, SIGNAL(trailingChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_relayout()));
-    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_relayout()));
+
+    //we're assuming _q_updateSize will call _q_relayout()
+    QObject::connect(&padding, SIGNAL(topChanged()), q, SLOT(_q_updateSize()));
+    QObject::connect(&padding, SIGNAL(bottomChanged()), q, SLOT(_q_updateSize()));
 
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_onGuValueChanged()));
 
@@ -538,7 +540,10 @@ void UCSlotsLayoutPrivate::_q_relayout()
             qmlInfo(q) << "Invalid attached property!";
             return;
         }
-        mainSlot->setImplicitWidth(q->width() - totalSlotsWidth
+        //bug#1630167: set width instead of implicitWidth to avoid clashing with internal logic of the
+        //component which is inside the mainSlot (e.g. Column and positioners handle the implicit width
+        //themselves)
+        mainSlot->setWidth(q->width() - totalSlotsWidth
                                    - attachedProps->padding()->leading()
                                    - attachedProps->padding()->trailing()
                                    - padding.leading() - padding.trailing());

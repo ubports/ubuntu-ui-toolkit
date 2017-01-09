@@ -95,7 +95,25 @@ UCItemAttached::UCItemAttached(QQuickItem *owner)
 
 UCItemAttached::~UCItemAttached()
 {
-    QQuickItemPrivate::get(m_item)->removeItemChangeListener(this, QQuickItemPrivate::Parent);
+    /*
+     * Apparent problem: the UCItemAttached for a given item may be
+     * destructed along with the user data for that item, which
+     * occurs after the QQuickItemPrivate destructor has run, in the
+     * destructor for the base class QObjectPrivate of
+     * QQuickItemPrivate. At that point, the destructors of the
+     * members of QQuickItemPrivate have already been called, so
+     * accessing those members via a member function is invalid.
+     * In particular, the changeListeners list of the
+     * QQuickItemPrivate has already been destructed, so it does
+     * not have much of a chance of removing a listener. We
+     * must detect this and avoid the call to it.  Fortunately
+     * the base class QObjectPrivate has a flag wasDeleted that
+     * should still be valid at this point.
+     */
+    QQuickItemPrivate* itemPriv = QQuickItemPrivate::get(m_item);
+    if (!(itemPriv->wasDeleted)) {
+        itemPriv->removeItemChangeListener(this, QQuickItemPrivate::Parent);
+    }
 }
 
 bool UCThemingExtension::isThemed(QQuickItem *item)
@@ -226,8 +244,9 @@ UCTheme *UCThemingExtension::getTheme()
     if (!theme) {
         theme = UCTheme::defaultTheme(qmlEngine(themedItem));
         if (!theme) {
-            QString msg = QStringLiteral("The item %1 was created without a valid QML Engine. Styling will not be possible.")
-                    .arg(themedItem->metaObject()->className());
+            QString msg = QStringLiteral(
+                "The item %1 was created without a valid QML Engine. Styling will not be possible.")
+                .arg(QString::fromLatin1(themedItem->metaObject()->className()));
             qCritical().noquote() << msg;
             return Q_NULLPTR;
         }

@@ -60,6 +60,7 @@ MainView {
             compare(button.selected, isSelected, message);
         }
 
+        // FIXME: Fails with Qt 5.6. See bug #1610231.
         function test_bug1511839() {
             for (var i = 0; i < stack.currentPage.head.sections.model.length; i++) {
                 verifySelectedSection(i, false, "Section " + i + " is selected.");

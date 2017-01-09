@@ -27,6 +27,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQuick/private/qquicktextinput_p.h>
 #include <QtQuick/private/qquicktextedit_p.h>
+#include <QtSystemInfo/QInputInfoManager>
 
 UT_NAMESPACE_BEGIN
 
@@ -37,10 +38,100 @@ QuickUtils::QuickUtils(QObject *parent) :
     m_rootWindow(0),
     m_rootView(0),
     m_mouseAttached(false),
-    m_keyboardAttached(false)
+    m_keyboardAttached(false),
+    m_explicitMouseAttached(false),
+    m_explicitKeyboardAttached(false)
 {
     QGuiApplication::instance()->installEventFilter(this);
-    m_omitIM << "ibus" << "none" << "compose";
+    m_omitIM << QStringLiteral("ibus") << QStringLiteral("none") << QStringLiteral("compose");
+
+    m_inputInfo = new QInputInfoManager(this);
+    connect(m_inputInfo, &QInputInfoManager::ready,
+            this, &QuickUtils::onInputInfoReady);
+    // the default values of mouse and keyboard attachment depend on the input info
+    connect(m_inputInfo, &QInputInfoManager::deviceAdded,
+            this, &QuickUtils::onDeviceAdded);
+    connect(m_inputInfo, &QInputInfoManager::deviceRemoved,
+            this, &QuickUtils::onDeviceRemoved);
+}
+
+void QuickUtils::onInputInfoReady()
+{
+    QMapIterator<QString, QInputDevice*> i(m_inputInfo->deviceMap());
+    while (i.hasNext()) {
+        i.next();
+        registerDevice(i.value(), i.key());
+    }
+
+    m_inputInfo->setFilter(QInputDevice::Mouse | QInputDevice::TouchPad | QInputDevice::Keyboard);
+}
+
+void QuickUtils::onDeviceAdded(QInputDevice *device)
+{
+    QMapIterator<QString, QInputDevice*> i(m_inputInfo->deviceMap());
+    while (i.hasNext()) {
+        i.next();
+        if (i.value() == device) {
+            registerDevice(device, i.key());
+            break;
+        }
+    }
+}
+
+void QuickUtils::onDeviceRemoved(const QString deviceId)
+{
+    // the device info is removed by now, so we must look at the internal cache
+    if (m_keyboards.remove(deviceId)) {
+        if (!m_explicitKeyboardAttached && !m_keyboards.size()) {
+            m_keyboardAttached = false;
+            Q_EMIT keyboardAttachedChanged();
+        }
+    }
+    if (m_mice.remove(deviceId)) {
+        if (!m_explicitMouseAttached && !m_mice.size()) {
+            m_mouseAttached = false;
+            Q_EMIT mouseAttachedChanged();
+        }
+    }
+}
+
+void QuickUtils::registerDevice(QInputDevice *device, const QString &deviceId)
+{
+    if (device->types().testFlag(QInputDevice::Keyboard)) {
+        m_keyboards.insert(deviceId);
+        if (!m_explicitKeyboardAttached && !m_keyboardAttached) {
+            m_keyboardAttached = true;
+            Q_EMIT keyboardAttachedChanged();
+        }
+    }
+    if (device->types().testFlag(QInputDevice::Mouse)
+            || device->types().testFlag(QInputDevice::TouchPad)) {
+        m_mice.insert(deviceId);
+        if (!m_explicitMouseAttached && !m_mouseAttached) {
+            m_mouseAttached = true;
+            Q_EMIT mouseAttachedChanged();
+        }
+    }
+}
+
+void QuickUtils::setMouseAttached(bool set)
+{
+    m_explicitMouseAttached = true;
+    if (set == m_mouseAttached) {
+        return;
+    }
+    m_mouseAttached = set;
+    Q_EMIT mouseAttachedChanged();
+}
+
+void QuickUtils::setKeyboardAttached(bool set)
+{
+    m_explicitKeyboardAttached = true;
+    if (set == m_keyboardAttached) {
+        return;
+    }
+    m_keyboardAttached = true;
+    Q_EMIT keyboardAttachedChanged();
 }
 
 /*!
@@ -113,7 +204,7 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
 
 QString QuickUtils::inputMethodProvider() const
 {
-    QString im(getenv("QT_IM_MODULE"));
+    QString im = QString::fromLocal8Bit(getenv("QT_IM_MODULE"));
 
     return m_omitIM.contains(im) ? QString() : im;
 }
@@ -137,10 +228,10 @@ bool QuickUtils::touchScreenAvailable() const
 QString QuickUtils::className(QObject *item)
 {
     if (!item) {
-        return QString("(null)");
+        return QStringLiteral("(null)");
     }
-    QString result = item->metaObject()->className();
-    return result.left(result.indexOf("_QML"));
+    QString result = QString::fromLatin1(item->metaObject()->className());
+    return result.left(result.indexOf(QStringLiteral("_QML")));
 }
 
 /*!
@@ -155,8 +246,8 @@ bool QuickUtils::inherits(QObject *object, const QString &fromClass)
     const QMetaObject *mo = object->metaObject();
     QString className;
     while (mo) {
-        className = mo->className();
-        className = className.left(className.indexOf("_QML"));
+        className = QString::fromLatin1(mo->className());
+        className = className.left(className.indexOf(QStringLiteral("_QML")));
         if (className == fromClass) {
             return true;
         }

@@ -175,7 +175,7 @@ StyledItem {
         target: __styleInstance
         property: "view"
         value: loader.item
-        when: __styleInstance.hasOwnProperty("view") && loader.item
+        when: __styleInstance && __styleInstance.hasOwnProperty("view") && loader.item
     }
 
     /*

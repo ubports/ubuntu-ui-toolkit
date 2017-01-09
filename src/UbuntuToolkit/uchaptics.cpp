@@ -159,7 +159,8 @@ void HapticsProxy::initialize()
         return;
     }
     // load haptics proxy from file system/qrc
-    QUrl path(UbuntuToolkitModule::baseUrl(m_engine).resolved(QUrl("1.1/Haptics.qml")));
+    QUrl path(UbuntuToolkitModule::baseUrl(m_engine).resolved(
+        QUrl(QStringLiteral("1.1/Haptics.qml"))));
 
     QQmlComponent component(m_engine, path, QQmlComponent::PreferSynchronous);
     if (!component.isError()) {

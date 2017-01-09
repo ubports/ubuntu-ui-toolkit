@@ -36,7 +36,7 @@ UCAppHeaderBase::UCAppHeaderBase(QQuickItem *parent)
     , m_animate(true)
 {
     connect(this, &UCHeader::themeChanged, this, &UCAppHeaderBase::themeChanged2);
-    UCStyledItemBasePrivate::get(this)->styleDocument = "PageHeadStyle";
+    UCStyledItemBasePrivate::get(this)->styleDocument = QStringLiteral("PageHeadStyle");
 }
 
 UCTheme* UCAppHeaderBase::theme2()

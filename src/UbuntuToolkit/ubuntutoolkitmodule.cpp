@@ -103,7 +103,8 @@
 
 UT_NAMESPACE_BEGIN
 
-const char *EngineProperty("__ubuntu_toolkit_plugin_data");
+static const QString notInstantiatable = QStringLiteral("Not instantiatable");
+static const char engineProperty[] = "__ubuntu_toolkit_plugin_data";
 
 /******************************************************************************
  * UbuntuToolkitModule
@@ -115,7 +116,7 @@ UbuntuToolkitModule* UbuntuToolkitModule::create(QQmlEngine *engine, const QUrl 
     }
     UbuntuToolkitModule *data = new UbuntuToolkitModule(engine);
     data->m_baseUrl = QUrl(baseUrl.toString() + '/');
-    engine->setProperty(EngineProperty, QVariant::fromValue(data));
+    engine->setProperty(engineProperty, QVariant::fromValue(data));
     return data;
 }
 
@@ -140,7 +141,7 @@ void UbuntuToolkitModule::setWindowContextProperty(QWindow* focusWindow)
     QQuickView* view = qobject_cast<QQuickView*>(focusWindow);
 
     if (view != NULL) {
-        view->rootContext()->setContextProperty("window", view);
+        view->rootContext()->setContextProperty(QStringLiteral("window"), view);
     }
 }
 
@@ -157,52 +158,60 @@ void UbuntuToolkitModule::initializeContextProperties(QQmlEngine *engine)
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
-    context->setContextProperty("QuickUtils", QuickUtils::instance());
+    context->setContextProperty(QStringLiteral("QuickUtils"), QuickUtils::instance());
 
     UCDeprecatedTheme::registerToContext(context);
 
-    context->setContextProperty("i18n", UbuntuI18n::instance());
+    context->setContextProperty(QStringLiteral("i18n"), UbuntuI18n::instance());
     ContextPropertyChangeListener *i18nChangeListener =
-        new ContextPropertyChangeListener(context, "i18n");
+        new ContextPropertyChangeListener(context, QStringLiteral("i18n"));
     QObject::connect(UbuntuI18n::instance(), SIGNAL(domainChanged()),
                      i18nChangeListener, SLOT(updateContextProperty()));
     QObject::connect(UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      i18nChangeListener, SLOT(updateContextProperty()));
 
     // We can't use 'Application' because it exists (undocumented)
-    context->setContextProperty("UbuntuApplication", UCApplication::instance());
+    context->setContextProperty(QStringLiteral("UbuntuApplication"), UCApplication::instance());
     ContextPropertyChangeListener *applicationChangeListener =
-        new ContextPropertyChangeListener(context, "UbuntuApplication");
+        new ContextPropertyChangeListener(context, QStringLiteral("UbuntuApplication"));
     QObject::connect(UCApplication::instance(), SIGNAL(applicationNameChanged()),
                      applicationChangeListener, SLOT(updateContextProperty()));
     // Give the application object access to the engine
     UCApplication::instance()->setContext(context);
 
-    context->setContextProperty("units", UCUnits::instance());
+    context->setContextProperty(QStringLiteral("units"), UCUnits::instance());
     ContextPropertyChangeListener *unitsChangeListener =
-        new ContextPropertyChangeListener(context, "units");
+        new ContextPropertyChangeListener(context, QStringLiteral("units"));
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      unitsChangeListener, SLOT(updateContextProperty()));
 
     // register FontUtils
-    context->setContextProperty("FontUtils", UCFontUtils::instance());
+    context->setContextProperty(QStringLiteral("FontUtils"), UCFontUtils::instance());
     ContextPropertyChangeListener *fontUtilsListener =
-        new ContextPropertyChangeListener(context, "FontUtils");
+        new ContextPropertyChangeListener(context, QStringLiteral("FontUtils"));
     QObject::connect(UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
+
+    // Make the context property 'window' available even before there is a window,
+    // so that in QML we do not have to check whether 'window' is defined, and no new
+    // context property will be added after all components are completed (bug #1621509).
+    context->setContextProperty(QStringLiteral("window"), Q_NULLPTR);
 }
 
 void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int minor)
 {
     qmlRegisterType<UCAction>(uri, major, minor, "Action");
     qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
-    qmlRegisterUncreatableType<UCApplication>(uri, major, minor, "UCApplication", "Not instantiable");
+    qmlRegisterUncreatableType<UCApplication>(
+        uri, major, minor, "UCApplication", notInstantiatable);
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
-    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", "Not instantiable");
+    qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", notInstantiatable);
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
-    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
-    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
+    qmlRegisterUncreatableType<UbuntuI18n>(
+        uri, major, minor, "i18n", QStringLiteral("Singleton object"));
+    qmlRegisterExtendedType<
+        QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
+    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", notInstantiatable);
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
     // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
@@ -239,7 +248,7 @@ QUrl UbuntuToolkitModule::baseUrl(QQmlEngine *engine)
     if (!engine) {
         return QUrl();
     }
-    UbuntuToolkitModule *data = engine->property(EngineProperty).value<UbuntuToolkitModule*>();
+    UbuntuToolkitModule *data = engine->property(engineProperty).value<UbuntuToolkitModule*>();
     return !data ? QUrl() : data->m_baseUrl;
 }
 
@@ -278,23 +287,24 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
 
     // Application monitoring.
     UMApplicationMonitor* applicationMonitor = UMApplicationMonitor::instance();
-    const QByteArray metricsLoggingFilter = qgetenv("UC_METRICS_LOGGING_FILTER");
+    const QString metricsLoggingFilter =
+        QString::fromLocal8Bit(qgetenv("UC_METRICS_LOGGING_FILTER"));
     if (!metricsLoggingFilter.isNull()) {
-        QStringList filterList = QString(metricsLoggingFilter).split(
-            QChar(','), QString::SkipEmptyParts);
+        QStringList filterList =
+            metricsLoggingFilter.split(QStringLiteral(","), QString::SkipEmptyParts);
         UMApplicationMonitor::LoggingFilters filter = 0;
         const int size = filterList.size();
         for (int i = 0; i < size; ++i) {
-            if (filterList[i] == "*") {
+            if (filterList[i] == QStringLiteral("*")) {
                 filter |= UMApplicationMonitor::AllEvents;
                 break;
-            } else if (filterList[i] == "window") {
+            } else if (filterList[i] == QStringLiteral("window")) {
                 filter |= UMApplicationMonitor::WindowEvent;
-            } else if (filterList[i] == "process") {
+            } else if (filterList[i] == QStringLiteral("process")) {
                 filter |= UMApplicationMonitor::ProcessEvent;
-            } else if (filterList[i] == "frame") {
+            } else if (filterList[i] == QStringLiteral("frame")) {
                 filter |= UMApplicationMonitor::FrameEvent;
-            } else if (filterList[i] == "generic") {
+            } else if (filterList[i] == QStringLiteral("generic")) {
                 filter |= UMApplicationMonitor::GenericEvent;
             }
         }
@@ -305,10 +315,12 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
         UMLogger* logger;
         if (metricsLogging.isEmpty() || metricsLogging == "stdout") {
             logger = new UMFileLogger(stdout);
+#if defined(Q_OS_LINUX)
         } else if (metricsLogging == "lttng") {
             logger = new UMLTTNGLogger();
+#endif  // defined(Q_OS_LINUX)
         } else {
-            logger = new UMFileLogger(metricsLogging);
+            logger = new UMFileLogger(QString::fromLocal8Bit(metricsLogging));
         }
         if (logger->isOpen()) {
             applicationMonitor->installLogger(logger);
@@ -322,7 +334,8 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     }
 
     // register performance monitor
-    engine->rootContext()->setContextProperty("performanceMonitor", new UCPerformanceMonitor(engine));
+    engine->rootContext()->setContextProperty(
+        QStringLiteral("performanceMonitor"), new UCPerformanceMonitor(engine));
 }
 
 void UbuntuToolkitModule::defineModule()
@@ -336,22 +349,25 @@ void UbuntuToolkitModule::defineModule()
     ForwardedEvent::registerForwardedEvent();
 
     // register parent type so that properties can get/ set it
-    qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
+    qmlRegisterUncreatableType<QAbstractItemModel>(
+        uri, 1, 1, "QAbstractItemModel", notInstantiatable);
 
     // register 1.1 only API
     qmlRegisterType<UCStyledItemBase, 1>(uri, 1, 1, "StyledItem");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
-    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
-    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", notInstantiatable);
+    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", notInstantiatable);
     qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
 
     // register 1.2 only API
     qmlRegisterType<UCListItem>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterUncreatableType<UCSwipeEvent>(uri, 1, 2, "SwipeEvent", "This is an event object.");
-    qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
+    qmlRegisterUncreatableType<UCSwipeEvent>(
+        uri, 1, 2, "SwipeEvent", QStringLiteral("This is an event object."));
+    qmlRegisterUncreatableType<UCDragEvent>(
+        uri, 1, 2, "ListItemDrag", QStringLiteral("This is an event object"));
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
-    qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
+    qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", notInstantiatable);
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 
@@ -369,8 +385,9 @@ void UbuntuToolkitModule::defineModule()
     qmlRegisterType<LiveTimer>(uri, 1, 3, "LiveTimer");
     qmlRegisterType<UCAbstractButton>(uri, 1, 3, "AbstractButton");
     qmlRegisterType<UCMargins>();
-    qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", "Not instantiable");
-    qmlRegisterUncreatableType<UCSlotsLayoutPadding>(uri, 1, 3, "SlotsLayoutPadding", "Not instantiable");
+    qmlRegisterUncreatableType<UCSlotsAttached>(uri, 1, 3, "SlotsAttached", notInstantiatable);
+    qmlRegisterUncreatableType<UCSlotsLayoutPadding>(
+        uri, 1, 3, "SlotsLayoutPadding", notInstantiatable);
     qmlRegisterType<UCListItemLayout>(uri, 1, 3, "ListItemLayout");
     qmlRegisterType<UCHeader>(uri, 1, 3, "Header");
     qmlRegisterType<UCLabel>(uri, 1, 3, "Label");

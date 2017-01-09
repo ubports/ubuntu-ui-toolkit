@@ -2,6 +2,9 @@ TARGET = UbuntuToolkit
 QT = core-private gui-private qml-private quick-private testlib dbus svg organizer \
      UbuntuGestures-private UbuntuMetrics
 
+#Qt SystemInfo
+QT *= systeminfo systeminfo-private
+
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
@@ -12,8 +15,6 @@ unix {
     LIBS += -lX11 -lxcb -lXi
     SOURCES += mousetouchadaptor_x11.cpp
 }
-
-DEFINES += UBUNTUTOOLKIT_LIBRARY
 
 # Uncomment to compile out qDebug() calls.
 # DEFINES += QT_NO_DEBUG_OUTPUT
@@ -243,6 +244,3 @@ OTHER_FILES += \
     $$PWD/privates/shaders/frame.frag
 
 load(ubuntu_qt_module)
-
-# Remove the ASCII cast warnings added by qt_module.
-DEFINES -= QT_ASCII_CAST_WARNINGS

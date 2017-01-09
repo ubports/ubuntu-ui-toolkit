@@ -208,6 +208,7 @@ Item {
         }
     }
 
+    // FIXME: Tests failing with Qt 5.6. See bug #1624337.
     ScrollbarTestCase13 {
         name: "Scrollbar"
 
@@ -227,7 +228,7 @@ Item {
         }
 
         function checkScrollbarPositionRelativeToPage(scrollbar, page, expectedY, msgPrefix) {
-            compare(scrollbar.mapToItem(page).y, expectedY, msgPrefix + ": Scrollbar does not start below the header.")
+            compare(scrollbar.mapToItem(page, 0, 0).y, expectedY, msgPrefix + ": Scrollbar does not start below the header.")
         }
 
         function test_handlingOfMovingHeader_data() {

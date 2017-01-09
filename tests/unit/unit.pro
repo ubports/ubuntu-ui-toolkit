@@ -25,7 +25,7 @@ SUBDIRS += \
     statesaver \
     deprecated_theme_engine \
     orientation \
-    layouts \
+#    layouts \ # FIXME: Breaks on Yakkety. See bug #1625137.
     mousefilters \
     animator \
     serviceproperties \
@@ -39,7 +39,8 @@ SUBDIRS += \
     scaling_image_provider \
     qquick_image_extension \
     performance \
-    mainview \
+    mainview11 \
+    mainview13 \
     mainwindow \
     i18n \
     arguments \

@@ -51,4 +51,8 @@ template<typename T, size_t N> constexpr size_t ARRAY_SIZE(T (&)[N]) { return N;
 
 #define UBUNTU_METRICS_PRIVATE_EXPORT UBUNTU_METRICS_EXPORT
 
+// Allocates size bytes and returns an pointer to the aligned memory. alignment
+// must be a power-of-two and size a multiple of alignment.
+void* alignedAlloc(size_t alignment, size_t size);
+
 #endif  // UBUNTUMETRICSGLOBAL_P_H

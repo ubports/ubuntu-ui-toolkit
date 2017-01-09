@@ -1,8 +1,6 @@
 TARGET = UbuntuGestures
 QT = core-private gui-private qml-private quick-private
 
-DEFINES += UBUNTUGESTURES_LIBRARY
-
 HEADERS += \
     $$PWD/candidateinactivitytimer_p.h \
     $$PWD/damper_p.h \

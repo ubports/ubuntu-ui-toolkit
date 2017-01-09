@@ -48,7 +48,7 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     setAcceptedMouseButtons(Qt::LeftButton);
 
     // for testing purposes
-    setObjectName("drag_area");
+    setObjectName(QStringLiteral("drag_area"));
 }
 
 void ListItemDragArea::init(UCViewItemsAttached *viewItems)

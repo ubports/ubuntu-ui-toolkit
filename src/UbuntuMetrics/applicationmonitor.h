@@ -115,12 +115,12 @@ private:
 
     UMApplicationMonitor();
     ~UMApplicationMonitor();
-    Q_DISABLE_COPY(UMApplicationMonitor);
+    Q_DISABLE_COPY(UMApplicationMonitor)
 
     bool eventFilter(QObject* object, QEvent* event) Q_DECL_OVERRIDE;
 
     UMApplicationMonitorPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(UMApplicationMonitor);
+    Q_DECLARE_PRIVATE(UMApplicationMonitor)
 };
 
 #endif  // APPLICATIONMONITOR_H

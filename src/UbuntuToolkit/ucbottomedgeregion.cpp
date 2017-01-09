@@ -457,7 +457,7 @@ DefaultRegion::DefaultRegion(UCBottomEdge *parent)
     UCBottomEdgeRegionPrivate *d = UCBottomEdgeRegionPrivate::get(this);
     d->from = 0.0;
     d->to = 1.0;
-    setObjectName("default_BottomEdgeRegion");
+    setObjectName(QStringLiteral("default_BottomEdgeRegion"));
 }
 
 bool DefaultRegion::canCommit(qreal dragRatio)

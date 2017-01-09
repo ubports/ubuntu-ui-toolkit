@@ -150,6 +150,15 @@ Item {
                 height: comboButton.comboListHeight
                 color: "blue"
             }
+            property bool override: false
+            Keys.onReleased: event.accepted = override
+        }
+        OptionSelector {
+            id: optionSelector
+            text: 'Pick your poison'
+            model: ['Gin and Tonic', 'White Russian', 'Sex on the Beach', 'Strawberry Mojito']
+            property bool override: false
+            Keys.onReleased: event.accepted = override
         }
         Button {
             id: popoverTest
@@ -281,6 +290,8 @@ Item {
                 */
                 {tag: "ComboButton", from: pickerPanel, to: comboButton, key: Qt.Key_Tab},
                 {tag: "ComboButton(back)", from: comboButton, to: pickerPanel, key: Qt.Key_Backtab},
+                {tag: "OptionSelector", from: comboButton, to: optionSelector, key: Qt.Key_Tab},
+                {tag: "OptionSelector(back)", from: optionSelector, to: comboButton, key: Qt.Key_Backtab},
                 // Left click/ tap
                 {tag: "TextField(click)", from: dummy, to: textField, key: Qt.LeftButton},
                 {tag: "TextArea(click)", from: dummy, to: textArea, key: Qt.LeftButton},
@@ -316,6 +327,22 @@ Item {
             verify(!data.from.activeFocus, "Source component still keeps focus");
             verify(data.to.activeFocus, "Target component is not focused - focus is on %1"
                 .arg(String(window.activeFocusItem).split("(")[0]));
+            // No child focus movement via tab within the component
+            if (data.key != Qt.LeftButton) {
+                keyClick(data.key);
+                waitForRendering(data.to, 500);
+                verify(!has_child(data.to, window.activeFocusItem), "Target component keeps focus after second Tab");
+            }
+        }
+
+        function has_child (component, child) {
+            var c = child;
+            while (c) {
+                if (c == component)
+                    return true;
+                c = c.parent;
+            }
+            return false;
         }
 
         function test_hide_osk_when_pickerpanel_opens() {
@@ -451,9 +478,12 @@ Item {
                 {tag: "ListItem/Enter", key: Qt.Key_Enter, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Return", key: Qt.Key_Return, item: listItem, signalName: 'onClicked'},
                 {tag: "ListItem/Space", key: Qt.Key_Space, item: listItem, signalName: 'onClicked'},
-                {tag: "ComboButton/Enter", key: Qt.Key_Enter, item: button , signalName: 'onTriggered'},
-                {tag: "ComboButton/Return", key: Qt.Key_Return, item: button, signalName: 'onTriggered'},
-                {tag: "ComboButton/Space", key: Qt.Key_Space, item: button, signalName: 'onTriggered'},
+                {tag: "ComboButton/Enter", key: Qt.Key_Enter, item: comboButton , signalName: 'onTriggered'},
+                {tag: "ComboButton/Return", key: Qt.Key_Return, item: comboButton, signalName: 'onTriggered'},
+                {tag: "ComboButton/Space", key: Qt.Key_Space, item: comboButton, signalName: 'onTriggered'},
+                {tag: "OptionSelector/Enter", key: Qt.Key_Enter, item: optionSelector, signalName: 'onTriggered'},
+                {tag: "OptionSelector/Return", key: Qt.Key_Return, item: optionSelector, signalName: 'onTriggered'},
+                {tag: "OptionSelector/Space", key: Qt.Key_Space, item: optionSelector, signalName: 'onTriggered'},
             ];
         }
         function test_trigger_via_keyboard(data) {
