@@ -131,6 +131,8 @@ void UCMainWindowPrivate::init()
 UCMainWindow::UCMainWindow(QWindow *parent)
     : QQuickWindow(parent)
 {
+    d_func()->init();
+
     QObject::connect(UbuntuI18n::instance(this), SIGNAL(domainChanged()),
                      this, SIGNAL(i18nChanged()));
     QObject::connect(UbuntuI18n::instance(this), SIGNAL(languageChanged()),
@@ -156,6 +158,7 @@ QString UCMainWindow::applicationName() const
 void UCMainWindow::setApplicationName(QString applicationName)
 {
     Q_D(UCMainWindow);
+
     if (d->m_applicationName == applicationName)
         return;
 
