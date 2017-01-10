@@ -15,28 +15,24 @@
 #
 # Author: Timo Jyrinki <timo.jyrinki@canonical.com>
 
+set -e
+
 # Ensure packaging has gone through wrap-and-sort command
-
-if [ ! -f  "/usr/bin/wrap-and-sort" ] ; then
-  echo "Please install 'devscripts' package"
-  exit 1
-fi
-
 cd $(dirname $0)
 tmpdir=$(mktemp -d)
 cp -a ../debian $tmpdir
-
 wrap-and-sort -a -t -d $tmpdir/debian/
 # Verify control.gles which otherwise isn't picked up
 wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
 
+set +e
 diff -urN ../debian $tmpdir/debian
 
 if [ $? == 1 ] ; then
  echo 
  echo 
  echo "*******************************************************"
- echo "Please run 'wrap-and-sort -a -t' to clean up packaging."
+ echo "Please run 'wrap-and-sort -a -t -f debian/control -f debian/control.gles' to clean up packaging."
  echo "*******************************************************"
  echo 
  exit 1
