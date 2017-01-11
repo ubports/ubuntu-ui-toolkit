@@ -164,7 +164,7 @@ void UCMainWindow::setApplicationName(QString applicationName)
 
     d->m_applicationName = applicationName;
 
-    if (!applicationName.isEmpty()) {
+    if (applicationName != QStringLiteral("")) {
         UbuntuI18n::instance()->setDomain(applicationName);
         UCApplication::instance()->setApplicationName(applicationName);
     }
