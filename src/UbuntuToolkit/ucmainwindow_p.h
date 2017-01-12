@@ -64,9 +64,6 @@ Q_SIGNALS:
     void actionContextChanged(UCPopupContext* actionContext);
 #endif
 
-protected:
-    UCMainWindow(UCMainWindowPrivate &dd, QQuickItem *parent);
-
 private:
     Q_DECLARE_PRIVATE(UCMainWindow)
 };

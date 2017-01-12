@@ -21,14 +21,14 @@
 
 #include <QtQml/QQmlProperty>
 
-#include <UbuntuToolkit/private/ucstyleditembase_p_p.h>
+#include <QtQuick/private/qquickwindow_p.h>
 
 UT_NAMESPACE_BEGIN
 
 class UCMainWindow;
 class UCPopupContext;
 
-class UCMainWindowPrivate : public UCStyledItemBasePrivate
+class UCMainWindowPrivate : public QQuickWindowPrivate
 {
     Q_DECLARE_PUBLIC(UCMainWindow)
 

@@ -129,7 +129,7 @@ void UCMainWindowPrivate::init()
 }
 
 UCMainWindow::UCMainWindow(QWindow *parent)
-    : QQuickWindow(parent)
+    : QQuickWindow(*(new UCMainWindowPrivate), parent)
 {
     d_func()->init();
 
