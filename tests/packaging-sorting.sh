@@ -15,17 +15,20 @@
 #
 # Author: Timo Jyrinki <timo.jyrinki@canonical.com>
 
+# Get the current script directory (compatible with Bash and ZSH)
+SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
+SCRIPT_DIR=`cd $SCRIPT_DIR && pwd`
+
 # Ensure packaging has gone through wrap-and-sort command
-cd $(dirname $0)
 tmpdir=$(mktemp -d)
-cp -a ../debian $tmpdir
+cp -a $SCRIPT_DIR/../debian $tmpdir
 wrap-and-sort -a -t -d $tmpdir/debian/
 [ $? == 2 ] && exit 2
 # Verify control.gles which otherwise isn't picked up
 wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
 [ $? == 2 ] && exit 2
 
-diff -urN ../debian $tmpdir/debian
+diff -urN $SCRIPT_DIR/../debian $tmpdir/debian
 
 if [ $? == 1 ] ; then
  echo 
