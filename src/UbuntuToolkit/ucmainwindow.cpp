@@ -210,6 +210,29 @@ UCPopupContext *UCMainWindow::actionContext() const
     return d_func()->m_actionContext;
 }
 
+/*!
+  \qmlproperty Item MainWindow::visualRoot
+
+  The property holds the window's visual root, as opposed to the root item.
+  If set, popups (popovers, dialogs, menus) will reparent to it when opened via
+  popupUtils.open().
+*/
+QQuickItem *UCMainWindow::visualRoot() const
+{
+    return d_func()->m_visualRoot;
+}
+
+void UCMainWindow::setVisualRoot(QQuickItem *visualRoot)
+{
+    Q_D(UCMainWindow);
+
+    if (d->m_visualRoot == visualRoot)
+        return;
+
+    d->visualRoot = visualRoot;
+    Q_EMIT visualRootChanged(visualRoot);
+}
+
 UT_NAMESPACE_END
 
 #include "moc_ucmainwindow_p.cpp"

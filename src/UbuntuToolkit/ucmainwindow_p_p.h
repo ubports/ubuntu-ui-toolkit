@@ -39,6 +39,7 @@ public:
     QString m_applicationName;
     UCPopupContext* m_actionContext = nullptr;
     UCUnits* m_units = nullptr;
+    QQuickItem* m_visualRoot = nullptr;
 
 };
 
