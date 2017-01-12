@@ -152,26 +152,19 @@ UCMainWindow::UCMainWindow(QWindow *parent)
 */
 QString UCMainWindow::applicationName() const
 {
-    qDebug() << "UCMainWindow::applicationName";
-
-    qDebug() << "UCMainWindow::applicationName" << d_func()->m_applicationName;
     return d_func()->m_applicationName;
 }
 
 void UCMainWindow::setApplicationName(QString applicationName)
 {
-    qDebug() << "UCMainWindow::setApplicationName" << applicationName;
     Q_D(UCMainWindow);
 
     if (d->m_applicationName == applicationName)
         return;
 
-    qDebug() << "UCMainWindow::setApplicationName" << d->m_applicationName << "!=" << applicationName;
     d->m_applicationName = applicationName;
 
-    qDebug() << "UCMainWindow::setApplicationName !=\"\"";
     if (applicationName != QStringLiteral("")) {
-        qDebug() << "UCMainWindow::setApplicationName UCApplication.setApplicationName";
         UbuntuI18n::instance()->setDomain(applicationName);
         UCApplication::instance()->setApplicationName(applicationName);
     }
