@@ -47,7 +47,7 @@ Q_SIGNALS:
     void canPasteChanged();
 
 private Q_SLOTS:
-    void onPasteSelected(QString appId, QByteArray mimedata);
+    void onPasteSelected(QString appId, QByteArray mimedata, bool pasteAsRichText);
     void onPasteboardChanged();
 
 private:

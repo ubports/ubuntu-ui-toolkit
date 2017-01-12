@@ -59,7 +59,7 @@ UCContentHub::UCContentHub(QObject *parent)
             contentHubInterface,
             QStringLiteral("PasteSelected"),
             this,
-            SLOT(onPasteSelected(QString, QByteArray))
+            SLOT(onPasteSelected(QString, QByteArray, bool))
         );
 
         m_contentHubIface->connection().connect(
@@ -104,7 +104,7 @@ bool UCContentHub::canPaste()
     return m_canPaste;
 }
 
-void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata)
+void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool pasteAsRichText)
 {
     if (getAppProfile() != appId) {
         return;
@@ -116,7 +116,11 @@ void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata)
     }
 
     QMimeData* deserialized = deserializeMimeData(mimedata);
-    Q_EMIT pasteSelected(deserialized->text());
+    if (deserialized->hasHtml() && pasteAsRichText) {
+        Q_EMIT pasteSelected(deserialized->html());
+    } else {
+        Q_EMIT pasteSelected(deserialized->text());
+    }
 }
 
 void UCContentHub::onPasteboardChanged()
