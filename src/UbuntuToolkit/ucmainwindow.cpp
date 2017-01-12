@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Canonical Ltd.
+ * Copyright 2016-2017 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -169,6 +169,34 @@ void UCMainWindow::setApplicationName(QString applicationName)
         UCApplication::instance()->setApplicationName(applicationName);
     }
     Q_EMIT applicationNameChanged(applicationName);
+}
+
+/*!
+  \qmlproperty string MainWindow::organizationName
+
+  The property holds the optional name of the organization. If set, data
+  folders reside in a subfolder of the organizationName. By default no
+  organizationName is set.
+*/
+QString UCMainWindow::organizationName() const
+{
+    return d_func()->m_organizationName;
+}
+
+
+void UCMainWindow::setOrganizationName(QString organizationName)
+{
+    Q_D(UCMainWindow);
+
+    if (d->m_organizationName == organizationName)
+        return;
+
+    d->m_organizationName = organizationName;
+
+    if (organizationName != QStringLiteral("")) {
+        QCoreApplication::setOrganizationName(organizationName);
+    }
+    Q_EMIT organizationNameChanged(organizationName);
 }
 
 /*!
