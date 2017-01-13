@@ -106,6 +106,8 @@ HEADERS += \
     $$PWD/uclistitemstyle_p.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucmainviewbase_p_p.h \
+    $$PWD/ucmainwindow_p.h \
+    $$PWD/ucmainwindow_p_p.h \
     $$PWD/ucmargins_p.h \
     $$PWD/ucmathutils_p.h \
     $$PWD/ucmouse_p.h \
@@ -203,6 +205,7 @@ SOURCES += \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/uclistitemstyle.cpp \
     $$PWD/ucmainviewbase.cpp \
+    $$PWD/ucmainwindow.cpp \
     $$PWD/ucmathutils.cpp \
     $$PWD/ucmousefilters.cpp \
     $$PWD/ucpagetreenode.cpp \

@@ -39,6 +39,7 @@
 #include "inversemouseareatype_p.h"
 #include "listener_p.h"
 #include "livetimer_p.h"
+#include "ucmainwindow_p.h"
 #include "menu_p.h"
 #include "menubar_p.h"
 #include "menugroup_p.h"
@@ -439,6 +440,7 @@ void UbuntuLabsModule::defineModule(const char *uri)
     qmlRegisterType<SplitView>(uri, 1, 0, "SplitView");
     qmlRegisterType<SplitViewLayout>(uri, 1, 0, "SplitViewLayout");
     qmlRegisterType<ViewColumn>(uri, 1, 0, "ViewColumn");
+    qmlRegisterType<UCMainWindow>(uri, 1, 0, "MainWindow");
     qmlRegisterType<Menu>(uri, 1, 0, "Menu");
     qmlRegisterType<MenuBar>(uri, 1, 0, "MenuBar");
     qmlRegisterType<MenuGroup>(uri, 1, 0, "MenuGroup");

@@ -1,0 +1,127 @@
+/*
+ * Copyright 2012-2016 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Christian Dywan <christian.dywan@canonical.com>
+ */
+
+#include <QtCore/QString>
+#include <QtCore/QTextCodec>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QProcessEnvironment>
+#include <QtCore/QDebug>
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
+#include <QtCore/QCoreApplication>
+#include <QtQml/QQmlEngine>
+#include <QtQuick/QQuickView>
+#include <QtQuick/QQuickItem>
+#include <QtCore/QThread>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
+#include <QtCore/QCryptographicHash>
+#include <QtCore/QSettings>
+
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <QtGui/QGuiApplication>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlComponent>
+
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
+#include <UbuntuToolkit/private/ucapplication_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
+
+UT_USE_NAMESPACE
+
+class tst_MainWindow : public QObject
+{
+    Q_OBJECT
+
+public:
+    tst_MainWindow()
+    {
+    }
+
+    QQuickWindow *loadTest(const QString &document)
+    {
+        // Can't use UbuntuTestCase: We need a Window root item
+        QPointer<QQmlEngine> engine(new QQmlEngine());
+        QString modulePath(UBUNTU_QML_IMPORT_PATH);
+        if (!QDir(modulePath).exists()) {
+            qWarning("'%s' doesn't exist", qPrintable(modulePath));
+            return 0;
+        }
+        engine->addImportPath(modulePath);
+        UbuntuToolkitModule::initializeContextProperties(engine);
+        QPointer<QQmlComponent> component(new QQmlComponent(engine));
+        component->loadUrl(QUrl::fromLocalFile(document), QQmlComponent::Asynchronous);
+        while (component->isLoading())
+            QCoreApplication::processEvents();
+        QObject *toplevel(component->create());
+        if (component->errorString() != "") {
+            qWarning("%s", qPrintable(component->errorString()));
+            return 0;
+        }
+        QQuickWindow* window(qobject_cast<QQuickWindow *>(toplevel));
+        if (window)
+            engine->setIncubationController(window->incubationController());
+        else {
+            QQuickItem *rootItem = qobject_cast<QQuickItem *>(toplevel);
+            if (rootItem) {
+                QQuickView *view(new QQuickView(engine, 0));
+                window = view;
+                view->setResizeMode(QQuickView::SizeRootObjectToView);
+                view->setContent(document, component, rootItem);
+            }
+        }
+        return window;
+    }
+
+    QQuickItem *testItem(QQuickItem *that, const QString &identifier)
+    {
+        if (that->property(identifier.toLocal8Bit()).isValid())
+            return that->property(identifier.toLocal8Bit()).value<QQuickItem*>();
+
+        QList<QQuickItem*> children = that->findChildren<QQuickItem*>(identifier);
+        return (children.count() > 0) ? children[0] : 0;
+    }
+
+private Q_SLOTS:
+
+    void initTestCase()
+    {
+    }
+
+    void cleanupTestCase()
+    {
+    }
+
+    // Note: tests/unit/mainview contains the UCApplication bits
+
+    void testCase_AppName()
+    {
+        QString applicationName("org.gnu.wildebeest");
+        QQuickWindow *mainWindow(loadTest("AppName.qml"));
+        QVERIFY(mainWindow);
+        QCOMPARE(applicationName, mainWindow->property("applicationName").toString());
+        QCOMPARE(applicationName, QCoreApplication::applicationName());
+        QCOMPARE(QString(""), QCoreApplication::organizationName());
+    }
+};
+
+QTEST_MAIN(tst_MainWindow)
+
+#include "tst_mainwindow.moc"
