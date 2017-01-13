@@ -175,6 +175,12 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
 {
     // make sure we have the m_rootView updated
     lookupQuickView();
+
+    UCMainWindow *mainWindow(qobject_cast(<UCMainWindow*>(m_rootWindow)));
+    if (mainWindow && mainWindow->visualRoot()) {
+        return mainWindow->visualRoot();
+    }
+
     if (!object) {
         return m_rootView ? m_rootView->rootObject() : (m_rootWindow ? m_rootWindow->contentItem() : 0);
     }
