@@ -109,7 +109,7 @@ private Q_SLOTS:
     {
     }
 
-    // Note: tests/unit/mainview contains the UCApplication bits
+    // Note: tests/unit/mainview13 contains the UCApplication bits
 
     void testCase_AppName()
     {
@@ -119,6 +119,18 @@ private Q_SLOTS:
         QCOMPARE(applicationName, mainWindow->property("applicationName").toString());
         QCOMPARE(applicationName, QCoreApplication::applicationName());
         QCOMPARE(QString(""), QCoreApplication::organizationName());
+    }
+
+    void testCase_OrganizationName()
+    {
+        QString applicationName("tv.island.pacific");
+        QString organizationName("pacifist");
+        QQuickWindow *mainWindow(loadTest("OrganizationName.qml"));
+        QVERIFY(mainWindow);
+        QCOMPARE(applicationName, mainWindow->property("applicationName").toString());
+        QCOMPARE(applicationName, QCoreApplication::applicationName());
+        QCOMPARE(organizationName, mainWindow->property("organizationName").toString());
+        QCOMPARE(organizationName, QCoreApplication::organizationName());
     }
 };
 

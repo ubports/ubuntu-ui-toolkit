@@ -20,7 +20,8 @@ import Ubuntu.Components.Labs 1.0
 
 MainWindow {
     objectName: "appName"
-    applicationName: "org.gnu.wildebeest"
+    applicationName: "tv.island.pacific"
+    organizationName: "pacifist"
 
     Label {
         text: "Lorem ipsum dolor sit amet"
