@@ -23,12 +23,13 @@ SRC=$SCRIPT_DIR/..
 # Ensure packaging has gone through wrap-and-sort command
 tmpdir=$(mktemp -d)
 cp -a $SRC/debian $tmpdir
-echo dir $SRC $(ls $SRC/debian)
-echo tmpdir $(ls -R $tmpdir)
 wrap-and-sort -a -t -d $tmpdir/debian/
 [ $? == 2 ] && exit 2
-# Verify control.gles which otherwise isn't picked up
-wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
+# Note: control.gles may be moved in gles builds
+if [ -f $tmpdir/debian/control.gles ] ; then
+ # Verify control.gles which otherwise isn't picked up
+ wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
+fi
 [ $? == 2 ] && exit 2
 
 diff -urN $SRC/debian $tmpdir/debian
