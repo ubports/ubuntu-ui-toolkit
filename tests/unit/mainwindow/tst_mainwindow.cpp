@@ -41,7 +41,7 @@
 #include <QtQml/QQmlComponent>
 
 #include <UbuntuToolkit/ubuntutoolkitmodule.h>
-#include <UbuntuToolkit/quickutils.h>
+#include <UbuntuToolkit/private/quickutils_p.h>
 #include <UbuntuToolkit/private/ucapplication_p.h>
 #include <UbuntuToolkit/private/ucmainwindow_p.h>
 #include <UbuntuToolkit/private/ucunits_p.h>
