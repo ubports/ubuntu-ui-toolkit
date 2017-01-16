@@ -229,7 +229,7 @@ void UCMainWindow::setVisualRoot(QQuickItem *visualRoot)
     if (d->m_visualRoot == visualRoot)
         return;
 
-    d->visualRoot = visualRoot;
+    d->m_visualRoot = visualRoot;
     Q_EMIT visualRootChanged(visualRoot);
 }
 

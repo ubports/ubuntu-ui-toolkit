@@ -41,7 +41,9 @@
 #include <QtQml/QQmlComponent>
 
 #include <UbuntuToolkit/ubuntutoolkitmodule.h>
+#include <UbuntuToolkit/quickutils.h>
 #include <UbuntuToolkit/private/ucapplication_p.h>
+#include <UbuntuToolkit/private/ucmainwindow_p.h>
 #include <UbuntuToolkit/private/ucunits_p.h>
 
 UT_USE_NAMESPACE
@@ -90,7 +92,7 @@ public:
         return window;
     }
 
-    QQuickItem *testItem(QQuickItem *that, const QString &identifier)
+    QQuickItem *testItem(QObject *that, const QString &identifier)
     {
         if (that->property(identifier.toLocal8Bit()).isValid())
             return that->property(identifier.toLocal8Bit()).value<QQuickItem*>();
@@ -119,6 +121,16 @@ private Q_SLOTS:
         QCOMPARE(applicationName, mainWindow->property("applicationName").toString());
         QCOMPARE(applicationName, QCoreApplication::applicationName());
         QCOMPARE(QString(""), QCoreApplication::organizationName());
+    }
+
+    void testCase_VisualRoot()
+    {
+        QQuickWindow *mainWindow(loadTest("VisualRoot.qml"));
+        QVERIFY(mainWindow);
+        QQuickItem* myLabel(testItem(mainWindow, "myLabel"));
+        QQuickItem* visualRoot(QuickUtils::instance()->rootItem(myLabel));
+        QQuickItem* myRoot(testItem(mainWindow, "myRoot"));
+        QCOMPARE(visualRoot, myRoot);
     }
 };
 

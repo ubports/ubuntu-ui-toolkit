@@ -36,7 +36,7 @@ class UBUNTUTOOLKIT_EXPORT UCMainWindow : public QQuickWindow
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCUnits)* units READ units NOTIFY unitsChanged)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UbuntuI18n)* i18n READ i18n NOTIFY i18nChanged)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCPopupContext)* actionContext READ actionContext NOTIFY actionContextChanged)
-    Q_PROPERTY(UT_PREPEND_NAMESPACE(QQuickItem)* visualRoot READ visualRoot NOTIFY visualRootChanged)
+    Q_PROPERTY(UT_PREPEND_NAMESPACE(QQuickItem)* visualRoot READ visualRoot WRITE setVisualRoot NOTIFY visualRootChanged)
 #else
     Q_PROPERTY(UCUnits* units READ units NOTIFY unitsChanged)
     Q_PROPERTY(UbuntuI18n* i18n READ i18n NOTIFY i18nChanged)
