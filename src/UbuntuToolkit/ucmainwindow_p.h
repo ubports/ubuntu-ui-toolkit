@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Canonical Ltd.
+ * Copyright 2016-2017 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,6 +32,7 @@ class UBUNTUTOOLKIT_EXPORT UCMainWindow : public QQuickWindow
 {
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)
+    Q_PROPERTY(QString organizationName READ organizationName WRITE setOrganizationName NOTIFY organizationNameChanged)
 #ifndef Q_QDOC
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UCUnits)* units READ units NOTIFY unitsChanged)
     Q_PROPERTY(UT_PREPEND_NAMESPACE(UbuntuI18n)* i18n READ i18n NOTIFY i18nChanged)
@@ -50,6 +51,8 @@ public:
 
     QString applicationName() const;
     void setApplicationName(QString applicationName);
+    QString organizationName() const;
+    void setOrganizationName(QString organizationName);
 
     UCUnits* units();
     UbuntuI18n* i18n() const;
@@ -61,6 +64,7 @@ public:
 
 Q_SIGNALS:
     void applicationNameChanged(QString applicationName);
+    void organizationNameChanged(QString applicationName);
     void i18nChanged();
     void unitsChanged();
 #ifndef Q_QDOC

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Canonical Ltd.
+ * Copyright 2016-2017 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -37,6 +37,7 @@ public:
     void init();
 
     QString m_applicationName;
+    QString m_organizationName;
     UCPopupContext* m_actionContext = nullptr;
     UCUnits* m_units = nullptr;
     QQuickItem* m_visualRoot = nullptr;
