@@ -116,7 +116,13 @@ void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool past
     }
 
     QMimeData* deserialized = deserializeMimeData(mimedata);
-    if (deserialized->hasHtml() && pasteAsRichText) {
+    if (deserialized->hasImage()) {
+        if (deserialized->imageData().toByteArray().isEmpty()) {
+            Q_EMIT pasteSelected(deserialized->html());
+        } else {
+            Q_EMIT pasteSelected(deserialized->imageData().toByteArray());
+        }
+    } else if (deserialized->hasHtml() && pasteAsRichText) {
         Q_EMIT pasteSelected(deserialized->html());
     } else {
         Q_EMIT pasteSelected(deserialized->text());
