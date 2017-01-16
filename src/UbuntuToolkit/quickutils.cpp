@@ -172,6 +172,7 @@ QQuickItem *QuickUtils::rootObject()
  * \internal
  * Returns the root item of a given item. In case there is a QQuickWindow (Window)
  * found in the hierarchy, the function will return the contentItem of the window.
+ * If the root item is a \b MainWindow, the visualRoot property will be respected.
  */
 QQuickItem *QuickUtils::rootItem(QObject *object)
 {
