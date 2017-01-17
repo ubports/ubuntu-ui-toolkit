@@ -41,18 +41,18 @@ public:
     Q_INVOKABLE void requestPaste();
 
     bool canPaste();
+    QString getAppProfile();
+    QMimeData* deserializeMimeData(const QByteArray &serializedMimeData);
 
 Q_SIGNALS:
     void pasteSelected(const QString &data);
     void canPasteChanged();
 
-private Q_SLOTS:
+public Q_SLOTS:
     void onPasteSelected(QString appId, QByteArray mimedata, bool pasteAsRichText);
     void onPasteboardChanged();
 
 private:
-    QString getAppProfile();
-    QMimeData* deserializeMimeData(const QByteArray &serializedMimeData);
     bool checkPasteFormats();
 
     QDBusInterface *m_dbusIface;
