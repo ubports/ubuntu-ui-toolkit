@@ -35,10 +35,9 @@ private:
     UCContentHub *contentHub;
     QSignalSpy *pasteSelectedSpy;
 
-    const int waitTimeout = 1000;
+    const int waitTimeout = 5000;
 
-    const QString unconfinedAppId = "unconfined";
-    const QString notUnconfinedAppId = "NotUnconfinedAppId";
+    const QString dummyAppId = "DummyAppId";
 
     const QString sampleText = "TextData";
     const QString sampleHtml = "<html><body><p>HtmlTest</p></body></html>";
@@ -140,7 +139,7 @@ private Q_SLOTS:
     {
         QMimeData textPaste;
         textPaste.setText(sampleHtml);
-        contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(textPaste), false);
+        contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(textPaste), false);
         pasteSelectedSpy->wait(waitTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
@@ -151,7 +150,7 @@ private Q_SLOTS:
     {
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
-        contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(htmlPaste), false);
+        contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(htmlPaste), false);
         pasteSelectedSpy->wait(waitTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
@@ -162,7 +161,7 @@ private Q_SLOTS:
     {
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
-        contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(htmlPaste), true);
+        contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(htmlPaste), true);
         pasteSelectedSpy->wait(waitTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
@@ -173,7 +172,7 @@ private Q_SLOTS:
     {
         QMimeData textPaste;
         textPaste.setText(sampleText);
-        contentHub->onPasteSelected(notUnconfinedAppId, serializeMimeData(textPaste), false);
+        contentHub->onPasteSelected(dummyAppId, serializeMimeData(textPaste), false);
         pasteSelectedSpy->wait(waitTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 0);
     }
