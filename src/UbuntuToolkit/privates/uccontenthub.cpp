@@ -21,9 +21,9 @@
 #include <QtCore/QLoggingCategory>
 #include <QtDBus/QDBusInterface>
 
-Q_LOGGING_CATEGORY(ucContentHub, "ubuntu.components.PrivateContentHub", QtMsgType::QtWarningMsg)
+Q_LOGGING_CATEGORY(ucContentHub, "ubuntu.components.UCContentHub", QtMsgType::QtWarningMsg)
 
-#define CONTHUB_TRACE(params) qCDebug(ucContentHub) << params
+#define CONTENT_HUB_TRACE(params) qCDebug(ucContentHub) << params
 
 static const QString contentHubService = QStringLiteral("com.ubuntu.content.dbus.Service");
 static const QString contentHubObjectPath = QStringLiteral("/");
@@ -89,12 +89,12 @@ UCContentHub::~UCContentHub()
 void UCContentHub::requestPaste()
 {
     if (!m_contentHubIface->isValid()) {
-        CONTHUB_TRACE("Invalid Content Hub DBusInterface");
+        CONTENT_HUB_TRACE("Invalid Content Hub DBusInterface");
         return;
     }
 
     QString appProfile = getAppProfile();
-    qDebug() << "[UITK ContentHub] AppArmor profile:" << appProfile;
+    CONTENT_HUB_TRACE("AppArmor profile:" << appProfile);
 
     m_contentHubIface->call(QStringLiteral("RequestPasteByAppId"), appProfile);
 }
@@ -111,7 +111,7 @@ void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool past
     }
 
     if (mimedata.isNull()) {
-        CONTHUB_TRACE("onPasteSelected: Invalid MimeData received");
+        CONTENT_HUB_TRACE("onPasteSelected: Invalid MimeData received");
         return;
     }
 
@@ -140,7 +140,7 @@ void UCContentHub::onPasteboardChanged()
 QString UCContentHub::getAppProfile()
 {
     if (!m_dbusIface->isValid()) {
-        CONTHUB_TRACE("Invalid DBus DBusInterface");
+        CONTENT_HUB_TRACE("Invalid DBus DBusInterface");
         return QString();
     }
 
@@ -190,16 +190,19 @@ QMimeData* UCContentHub::deserializeMimeData(const QByteArray &serializedMimeDat
 bool UCContentHub::checkPasteFormats()
 {
     if (!m_contentHubIface->isValid()) {
-        CONTHUB_TRACE("Invalid Content Hub DBusInterface");
+        CONTENT_HUB_TRACE("Invalid Content Hub DBusInterface");
         return false;
     }
 
     QDBusReply<QStringList> reply = m_contentHubIface->call(QStringLiteral("PasteFormats"));
     if (reply.isValid()) {
-        // TODO: In  the future check if Paste Formats list has an interesting format
+        // TODO: ContentHub clipboard keeps a list of all available paste formats.
+        // Probably apps could make use of this information to check if a specific
+        // data type is available, instead of only checking if list is empty or not.
+        // (LP: #1657111)
         return !reply.value().isEmpty();
     } else {
-        CONTHUB_TRACE("Invalid return from DBus call PasteFormats");
+        CONTENT_HUB_TRACE("Invalid return from DBus call PasteFormats");
     }
 
     return false;
