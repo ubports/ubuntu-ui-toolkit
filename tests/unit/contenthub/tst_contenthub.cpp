@@ -104,7 +104,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         contentHub = new UCContentHub();
-        pasteSelectedSpy = new QSignalSpy(contentHub, SIGNAL(pasteSelected(const QString&)));
+        pasteSelectedSpy = new QSignalSpy(contentHub, SIGNAL(pasteSelected(QQuickItem*, const QString&)));
     }
 
     void cleanupTestCase()
@@ -144,7 +144,7 @@ private Q_SLOTS:
         contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(textPaste), false);
         UbuntuTestCase::waitForSignal(pasteSelectedSpy);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
-        QVERIFY(args.at(0).toString() == textPaste.text());
+        QVERIFY(args.at(1).toString() == textPaste.text());
     }
 
     void test_HtmlPasteSelectedAsText()
@@ -154,7 +154,7 @@ private Q_SLOTS:
         contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(htmlPaste), false);
         UbuntuTestCase::waitForSignal(pasteSelectedSpy);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
-        QVERIFY(args.at(0).toString() == htmlPaste.text());
+        QVERIFY(args.at(1).toString() == htmlPaste.text());
     }
 
     void test_HtmlPasteSelectedAsRichText()
@@ -164,7 +164,7 @@ private Q_SLOTS:
         contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(htmlPaste), true);
         UbuntuTestCase::waitForSignal(pasteSelectedSpy);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
-        QVERIFY(args.at(0).toString() == htmlPaste.html());
+        QVERIFY(args.at(1).toString() == htmlPaste.html());
     }
 
     void test_PasteFromAnotherAppId()

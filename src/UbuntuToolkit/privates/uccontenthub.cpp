@@ -39,7 +39,8 @@ UCContentHub::UCContentHub(QObject *parent)
     : QObject(parent),
       m_dbusIface(0),
       m_contentHubIface(0),
-      m_canPaste(false)
+      m_canPaste(false),
+      m_targetItem(0)
 {
     m_dbusIface = new QDBusInterface(dbusService,
                                      dbusObjectPath,
@@ -86,12 +87,14 @@ UCContentHub::~UCContentHub()
     }
 }
 
-void UCContentHub::requestPaste()
+void UCContentHub::requestPaste(QQuickItem *targetItem)
 {
     if (!m_contentHubIface->isValid()) {
         CONTENT_HUB_TRACE("Invalid Content Hub DBusInterface");
         return;
     }
+
+    m_targetItem = targetItem;
 
     QString appProfile = getAppProfile();
     CONTENT_HUB_TRACE("AppArmor profile:" << appProfile);
@@ -118,14 +121,14 @@ void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool past
     QMimeData* deserialized = deserializeMimeData(mimedata);
     if (deserialized->hasImage()) {
         if (deserialized->imageData().toByteArray().isEmpty()) {
-            Q_EMIT pasteSelected(deserialized->html());
+            Q_EMIT pasteSelected(m_targetItem, deserialized->html());
         } else {
-            Q_EMIT pasteSelected(deserialized->imageData().toByteArray());
+            Q_EMIT pasteSelected(m_targetItem, deserialized->imageData().toByteArray());
         }
     } else if (deserialized->hasHtml() && pasteAsRichText) {
-        Q_EMIT pasteSelected(deserialized->html());
+        Q_EMIT pasteSelected(m_targetItem, deserialized->html());
     } else {
-        Q_EMIT pasteSelected(deserialized->text());
+        Q_EMIT pasteSelected(m_targetItem, deserialized->text());
     }
 }
 

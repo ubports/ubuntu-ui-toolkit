@@ -23,6 +23,7 @@
 #include <QtCore/QMimeData>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusConnection>
+#include <QtQuick/QQuickItem>
 
 #include <UbuntuToolkit/ubuntutoolkitglobal.h>
 
@@ -38,14 +39,14 @@ public:
     UCContentHub(QObject* parent = 0);
     ~UCContentHub();
 
-    Q_INVOKABLE void requestPaste();
+    Q_INVOKABLE void requestPaste(QQuickItem *targetItem);
 
     bool canPaste();
     QString getAppProfile();
     QMimeData* deserializeMimeData(const QByteArray &serializedMimeData);
 
 Q_SIGNALS:
-    void pasteSelected(const QString &data);
+    void pasteSelected(QQuickItem *targetItem, const QString &data);
     void canPasteChanged();
 
 public Q_SLOTS:
@@ -59,6 +60,7 @@ private:
     QDBusInterface *m_contentHubIface;
 
     bool m_canPaste;
+    QQuickItem *m_targetItem;
 };
 
 UT_NAMESPACE_END

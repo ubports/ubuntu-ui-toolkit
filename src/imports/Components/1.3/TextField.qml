@@ -837,9 +837,9 @@ Ubuntu.ActionItem {
     Connections {
         target: Private.UCContentHub
         onPasteSelected: {
-            //FIXME if (control.activeFocus) {
+            if (targetItem === control) {
                 control.paste(data)
-            //FIXME}
+            }
         }
     }
 

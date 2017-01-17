@@ -60,7 +60,7 @@ Popover {
             enabled: target && Private.UCContentHub.canPaste
             onTriggered: {
                 PopupUtils.close(popover);
-                Private.UCContentHub.requestPaste();
+                Private.UCContentHub.requestPaste(target);
             }
         }
     ]
