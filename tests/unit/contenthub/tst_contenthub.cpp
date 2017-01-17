@@ -21,8 +21,6 @@
 #include <QtTest/QSignalSpy>
 #include <UbuntuToolkit/private/uccontenthub_p.h>
 
-#include "uctestcase.h"
-
 UT_USE_NAMESPACE
 
 class tst_UCContentHub : public QObject
@@ -142,7 +140,8 @@ private Q_SLOTS:
         QMimeData textPaste;
         textPaste.setText(sampleHtml);
         contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(textPaste), false);
-        UbuntuTestCase::waitForSignal(pasteSelectedSpy);
+        pasteSelectedSpy->wait(waitTimeout);
+        QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == textPaste.text());
     }
@@ -152,7 +151,8 @@ private Q_SLOTS:
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
         contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(htmlPaste), false);
-        UbuntuTestCase::waitForSignal(pasteSelectedSpy);
+        pasteSelectedSpy->wait(waitTimeout);
+        QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == htmlPaste.text());
     }
@@ -162,7 +162,8 @@ private Q_SLOTS:
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
         contentHub->onPasteSelected(unconfinedAppId, serializeMimeData(htmlPaste), true);
-        UbuntuTestCase::waitForSignal(pasteSelectedSpy);
+        pasteSelectedSpy->wait(waitTimeout);
+        QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == htmlPaste.html());
     }
