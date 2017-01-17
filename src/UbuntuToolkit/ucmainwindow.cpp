@@ -40,7 +40,7 @@ UT_NAMESPACE_BEGIN
   \qml
       import QtQuick 2.4
       import Ubuntu.Components 1.3
-      import Ubuntu.Components.Labs 1.3
+      import Ubuntu.Components.Labs 1.0
 
       MainWindow {
           minimumWidth: units.gu(48)
@@ -74,7 +74,7 @@ UT_NAMESPACE_BEGIN
   \qml
       import QtQuick 2.4
       import Ubuntu.Components 1.3
-      import Ubuntu.Components.Labs 1.3
+      import Ubuntu.Components.Labs 1.0
 
       MainWindow {
           minimumWidth: units.gu(48)
