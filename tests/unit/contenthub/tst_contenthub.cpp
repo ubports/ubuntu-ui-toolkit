@@ -17,6 +17,7 @@
  */
 
 #include <QtCore/QDebug>
+#include <QtCore/QMimeData>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 #include <UbuntuToolkit/private/uccontenthub_p.h>

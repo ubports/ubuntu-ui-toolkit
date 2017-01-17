@@ -20,12 +20,12 @@
 #define UCCONTENTHUB_P_H
 
 #include <QtCore/QObject>
-#include <QtCore/QMimeData>
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusConnection>
-#include <QtQuick/QQuickItem>
 
 #include <UbuntuToolkit/ubuntutoolkitglobal.h>
+
+class QMimeData;
+class QDBusInterface;
+class QQuickItem;
 
 UT_NAMESPACE_BEGIN
 

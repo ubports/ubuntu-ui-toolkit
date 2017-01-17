@@ -19,7 +19,11 @@
 #include "privates/uccontenthub_p.h"
 
 #include <QtCore/QLoggingCategory>
+#include <QtCore/QMimeData>
+#include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
+#include <QtQuick/QQuickItem>
 
 Q_LOGGING_CATEGORY(ucContentHub, "ubuntu.components.UCContentHub", QtMsgType::QtWarningMsg)
 
