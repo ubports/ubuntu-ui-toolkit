@@ -848,7 +848,7 @@ Ubuntu.ActionItem {
             return;
         if ((event.key === Qt.Key_V) && (event.modifiers & Qt.ControlModifier) && (event.modifiers & Qt.ShiftModifier)){
             if (Private.UCContentHub.canPaste) {
-                Private.UCContentHub.requestPaste();
+                Private.UCContentHub.requestPaste(control);
                 event.accepted = true;
             }
         } else {
