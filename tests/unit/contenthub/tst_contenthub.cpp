@@ -18,8 +18,10 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QMimeData>
+#include <QtCore/QMimeData>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
+#include <QtQuick/QQuickItem>
 #include <UbuntuToolkit/private/uccontenthub_p.h>
 
 UT_USE_NAMESPACE
@@ -101,6 +103,7 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        qRegisterMetaType<QQuickItem*>();
         contentHub = new UCContentHub();
         pasteSelectedSpy = new QSignalSpy(contentHub, SIGNAL(pasteSelected(QQuickItem*, const QString&)));
     }
