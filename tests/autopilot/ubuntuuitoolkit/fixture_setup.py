@@ -26,7 +26,7 @@ import fixtures
 from autopilot import display
 from gi.repository import Gio
 
-from ubuntuuitoolkit import base, environment
+from ubuntuuitoolkit import base
 
 
 DEFAULT_QML_FILE_CONTENTS = ("""
@@ -156,45 +156,6 @@ class FakeApplication(fixtures.Fixture):
             url_dispatcher_file_path, shell=True)
 
 
-class InitctlEnvironmentVariable(fixtures.Fixture):
-    """Set the value of initctl environment variables."""
-
-    def __init__(self, global_=False, **kwargs):
-        super().__init__()
-        # Added one level of indirection to be able to spy the calls to
-        # environment during tests.
-        self.environment = environment
-        self.variables = kwargs
-        self.global_ = global_
-
-    def setUp(self):
-        super().setUp()
-        for variable, value in self.variables.items():
-            self._add_variable_cleanup(variable)
-            if value is None:
-                self.environment.unset_initctl_env_var(
-                    variable, global_=self.global_)
-            else:
-                self.environment.set_initctl_env_var(
-                    variable, value, global_=self.global_)
-
-    def _add_variable_cleanup(self, variable):
-        if self.environment.is_initctl_env_var_set(
-                variable, global_=self.global_):
-            original_value = self.environment.get_initctl_env_var(
-                variable, global_=self.global_)
-            self.addCleanup(
-                self.environment.set_initctl_env_var,
-                variable,
-                original_value,
-                global_=self.global_)
-        else:
-            self.addCleanup(
-                self.environment.unset_initctl_env_var,
-                variable,
-                global_=self.global_)
-
-
 class FakeHome(fixtures.Fixture):
 
     # We copy the Xauthority file to allow executions using XVFB. If it is not
@@ -210,10 +171,6 @@ class FakeHome(fixtures.Fixture):
         self.directory = self._make_directory_if_not_specified()
         if self.should_copy_xauthority_file:
             self._copy_xauthority_file(self.directory)
-        # We patch both environment variables so it works on the desktop and on
-        # the phone.
-        self.useFixture(
-            InitctlEnvironmentVariable(HOME=self.directory))
         self.useFixture(
             fixtures.EnvironmentVariable('HOME', newvalue=self.directory))
 

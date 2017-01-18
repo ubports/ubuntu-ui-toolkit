@@ -17,7 +17,6 @@
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
 import os
-import shutil
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
