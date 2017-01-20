@@ -581,6 +581,16 @@ Ubuntu.StyledItem {
     }
 
     /*!
+      Appends a new paragraph with text to the end of the TextArea.
+
+      In order to append without inserting a new paragraph, call TextArea.insert(TextArea.length, text) instead.
+      */
+    function append(text)
+    {
+        editor.append(text);
+    }
+
+    /*!
       Returns the text position closest to pixel position (x, y).
 
       Position 0 is before the first character, position 1 is after the first
