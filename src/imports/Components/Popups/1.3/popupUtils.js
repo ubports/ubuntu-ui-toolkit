@@ -32,7 +32,12 @@
   \a caller should be given when a \l ComposerSheet or \l Dialog is specified using a URL
   and opened inside a \b Window. If not, the application's root item will be the dismiss area.
 
-  Returns a popop object, which can be closed using \l close.
+  Returns a popup object, which can be closed using \l close.
+
+  Note that popups created from a file or component will be created as children
+  of the root item. If that's not a good choice, a \b MainWindow used as the
+  root item can set the \b visualRoot property an arbitrary \b Item that acts
+  as the parent of all popups.
 
   \qml
       import Ubuntu.Components 1.3

@@ -145,6 +145,7 @@ QString UCMainViewBase::applicationName() const
 void UCMainViewBase::setApplicationName(QString applicationName)
 {
     Q_D(UCMainViewBase);
+
     if (d->m_applicationName == applicationName)
         return;
 
