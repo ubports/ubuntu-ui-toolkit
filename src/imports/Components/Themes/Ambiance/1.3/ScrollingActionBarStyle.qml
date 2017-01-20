@@ -113,7 +113,11 @@ Style.ActionBarStyle {
             model: listViewContainer.visibleActions
 
             highlight: Rectangle {
-                color: theme.palette.focused.background
+                color: "transparent"
+                border {
+                    color: theme.palette.selected.focus
+                    width: 2
+                }
                 visible: actionsListView.activeFocus
                 width: actionsListView.currentItem.width
                 height: actionsListView.currentItem.height
