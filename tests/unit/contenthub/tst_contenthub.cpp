@@ -20,15 +20,14 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QMimeData>
-#include <QtCore/QMimeData>
 #include <QtDBus/QDBusConnection>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 #include <QtQuick/QQuickItem>
-#include <QtQuick/QQuickView>
 #include <UbuntuToolkit/ubuntutoolkitmodule.h>
 #include <UbuntuToolkit/private/uccontenthub_p.h>
-#include <UbuntuToolkit/private/ucunits_p.h>
+
+#include "uctestcase.h"
 
 UT_USE_NAMESPACE
 
@@ -73,7 +72,6 @@ private:
     UCContentHub *contentHub;
     QSignalSpy *pasteRequestedSpy;
     QSignalSpy *pasteSelectedSpy;
-    QQuickView *view;
 
     const int waitTimeout = 5000;
 
@@ -138,7 +136,6 @@ private:
 
 
 private Q_SLOTS:
-
     void initTestCase()
     {
         mockService = new MockContentService();
@@ -151,11 +148,6 @@ private Q_SLOTS:
         qRegisterMetaType<QQuickItem*>();
         contentHub = new UCContentHub();
         pasteSelectedSpy = new QSignalSpy(contentHub, SIGNAL(pasteSelected(QQuickItem*, const QString&)));
-
-        view = new QQuickView;
-        QQmlEngine *quickEngine = view->engine();
-        UbuntuToolkitModule::initializeContextProperties(quickEngine);
-        view->setGeometry(0,0, UCUnits::instance()->gu(40), UCUnits::instance()->gu(30));
     }
 
     void cleanupTestCase()
@@ -234,27 +226,19 @@ private Q_SLOTS:
 
     void test_KeyboardShortcutOnTextField()
     {
-        view->setSource(QUrl::fromLocalFile("TextFieldPaste.qml"));
-        QTest::waitForEvents();
-        QQuickItem *textField = view->rootObject();
-        QVERIFY(textField);
-
-        //TODO find a way to send a Ctrl+Shift+V to textField
-
-        contentHub->requestPaste(textField);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextFieldPaste.qml"));
+        QQuickItem *textField = testCase->findItem<QQuickItem*>("textField");
+        QTest::keyClick(textField->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
+        pasteRequestedSpy->wait(waitTimeout);
         QCOMPARE(pasteRequestedSpy->count(), 1);
     }
-
+    
     void test_KeyboardShortcutOnTextArea()
     {
-        view->setSource(QUrl::fromLocalFile("TextAreaPaste.qml"));
-        QTest::waitForEvents();
-        QQuickItem *textArea = view->rootObject();
-        QVERIFY(textArea);
-
-        //TODO find a way to send a Ctrl+Shift+V to textArea
-
-        contentHub->requestPaste(textArea);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextAreaPaste.qml"));
+        QQuickItem *textArea = testCase->findItem<QQuickItem*>("textArea");
+        QTest::keyClick(textArea->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
+        pasteRequestedSpy->wait(waitTimeout);
         QCOMPARE(pasteRequestedSpy->count(), 1);
     }
 };

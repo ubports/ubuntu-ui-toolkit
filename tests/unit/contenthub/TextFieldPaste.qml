@@ -17,7 +17,22 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-TextField {
-    objectName: "textFieldPaste"
-    width: units.gu(10)
+MainView {
+    objectName: "mainView"
+    width: units.gu(40)
+    height: units.gu(30)
+
+    Component.onCompleted: textField.forceActiveFocus()
+
+    Page {
+        id: page
+        objectName: "page"
+        TextField {
+            id: textField
+            objectName: "textField"
+            width: parent.width
+            focus: true
+        }
+    }
 }
+
