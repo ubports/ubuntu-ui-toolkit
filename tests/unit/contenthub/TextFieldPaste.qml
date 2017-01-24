@@ -17,22 +17,15 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 
-MainView {
-    objectName: "mainView"
-    width: units.gu(40)
-    height: units.gu(30)
+Item {
+    width: units.gu(20)
+    height: units.gu(20)
 
-    Component.onCompleted: textField.forceActiveFocus()
-
-    Page {
-        id: page
-        objectName: "page"
-        TextField {
-            id: textField
-            objectName: "textField"
-            width: parent.width
-            focus: true
-        }
+    TextField {
+        id: textField
+        objectName: "textField"
+        width: parent.width
+        focus: true
     }
 }
 
