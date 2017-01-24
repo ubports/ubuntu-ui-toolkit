@@ -18,7 +18,7 @@
 
 include_files="\.(c(c|pp|xx)?|h(h|pp|xx)?|p(l|m)|php|py(|x)|java|js|vala|qml)$"
 exclude_dirs="(3rd_party|qrc_|moc_|_build|include)"
-allowed_licenses="(Canonical|Android|Google|Digia)"
+allowed_licenses="(Canonical|Android|Google|Digia|Qt Company Ltd)"
 issues_count=`licensecheck --noconf -r * --copyright -m -c $include_files -i $exclude_dirs | egrep -v $allowed_licenses | wc -l`
 
 if [ $issues_count -eq 0 ]; then
