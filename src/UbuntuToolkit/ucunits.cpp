@@ -136,10 +136,12 @@ UCUnits::UCUnits(QObject *parent) :
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
 
-    auto nativeInterface = qGuiApp->platformNativeInterface();
-    if (nativeInterface) {
-        QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
-                         this, &UCUnits::windowPropertyChanged);
+    if (!qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
+        auto nativeInterface = qGuiApp->platformNativeInterface();
+        if (nativeInterface) {
+            QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                             this, &UCUnits::windowPropertyChanged);
+        }
     }
 }
 
