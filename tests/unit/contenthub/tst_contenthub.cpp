@@ -16,15 +16,50 @@
  * Author: Arthur Mello <arthur.mello@canonical.com>
  */
 
+#include "mockservice_adaptor.h"
+
 #include <QtCore/QDebug>
 #include <QtCore/QMimeData>
 #include <QtCore/QMimeData>
+#include <QtDBus/QDBusConnection>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 #include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
+#include <UbuntuToolkit/ubuntutoolkitmodule.h>
 #include <UbuntuToolkit/private/uccontenthub_p.h>
+#include <UbuntuToolkit/private/ucunits_p.h>
 
 UT_USE_NAMESPACE
+
+class MockContentService : public QObject
+{
+    Q_OBJECT
+
+public:
+    MockContentService() {}
+    ~MockContentService() {}
+
+public Q_SLOTS:
+    void RequestPasteByAppId(const QString &appId)
+    {
+        Q_UNUSED(appId);
+        Q_EMIT PasteRequested();
+    }
+
+    QStringList PasteFormats()
+    {
+        QStringList formats;
+        formats << "text/plain" << "text/html" << "image/jpeg";
+        return formats;
+    }
+
+Q_SIGNALS:
+    void PasteSelected(const QString&, const QByteArray&, bool);
+    void PasteboardChanged();
+
+    void PasteRequested();
+};
 
 class tst_UCContentHub : public QObject
 {
@@ -34,8 +69,11 @@ public:
     tst_UCContentHub() {}
 
 private:
+    MockContentService *mockService;
     UCContentHub *contentHub;
+    QSignalSpy *pasteRequestedSpy;
     QSignalSpy *pasteSelectedSpy;
+    QQuickView *view;
 
     const int waitTimeout = 5000;
 
@@ -103,19 +141,33 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        mockService = new MockContentService();
+        new ServiceAdaptor(mockService);
+        QDBusConnection connection = QDBusConnection::sessionBus();
+        connection.registerObject("/", mockService);
+        connection.registerService("com.ubuntu.content.dbus.Service");
+        pasteRequestedSpy = new QSignalSpy(mockService, SIGNAL(PasteRequested()));
+
         qRegisterMetaType<QQuickItem*>();
         contentHub = new UCContentHub();
         pasteSelectedSpy = new QSignalSpy(contentHub, SIGNAL(pasteSelected(QQuickItem*, const QString&)));
+
+        view = new QQuickView;
+        QQmlEngine *quickEngine = view->engine();
+        UbuntuToolkitModule::initializeContextProperties(quickEngine);
+        view->setGeometry(0,0, UCUnits::instance()->gu(40), UCUnits::instance()->gu(30));
     }
 
     void cleanupTestCase()
     {
+        delete pasteRequestedSpy;
         delete pasteSelectedSpy;
         delete contentHub;
     }
 
     void cleanup()
     {
+        pasteRequestedSpy->clear();
         pasteSelectedSpy->clear();
     }
 
@@ -178,6 +230,32 @@ private Q_SLOTS:
         contentHub->onPasteSelected(dummyAppId, serializeMimeData(textPaste), false);
         pasteSelectedSpy->wait(waitTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 0);
+    }
+
+    void test_KeyboardShortcutOnTextField()
+    {
+        view->setSource(QUrl::fromLocalFile("TextFieldPaste.qml"));
+        QTest::waitForEvents();
+        QQuickItem *textField = view->rootObject();
+        QVERIFY(textField);
+
+        //TODO find a way to send a Ctrl+Shift+V to textField
+
+        contentHub->requestPaste(textField);
+        QCOMPARE(pasteRequestedSpy->count(), 1);
+    }
+
+    void test_KeyboardShortcutOnTextArea()
+    {
+        view->setSource(QUrl::fromLocalFile("TextAreaPaste.qml"));
+        QTest::waitForEvents();
+        QQuickItem *textArea = view->rootObject();
+        QVERIFY(textArea);
+
+        //TODO find a way to send a Ctrl+Shift+V to textArea
+
+        contentHub->requestPaste(textArea);
+        QCOMPARE(pasteRequestedSpy->count(), 1);
     }
 };
 
