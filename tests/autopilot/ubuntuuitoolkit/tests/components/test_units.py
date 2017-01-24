@@ -23,10 +23,7 @@ import testtools
 
 import fixtures
 
-from ubuntuuitoolkit import (
-    fixture_setup,
-    units
-)
+from ubuntuuitoolkit import units
 
 
 logger = logging.getLogger(__name__)
@@ -52,8 +49,6 @@ class UnitsTestCase(testscenarios.TestWithScenarios,
     def setUp(self):
         self.useFixture(fixtures.EnvironmentVariable(
             'GRID_UNIT_PX', self.grid_unit_px))
-        self.useFixture(fixture_setup.InitctlEnvironmentVariable(
-            global_=True, GRID_UNIT_PX=self.grid_unit_px))
         super().setUp()
 
     def test_gu(self):

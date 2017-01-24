@@ -119,6 +119,14 @@ OrientationHelper {
 
     /*!
       \internal
+      The function saves the active focus for later.
+      */
+    function __setPreviousActiveFocusItem(item) {
+        stateWrapper.prevFocus = item;
+    }
+
+    /*!
+      \internal
       Foreground component excluded from InverseMouseArea
       */
     property Item __foreground
@@ -177,29 +185,13 @@ OrientationHelper {
     /*! \internal */
     onParentChanged: stateWrapper.rootItem = QuickUtils.rootItem(popupBase)
     Component.onCompleted: {
-        stateWrapper.saveActiveFocus();
         stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
     }
 
     Item {
         id: stateWrapper
         property Item rootItem: QuickUtils.rootItem(popupBase)
-
-        property bool windowIsValid: typeof window != "undefined"
         property Item prevFocus
-
-        function saveActiveFocus() {
-            // 'window' context property is exposed to QML after component completion
-            // before rendering is complete, therefore a simple 'if (window)' check is
-            // not enough.
-            if (windowIsValid) {
-                prevFocus = window.activeFocusItem;
-                windowIsValidChanged.disconnect(saveActiveFocus);
-            } else {
-                // connect the function so we can save the original focus item
-                windowIsValidChanged.connect(saveActiveFocus);
-            }
-        }
 
         function restoreActiveFocus() {
             if (prevFocus) {

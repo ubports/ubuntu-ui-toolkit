@@ -29,6 +29,8 @@
 #include <QtQuick/private/qquicktextedit_p.h>
 #include <QtSystemInfo/QInputInfoManager>
 
+#include <UbuntuToolkit/private/ucmainwindow_p.h>
+
 UT_NAMESPACE_BEGIN
 
 QuickUtils *QuickUtils::m_instance = nullptr;
@@ -170,11 +172,18 @@ QQuickItem *QuickUtils::rootObject()
  * \internal
  * Returns the root item of a given item. In case there is a QQuickWindow (Window)
  * found in the hierarchy, the function will return the contentItem of the window.
+ * If the root item is a \b MainWindow, the visualRoot property will be respected.
  */
 QQuickItem *QuickUtils::rootItem(QObject *object)
 {
     // make sure we have the m_rootView updated
     lookupQuickView();
+
+    UCMainWindow *mainWindow(qobject_cast<UCMainWindow*>(m_rootWindow));
+    if (mainWindow && mainWindow->visualRoot()) {
+        return mainWindow->visualRoot();
+    }
+
     if (!object) {
         return m_rootView ? m_rootView->rootObject() : (m_rootWindow ? m_rootWindow->contentItem() : 0);
     }

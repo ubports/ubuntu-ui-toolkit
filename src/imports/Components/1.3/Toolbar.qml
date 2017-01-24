@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -127,6 +127,17 @@ StyledItem {
                 print("WARNING: Toolbar with more than one leading actions is not supported.");
             }
         }
+        StyleHints {
+            backgroundColor: "transparent" // background is drawn by the toolbarStyle
+            buttons {
+                foregroundColor: toolbar.__styleInstance.buttons.foregroundColor
+                pressedForegroundColor: toolbar.__styleInstance.buttons.pressedForegroundColor
+                disabledForegroundColor: toolbar.__styleInstance.buttons.disabledForegroundColor
+                backgroundColor: toolbar.__styleInstance.buttons.backgroundColor
+                pressedBackgroundColor: toolbar.__styleInstance.buttons.pressedBackgroundColor
+                disabledBackgroundColor: toolbar.__styleInstance.buttons.disabledBackgroundColor
+            }
+        }
     }
 
     /*!
@@ -150,19 +161,29 @@ StyledItem {
     readonly property alias trailingActionBar: trailing
     ActionBar {
         id: trailing
+        styleName: "ScrollingActionBarStyle"
         anchors {
+            left: leading.right
             right: parent.right
             top: parent.top
             bottom: parent.bottom
+            leftMargin: units.gu(1)
             rightMargin: units.gu(1)
         }
-        numberOfSlots: 8
         delegate: toolbar.__styleInstance.defaultDelegate
-        Component.onCompleted: {
-            if (actions && actions.length > 8) {
-                print("WARNING: Toolbar with more than one leading actions is not supported.");
+        StyleHints {
+            backgroundColor: "transparent" // background is drawn by the toolbarStyle
+            buttons {
+                foregroundColor: toolbar.__styleInstance.buttons.foregroundColor
+                pressedForegroundColor: toolbar.__styleInstance.buttons.pressedForegroundColor
+                disabledForegroundColor: toolbar.__styleInstance.buttons.disabledForegroundColor
+                backgroundColor: toolbar.__styleInstance.buttons.backgroundColor
+                pressedBackgroundColor: toolbar.__styleInstance.buttons.pressedBackgroundColor
+                disabledBackgroundColor: toolbar.__styleInstance.buttons.disabledBackgroundColor
+            }
+            scrollButtons {
+                backgroundColor: toolbar.__styleInstance.backgroundColor // must be opaque to hide the icon buttons
             }
         }
-
     }
 }

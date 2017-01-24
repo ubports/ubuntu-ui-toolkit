@@ -1,3 +1,25 @@
+ubuntu-ui-toolkit (1.3.2151+17.04.20161223) zesty; urgency=medium
+
+  [ Zsombor Egri ]
+  * Enable mouse, touchpad and keyboard detection in UITK. Fixes LP: #1536669
+  * Colors revisited.
+  * Qt5.7 related fix for theming - by Glen Whitney.
+
+  [ Timo Jyrinki ]
+  * parent = Q_NULLPTR instead of 0. Fixes LP: #1642617
+  * More blank lines. Fixes LP: #1642622
+  * Drop tst_pickerpanel.11.qml (deprecated).
+
+  [ Christian Dywan ]
+  * Include OSK input in TextArea.displayText. Fixes LP: #1595910
+
+  * Drop questionable color tests from tst_textarea.11.qml. Fixes LP: #1624342
+
+  [ Lukáš Tinkl ]
+  * Fix slider progress rect with RTL languages.
+
+ -- Marco Trevisan (Treviño) <mail@3v1n0.net>  Fri, 23 Dec 2016 14:52:55 +0000
+
 ubuntu-ui-toolkit (1.3.2141+16.10.20161013.5) yakkety; urgency=medium
 
   [ Zsombor Egri ]

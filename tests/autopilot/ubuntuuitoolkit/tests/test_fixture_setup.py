@@ -19,18 +19,16 @@ import subprocess
 import tempfile
 
 from unittest import mock
-import testscenarios
 import testtools
 from autopilot import (
     display,
-    introspection,
     platform,
     testcase as autopilot_testcase
 )
 from autopilot.matchers import Eventually
 from testtools.matchers import Contains, Equals, FileExists, Not
 
-from ubuntuuitoolkit import base, environment, fixture_setup, tests
+from ubuntuuitoolkit import base, fixture_setup, tests
 
 
 class FakeApplicationTestCase(testtools.TestCase):
@@ -190,9 +188,6 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
             url_dispatcher_protocols=['testprotocol'])
         self.useFixture(fake_application)
 
-        self.useFixture(fixture_setup.InitctlEnvironmentVariable(
-            QT_LOAD_TESTABILITY=1))
-
         self.addCleanup(
             subprocess.check_output,
             ['ubuntu-app-stop', fake_application.application_name])
@@ -202,134 +197,10 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
 
         pid = int(subprocess.check_output(
             ['ubuntu-app-pid', fake_application.application_name]).strip())
-
-        application = introspection.get_proxy_object_for_existing_process(
-            pid=pid)
-
-        # We can select a component from the application.
-        application.select_single('Label', objectName='testLabel')
-
-
-class InitctlEnvironmentVariableTestCase(testscenarios.TestWithScenarios):
-
-    scenarios = [
-        ('global_variable', {'global_': True}),
-        ('local_variable', {'global_': False})
-    ]
-
-    def set_original_value(self, value):
-        self.addCleanup(
-            environment.unset_initctl_env_var, 'testenvvarforfixture',
-            global_=self.global_)
-        environment.set_initctl_env_var('testenvvarforfixture',
-                                        value, global_=self.global_)
-
-    def create_fixture(self, value):
-        self.initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
-            testenvvarforfixture=value, global_=self.global_)
-
-    def assertValueIs(self, expected_value):
-        self.assertEqual(
-            expected_value,
-            environment.get_initctl_env_var(
-                'testenvvarforfixture', global_=self.global_))
-
-    def assertVariableIsNotSet(self):
-        self.assertFalse(
-            environment.is_initctl_env_var_set(
-                'testenvvarforfixture', global_=self.global_))
-
-    def assertTestIsSuccessful(self, expected_value, test_name):
-        result = testtools.TestResult()
-
-        class TestWithInitctlEnvVar(testtools.TestCase):
-            def setUp(inner):
-                super().setUp()
-                inner.useFixture(self.initctl_env_var)
-
-            def test_value_set(inner):
-                self.assertValueIs(expected_value)
-
-            def test_variable_not_set(inner):
-                self.assertVariableIsNotSet()
-
-        TestWithInitctlEnvVar(test_name).run(result)
-        self.assertTrue(
-            result.wasSuccessful(), 'Failed to set the environment variable.')
-
-    def test_use_initctl_environment_variable_to_set_unexisting_variable(self):
-        """Test the initctl env var fixture when the var is unset.
-
-        During the test, the new value must be in place.
-        After the test, the variable must be unset again.
-
-        """
-        self.create_fixture('test value')
-        self.assertTestIsSuccessful('test value', 'test_value_set')
-        self.assertVariableIsNotSet()
-
-    def test_use_initctl_environment_variable_to_set_existing_variable(self):
-        """Test the initctl env var fixture when the var is unset.
-
-        During the test, the new value must be in place.
-        After the test, the old value must be set again.
-
-        """
-        self.set_original_value('original test value')
-        self.create_fixture('new test value')
-        self.assertTestIsSuccessful('new test value', 'test_value_set')
-        self.assertValueIs('original test value')
-
-    def test_use_initctl_environment_variable_to_unset_existing_variable(self):
-        """Test the initctl env var fixture to unset a variable.
-
-        During the test, the variable must be unset.
-        After the test, the old value must be set again.
-
-        """
-        self.set_original_value('original test value')
-        self.create_fixture(None)
-        self.assertTestIsSuccessful(None, 'test_variable_not_set')
-        self.assertValueIs('original test value',)
-
-    def test_use_initctl_environment_variable_to_unset_nonexisting_variable(
-            self):
-        """Test the initctl env var fixture to unset a variable.
-
-        During the test, the variable must be unset.
-        After the test, the variable must remain unset.
-
-        """
-        self.create_fixture(None)
-        self.assertTestIsSuccessful(None, 'test_variable_not_set')
-        self.assertVariableIsNotSet()
+        self.assertGreater(pid, 0)
 
 
 class FakeHomeTestCase(testtools.TestCase):
-
-    def test_fake_home_fixture_patches_initctl_env_var(self):
-        original_home = environment.get_initctl_env_var('HOME')
-        fake_home = original_home + 'fake'
-        result = testtools.TestResult()
-
-        def inner_test():
-            class TestWithFakeHome(testtools.TestCase):
-                def test_it(self):
-                    fake_home_fixture = fixture_setup.FakeHome(fake_home)
-                    fake_home_fixture.should_copy_xauthority_file = False
-                    self.useFixture(fake_home_fixture)
-                    self.assertEqual(
-                        fake_home, environment.get_initctl_env_var('HOME'))
-            return TestWithFakeHome('test_it')
-
-        inner_test().run(result)
-
-        self.assertTrue(
-            result.wasSuccessful(),
-            'Failed to fake the home: {}'.format(result.errors))
-        self.assertEqual(
-            original_home,
-            environment.get_initctl_env_var('HOME'))
 
     def test_fake_home_fixture_patches_env_var(self):
         original_home = os.environ.get('HOME')

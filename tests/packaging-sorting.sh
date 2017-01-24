@@ -15,28 +15,30 @@
 #
 # Author: Timo Jyrinki <timo.jyrinki@canonical.com>
 
+# Get the current script directory (compatible with Bash and ZSH)
+SCRIPT_DIR=`dirname ${BASH_SOURCE[0]-$0}`
+SCRIPT_DIR=`cd $SCRIPT_DIR && pwd`
+
+SRC=$SCRIPT_DIR/..
 # Ensure packaging has gone through wrap-and-sort command
-
-if [ ! -f  "/usr/bin/wrap-and-sort" ] ; then
-  echo "Please install 'devscripts' package"
-  exit 1
-fi
-
-cd $(dirname $0)
 tmpdir=$(mktemp -d)
-cp -a ../debian $tmpdir
-
+cp -a $SRC/debian $tmpdir
 wrap-and-sort -a -t -d $tmpdir/debian/
-# Verify control.gles which otherwise isn't picked up
-wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
+[ $? == 2 ] && exit 2
+# Note: control.gles may be moved in gles builds
+if [ -f $tmpdir/debian/control.gles ] ; then
+ # Verify control.gles which otherwise isn't picked up
+ wrap-and-sort -a -t -d $tmpdir/debian/ -f $tmpdir/debian/control.gles
+fi
+[ $? == 2 ] && exit 2
 
-diff -urN ../debian $tmpdir/debian
+diff -urN $SRC/debian $tmpdir/debian
 
 if [ $? == 1 ] ; then
  echo 
  echo 
  echo "*******************************************************"
- echo "Please run 'wrap-and-sort -a -t' to clean up packaging."
+ echo "Please run 'wrap-and-sort -a -t; wrap-and-sort -a -t -f debian/control.gles' to clean up packaging."
  echo "*******************************************************"
  echo 
  exit 1

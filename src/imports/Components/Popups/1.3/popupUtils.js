@@ -32,7 +32,12 @@
   \a caller should be given when a \l ComposerSheet or \l Dialog is specified using a URL
   and opened inside a \b Window. If not, the application's root item will be the dismiss area.
 
-  Returns a popop object, which can be closed using \l close.
+  Returns a popup object, which can be closed using \l close.
+
+  Note that popups created from a file or component will be created as children
+  of the root item. If that's not a good choice, a \b MainWindow used as the
+  root item can set the \b visualRoot property an arbitrary \b Item that acts
+  as the parent of all popups.
 
   \qml
       import Ubuntu.Components 1.3
@@ -66,6 +71,8 @@ function open(popup, caller, params) {
     }
 
     var popupObject;
+    // If there's an active item, save it so we can restore it later
+    var prevFocusItem = (typeof window !== "undefined") ? window.activeFocusItem : null;
     if (params !== undefined) {
         popupObject = popupComponent.createObject(rootObject, params);
     } else {
@@ -75,8 +82,11 @@ function open(popup, caller, params) {
         print(popupComponent.errorString().slice(0, -1));
         print("PopupUtils.open(): Failed to create the popup object.");
         return;
-    } else if (popupObject.hasOwnProperty("caller") && caller)
+    } else if (popupObject.hasOwnProperty("caller") && caller) {
         popupObject.caller = caller;
+    } else if (popupObject.hasOwnProperty("__setPreviousActiveFocusItem")) {
+        popupObject.__setPreviousActiveFocusItem(prevFocusItem);
+    }
 
     // if caller is specified, connect its cleanup to the popup's close
     // so popups will be removed together with the caller.

@@ -97,18 +97,44 @@ static float getenvFloat(const char* name, float defaultValue)
  * isolated from Qt's own scaling concept.
  */
 
+UCUnits::UCUnits(QWindow *parent) :
+    QObject(parent),
+    m_devicePixelRatio(parent->devicePixelRatio())
+{
+    m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
+    QObject::connect(parent, &QWindow::screenChanged,
+                     this, &UCUnits::screenChanged);
+    m_screen = parent->screen();
+    if (m_screen)
+        QObject::connect(m_screen, &QScreen::physicalDotsPerInchChanged,
+                         this, &UCUnits::devicePixelRatioChanged);
+}
+
+void UCUnits::screenChanged(QScreen *screen)
+{
+    if (m_screen)
+        QObject::disconnect(m_screen, &QScreen::physicalDotsPerInchChanged,
+                            this, &UCUnits::devicePixelRatioChanged);
+    m_screen = screen;
+    QObject::connect(m_screen, &QScreen::physicalDotsPerInchChanged,
+                     this, &UCUnits::devicePixelRatioChanged);
+    m_devicePixelRatio = screen->devicePixelRatio();
+    setGridUnit(DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
+}
+
+void UCUnits::devicePixelRatioChanged(qreal dpi)
+{
+    m_devicePixelRatio = dpi;
+    setGridUnit(DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
+}
+
 UCUnits *UCUnits::m_units = nullptr;
 
 UCUnits::UCUnits(QObject *parent) :
     QObject(parent),
     m_devicePixelRatio(qGuiApp->devicePixelRatio())
 {
-    // If GRID_UNIT_PX set, always use it. If not, 1GU := DEFAULT_GRID_UNIT_PX * m_devicePixelRatio
-    if (qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
-        m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX);
-    } else {
-        m_gridUnit = DEFAULT_GRID_UNIT_PX * m_devicePixelRatio;
-    }
+    m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
 
     auto nativeInterface = qGuiApp->platformNativeInterface();
     if (nativeInterface) {
