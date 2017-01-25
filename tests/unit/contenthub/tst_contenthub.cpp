@@ -73,7 +73,7 @@ private:
     QSignalSpy *pasteRequestedSpy;
     QSignalSpy *pasteSelectedSpy;
 
-    const int waitTimeout = 5000;
+    const int testTimeout = 5000;
 
     const QString dummyAppId = "DummyAppId";
 
@@ -187,7 +187,7 @@ private Q_SLOTS:
         QMimeData textPaste;
         textPaste.setText(sampleHtml);
         contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(textPaste), false);
-        pasteSelectedSpy->wait(waitTimeout);
+        pasteSelectedSpy->wait(testTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == textPaste.text());
@@ -198,7 +198,7 @@ private Q_SLOTS:
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
         contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(htmlPaste), false);
-        pasteSelectedSpy->wait(waitTimeout);
+        pasteSelectedSpy->wait(testTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == htmlPaste.text());
@@ -209,7 +209,7 @@ private Q_SLOTS:
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
         contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(htmlPaste), true);
-        pasteSelectedSpy->wait(waitTimeout);
+        pasteSelectedSpy->wait(testTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == htmlPaste.html());
@@ -220,7 +220,7 @@ private Q_SLOTS:
         QMimeData textPaste;
         textPaste.setText(sampleText);
         contentHub->onPasteSelected(dummyAppId, serializeMimeData(textPaste), false);
-        pasteSelectedSpy->wait(waitTimeout);
+        pasteSelectedSpy->wait(testTimeout);
         QCOMPARE(pasteSelectedSpy->count(), 0);
     }
 
@@ -229,9 +229,9 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextFieldPaste.qml"));
         QQuickItem *textField = testCase->findItem<QQuickItem*>("textField");
         QTest::keyClick(textField->window(), Qt::Key_Tab);
-        QTRY_COMPARE_WITH_TIMEOUT(textField->property("activeFocus").toBool(), true, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(textField->property("activeFocus").toBool(), true, testTimeout);
         QTest::keyClick(textField->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
-        pasteRequestedSpy->wait(waitTimeout);
+        pasteRequestedSpy->wait(testTimeout);
         QCOMPARE(pasteRequestedSpy->count(), 1);
     }
     
@@ -240,9 +240,9 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextAreaPaste.qml"));
         QQuickItem *textArea = testCase->findItem<QQuickItem*>("textArea");
         QTest::keyClick(textArea->window(), Qt::Key_Tab);
-        QTRY_COMPARE_WITH_TIMEOUT(textArea->property("activeFocus").toBool(), true, 1000);
+        QTRY_COMPARE_WITH_TIMEOUT(textArea->property("activeFocus").toBool(), true, testTimeout);
         QTest::keyClick(textArea->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
-        pasteRequestedSpy->wait(waitTimeout);
+        pasteRequestedSpy->wait(testTimeout);
         QCOMPARE(pasteRequestedSpy->count(), 1);
     }
 };
