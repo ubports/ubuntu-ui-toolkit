@@ -229,7 +229,7 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextFieldPaste.qml"));
         QQuickItem *textField = testCase->findItem<QQuickItem*>("textField");
         QTest::keyClick(textField->window(), Qt::Key_Tab);
-        QTRY_COMPARE_WITH_TIMEOUT(textField->property("activeFocus").toBool(), true, testTimeout);
+        QTRY_COMPARE_WITH_TIMEOUT(textField->property("focus").toBool(), true, testTimeout);
         QTest::keyClick(textField->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
         pasteRequestedSpy->wait(testTimeout);
         QCOMPARE(pasteRequestedSpy->count(), 1);
@@ -240,7 +240,7 @@ private Q_SLOTS:
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextAreaPaste.qml"));
         QQuickItem *textArea = testCase->findItem<QQuickItem*>("textArea");
         QTest::keyClick(textArea->window(), Qt::Key_Tab);
-        QTRY_COMPARE_WITH_TIMEOUT(textArea->property("activeFocus").toBool(), true, testTimeout);
+        QTRY_COMPARE_WITH_TIMEOUT(textArea->property("focus").toBool(), true, testTimeout);
         QTest::keyClick(textArea->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
         pasteRequestedSpy->wait(testTimeout);
         QCOMPARE(pasteRequestedSpy->count(), 1);
