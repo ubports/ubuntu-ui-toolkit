@@ -127,7 +127,7 @@ void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool past
         if (deserialized->imageData().toByteArray().isEmpty()) {
             Q_EMIT pasteSelected(m_targetItem, deserialized->html());
         } else {
-            Q_EMIT pasteSelected(m_targetItem, deserialized->imageData().toByteArray());
+            Q_EMIT pasteSelected(m_targetItem, deserialized->imageData().toString());
         }
     } else if (deserialized->hasHtml() && pasteAsRichText) {
         Q_EMIT pasteSelected(m_targetItem, deserialized->html());
@@ -151,7 +151,7 @@ QString UCContentHub::getAppProfile()
         return QString();
     }
 
-    QDBusReply<QString> reply = m_dbusIface->call("GetConnectionAppArmorSecurityContext", QDBusConnection::sessionBus().baseService());
+    QDBusReply<QString> reply = m_dbusIface->call(QStringLiteral("GetConnectionAppArmorSecurityContext"), QDBusConnection::sessionBus().baseService());
     if (reply.isValid()) {
         return reply.value();
     }
