@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.Private 1.3 as Private
 
 Popover {
     id: popover
@@ -54,12 +55,12 @@ Popover {
             }
         },
         Action {
-            text: i18n.dtr('ubuntu-ui-toolkit', "Paste")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Paste...")
             iconName: "edit-paste"
-            enabled: target && target.canPaste
+            enabled: target && Private.UCContentHub.canPaste
             onTriggered: {
                 PopupUtils.close(popover);
-                target.paste();
+                Private.UCContentHub.requestPaste(target);
             }
         }
     ]

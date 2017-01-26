@@ -48,4 +48,5 @@ SUBDIRS += \
     alarms \
     theme \
     quickutils \
-    tree
+    tree \
+    contenthub
