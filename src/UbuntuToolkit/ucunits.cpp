@@ -102,12 +102,15 @@ UCUnits::UCUnits(QWindow *parent) :
     m_devicePixelRatio(parent->devicePixelRatio())
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
-    QObject::connect(parent, &QWindow::screenChanged,
-                     this, &UCUnits::screenChanged);
-    m_screen = parent->screen();
-    if (m_screen)
-        QObject::connect(m_screen, &QScreen::physicalDotsPerInchChanged,
-                         this, &UCUnits::devicePixelRatioChanged);
+
+    if (!qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
+        QObject::connect(parent, &QWindow::screenChanged,
+                         this, &UCUnits::screenChanged);
+        m_screen = parent->screen();
+        if (m_screen)
+            QObject::connect(m_screen, &QScreen::physicalDotsPerInchChanged,
+                             this, &UCUnits::devicePixelRatioChanged);
+    }
 }
 
 void UCUnits::screenChanged(QScreen *screen)
@@ -136,10 +139,12 @@ UCUnits::UCUnits(QObject *parent) :
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
 
-    auto nativeInterface = qGuiApp->platformNativeInterface();
-    if (nativeInterface) {
-        QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
-                         this, &UCUnits::windowPropertyChanged);
+    if (!qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
+        auto nativeInterface = qGuiApp->platformNativeInterface();
+        if (nativeInterface) {
+            QObject::connect(nativeInterface, &QPlatformNativeInterface::windowPropertyChanged,
+                             this, &UCUnits::windowPropertyChanged);
+        }
     }
 }
 
