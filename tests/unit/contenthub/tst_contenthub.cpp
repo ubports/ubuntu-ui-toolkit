@@ -227,6 +227,7 @@ private Q_SLOTS:
     void test_KeyboardShortcutOnTextField()
     {
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextFieldPaste.qml"));
+        testCase->rootObject()->forceActiveFocus();
         QQuickItem *textField = testCase->findItem<QQuickItem*>("textField");
         QTest::keyClick(textField->window(), Qt::Key_Tab);
         QTRY_COMPARE_WITH_TIMEOUT(textField->property("activeFocus").toBool(), true, testTimeout);
@@ -238,6 +239,7 @@ private Q_SLOTS:
     void test_KeyboardShortcutOnTextArea()
     {
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TextAreaPaste.qml"));
+        testCase->rootObject()->forceActiveFocus();
         QQuickItem *textArea = testCase->findItem<QQuickItem*>("textArea");
         QTest::keyClick(textArea->window(), Qt::Key_Tab);
         QTRY_COMPARE_WITH_TIMEOUT(textArea->property("activeFocus").toBool(), true, testTimeout);
