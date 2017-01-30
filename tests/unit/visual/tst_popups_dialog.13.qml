@@ -47,6 +47,21 @@ MainView {
             keyClick(Qt.Key_Escape);
             tryCompare(test, "dialogDestroyed", true, 500, "Dialog not destroyed");
         }
+
+        function test_focus_restore_ondismiss_dialog() {
+            pressMe.forceActiveFocus();
+
+            tryCompare(window, "activeFocusItem", pressMe);
+
+            var dlg = PopupUtils.open(dialog);
+            waitForRendering(dlg);
+
+            tryCompare(window, "activeFocusItem", dlg.button);
+
+            keyClick(Qt.Key_Escape);
+
+            tryCompare(window, "activeFocusItem", pressMe);
+        }
     }
 
     Component {
@@ -54,10 +69,13 @@ MainView {
         Dialog {
             id: ahojDialog
             title: "Ahoj"
+            property alias button: closeButton
 
             Button {
+                id: closeButton
                 text: "Close"
                 onClicked: PopupUtils.close(ahojDialog)
+                focus: true
             }
         }
     }

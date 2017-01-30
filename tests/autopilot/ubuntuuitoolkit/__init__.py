@@ -18,7 +18,6 @@
 
 from ubuntuuitoolkit import (
     base,
-    environment,
     fixture_setup,
     tests,
     ubuntu_scenarios
@@ -59,7 +58,6 @@ __all__ = [
     'ActionBar',
     'check_autopilot_version',
     'CheckBox',
-    'environment',
     'fixture_setup',
     'get_keyboard',
     'get_pointing_device',

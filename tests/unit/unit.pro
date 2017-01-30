@@ -41,10 +41,12 @@ SUBDIRS += \
     performance \
     mainview11 \
     mainview13 \
+    mainwindow \
     i18n \
     arguments \
     argument \
     alarms \
     theme \
     quickutils \
-    tree
+    tree \
+    contenthub

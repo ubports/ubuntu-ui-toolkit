@@ -39,11 +39,13 @@
 #include "inversemouseareatype_p.h"
 #include "listener_p.h"
 #include "livetimer_p.h"
+#include "ucmainwindow_p.h"
 #include "menu_p.h"
 #include "menubar_p.h"
 #include "menugroup_p.h"
 #include "privates/appheaderbase_p.h"
 #include "privates/frame_p.h"
+#include "privates/uccontenthub_p.h"
 #include "privates/ucpagewrapper_p.h"
 #include "privates/ucscrollbarutils_p.h"
 #include "qquickclipboard_p.h"
@@ -262,6 +264,8 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
     qmlRegisterType<Tree>(privateUri, 1, 3, "Tree");
 
+    qmlRegisterSimpleSingletonType<UCContentHub>(privateUri, 1, 3, "UCContentHub");
+
     //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
     qmlRegisterSimpleSingletonType<UCScrollbarUtils>(privateUri, 1, 3, "PrivateScrollbarUtils");
 
@@ -439,6 +443,7 @@ void UbuntuLabsModule::defineModule(const char *uri)
     qmlRegisterType<SplitView>(uri, 1, 0, "SplitView");
     qmlRegisterType<SplitViewLayout>(uri, 1, 0, "SplitViewLayout");
     qmlRegisterType<ViewColumn>(uri, 1, 0, "ViewColumn");
+    qmlRegisterType<UCMainWindow>(uri, 1, 0, "MainWindow");
     qmlRegisterType<Menu>(uri, 1, 0, "Menu");
     qmlRegisterType<MenuBar>(uri, 1, 0, "MenuBar");
     qmlRegisterType<MenuGroup>(uri, 1, 0, "MenuGroup");

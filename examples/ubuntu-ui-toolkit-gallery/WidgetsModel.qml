@@ -143,6 +143,12 @@ ListModel {
         source: "Toggles.qml"
     }
     ListElement {
+        objectName: "toolbarsElement"
+        label: "Toolbar"
+        source: "Toolbars.qml"
+    }
+
+    ListElement {
         objectName: "ubuntuListViewElement"
         label: "Ubuntu ListView"
         source: "UbuntuListViews.qml"

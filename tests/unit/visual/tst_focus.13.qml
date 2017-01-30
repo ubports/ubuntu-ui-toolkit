@@ -414,13 +414,13 @@ Item {
                             component: dialogComponent,
                             item: null,
                             foreground_name: "dialogForeground",
-                            bug: "1569979"
+                            bug: "" // this is not buggy
                         },
                         {   tag: "Popover component",
                             component: popoverComponent,
                             item: null,
                             foreground_name: "popover_foreground",
-                            bug: "" // this is the only case without a bug
+                            bug: "" // this is not buggy
                         },
                         {   tag: "Dialog item",
                             component: null,

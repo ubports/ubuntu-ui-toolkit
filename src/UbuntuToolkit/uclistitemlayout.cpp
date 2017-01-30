@@ -139,7 +139,7 @@ UT_NAMESPACE_BEGIN
         ListItemLayout {
             id: layout
             title.text: "Hello..."
-            title.color: UbuntuColors.Orange
+            title.color: UbuntuColors.orange
             subtitle.text: "...world!"
 
             Rectangle {

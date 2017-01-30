@@ -1,3 +1,51 @@
+ubuntu-ui-toolkit (1.3.2166+17.04) UNRELEASED; urgency=medium
+
+  [ Andrea Bernabei ]
+  * ListItemLayout documentation: fix typo in color usage of a code example.
+    Fixes LP: #1561861
+
+  [ Zsombor Egri ]
+  * Get tst_listitem_focus_13 back alive. Fixes LP: #1624331.
+
+  [ Arthur Mello ]
+  * Add support for interacting with Content Hub Clipboard UI via DBus calls.
+    Fixes LP: #1563440.
+
+  [ Daniel d'Andrada ]
+  * If GRID_UNIT_PX set, always use it. It should override scaling information
+    from the QPA.
+
+  [ Adnane Belmadiaf ]
+  * Expose append method in TextArea. Fixes LP: #1658121.
+
+  [ Tim Peeters ]
+  * Toolbar visual refresh to scroll the icons instead of using an overflow 
+    panel. Fixes LP: #1558018.
+  * Add missing dependency for the UITK gallery. Fixes lLP: #1640135
+
+  [ Sergio Cazzolato ]
+  * This change is done to remove the dependencies with upstart in the tests.
+    To start apps with env vars is gonna be used the launch_test_application
+    method provided by autopilot in its test base class which is a wrapper for
+    the ubuntu-app-launch tools (API). This change removes all the dependencies
+    with upstart, so all the projects which are using the initctl api and 
+    fixtures will be impacted. An update in the documentation or in the blog is 
+    gonna be done also to communicate this change to the developers.
+
+  [ Christian Dywan ]
+  * Add visualRoot property to MainWindow. Fixes LP: #1504551, LP: #1656857.
+  * Add python3-debian to control.gles and harden package-sorting.sh.
+  * Add organizationName property to MainWindow
+  * Add MainWindow to Ubuntu.Components.Labs. 
+    Fixes LP: #1573118, LP: #1587431, LP: #1647415
+
+  [ Albert Astals Cid ]
+  * Labs is at 1.0.
+  * You can't save the focus after the popup/dialog has been created, at that
+    stage the dialog has focus already, you need to do it before creating it.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Mon, 30 Jan 2017 12:49:05 +0200
+
 ubuntu-ui-toolkit (1.3.2151+17.04.20161223build1~3) zesty; urgency=medium
 
   * No change rebuild
