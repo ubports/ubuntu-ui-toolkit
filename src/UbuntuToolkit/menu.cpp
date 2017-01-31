@@ -303,7 +303,7 @@ void MenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
 
 /*!
  * \qmltype Menu
- * \inqmlmodule Ubuntu.Components
+ * \inqmlmodule Ubuntu.Components.Labs 1.0
  * \ingroup ubuntu
  * \brief Menu defines a context menu or submenu structure of a MenuBar
  *
@@ -311,6 +311,7 @@ void MenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
  * Menu {
  *     text: "&File"
  *
