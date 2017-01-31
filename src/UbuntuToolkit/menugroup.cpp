@@ -23,7 +23,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype MenuGroup
- * \inqmlmodule Ubuntu.Components.Labs 1.0
+ * \inqmlmodule Ubuntu.Components.Labs
  * \ingroup ubuntu
  * \brief Logical list of items for a menu.
  *

@@ -303,7 +303,7 @@ void MenuPrivate::data_clear(QQmlListProperty<QObject> *prop)
 
 /*!
  * \qmltype Menu
- * \inqmlmodule Ubuntu.Components.Labs 1.0
+ * \inqmlmodule Ubuntu.Components.Labs
  * \ingroup ubuntu
  * \brief Menu defines a context menu or submenu structure of a MenuBar
  *
