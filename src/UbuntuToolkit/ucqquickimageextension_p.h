@@ -50,11 +50,14 @@ protected Q_SLOTS:
     void reloadSource();
 
 protected:
+    bool event(QEvent *e) override;
     bool rewriteSciFile(const QString &sciFilePath, const QString &scaleFactor, QTextStream& output);
     QString scaledBorder(const QString &border, const QString &scaleFactor);
     QString scaledSource(QString source, const QString &sciFilePath, const QString &scaleFactor);
 
 private:
+    void reloadSourceOrPostEvent();
+
     QQuickImageBase* m_image;
     QUrl m_source;
     static QHash<QUrl, QSharedPointer<QTemporaryFile> > s_rewrittenSciFiles;

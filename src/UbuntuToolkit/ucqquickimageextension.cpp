@@ -22,7 +22,9 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtGui/QGuiApplication>
+#include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickimagebase_p.h>
+#include <QtQuick/private/qquickpixmapcache_p.h>
 
 #include "ucunits_p.h"
 
@@ -61,12 +63,33 @@ QUrl UCQQuickImageExtension::source() const
     return m_source;
 }
 
+
 void UCQQuickImageExtension::setSource(const QUrl& url)
 {
     if (url != m_source) {
         m_source = url;
-        reloadSource();
+        reloadSourceOrPostEvent();
     }
+}
+
+void UCQQuickImageExtension::reloadSourceOrPostEvent()
+{
+    // We need to wait until the component is complete
+    // so that m_image->sourceSize() is actually valid
+    if (QQuickItemPrivate::get(m_image)->componentComplete) {
+        reloadSource();
+    } else {
+        qApp->postEvent(this, new QEvent(QEvent::User));
+    }
+}
+
+bool UCQQuickImageExtension::event(QEvent *e)
+{
+    if (e->type() == QEvent::User) {
+        reloadSourceOrPostEvent();
+        return true;
+    }
+    return QObject::event(e);
 }
 
 void UCQQuickImageExtension::reloadSource()
@@ -78,6 +101,22 @@ void UCQQuickImageExtension::reloadSource()
     if (m_source.isEmpty()) {
         m_image->setSource(m_source);
         return;
+    }
+
+    // If the url we're trying to load is already in the cache and
+    // the devicePixelRatio is 1, we save calling UCUnits::resolveResource
+    // and just set that image directly.
+    // UCUnits::resolveResource is not cheap (does a stat on disk)
+    if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)) {
+        QSize ss = m_image->sourceSize();
+        if (ss.isNull() && m_image->image().isNull()) {
+            ss = QSize(-1, -1);
+        }
+
+        if (QQuickPixmap::isCached(m_source, ss)) {
+            m_image->setSource(m_source);
+            return;
+        }
     }
 
     QString resolved = UCUnits::instance()->resolveResource(m_source);
@@ -98,7 +137,9 @@ void UCQQuickImageExtension::reloadSource()
             || selectedFilePath.endsWith(QStringLiteral(".svgz"))) {
             // Take care to pass the original fragment
             QUrl selectedFileUrl(QUrl::fromLocalFile(selectedFilePath));
-            selectedFileUrl.setFragment(fragment);
+            if (m_source.hasFragment()) {
+                selectedFileUrl.setFragment(fragment);
+            }
             m_image->setSource(selectedFileUrl);
         } else {
             // Need to scale the pixel-based image to suit the devicePixelRatio setting ourselves.
