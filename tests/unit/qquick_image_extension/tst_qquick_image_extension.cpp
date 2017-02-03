@@ -23,6 +23,8 @@
 #define protected public
 #include <UbuntuToolkit/private/ucqquickimageextension_p.h>
 #undef protected
+#include <QtCore/private/qabstractfileengine_p.h>
+#include <QQuickView>
 
 UT_USE_NAMESPACE
 
@@ -31,6 +33,20 @@ unsigned int numberOfTemporarySciFiles() {
     nameFilters << "*.sci";
     return QDir::temp().entryList(nameFilters, QDir::Files).count();
 }
+
+int nFaces = 0;
+
+class DummyFileEngineHandler : public QAbstractFileEngineHandler
+{
+public:
+    QAbstractFileEngine *create(const QString &fileName) const
+    {
+        if (fileName.endsWith("/face.png"))
+            nFaces++;
+
+        return nullptr;
+    }
+};
 
 class tst_UCQQuickImageExtension : public QObject
 {
@@ -78,7 +94,7 @@ private Q_SLOTS:
 
     void rewriteContainsBorderInName() {
         UCQQuickImageExtension image;
-        QString sciFilePath = "borderInName.sci";
+        QString sciFilePath = "data/borderInName.sci";
         QString result;
 
         QTextStream resultStream(&result);
@@ -86,7 +102,7 @@ private Q_SLOTS:
 
         QString expected;
         QTextStream expectedStream(&expected);
-        expectedStream << "source: \"image://scaling/1/./borderInName.png\"" << endl;
+        expectedStream << "source: \"image://scaling/1/data/borderInName.png\"" << endl;
         expectedStream << "border.left: 9" << endl;
         expectedStream << "border.right: 2" << endl;
         expectedStream << "border.top: 9" << endl;
@@ -105,7 +121,7 @@ private Q_SLOTS:
         QQuickImageBase baseImage;
         UCQQuickImageExtension* image1 = new UCQQuickImageExtension(&baseImage);
         UCQQuickImageExtension* image2 = new UCQQuickImageExtension(&baseImage);
-        QUrl sciFileUrl = QUrl::fromLocalFile("./test.sci");
+        QUrl sciFileUrl = QUrl::fromLocalFile("./data/test.sci");
 
         unsigned int initialNumberOfSciFiles = numberOfTemporarySciFiles();
 
@@ -123,6 +139,25 @@ private Q_SLOTS:
         */
         delete image2;
         QCOMPARE(numberOfTemporarySciFiles(), initialNumberOfSciFiles + 1);
+    }
+
+    void onlyOneStatRepeatedImage() {
+        DummyFileEngineHandler handler;
+
+        QQuickView view(QUrl::fromLocalFile("./data/hundred_faces.qml"));
+
+        // Wait until the app is idle
+        bool idle = false;
+        while (!idle) {
+            QEventLoop l;
+            idle = !l.processEvents();
+        }
+        // We have actually loaded the image
+        QVERIFY(nFaces > 0);
+        // The number at the moment of writing this test is 4, but we
+        // can't know what Qt does internally, so i'm going for a relatively safe <10
+        // the important part is that is not 100 times (i.e. one for every Image item)
+        QVERIFY(nFaces < 10);
     }
 };
 
