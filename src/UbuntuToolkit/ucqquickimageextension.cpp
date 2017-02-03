@@ -115,6 +115,9 @@ void UCQQuickImageExtension::reloadSource()
     if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)) {
         QSize ss = m_image->sourceSize();
         if (ss.isNull() && m_image->image().isNull()) {
+            // For some reason QQuickImage returns 0x0 as sourceSize
+            // when the sourceSize is not set (and the image has not yet been loaded)
+            // so set it back to -1x-1
             ss = QSize(-1, -1);
         }
 
