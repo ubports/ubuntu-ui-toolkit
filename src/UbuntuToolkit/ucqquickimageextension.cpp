@@ -31,6 +31,7 @@
 UT_NAMESPACE_BEGIN
 
 QHash<QUrl, QSharedPointer<QTemporaryFile> > UCQQuickImageExtension::s_rewrittenSciFiles;
+QEvent::Type UCQQuickImageExtension::reloadEventType = QEvent::None;
 
 /*!
     \internal
@@ -56,6 +57,10 @@ UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
         QObject::connect(m_image, &QQuickImageBase::sourceChanged,
                          this, &UCQQuickImageExtension::extendedSourceChanged);
     }
+
+    if (Q_UNLIKELY(reloadEventType == QEvent::None)) {
+        reloadEventType = (QEvent::Type)QEvent::registerEventType();
+    }
 }
 
 QUrl UCQQuickImageExtension::source() const
@@ -79,13 +84,13 @@ void UCQQuickImageExtension::reloadSourceOrPostEvent()
     if (QQuickItemPrivate::get(m_image)->componentComplete) {
         reloadSource();
     } else {
-        qApp->postEvent(this, new QEvent(QEvent::User));
+        qApp->postEvent(this, new QEvent(reloadEventType));
     }
 }
 
 bool UCQQuickImageExtension::event(QEvent *e)
 {
-    if (e->type() == QEvent::User) {
+    if (e->type() == reloadEventType) {
         reloadSourceOrPostEvent();
         return true;
     }

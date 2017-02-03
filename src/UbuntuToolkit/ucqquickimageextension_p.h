@@ -61,6 +61,7 @@ private:
     QQuickImageBase* m_image;
     QUrl m_source;
     static QHash<QUrl, QSharedPointer<QTemporaryFile> > s_rewrittenSciFiles;
+    static QEvent::Type reloadEventType;
 };
 
 UT_NAMESPACE_END
