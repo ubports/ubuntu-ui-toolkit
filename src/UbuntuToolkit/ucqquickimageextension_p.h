@@ -19,6 +19,7 @@
 #ifndef UCQQUICKIMAGEEXTENSION_P_H
 #define UCQQUICKIMAGEEXTENSION_P_H
 
+#include <QtCore/QEvent>
 #include <QtCore/QByteArray>
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
