@@ -22,10 +22,13 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtGui/QGuiApplication>
-#include <QtQml/private/qqmlengine_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickimagebase_p.h>
 #include <QtQuick/private/qquickpixmapcache_p.h>
+
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlengine_p.h>
+#undef foreach
 
 #include "ucunits_p.h"
 
