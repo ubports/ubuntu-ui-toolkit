@@ -94,10 +94,7 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
                             });
 
             QQmlEnginePrivate *engPriv = QQmlEnginePrivate::get(qmlEngine(m_image));
-            static int sourceSizeChangedIdx = -1;
-            if (sourceSizeChangedIdx < 0)
-                sourceSizeChangedIdx = m_image->metaObject()->indexOfSignal("sourceSizeChanged()");
-            engPriv->registerFinalizeCallback(m_image, sourceSizeChangedIdx);
+            engPriv->registerFinalizeCallback(m_image, m_image->metaObject()->indexOfSignal("sourceSizeChanged()"));
         }
     }
 }
