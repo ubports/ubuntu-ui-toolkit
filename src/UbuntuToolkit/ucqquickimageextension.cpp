@@ -22,6 +22,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtGui/QGuiApplication>
+#include <QtQml/private/qqmlengine_p.h>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickimagebase_p.h>
 #include <QtQuick/private/qquickpixmapcache_p.h>
@@ -31,7 +32,6 @@
 UT_NAMESPACE_BEGIN
 
 QHash<QUrl, QSharedPointer<QTemporaryFile> > UCQQuickImageExtension::s_rewrittenSciFiles;
-QEvent::Type UCQQuickImageExtension::reloadEventType = QEvent::None;
 
 /*!
     \internal
@@ -57,10 +57,6 @@ UCQQuickImageExtension::UCQQuickImageExtension(QObject *parent) :
         QObject::connect(m_image, &QQuickImageBase::sourceChanged,
                          this, &UCQQuickImageExtension::extendedSourceChanged);
     }
-
-    if (Q_UNLIKELY(reloadEventType == QEvent::None)) {
-        reloadEventType = (QEvent::Type)QEvent::registerEventType();
-    }
 }
 
 QUrl UCQQuickImageExtension::source() const
@@ -73,28 +69,34 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
 {
     if (url != m_source) {
         m_source = url;
-        reloadSourceOrPostEvent();
-    }
-}
+        // We need to wait until the component is complete
+        // so that m_image->sourceSize() is actually valid
+        if (QQuickItemPrivate::get(m_image)->componentComplete) {
+            reloadSource();
+        } else {
+            // This is a bit convoluted but i couldn't find a better way to get notified of when
+            // the image actually finishes constructing.
+            // Since what we're interested in reloadSource() is the image having the sourceSize set,
+            // what we do is connect to the sourceSizeChanged signal.
+            // The problem is that this signal isn't fired if the Image {} doesn't have sourceSize set
+            // so we tell the engine to fire the sourceSizeChanged signal when the image finishes constructing
+            // This way if the Image {} has a sourceSize set the lambda gets called because of it
+            // and if there's no sourceSize set the lambda gets called because we registered the finalize callback
 
-void UCQQuickImageExtension::reloadSourceOrPostEvent()
-{
-    // We need to wait until the component is complete
-    // so that m_image->sourceSize() is actually valid
-    if (QQuickItemPrivate::get(m_image)->componentComplete) {
-        reloadSource();
-    } else {
-        qApp->postEvent(this, new QEvent(reloadEventType));
-    }
-}
+            connect(m_image, &QQuickImageBase::sourceSizeChanged,
+                             this,
+                             [&] {
+                                 QObject::disconnect(m_image, &QQuickImageBase::sourceSizeChanged, this, nullptr);
+                                 reloadSource();
+                            });
 
-bool UCQQuickImageExtension::event(QEvent *e)
-{
-    if (e->type() == reloadEventType) {
-        reloadSourceOrPostEvent();
-        return true;
+            QQmlEnginePrivate *engPriv = QQmlEnginePrivate::get(qmlEngine(m_image));
+            static int sourceSizeChangedIdx = -1;
+            if (sourceSizeChangedIdx < 0)
+                sourceSizeChangedIdx = m_image->metaObject()->indexOfSignal("sourceSizeChanged()");
+            engPriv->registerFinalizeCallback(m_image, sourceSizeChangedIdx);
+        }
     }
-    return QObject::event(e);
 }
 
 void UCQQuickImageExtension::reloadSource()

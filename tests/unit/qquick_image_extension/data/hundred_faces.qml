@@ -8,6 +8,6 @@ Repeater {
 
     model: 100
     delegate: Image {
-            source: "face.png"
+        source: "face.png"
     }
 }
