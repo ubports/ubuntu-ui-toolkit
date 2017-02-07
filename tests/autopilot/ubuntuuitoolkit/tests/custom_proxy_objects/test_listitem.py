@@ -34,7 +34,9 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
             'UCListItem', objectName='listitem0')
         self.test_page = self.main_view.select_single(
             objectName='test_page')
-        self.assertEqual(self.test_page.title, 'No action triggered')
+        header = self.test_page.select_single(
+            'PageHeader', objectName='test_header')
+        self.assertEqual(header.title, 'No action triggered')
 
     def test_trigger_delete(self):
         self.test_listitem.trigger_leading_action('delete_action')
@@ -96,3 +98,14 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
             'UCListItem', objectName='listitem3')
         listItem3.toggle_selected()
         self.assertTrue(listItem3.selected)
+
+    def test_popover(self):
+        self.pointing_device.click_object(self.test_listitem, button=3)
+        popover = self.main_view.get_action_selection_popover(
+            'listItemContextMenu')
+        popover.click_action_button('delete_action')
+        self.assertEqual(self.test_page.title,
+                         'delete_action action triggered')
+
+        listitem = popover.select_single('invisible_action_button')
+        self.assertFalse(listitem.visible)
