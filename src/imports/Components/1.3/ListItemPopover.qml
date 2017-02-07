@@ -24,6 +24,7 @@ ActionSelectionPopover {
     contentWidth: units.gu(25)
 
     delegate: ListItem {
+        visible: action.visible
         contentItem.anchors {
              leftMargin: units.gu(2)
              rightMargin: units.gu(2)
