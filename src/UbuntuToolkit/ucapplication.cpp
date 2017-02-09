@@ -39,8 +39,6 @@ UCApplication *UCApplication::m_app = nullptr;
 UCApplication::UCApplication(QObject* parent) : QObject(parent), m_context(0)
                                                                , m_inputMethod(QGuiApplication::inputMethod())
 {
-    // Unset organization by default to skip an extra folder component
-    QCoreApplication::setOrganizationName(QStringLiteral(""));
     // Make sure we receive application name changes from C++ modules
     connect(QCoreApplication::instance(), &QCoreApplication::applicationNameChanged,
             this, &UCApplication::applicationNameChanged);
@@ -70,7 +68,6 @@ void UCApplication::setApplicationName(const QString& applicationName) {
        to how Unity uses it to distinguish running applications.
      */
     QCoreApplication::setApplicationName(applicationName);
-    QCoreApplication::setOrganizationName(QCoreApplication::organizationName());
     /*
        Ensure that LocalStorage and WebKit use the same location
        Docs are ambiguous: in practise applicationName is ignored by default

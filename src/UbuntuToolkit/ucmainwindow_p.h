@@ -76,6 +76,8 @@ Q_SIGNALS:
 #endif
 
 private:
+    void updateApplication(QString applicationName, QString organizationName);
+
     Q_DECLARE_PRIVATE(UCMainWindow)
 };
 
