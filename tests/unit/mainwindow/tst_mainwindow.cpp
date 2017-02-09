@@ -102,7 +102,6 @@ private Q_SLOTS:
 
     void cleanup()
     {
-     // UCApplication::instance()->setApplicationName(QStringLiteral(""));
         // Delete engine, and thereby also the UCApplication instance
         QObject* engine(UCApplication::instance()->parent());
         delete engine;
@@ -156,8 +155,8 @@ private Q_SLOTS:
         // MainView shouldn't interfere as applicationName wasn't set in QML
         QCOMPARE(QStringLiteral(""), mainWindow->property("applicationName").toString());
         QCOMPARE(applicationName, QCoreApplication::applicationName());
-        QCOMPARE(organizationName, QCoreApplication::organizationName());
         QCOMPARE(QStringLiteral(""), mainWindow->property("organizationName").toString());
+        QCOMPARE(organizationName, QCoreApplication::organizationName());
     }
 
     void testCase_VisualRoot()
