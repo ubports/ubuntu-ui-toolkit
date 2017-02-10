@@ -23,6 +23,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
+#include <QtDBus/QDBusServiceWatcher>
 #include <QtQuick/QQuickItem>
 
 Q_LOGGING_CATEGORY(ucContentHub, "ubuntu.components.UCContentHub", QtMsgType::QtWarningMsg)
@@ -41,10 +42,12 @@ UT_NAMESPACE_BEGIN
 
 UCContentHub::UCContentHub(QObject *parent)
     : QObject(parent),
-      m_dbusIface(0),
-      m_contentHubIface(0),
-      m_canPaste(false),
-      m_targetItem(0)
+      m_watcher(new QDBusServiceWatcher(contentHubService, QDBusConnection::sessionBus(), QDBusServiceWatcher::WatchForRegistration, this))
+{
+    connect(m_watcher, &QDBusServiceWatcher::serviceRegistered, this, &UCContentHub::init);
+}
+
+void UCContentHub::init()
 {
     m_dbusIface = new QDBusInterface(dbusService,
                                      dbusObjectPath,
@@ -76,24 +79,13 @@ UCContentHub::UCContentHub(QObject *parent)
             SLOT(onPasteboardChanged())
         );
 
-        m_canPaste = checkPasteFormats();
-    }
-}
-
-UCContentHub::~UCContentHub()
-{
-    if (m_dbusIface) {
-        delete m_dbusIface;
-    }
-
-    if (m_contentHubIface) {
-        delete m_contentHubIface;
+        onPasteboardChanged();
     }
 }
 
 void UCContentHub::requestPaste(QQuickItem *targetItem)
 {
-    if (!m_contentHubIface->isValid()) {
+    if (!m_contentHubIface || !m_contentHubIface->isValid()) {
         CONTENT_HUB_TRACE("Invalid Content Hub DBusInterface");
         return;
     }
@@ -106,12 +98,12 @@ void UCContentHub::requestPaste(QQuickItem *targetItem)
     m_contentHubIface->call(QStringLiteral("RequestPasteByAppId"), appProfile);
 }
 
-bool UCContentHub::canPaste()
+bool UCContentHub::canPaste() const
 {
     return m_canPaste;
 }
 
-void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool pasteAsRichText)
+void UCContentHub::onPasteSelected(const QString &appId, const QByteArray &mimedata, bool pasteAsRichText)
 {
     if (getAppProfile() != appId) {
         return;
@@ -138,15 +130,39 @@ void UCContentHub::onPasteSelected(QString appId, QByteArray mimedata, bool past
 
 void UCContentHub::onPasteboardChanged()
 {
-    if (checkPasteFormats() != m_canPaste) {
-        m_canPaste = !m_canPaste;
+    if (!m_contentHubIface || !m_contentHubIface->isValid()) {
+        CONTENT_HUB_TRACE("Invalid Content Hub DBusInterface");
+        return;
+    }
+
+    QDBusPendingCall pcall = m_contentHubIface->asyncCall(QStringLiteral("PasteFormats"));
+    QDBusPendingCallWatcher * watcher = new QDBusPendingCallWatcher(pcall, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, [this](QDBusPendingCallWatcher * call) {
+        QDBusPendingReply<QStringList> reply = *call;
+        call->deleteLater();
+        if (reply.isValid()) {
+            // TODO: ContentHub clipboard keeps a list of all available paste formats.
+            // Probably apps could make use of this information to check if a specific
+            // data type is available, instead of only checking if list is empty or not.
+            // (LP: #1657111)
+            setCanPaste(!reply.value().isEmpty());
+        } else {
+            CONTENT_HUB_TRACE("Invalid return from DBus call PasteFormats");
+        }
+    });
+}
+
+void UCContentHub::setCanPaste(bool value)
+{
+    if (value != m_canPaste) {
+        m_canPaste = value;
         Q_EMIT canPasteChanged();
     }
 }
 
-QString UCContentHub::getAppProfile()
+QString UCContentHub::getAppProfile() const
 {
-    if (!m_dbusIface->isValid()) {
+    if (!m_dbusIface || !m_dbusIface->isValid()) {
         CONTENT_HUB_TRACE("Invalid DBus DBusInterface");
         return QString();
     }
@@ -192,27 +208,6 @@ QMimeData* UCContentHub::deserializeMimeData(const QByteArray &serializedMimeDat
     }
 
     return mimeData;
-}
-
-bool UCContentHub::checkPasteFormats()
-{
-    if (!m_contentHubIface->isValid()) {
-        CONTENT_HUB_TRACE("Invalid Content Hub DBusInterface");
-        return false;
-    }
-
-    QDBusReply<QStringList> reply = m_contentHubIface->call(QStringLiteral("PasteFormats"));
-    if (reply.isValid()) {
-        // TODO: ContentHub clipboard keeps a list of all available paste formats.
-        // Probably apps could make use of this information to check if a specific
-        // data type is available, instead of only checking if list is empty or not.
-        // (LP: #1657111)
-        return !reply.value().isEmpty();
-    } else {
-        CONTENT_HUB_TRACE("Invalid return from DBus call PasteFormats");
-    }
-
-    return false;
 }
 
 UT_NAMESPACE_END
