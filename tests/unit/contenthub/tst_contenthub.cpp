@@ -68,12 +68,10 @@ public:
     tst_UCContentHub() {}
 
 private:
-    MockContentService *mockService;
-    UCContentHub *contentHub;
-    QSignalSpy *pasteRequestedSpy;
-    QSignalSpy *pasteSelectedSpy;
-
-    const int testTimeout = 5000;
+    MockContentService *mockService{nullptr};
+    UCContentHub *contentHub{nullptr};
+    QSignalSpy *pasteRequestedSpy{nullptr};
+    QSignalSpy *pasteSelectedSpy{nullptr};
 
     const QString dummyAppId = "DummyAppId";
 
@@ -143,11 +141,11 @@ private Q_SLOTS:
         QDBusConnection connection = QDBusConnection::sessionBus();
         connection.registerObject("/", mockService);
         connection.registerService("com.ubuntu.content.dbus.Service");
-        pasteRequestedSpy = new QSignalSpy(mockService, SIGNAL(PasteRequested()));
+        pasteRequestedSpy = new QSignalSpy(mockService, &MockContentService::PasteRequested);
 
         qRegisterMetaType<QQuickItem*>();
         contentHub = new UCContentHub();
-        pasteSelectedSpy = new QSignalSpy(contentHub, SIGNAL(pasteSelected(QQuickItem*, const QString&)));
+        pasteSelectedSpy = new QSignalSpy(contentHub, &UCContentHub::pasteSelected);
     }
 
     void cleanupTestCase()
@@ -155,6 +153,7 @@ private Q_SLOTS:
         delete pasteRequestedSpy;
         delete pasteSelectedSpy;
         delete contentHub;
+        delete mockService;
     }
 
     void cleanup()
@@ -187,8 +186,7 @@ private Q_SLOTS:
         QMimeData textPaste;
         textPaste.setText(sampleHtml);
         contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(textPaste), false);
-        pasteSelectedSpy->wait(testTimeout);
-        QCOMPARE(pasteSelectedSpy->count(), 1);
+        QTRY_COMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == textPaste.text());
     }
@@ -198,8 +196,7 @@ private Q_SLOTS:
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
         contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(htmlPaste), false);
-        pasteSelectedSpy->wait(testTimeout);
-        QCOMPARE(pasteSelectedSpy->count(), 1);
+        QTRY_COMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == htmlPaste.text());
     }
@@ -209,8 +206,7 @@ private Q_SLOTS:
         QMimeData htmlPaste;
         htmlPaste.setHtml(sampleHtml);
         contentHub->onPasteSelected(contentHub->getAppProfile(), serializeMimeData(htmlPaste), true);
-        pasteSelectedSpy->wait(testTimeout);
-        QCOMPARE(pasteSelectedSpy->count(), 1);
+        QTRY_COMPARE(pasteSelectedSpy->count(), 1);
         QList<QVariant> args = pasteSelectedSpy->takeFirst();
         QVERIFY(args.at(1).toString() == htmlPaste.html());
     }
@@ -220,8 +216,7 @@ private Q_SLOTS:
         QMimeData textPaste;
         textPaste.setText(sampleText);
         contentHub->onPasteSelected(dummyAppId, serializeMimeData(textPaste), false);
-        pasteSelectedSpy->wait(testTimeout);
-        QCOMPARE(pasteSelectedSpy->count(), 0);
+        QTRY_COMPARE(pasteSelectedSpy->count(), 0);
     }
 
     void test_KeyboardShortcutOnTextField()
@@ -230,10 +225,10 @@ private Q_SLOTS:
         testCase->rootObject()->forceActiveFocus();
         QQuickItem *textField = testCase->findItem<QQuickItem*>("textField");
         QTest::keyClick(textField->window(), Qt::Key_Tab);
-        QTRY_COMPARE_WITH_TIMEOUT(textField->property("activeFocus").toBool(), true, testTimeout);
+        QTRY_COMPARE(textField->property("activeFocus").toBool(), true);
+        QTRY_COMPARE(contentHub->canPaste(), true);
         QTest::keyClick(textField->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
-        pasteRequestedSpy->wait(testTimeout);
-        QCOMPARE(pasteRequestedSpy->count(), 1);
+        QTRY_COMPARE(pasteRequestedSpy->count(), 1);
     }
     
     void test_KeyboardShortcutOnTextArea()
@@ -242,10 +237,10 @@ private Q_SLOTS:
         testCase->rootObject()->forceActiveFocus();
         QQuickItem *textArea = testCase->findItem<QQuickItem*>("textArea");
         QTest::keyClick(textArea->window(), Qt::Key_Tab);
-        QTRY_COMPARE_WITH_TIMEOUT(textArea->property("activeFocus").toBool(), true, testTimeout);
+        QTRY_COMPARE(textArea->property("activeFocus").toBool(), true);
+        QTRY_COMPARE(contentHub->canPaste(), true);
         QTest::keyClick(textArea->window(), Qt::Key_V, Qt::ControlModifier|Qt::ShiftModifier);
-        pasteRequestedSpy->wait(testTimeout);
-        QCOMPARE(pasteRequestedSpy->count(), 1);
+        QTRY_COMPARE(pasteRequestedSpy->count(), 1);
     }
 };
 
