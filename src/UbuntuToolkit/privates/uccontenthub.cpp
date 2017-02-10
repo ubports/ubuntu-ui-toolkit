@@ -21,6 +21,7 @@
 #include <QtCore/QLoggingCategory>
 #include <QtCore/QMimeData>
 #include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
 #include <QtDBus/QDBusServiceWatcher>
@@ -41,10 +42,14 @@ static const QString dbusInterface = QStringLiteral("org.freedesktop.DBus");
 UT_NAMESPACE_BEGIN
 
 UCContentHub::UCContentHub(QObject *parent)
-    : QObject(parent),
-      m_watcher(new QDBusServiceWatcher(contentHubService, QDBusConnection::sessionBus(), QDBusServiceWatcher::WatchForRegistration, this))
+    : QObject(parent)
 {
-    connect(m_watcher, &QDBusServiceWatcher::serviceRegistered, this, &UCContentHub::init);
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(contentHubService)) { // content hub already running
+        init();
+    } else {
+        m_watcher = new QDBusServiceWatcher(contentHubService, QDBusConnection::sessionBus(), QDBusServiceWatcher::WatchForRegistration, this);
+        connect(m_watcher, &QDBusServiceWatcher::serviceRegistered, this, &UCContentHub::init);
+    }
 }
 
 void UCContentHub::init()
