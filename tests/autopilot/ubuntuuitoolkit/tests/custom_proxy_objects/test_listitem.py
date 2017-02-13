@@ -17,6 +17,7 @@
 import os
 
 import ubuntuuitoolkit
+from autopilot.introspection import dbus
 from ubuntuuitoolkit import tests
 
 
@@ -101,11 +102,9 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
 
     def test_popover(self):
         self.pointing_device.click_object(self.test_listitem, button=3)
-        popover = self.main_view.get_action_selection_popover(
-            'listItemContextMenu')
+        popover = self.main_view.wait_select_single(
+            'ListItemPopover', objectName='listItemContextMenu')
+        self.assertRaises(
+            ubuntuuitoolkit._custom_proxy_objects._common.ToolkitException,
+            popover.click_action_button, 'invisible_action')
         popover.click_action_button('delete_action')
-        self.assertEqual(self.test_page.title,
-                         'delete_action action triggered')
-
-        listitem = popover.select_single('invisible_action_button')
-        self.assertFalse(listitem.visible)
