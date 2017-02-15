@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-11-05 10:05+0100\n"
-"PO-Revision-Date: 2017-02-01 13:31+0000\n"
+"PO-Revision-Date: 2017-02-14 10:42+0000\n"
 "Last-Translator: Sojharo <Unknown>\n"
 "Language-Team: Sindhi <sd@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2017-02-08 04:56+0000\n"
+"X-Launchpad-Export-Date: 2017-02-15 06:32+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
@@ -66,8 +66,8 @@ msgstr "هاڻي"
 #, qt-format
 msgid "%1 minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] ""
-msgstr[1] "1% منٽ اڳ"
+msgstr[0] "%1 منٽ اڳ"
+msgstr[1] "%1 منٽ اڳ"
 
 #: Ubuntu/Components/plugin/i18n.cpp:277
 #, qt-format
@@ -211,17 +211,18 @@ msgstr "ڪنيڪشن جي پيراميٽرز جي تبديلي منع ٿيل آ�
 #, qt-format
 msgid ""
 "Binding detected on property '%1' will be removed by the service updates."
-msgstr ""
+msgstr "ڳنڍڻ مان خبر پئي ته خاصيت ”%1“ سروس اپڊيٽس جي ڪري ڊهي ويندي."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
-msgstr ""
+msgstr "خبردار: اٽيچي جي آئي ڊي هُجڻ‌ لازمي آهي. حالت محفوظ نه ٿيندي."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
 msgstr ""
+"خبردار: اٽيچيءَ جي UUID اڳ ۾‌ ئي نامزد ٿيل آهي، حالت محفوظ نه ٿيندي: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:107
 #, qt-format
@@ -229,25 +230,29 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"سڀني والدين جي آئي ڊي هُجڻ‌ لازمي آهي.\n"
+"حالت محفوظڻ منع ٿيل آهي %1، ڪلاس %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "ٿيم نه لڌي:‌%1"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
-msgstr ""
+msgstr "پيلٽ جو ڪمپونينٽ نه آهي."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "ڌڪڻ‌وارو موڊ لسٽ‌ويو گھُري ٿو."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
 "Dragging is only supported when using a QAbstractItemModel, ListModel or "
 "list."
 msgstr ""
+"ڌڪڻ‌ فقط ان صورت ۾‌ موجود آهي جو QAbstractItemModel، ListModel، يا لسٽ "
+"استعمال هيٺ هُجن."
 
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78
