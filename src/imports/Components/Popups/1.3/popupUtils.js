@@ -72,7 +72,7 @@ function open(popup, caller, params) {
 
     var popupObject;
     // If there's an active item, save it so we can restore it later
-    var prevFocusItem = (typeof window !== "undefined") ? window.activeFocusItem : null;
+    var prevFocusItem = (typeof window !== "undefined") && window ? window.activeFocusItem : null;
     if (params !== undefined) {
         popupObject = popupComponent.createObject(rootObject, params);
     } else {
