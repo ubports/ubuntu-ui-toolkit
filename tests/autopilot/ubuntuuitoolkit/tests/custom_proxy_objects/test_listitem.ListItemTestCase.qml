@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 MainView {
     width: units.gu(48)
@@ -25,7 +25,10 @@ MainView {
     Page {
         id: testPage
         objectName: "test_page"
-        title: listView.ViewItems.selectMode ? "In selection mode" : "No action triggered"
+        header: PageHeader {
+            objectName: 'test_header'
+            title: listView.ViewItems.selectMode ? "In selection mode" : "No action triggered"
+        }
         ListView {
             id: listView
             objectName: "test_view"
@@ -40,6 +43,10 @@ MainView {
                             iconName: "delete"
                             objectName: 'delete_action'
                             onTriggered: testPage.title = objectName + " action triggered";
+                        },
+                        Action {
+                            visible: false
+                            objectName: 'invisible_action'
                         }
                     ]
                 }
