@@ -25,7 +25,7 @@ TestCase {
         id: things
         ListElement { foo: "pub"; alpha: "bee"; num: 200 }
         ListElement { foo: "den"; alpha: "cow"; num: 300 }
-        ListElement { foo: "bar"; alpha: "ant"; num: 100 }
+        ListElement { foo: "Bar"; alpha: "ant"; num: 100 }
     }
 
     SortFilterModel {
@@ -72,6 +72,13 @@ TestCase {
         filter.pattern: /e/
     }
 
+    SortFilterModel {
+        id: caseSensitivity
+        model: things
+        filter.property: "foo"
+        filter.pattern: /bar/i
+    }
+
     function test_passthrough() {
         compare(unmodified.count, things.count)
     }
@@ -84,7 +91,7 @@ TestCase {
         compare(alphabetic.get(2).alpha, "cow")
 
         // Ensure different columns work also
-        compare(alphaSecond.get(0).foo, "bar")
+        compare(alphaSecond.get(0).foo, "Bar")
 
         // Descending
         compare(alphabeticRe.sort.order, Qt.DescendingOrder)
@@ -98,7 +105,7 @@ TestCase {
 
         // Changing roles
         alphabetic.sort.property = "foo"
-        compare(alphabetic.get(0).foo, "bar")
+        compare(alphabetic.get(0).foo, "Bar")
         compare(alphabetic.get(1).foo, "den")
         compare(alphabetic.get(2).foo, "pub")
         // Sanity check
@@ -119,5 +126,9 @@ TestCase {
         // Filter
         compare(bee.count, 1)
         compare(bee.get(0).alpha, "bee")
+    }
+
+    function test_case_sensitivity() {
+        compare(caseSensitivity.get(0).foo, "Bar")
     }
 }
