@@ -30,7 +30,8 @@ Label {
         return item.parent.hasOwnProperty("pointerTarget") || label.isInsideOverlay(item.parent)
     }
 
-    elide: Text.ElideRight
+    horizontalAlignment: Qt.application.layoutDirection == Qt.RightToLeft ? Text.AlignRight: Text.AlignLeft
+    elide: Qt.application.layoutDirection == Qt.RightToLeft ? Text.ElideLeft: Text.ElideRight
     color: selected
            ? theme.palette.selected.backgroundText
            : (secondary
