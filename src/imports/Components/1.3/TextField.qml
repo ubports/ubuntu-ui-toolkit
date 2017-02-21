@@ -991,7 +991,7 @@ Ubuntu.ActionItem {
         onClicked: {
             //FIXME: Invoke editor.clear() once the SDK moves to Qt 5.7
             // http://doc.qt.io/qt-5/qml-qtquick-textinput.html#clear-method
-            editor.text = ""
+            editor.text = "";
             Qt.inputMethod.reset();
         }
     }
