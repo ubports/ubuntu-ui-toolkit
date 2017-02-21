@@ -988,7 +988,12 @@ Ubuntu.ActionItem {
             name: control.hasClearButton && !control.readOnly ? "edit-clear" : ""
         }
 
-        onClicked: editor.text = ""
+        onClicked: {
+            //FIXME: Invoke editor.clear() once the SDK moves to Qt 5.7
+            // http://doc.qt.io/qt-5/qml-qtquick-textinput.html#clear-method
+            editor.text = ""
+            Qt.inputMethod.reset();
+        }
     }
 
     // hint text
