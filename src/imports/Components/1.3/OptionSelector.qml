@@ -155,6 +155,12 @@ ListItem.Empty {
     }
 
     /*!
+      \qmlproperty int count
+      This property holds the number of items in the OptionSelector.
+     */
+    property alias count: list.count
+
+    /*!
       \qmlproperty int selectedIndex
       The index of the currently selected element in our list.
      */

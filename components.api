@@ -731,6 +731,7 @@ Ubuntu.Components.OptionSelector 1.0 0.1: Empty
 Ubuntu.Components.OptionSelector 1.3: Empty
     property bool colourImage
     property double containerHeight
+    readonly property int count
     property bool currentlyExpanded
     property Component delegate
     property bool expanded
