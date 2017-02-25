@@ -56,7 +56,7 @@ Item {
      */
     property real iconPadding: units.gu(0.4)
 
-    implicitWidth: units.gu(2)
+    implicitWidth: Math.max(styledItem.text ? units.gu(2) : units.gu(2) + checkBoxLbl.width)
     implicitHeight: units.gu(2)
 
     FocusShape {
@@ -65,13 +65,12 @@ Item {
     UbuntuShape {
         id: background
         anchors {
-            fill: parent
             margins: checkBoxStyle.backgroundPadding
-            left: parent.left
-            right: checkBoxLbl.left
         }
+        width: units.gu(2)
+        height: units.gu(2)
 
-        property real iconSize: Math.min(width, height) - 2*checkBoxStyle.iconPadding
+        property real iconSize: units.gu(2) - 2*checkBoxStyle.iconPadding
 
         Icon {
             color: checkBoxStyle.iconColor
@@ -174,7 +173,8 @@ Item {
         anchors.left: background.right
         anchors.leftMargin: units.gu(1)
         enabled: styledItem.enabled
-        visible: styledItem.text != ""
+        elide: Text.ElideRight
+        visible: styledItem.text
         MouseArea {
             anchors.fill: parent
             onClicked: styledItem.checked = !styledItem.checked
