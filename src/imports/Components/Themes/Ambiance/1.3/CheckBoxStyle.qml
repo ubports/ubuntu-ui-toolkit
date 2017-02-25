@@ -169,7 +169,7 @@ Item {
     }
 
     Label {
-        id: parent
+        id: checkBoxLbl
         text: styledItem.text
         anchors.left: background.right
         anchors.leftMargin: units.gu(1)
