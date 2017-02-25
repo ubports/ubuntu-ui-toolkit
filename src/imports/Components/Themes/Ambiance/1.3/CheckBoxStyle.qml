@@ -65,10 +65,10 @@ Item {
     UbuntuShape {
         id: background
         anchors {
+            fill: parent
             margins: checkBoxStyle.backgroundPadding
             left: parent.left
             right: checkBoxLbl.left
-            fill: parent
         }
 
         property real iconSize: Math.min(width, height) - 2*checkBoxStyle.iconPadding
