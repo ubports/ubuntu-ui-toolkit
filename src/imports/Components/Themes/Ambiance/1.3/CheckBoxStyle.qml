@@ -65,9 +65,12 @@ Item {
     UbuntuShape {
         id: background
         anchors {
-            fill: parent
             margins: checkBoxStyle.backgroundPadding
+            left: parent.left
+            right: checkBoxLbl.left
+            fill: parent
         }
+
         property real iconSize: Math.min(width, height) - 2*checkBoxStyle.iconPadding
 
         Icon {
@@ -163,5 +166,18 @@ Item {
                 }
             }
         ]
+    }
+
+    Label {
+        id: parent
+        text: styledItem.text
+        anchors.left: background.right
+        anchors.leftMargin: units.gu(1)
+        enabled: styledItem.enabled
+        visible: styledItem.text != ""
+        MouseArea {
+            anchors.fill: parent
+            onClicked: styledItem.checked = !styledItem.checked
+        }
     }
 }
