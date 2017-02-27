@@ -124,6 +124,19 @@ MainView {
             compare(data.testItem.checkedNow, data.testItem.checked);
         }
 
+        function test_toggle_checkedstate_data() {
+            return [
+                {tag: "CheckBox", testItem: testCheckLbl, mouse: true},
+            ];
+        }
+
+        function test_toggle_checkedstate(data) {
+            data.testItem.forceActiveFocus();
+            compare(data.testItem.checkedState, Qt.Checked);
+            clickedSpy.target = data.testItem;
+            mouseClick(data.testItem, centerOf(data.testItem).x, centerOf(data.testItem).y);
+            clickedSpy.wait(400);
+            compare(data.testItem.checkedState, Qt.Unchecked);
+        }
     }
 }
-

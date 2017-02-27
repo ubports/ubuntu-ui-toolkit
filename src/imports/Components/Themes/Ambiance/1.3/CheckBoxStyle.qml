@@ -56,8 +56,16 @@ Item {
      */
     property real iconPadding: units.gu(0.4)
 
-    implicitWidth: Math.max(styledItem.text ? units.gu(2) : units.gu(2) + checkBoxLbl.width)
-    implicitHeight: units.gu(2)
+    implicitWidth: Math.max(styledItem.text ? units.gu(2) + checkBoxLbl.width : units.gu(2))
+    implicitHeight: {
+        var count = 1;
+        if (styledItem.text)
+            count = styledItem.text.split("\n").length
+        if (count > 1)
+            return checkBoxLbl.implicitHeight 
+        else
+            return units.gu(2)
+    }
 
     FocusShape {
     }
@@ -173,11 +181,6 @@ Item {
         anchors.left: background.right
         anchors.leftMargin: units.gu(1)
         enabled: styledItem.enabled
-        elide: Text.ElideRight
         visible: styledItem.text
-        MouseArea {
-            anchors.fill: parent
-            onClicked: styledItem.checked = !styledItem.checked
-        }
     }
 }

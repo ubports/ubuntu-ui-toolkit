@@ -45,6 +45,14 @@ AbstractButton {
     property bool checked: false
 
     /*!
+      This property indicates the current checked state of the checkbox.
+      Possible values:
+      \c Qt.UnChecked - The checkbox is not checked (default).
+      \c Qt.Checked - The checkbox is checked.
+    */
+    property int checkedState: checked ? Qt.Checked : Qt.Unchecked
+
+    /*!
       \internal
      */
     onTriggered: checked = !checked
