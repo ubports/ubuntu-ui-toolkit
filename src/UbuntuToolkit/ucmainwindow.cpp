@@ -163,11 +163,7 @@ void UCMainWindow::setApplicationName(QString applicationName)
         return;
 
     d->m_applicationName = applicationName;
-
-    if (applicationName != QStringLiteral("")) {
-        UbuntuI18n::instance()->setDomain(applicationName);
-        UCApplication::instance()->setApplicationName(applicationName);
-    }
+    updateApplication(applicationName, d->m_organizationName);
     Q_EMIT applicationNameChanged(applicationName);
 }
 
@@ -192,11 +188,17 @@ void UCMainWindow::setOrganizationName(QString organizationName)
         return;
 
     d->m_organizationName = organizationName;
-
-    if (organizationName != QStringLiteral("")) {
-        QCoreApplication::setOrganizationName(organizationName);
-    }
+    updateApplication(d->m_applicationName, organizationName);
     Q_EMIT organizationNameChanged(organizationName);
+}
+
+void UCMainWindow::updateApplication(QString applicationName, QString organizationName)
+{
+    if (applicationName != QStringLiteral("")) {
+        UbuntuI18n::instance()->setDomain(applicationName);
+        QCoreApplication::setOrganizationName(organizationName);
+        UCApplication::instance()->setApplicationName(applicationName);
+    }
 }
 
 /*!

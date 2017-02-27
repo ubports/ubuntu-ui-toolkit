@@ -20,7 +20,6 @@ import Ubuntu.Components.Labs 1.0
 
 MainWindow {
     objectName: "visualRoot"
-    applicationName: "org.gnu.wildebeest"
     visualRoot: myRoot
 
     Rectangle {
