@@ -56,19 +56,10 @@ Item {
      */
     property real iconPadding: units.gu(0.4)
 
-    implicitWidth: Math.max(styledItem.text ? units.gu(2) + checkBoxLbl.width : units.gu(2))
-    implicitHeight: {
-        var count = 1;
-        if (styledItem.text)
-            count = styledItem.text.split("\n").length
-        if (count > 1)
-            return checkBoxLbl.implicitHeight 
-        else
-            return units.gu(2)
-    }
+    implicitWidth: Math.max(styledItem.text ? units.gu(3) + checkBoxLbl.contentWidth : units.gu(2))
+    implicitHeight: Math.max(checkBoxLbl.contentHeight, units.gu(2))
 
-    FocusShape {
-    }
+    FocusShape {}
 
     UbuntuShape {
         id: background
@@ -179,8 +170,10 @@ Item {
         id: checkBoxLbl
         text: styledItem.text
         anchors.left: background.right
+        anchors.right: parent.right
         anchors.leftMargin: units.gu(1)
         enabled: styledItem.enabled
         visible: styledItem.text
+        wrapMode: Text.WordWrap
     }
 }

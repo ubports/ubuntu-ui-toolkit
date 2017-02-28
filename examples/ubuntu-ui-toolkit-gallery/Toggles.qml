@@ -88,14 +88,13 @@ Template {
             }
         }
 
-
         TemplateRow {
             title: i18n.tr("Checkbox with multiline label")
 
             CheckBox {
                 objectName: "checkbox_checked_lbl"
                 checked: true
-                text: "This a checkbox \n a multiline label \n with long texte"
+                text: "This is a checkbox\nwith a label\nspanning several lines"
             }
         }
     }
