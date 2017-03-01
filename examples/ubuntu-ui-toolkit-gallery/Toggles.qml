@@ -94,7 +94,8 @@ Template {
             CheckBox {
                 objectName: "checkbox_checked_lbl"
                 checked: true
-                text: "This is a checkbox\nwith a label\nspanning several lines"
+                text: "This is a checkbox with a built-in label spanning several lines that won't be ellipsized but increase in height instead"
+                width: parent.width
             }
         }
     }

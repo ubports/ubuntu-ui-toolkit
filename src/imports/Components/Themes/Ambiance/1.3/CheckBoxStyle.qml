@@ -56,8 +56,9 @@ Item {
      */
     property real iconPadding: units.gu(0.4)
 
-    implicitWidth: Math.max(styledItem.text ? units.gu(3) + checkBoxLbl.contentWidth : units.gu(2))
+    implicitWidth: units.gu(2)
     implicitHeight: Math.max(checkBoxLbl.contentHeight, units.gu(2))
+    clip: true
 
     FocusShape {}
 
@@ -170,8 +171,9 @@ Item {
         id: checkBoxLbl
         text: styledItem.text
         anchors.left: background.right
-        anchors.right: parent.right
         anchors.leftMargin: units.gu(1)
+        anchors.right: parent.right
+        height: parent.height
         enabled: styledItem.enabled
         visible: styledItem.text
         wrapMode: Text.WordWrap
