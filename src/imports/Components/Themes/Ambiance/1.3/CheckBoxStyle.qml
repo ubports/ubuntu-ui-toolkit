@@ -58,7 +58,6 @@ Item {
 
     implicitWidth: units.gu(2)
     implicitHeight: Math.max(checkBoxLbl.contentHeight, units.gu(2))
-    clip: true
 
     FocusShape {
     }
