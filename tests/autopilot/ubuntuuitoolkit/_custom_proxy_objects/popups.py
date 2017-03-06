@@ -79,6 +79,8 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
         name = introspection.get_classname_from_path(path)
         if name == b'OverflowPanel':
             return True
+        if name == b'ListItemPopover':
+            return True
 
         return False
 

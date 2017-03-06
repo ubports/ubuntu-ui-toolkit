@@ -183,8 +183,17 @@ Page {
         function test_custom_data() {
             return test_arrow_select_data()
         }
+
         function test_custom(data) {
             test_arrow_select(data, customSelector, 2);
+        }
+
+        function test_count() {
+            var selector = defaultSelector;
+            sections.selectedIndex = 0;
+            selector.forceActiveFocus();
+            waitForRendering(selector);
+            compare(selector.count, customModel.count);
         }
     }
 }

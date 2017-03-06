@@ -33,10 +33,7 @@
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QSettings>
 
-#include <QtQuick/QQuickItem>
-#include <QtQuick/QQuickView>
 #include <QtGui/QGuiApplication>
-#include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
 
@@ -103,18 +100,22 @@ public:
 
 private Q_SLOTS:
 
-    void initTestCase()
+    void cleanup()
     {
-    }
-
-    void cleanupTestCase()
-    {
+        // Delete engine, and thereby also the UCApplication instance
+        QObject* engine(UCApplication::instance()->parent());
+        delete engine;
+        QCoreApplication::setApplicationName(QStringLiteral(""));
+        QCoreApplication::setOrganizationName(QStringLiteral(""));
     }
 
     // Note: tests/unit/mainview13 contains the UCApplication bits
 
     void testCase_AppName()
     {
+        // Sanity check: no name set yet
+        QCOMPARE(QStringLiteral("mainwindow"), QCoreApplication::applicationName());
+
         QString applicationName("org.gnu.wildebeest");
         QQuickWindow *mainWindow(loadTest("AppName.qml"));
         QVERIFY(mainWindow);
@@ -125,6 +126,9 @@ private Q_SLOTS:
 
     void testCase_OrganizationName()
     {
+        // Sanity check: no organization set yet
+        QCOMPARE(QStringLiteral(""), QCoreApplication::organizationName());
+
         QString applicationName("tv.island.pacific");
         QString organizationName("pacifist");
         QQuickWindow *mainWindow(loadTest("OrganizationName.qml"));
@@ -135,9 +139,28 @@ private Q_SLOTS:
         QCOMPARE(organizationName, QCoreApplication::organizationName());
     }
 
+    void testCase_NoOrganizationName()
+    {
+        // Sanity check: no organization set yet
+        QCOMPARE(QStringLiteral(""), QCoreApplication::organizationName());
+
+        // Custom values set outside of QML
+        QString applicationName("com.example.random");
+        QString organizationName(QStringLiteral("Example"));
+        QCoreApplication::setApplicationName(applicationName);
+        QCoreApplication::setOrganizationName(organizationName);
+
+        QQuickWindow *mainWindow(loadTest("VisualRoot.qml"));
+        QVERIFY(mainWindow);
+        // MainView shouldn't interfere as applicationName wasn't set in QML
+        QCOMPARE(QStringLiteral(""), mainWindow->property("applicationName").toString());
+        QCOMPARE(applicationName, QCoreApplication::applicationName());
+        QCOMPARE(QStringLiteral(""), mainWindow->property("organizationName").toString());
+        QCOMPARE(organizationName, QCoreApplication::organizationName());
+    }
+
     void testCase_VisualRoot()
     {
-        QString applicationName("tv.island.pacific");
         QQuickWindow *mainWindow(loadTest("VisualRoot.qml"));
         QVERIFY(mainWindow);
         QQuickItem* myLabel(testItem(mainWindow, "myLabel"));

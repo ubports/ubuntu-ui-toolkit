@@ -25,6 +25,7 @@
 
 class QMimeData;
 class QDBusInterface;
+class QDBusServiceWatcher;
 class QQuickItem;
 
 UT_NAMESPACE_BEGIN
@@ -32,35 +33,37 @@ UT_NAMESPACE_BEGIN
 class UBUNTUTOOLKIT_EXPORT UCContentHub : public QObject
 {
     Q_OBJECT
-
+    friend class tst_UCContentHub;
     Q_PROPERTY(bool canPaste READ canPaste NOTIFY canPasteChanged)
 
 public:
-    UCContentHub(QObject* parent = 0);
-    ~UCContentHub();
+    UCContentHub(QObject* parent = nullptr);
+    ~UCContentHub() = default;
 
     Q_INVOKABLE void requestPaste(QQuickItem *targetItem);
 
-    bool canPaste();
-    QString getAppProfile();
+    bool canPaste() const;
+    QString getAppProfile() const;
     QMimeData* deserializeMimeData(const QByteArray &serializedMimeData);
 
 Q_SIGNALS:
     void pasteSelected(QQuickItem *targetItem, const QString &data);
     void canPasteChanged();
 
-public Q_SLOTS:
-    void onPasteSelected(QString appId, QByteArray mimedata, bool pasteAsRichText);
+private Q_SLOTS:
+    void init();
+    void onPasteSelected(const QString &appId, const QByteArray &mimedata, bool pasteAsRichText);
     void onPasteboardChanged();
 
 private:
-    bool checkPasteFormats();
+    void setCanPaste(bool value);
+    QDBusInterface *m_dbusIface{nullptr};
+    QDBusInterface *m_contentHubIface{nullptr};
 
-    QDBusInterface *m_dbusIface;
-    QDBusInterface *m_contentHubIface;
+    bool m_canPaste{false};
+    QQuickItem *m_targetItem{nullptr};
 
-    bool m_canPaste;
-    QQuickItem *m_targetItem;
+    QDBusServiceWatcher * m_watcher{nullptr};
 };
 
 UT_NAMESPACE_END
