@@ -15,18 +15,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2017-01-05 05:52+0000\n"
-"X-Generator: Launchpad (build 18298)\n"
+"X-Launchpad-Export-Date: 2017-02-08 04:56+0000\n"
+"X-Generator: Launchpad (build 18326)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
 msgid "Select All"
-msgstr "모두 고르기"
+msgstr "모두 선택"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:36
 #: Ubuntu/Components/1.3/TextInputPopover.qml:36
 msgid "Cut"
-msgstr "자르기"
+msgstr "잘라내기"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:48
 #: Ubuntu/Components/1.3/TextInputPopover.qml:48
@@ -36,7 +36,7 @@ msgstr "복사"
 #: Ubuntu/Components/1.2/TextInputPopover.qml:57
 #: Ubuntu/Components/1.3/TextInputPopover.qml:57
 msgid "Paste"
-msgstr "붙이기"
+msgstr "붙여넣기"
 
 #: Ubuntu/Components/1.2/ToolbarItems.qml:143
 #: Ubuntu/Components/1.3/ToolbarItems.qml:143
@@ -139,6 +139,7 @@ msgid ""
 "ListView has no ViewItems.dragUpdated() signal handler implemented. No "
 "dragging will be possible."
 msgstr ""
+"ListView에는 구현 된 ViewItems.dragUpdated () 시그널 처리가 되어있지 않습니다. 드레깅은 가능하지 않습니다."
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -160,7 +161,7 @@ msgstr "경고"
 #: Ubuntu/Components/plugin/ucalarm.cpp:635
 #: Ubuntu/Components/plugin/ucalarm.cpp:667
 msgid "Alarm has a pending operation."
-msgstr "알람은 대기 작업을 가지고 있습니다."
+msgstr "대기중인 작업이 있습니다."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -187,15 +188,15 @@ msgstr "%1은(는) 추가 인수가 필요합니다: %2"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
-msgstr ""
+msgstr "swipeEvent() 슬롯을 덮어쓰는걸 고려해주십시오!"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:165
 msgid "consider overriding rebound() slot!"
-msgstr ""
+msgstr "rebound() 슬롯을 덮어쓰는걸 고려해주십시오!"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1065
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr "역 마우스 필터 항목 우선 순위 이후 무시합니다."
+msgstr "마우스 반전 부분의 항목의 우선 순위 무시"
 
 #: Ubuntu/Components/plugin/ucserviceproperties.cpp:77
 msgid "Changing connection parameters forbidden."
@@ -205,7 +206,7 @@ msgstr "연결 파라미터를 변경할 수 없습니다"
 #, qt-format
 msgid ""
 "Binding detected on property '%1' will be removed by the service updates."
-msgstr ""
+msgstr "속성 '%1'에서 감지된 바인딩은 서비스 업데이트에 의해 제거됩니다."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
@@ -237,7 +238,7 @@ msgstr "팔레트 콤포넌트가 아닙니다."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:462
 msgid "Dragging mode requires ListView"
-msgstr ""
+msgstr "드래그 모드는 목록보기가 필요합니다."
 
 #: Ubuntu/Components/plugin/ucviewitemsattached.cpp:468
 msgid ""
