@@ -86,17 +86,21 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
             // This way if the Image {} has a sourceSize set the lambda gets called because of it
             // and if there's no sourceSize set the lambda gets called because we registered the finalize callback
 
-            connect(m_image, &QQuickImageBase::sourceSizeChanged,
-                             this,
-                             [&] {
-                                 QObject::disconnect(m_image, &QQuickImageBase::sourceSizeChanged, this, nullptr);
-                                 reloadSource();
-                            });
-
+            // WARNING do not convert this to a "modern-style" connect, i.e. &QQuickImageBase::sourceSizeChanged,
+            // it will break if m_image is a QQuickBorderImage since it redeclares the sourceSizeChanged
+            // See https://codereview.qt-project.org/#/c/187967/
+            connect(m_image, SIGNAL(sourceSizeChanged()), this, SLOT(onSourceSizeChanged()));
             QQmlEnginePrivate *engPriv = QQmlEnginePrivate::get(qmlEngine(m_image));
             engPriv->registerFinalizeCallback(m_image, m_image->metaObject()->indexOfSignal("sourceSizeChanged()"));
         }
     }
+}
+
+void UCQQuickImageExtension::onSourceSizeChanged()
+{
+    // See WARNING above
+    QObject::disconnect(m_image, SIGNAL(sourceSizeChanged()), this, SLOT(onSourceSizeChanged()));
+    reloadSource();
 }
 
 void UCQQuickImageExtension::reloadSource()
