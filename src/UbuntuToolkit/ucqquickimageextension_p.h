@@ -49,6 +49,7 @@ Q_SIGNALS:
 
 protected Q_SLOTS:
     void reloadSource();
+    void onSourceSizeChanged();
 
 protected:
     bool rewriteSciFile(const QString &sciFilePath, const QString &scaleFactor, QTextStream& output);
