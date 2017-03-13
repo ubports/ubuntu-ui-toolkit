@@ -153,6 +153,7 @@ Style.PageHeaderStyle {
                 visible: text != ""
                 textSize: pageHeaderStyle.subTextSize
                 font.weight: pageHeaderStyle.fontWeight
+                elide: Text.ElideRight
             }
         }
     }
