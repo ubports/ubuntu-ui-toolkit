@@ -29,9 +29,6 @@ MainView {
     width: units.gu(120)
     height: units.gu(75)
 
-    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-    LayoutMirroring.childrenInherit: true
-
     AdaptivePageLayout {
         id: layout
         anchors.fill: parent
