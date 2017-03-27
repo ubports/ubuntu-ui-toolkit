@@ -1635,6 +1635,7 @@ UCActionContextAttached: QtObject
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
     property QtObject inputMethod
+    property Qt.LayoutDirection layoutDirection
 Ubuntu.Components.UCFontUtils 1.0 0.1: QtObject
     function double sizeToPixels(string size)
     function double modularScale(string size)

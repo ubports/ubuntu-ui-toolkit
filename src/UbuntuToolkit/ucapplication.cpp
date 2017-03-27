@@ -42,6 +42,10 @@ UCApplication::UCApplication(QObject* parent) : QObject(parent), m_context(0)
     // Make sure we receive application name changes from C++ modules
     connect(QCoreApplication::instance(), &QCoreApplication::applicationNameChanged,
             this, &UCApplication::applicationNameChanged);
+    // Changes to the default layout direction (RTL, LTR)
+    QGuiApplication* application = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    connect(application, &QGuiApplication::layoutDirectionChanged,
+            this, &UCApplication::layoutDirectionChanged);
 }
 
 UCApplication::~UCApplication()
@@ -90,5 +94,19 @@ QObject* UCApplication::inputMethod() {
 void UCApplication::setInputMethod(QObject* inputMethod) {
     m_inputMethod = inputMethod;
 }
+
+/*!
+ * \internal
+ * The (default) layout direction. Can be overridden for testing,
+ * unlike Qt.application.layoutDirection.
+ */
+Qt::LayoutDirection UCApplication::layoutDirection() {
+    return QGuiApplication::layoutDirection();
+}
+
+void UCApplication::setLayoutDirection(Qt::LayoutDirection layoutDirection) {
+    return QGuiApplication::setLayoutDirection(layoutDirection);
+}
+
 
 UT_NAMESPACE_END

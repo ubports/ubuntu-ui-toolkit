@@ -54,6 +54,7 @@ import Ubuntu.Components 1.3
 Icon {
     height: units.gu(2)
     width: height
+    // FIXME: lp#1672322
     name: LayoutMirroring.enabled ? "go-previous" : "go-next"
     SlotsLayout.position: SlotsLayout.Last
 }
