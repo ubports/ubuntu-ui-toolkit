@@ -1,3 +1,43 @@
+ubuntu-ui-toolkit (1.3.2184+17.04.20170306) zesty; urgency=medium
+
+  [ Adnane Belmadiaf ]
+  * Add support for CheckBox label when set
+  * Add more tests for checkbox. Fixes LP: #1333228, LP: #1442851.
+  * Make sure we resets partial text input from the input method.
+    Fixes LP: #1630872.
+  * Fix ListItem title/subtitle alignment & elide in RTL mode. 
+    Fixes LP: #1665944.
+  * Fix PageHeader title alignment & elide in RTL mode. Fixes LP: #1665942.
+  * Fix UbuntuListView docs. Fixes LP: #1486940.
+  * Add count prop to OptionSelector. Fixes LP: #1341559.
+  * Replace the hardcoded color with a theme color. Fixes LP: #1664758.
+  * Fix the import statement for Menu, MenuBar and MenuGroup. 
+    Fixes LP: #1660604.
+
+  [ Albert Astals Cid ]
+  * Fix memory leak in UCStyleHints
+  * ThinDivider: Anchors can't be null, set to undefined
+  * No need to call UCUnits::resolveResource to learn we just need to load it
+    normally because the fact that we already loaded it normally means we need
+    to load it normally. Fixes LP: #1558663.
+  * Fix conditional jump or move depends on uninitialised value(s)
+
+  [ Christian Dywan ]
+  * Initialize UCApplication with no side effects. Fixes LP: #1662868.
+  * Unit test case insensitive FilterBehavior.pattern. Fixes LP: #1663924.
+  * ListItemPopover delegate should (in)visible as per action Bug 1662220: 
+    [ListItem] Popupmenu shows traces of disabled actions
+
+  [ Olivier Tilloy ]
+  * Check that window is not null before accessing its activeFocusItem property.
+    Fixes LP: #1664620.
+
+  [ Lukáš Tinkl ]
+  * Unbreak the startup race between unity8/qtmir and UITK trying talk to 
+    content-hub. Fixes LP: #1663106.
+
+ -- Zoltán Balogh <zoltan.balogh@canonical.com>  Mon, 06 Mar 2017 16:04:56 +0000
+
 ubuntu-ui-toolkit (1.3.2166+17.04.20170130) zesty; urgency=medium
 
   [ Andrea Bernabei ]
