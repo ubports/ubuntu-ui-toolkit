@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-11-05 10:04+0100\n"
-"PO-Revision-Date: 2015-10-25 22:47+0000\n"
-"Last-Translator: Jean-Marc <Unknown>\n"
+"PO-Revision-Date: 2017-07-23 14:39+0000\n"
+"Last-Translator: Anne017 <anneonyme017@openmailbox.org>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2017-04-05 07:13+0000\n"
-"X-Generator: Launchpad (build 18335)\n"
+"X-Launchpad-Export-Date: 2017-07-24 05:26+0000\n"
+"X-Generator: Launchpad (build 18419)\n"
 
 #: About.qml:34
 msgid "About..."
@@ -27,7 +27,7 @@ msgstr "Liste courte"
 
 #: ActionBars.qml:79
 msgid "Number of slots"
-msgstr ""
+msgstr "Nombre de prises"
 
 #: ActionBars.qml:92
 msgid "Long list"
@@ -40,7 +40,7 @@ msgstr "Désactivé"
 
 #: Animations.qml:24
 msgid "NumberAnimation"
-msgstr ""
+msgstr "Nombre d'animations"
 
 #: Animations.qml:28 Buttons.qml:28 Dialog.qml:29 ListItems.qml:25
 #: ProgressBars.qml:29 ProgressBars.qml:85 Sheet.qml:40 Sheet.qml:73
@@ -54,7 +54,7 @@ msgstr "Durées standards"
 
 #: Animations.qml:62
 msgid "Snap"
-msgstr ""
+msgstr "Accrochage"
 
 #: Animations.qml:98
 msgid "Fast"
@@ -62,19 +62,19 @@ msgstr "Rapide"
 
 #: Animations.qml:134
 msgid "Slow"
-msgstr "Lente"
+msgstr "Lent"
 
 #: Animations.qml:159
 msgid "Sleepy"
-msgstr ""
+msgstr "Tranquille"
 
 #: Buttons.qml:32 Buttons.qml:41 Buttons.qml:77 Buttons.qml:85 Buttons.qml:95
 msgid "Call"
-msgstr ""
+msgstr "Appeler"
 
 #: Buttons.qml:37
 msgid "Stroke"
-msgstr ""
+msgstr "Trait"
 
 #: Buttons.qml:47 Icons.qml:54
 msgid "Color"
@@ -95,11 +95,11 @@ msgstr "Icône + texte"
 
 #: Buttons.qml:105 OptionSelectors.qml:41
 msgid "Collapsed"
-msgstr "Replié"
+msgstr "Réduit"
 
 #: Buttons.qml:148 ListItems.qml:120 OptionSelectors.qml:47
 msgid "Expanded"
-msgstr "Déployé"
+msgstr "Développé"
 
 #: Colors.qml:30
 msgid "Orange"
@@ -143,13 +143,13 @@ msgstr "Thème"
 
 #: ListItemLayouts.qml:208 NewListItems.qml:79
 msgid "Leading and trailing actions"
-msgstr ""
+msgstr "Actions de début et de fin"
 
 #: ListItems.qml:28 ListItems.qml:36 ListItems.qml:46 ListItems.qml:60
 #: ListItems.qml:66 ListItems.qml:76 ListItems.qml:85 ListItems.qml:94
 #: ListItems.qml:160 ListItems.qml:173 ListItems.qml:193
 msgid "Label"
-msgstr ""
+msgstr "Étiquette"
 
 #: ListItems.qml:33
 msgid "Subtitled"
@@ -157,11 +157,11 @@ msgstr "Sous-titré"
 
 #: ListItems.qml:37
 msgid "Secondary label"
-msgstr "Champ secondaire"
+msgstr "Étiquette secondaire"
 
 #: ListItems.qml:52
 msgid "ThinDivider"
-msgstr ""
+msgstr "Diviseur fin"
 
 #: ListItems.qml:73
 msgid "Progression"
@@ -205,7 +205,7 @@ msgstr "Valeur 4"
 
 #: ListItems.qml:103
 msgid "Item selector"
-msgstr ""
+msgstr "Sélecteur d'éléments"
 
 #: ListItems.qml:112 TextInputs.qml:117
 msgid "Expanding"
@@ -249,7 +249,7 @@ msgstr "Supprimable"
 
 #: ListItems.qml:205
 msgid "Slide to remove"
-msgstr "Glisser pour supprimer"
+msgstr "Faire glisser pour supprimer"
 
 #: ListItems.qml:215
 msgid "Reset"
@@ -261,11 +261,11 @@ msgstr "Liste groupée"
 
 #: ListItems.qml:261
 msgid "UbuntuListView"
-msgstr ""
+msgstr "Affichage sous forme de liste Ubuntu"
 
 #: ListItems.qml:321
 msgid "ExpandablesColumn"
-msgstr ""
+msgstr "Colonne extensible"
 
 #: ListItems.qml:364
 msgid "Expandable"
@@ -281,19 +281,19 @@ msgstr "Couleur de surbrillance"
 
 #: NewListItems.qml:71
 msgid "Leading actions"
-msgstr ""
+msgstr "Actions de début"
 
 #: NewListItems.qml:75
 msgid "Trailing actions"
-msgstr ""
+msgstr "Actions de fin"
 
 #: NewListItems.qml:84
 msgid "Custom action delegates"
-msgstr ""
+msgstr "Délégués d'action personnalisée"
 
 #: NewListItems.qml:111
 msgid "Edit"
-msgstr "Éditer"
+msgstr "Modifier"
 
 #: NewListItems.qml:114
 msgid "Move"
@@ -301,12 +301,12 @@ msgstr "Déplacer"
 
 #: NewListItems.qml:163
 msgid "Basic"
-msgstr ""
+msgstr "Basique"
 
 #: NewListItems.qml:163 NewListItems.qml:168 NewListItems.qml:169
 #: NewListItems.qml:213 NewListItems.qml:214
 msgid "Colored divider"
-msgstr ""
+msgstr "Séparateur coloré"
 
 #: NewListItems.qml:163
 msgid "Immutable"
@@ -314,7 +314,7 @@ msgstr "Immuable"
 
 #: NewListItems.qml:163 NewListItems.qml:170 NewListItems.qml:215
 msgid "No divider"
-msgstr ""
+msgstr "Pas de séparateur"
 
 #: OptionSelectors.qml:24
 msgid "Option Selector"
@@ -362,11 +362,11 @@ msgstr "Horloge"
 
 #: Pickers.qml:174
 msgid "Overlay"
-msgstr ""
+msgstr "Superposition"
 
 #: Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Manœuvrable"
 
 #: Popover.qml:74
 msgid "Action #1"
@@ -411,6 +411,8 @@ msgstr "Activé"
 #: Sheet.qml:28
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"Le style visuel de la Feuille est un travail préliminaire, c'est pourquoi il "
+"est encore maladroit."
 
 #: Sheet.qml:53 Sheet.qml:86
 msgid "Title"
@@ -447,7 +449,7 @@ msgstr "Grandes"
 
 #: TextInputs.qml:50
 msgid "Type me in..."
-msgstr "Tapez du texte ici..."
+msgstr "Saisissez du texte ici..."
 
 #: TextInputs.qml:56
 msgid "Password"
@@ -463,7 +465,7 @@ msgstr "Lecture seule"
 
 #: TextInputs.qml:82
 msgid "Nobody type here"
-msgstr ""
+msgstr "Personne n'a rien saisi ici"
 
 #: TextInputs.qml:94
 msgid "No interaction allowed"
