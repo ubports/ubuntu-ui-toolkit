@@ -41,7 +41,7 @@ SUBDIRS += \
     performance \
     mainview11 \
     mainview13 \
-    i18n \
+#    i18n \ FIXME: breaks xenial
     arguments \
     argument \
     alarms \
