@@ -34,7 +34,7 @@ SUBDIRS += \
     touchregistry \
     bottomedge \
     asyncloader \
-    custom_qpa \
+#    custom_qpa \ # FIXME: Breaks with QT 5.9
     units \
     scaling_image_provider \
     qquick_image_extension \
