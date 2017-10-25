@@ -21,8 +21,11 @@
 
 #include <QtCore/QVariant>
 #include <QtQml/QQmlListProperty>
+#include <QJSValue>
 #define foreach Q_FOREACH //workaround to fix private includes
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
+#include <QtQml/private/qqmljavascriptexpression_p.h>
+#include <QtQml/private/qqmlproperty_p.h>
 #undef foreach
 #include <QtQuick/private/qquickanchors_p_p.h>
 #include <QtQuick/private/qquickstate_p.h>

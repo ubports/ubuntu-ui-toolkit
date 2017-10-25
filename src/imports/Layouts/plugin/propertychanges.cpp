@@ -230,7 +230,11 @@ PropertyChange::PropertyChange(QQuickItem *target, const QString &property, cons
         if (ok) {
             action.setValue(value);
         } else {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
+            QQmlBinding *binding = QQmlBinding::create(&action.property, script, target, scriptContext);
+#else
             QQmlBinding *binding = new QQmlBinding(script, target, scriptContext);
+#endif
             binding->setTarget(action.property);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             action.toBinding = binding;
