@@ -28,6 +28,7 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+#include <QtQuick/private/qsgadaptationlayer_p.h>
 
 #include "i18n_p.h"
 #include "privates/listitemselection_p.h"
@@ -131,9 +132,9 @@ QSGNode *UCListItemDivider::updatePaintNode(QSGNode *node, UpdatePaintNodeData *
 {
     Q_UNUSED(data);
     Q_D(UCListItemDivider);
-    QSGRectangleNode *dividerNode = static_cast<QSGRectangleNode*>(node);
+    QSGInternalRectangleNode *dividerNode = static_cast<QSGInternalRectangleNode*>(node);
     if (!dividerNode) {
-        dividerNode = d->sceneGraphContext()->createRectangleNode();
+        dividerNode = d->sceneGraphContext()->createInternalRectangleNode();
     }
 
     UCListItemPrivate *pListItem = UCListItemPrivate::get(d->listItem);
@@ -1144,10 +1145,10 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
         return 0;
     }
 
-    QSGRectangleNode *rectNode = 0;
-    rectNode = static_cast<QSGRectangleNode*>(oldNode);
+    QSGInternalRectangleNode  *rectNode = 0;
+    rectNode = static_cast<QSGInternalRectangleNode*>(oldNode);
     if (!rectNode) {
-        rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
+        rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createInternalRectangleNode();
     }
     bool updateNode = false;
 

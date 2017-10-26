@@ -440,7 +440,8 @@ void UCMouse::timerEvent(QTimerEvent *event)
         m_pressAndHoldTimer.stop();
         if (m_pressedButtons && m_hovered) {
             m_longPress = true;
-            QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+            QQuickMouseEvent mev;
+            mev.reset(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                      false, m_longPress);
             mev.setAccepted(false);
             Q_EMIT pressAndHold(&mev, m_owner);
@@ -557,7 +558,8 @@ void UCMouse::setHovered(bool hovered, QEvent *hoverEvent)
 {
     if (m_hovered != hovered) {
         m_hovered = hovered;
-        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+        QQuickMouseEvent mev;
+        mev.reset(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  false, false);
         mev.setAccepted(false);
         ForwardedEvent::EventType type = (m_hovered) ? ForwardedEvent::HoverEnter : ForwardedEvent::HoverExit;
@@ -581,7 +583,8 @@ bool UCMouse::mousePressed(QMouseEvent *event)
 
         setHovered(true, 0);
 
-        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+        QQuickMouseEvent mev;
+        mev.reset(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  false, m_longPress);
         mev.setAccepted(false);
         Q_EMIT pressed(&mev, m_owner);
@@ -611,7 +614,8 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
 
         m_moved = true;
         m_doubleClicked = false;
-        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+        QQuickMouseEvent mev;
+        mev.reset(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  false, m_longPress);
         mev.setAccepted(false);
         Q_EMIT positionChanged(&mev, m_owner);
@@ -632,8 +636,9 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         bool isClicked = (m_pressedButtons & m_lastButton)
                 && !m_longPress && !m_doubleClicked &&
                 ((m_moveThreshold <= 0.0) || m_toleranceArea.contains(m_lastPos));
-        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
-                                 isClicked, m_longPress);
+        QQuickMouseEvent mev;
+        mev.reset(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                         isClicked, m_longPress);
         mev.setAccepted(false);
         Q_EMIT released(&mev, m_owner);
         event->setAccepted(forwardEvent(ForwardedEvent::MouseRelease, event, &mev));
@@ -662,7 +667,8 @@ bool UCMouse::mouseDblClick(QMouseEvent *event)
     if (m_pressedButtons) {
         saveEvent(event);
 
-        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+        QQuickMouseEvent mev;
+        mev.reset(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  true, m_longPress);
         mev.setAccepted(false);
         // if double click connected, suppress release() and click() signals
@@ -693,7 +699,8 @@ bool UCMouse::hoverMoved(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), Qt::NoButton, Qt::NoButton, m_lastModifiers,
+    QQuickMouseEvent mev;
+    mev.reset(m_lastPos.x(), m_lastPos.y(), Qt::NoButton, Qt::NoButton, m_lastModifiers,
                              false, m_longPress);
     mev.setAccepted(false);
     Q_EMIT positionChanged(&mev, m_owner);
@@ -791,7 +798,8 @@ bool UCMouse::forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuick
         } else if (quickEvent) {
             // map the quick event coordinates as well
             QPoint itemPos(item->mapFromScene(m_owner->mapToScene(QPointF(quickEvent->x(), quickEvent->y()))).toPoint());
-            QQuickMouseEvent mev(itemPos.x(), itemPos.y(), (Qt::MouseButton)quickEvent->button(), (Qt::MouseButtons)quickEvent->buttons(),
+            QQuickMouseEvent mev;
+            mev.reset(itemPos.x(), itemPos.y(), (Qt::MouseButton)quickEvent->button(), (Qt::MouseButtons)quickEvent->buttons(),
                                  (Qt::KeyboardModifiers)quickEvent->modifiers(), quickEvent->isClick(), quickEvent->wasHeld());
             mev.setAccepted(false);
             ForwardedEvent forwardedEvent(type, m_owner, mappedEvent, &mev);

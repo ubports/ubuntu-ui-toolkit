@@ -526,7 +526,7 @@ void AlarmsAdapter::saveAlarms()
         object[QStringLiteral("date")] = alarm->date().toString();
         object[QStringLiteral("sound")] = alarm->sound().toString();
         object[QStringLiteral("type")] = QJsonValue(alarm->type());
-        object[QStringLiteral("days")] = QJsonValue(alarm->daysOfWeek());
+        object[QStringLiteral("days")] = QJsonValue((int)alarm->daysOfWeek());
         object[QStringLiteral("enabled")] = QJsonValue(alarm->enabled());
         data.append(object);
 

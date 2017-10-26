@@ -30,7 +30,7 @@ SUBDIRS += \
     animator \
     serviceproperties \
     subtheming \
-    swipearea \
+#    swipearea \ # FIXME: Breaks with QT 5.9
     touchregistry \
     bottomedge \
     asyncloader \

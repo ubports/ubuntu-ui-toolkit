@@ -68,13 +68,13 @@ public:
     bool logging() const { return m_applicationMonitor->logging(); }
     void setLogging(bool logging) { m_applicationMonitor->setLogging(logging); }
     LoggingFilters loggingFilter() const {
-        return QFlags<LoggingFilters>::enum_type(
-            QFlags<UMApplicationMonitor::LoggingFilters>::Int(
+        return LoggingFilters::enum_type(
+            UMApplicationMonitor::LoggingFilters::Int(
                 m_applicationMonitor->loggingFilter())); }
     void setLoggingFilter(LoggingFilters filter) {
         m_applicationMonitor->setLoggingFilter(
-            QFlags<UMApplicationMonitor::LoggingFilters>::enum_type(
-                QFlags<LoggingFilters>::Int(filter))); }
+            UMApplicationMonitor::LoggingFilters::enum_type(
+                LoggingFilters::Int(filter))); }
     int processUpdateInterval() const {
         return m_applicationMonitor->updateInterval(UMEvent::Process); }
     void setProcessUpdateInterval(int interval) {

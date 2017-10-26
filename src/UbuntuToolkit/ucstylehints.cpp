@@ -60,10 +60,10 @@ void UCStyleHintsParser::verifyProperty(const QV4::CompiledData::Unit *qmlUnit, 
 }
 
 // decodes property declarations, stores the bindings and values
-void UCStyleHintsParser::applyBindings(QObject *obj, QQmlCompiledData *cdata, const QList<const QV4::CompiledData::Binding *> &bindings)
+void UCStyleHintsParser::applyBindings(QObject *obj, QV4::CompiledData::CompilationUnit *cdata, const QList<const QV4::CompiledData::Binding *> &bindings)
 {
     UCStyleHints *hints = static_cast<UCStyleHints*>(obj);
-    QV4::CompiledData::Unit *qmlUnit = cdata->compilationUnit->data;
+    const QV4::CompiledData::Unit *qmlUnit = cdata->data;
 
     UCStyledItemBase *styledItem = qobject_cast<UCStyledItemBase*>(hints->parent());
     if (!styledItem) {
@@ -254,18 +254,46 @@ void UCStyleHints::_q_applyStyleHints()
             delete change;
             continue;
         }
-
+        //FIXME!! EXTREMLY BAD WORKAROUND! WONT WORK!
+        (void)context;
+        /*
         // create a binding object from the expression using the palette context
         QQmlContextData *cdata = QQmlContextData::get(context);
         QQmlBinding *newBinding = 0;
         if (e.id != QQmlBinding::Invalid) {
             QV4::Scope scope(QQmlEnginePrivate::getV4Engine(qmlEngine(this)));
+
+            const QList<QByteArray> &signalParameters = QList<QByteArray>();
+            QString *error = 0;
+            QV4::ExecutionEngine *engine = QQmlEnginePrivate::getV4Engine(cdata->engine);
+            QV4::Scope valueScope(engine);
+            QV4::Scoped<QV4::QmlContextWrapper> qmlScopeObject(valueScope, QV4::QmlContextWrapper::qmlScope(engine, cdata, item));
+            QV4::ScopedContext global(valueScope, valueScope.engine->rootContext());
+            QV4::Scoped<QV4::QmlContext> wrapperContext(valueScope, global->newQmlContext(qmlScopeObject));
+            engine->popContext();
+
+            if (!signalParameters.isEmpty()) {
+                if (error)
+                    QQmlPropertyCache::signalParameterStringForJS(engine, signalParameters, error);
+                QV4::ScopedProperty p(valueScope);
+                QV4::ScopedString s(valueScope);
+                int index = 0;
+                foreach (const QByteArray &param, signalParameters) {
+                    QV4::ScopedFunctionObject g(valueScope, engine->memoryManager->alloc<QV4::IndexedBuiltinFunction>(wrapperContext, index++, signalParameterGetter));
+                    p->setGetter(g);
+                    p->setSetter(0);
+                    s = engine->newString(QString::fromUtf8(param));
+                    qmlScopeObject->insertMember(s, p, QV4::Attr_Accessor|QV4::Attr_NotEnumerable|QV4::Attr_NotConfigurable);
+                }
+            }
+
+            QV4::ScopedFunctionObject function(valueScope, QV4::FunctionObject::createScriptFunction(wrapperContext, m_cdata->runtimeFunctions[e.id]));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-            QV4::ScopedValue function(scope, QV4::FunctionObject::createQmlFunction(cdata, item, m_cdata->compilationUnit->runtimeFunctions[e.id]));
+            QV4::ScopedValue function(scope, function->d());
 #else
             QV4::ScopedValue function(scope, QV4::QmlBindingWrapper::createQmlCallableForFunction(cdata, item, m_cdata->compilationUnit->runtimeFunctions[e.id]));
 #endif
-            newBinding = new QQmlBinding(function, item, cdata);
+            newBinding = new QQmlBinding::create(function, item, cdata, scope);
         }
         if (!newBinding) {
             newBinding = new QQmlBinding(e.expression, item, cdata, e.url.toString(), e.line, e.column);
@@ -273,6 +301,7 @@ void UCStyleHints::_q_applyStyleHints()
 
         newBinding->setTarget(change->property());
         PropertyChange::setBinding(change, newBinding);
+        */
     }
 }
 
