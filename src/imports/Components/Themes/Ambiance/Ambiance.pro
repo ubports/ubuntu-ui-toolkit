@@ -28,7 +28,8 @@ ARTWORK_FILES += artwork/background_paper@27.png \
              artwork/ScrollbarRightPressed@8.png \
              artwork/ScrollbarTopIdle@8.png \
              artwork/ScrollbarTopPressed@8.png \
-             artwork/spinner@30.png \
+             artwork/spinner@16.png \
+             artwork/spinner@32.png \
              artwork/spinner@8.png \
              artwork/stroke_button@27.png \
              artwork/tick@30.png \
