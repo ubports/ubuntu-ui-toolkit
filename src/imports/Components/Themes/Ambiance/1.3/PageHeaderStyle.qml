@@ -121,6 +121,7 @@ Style.PageHeaderStyle {
                 id: titleLabel
                 objectName: "header_title_label"
                 text: styledItem.title
+                horizontalAlignment: Qt.application.layoutDirection == Qt.RightToLeft ? Text.AlignRight: Text.AlignLeft
 
                 anchors {
                     left: parent.left
@@ -131,7 +132,7 @@ Style.PageHeaderStyle {
                 color: pageHeaderStyle.foregroundColor
                 font.weight: pageHeaderStyle.fontWeight
                 textSize: pageHeaderStyle.textSize
-                elide: Text.ElideRight
+                elide: Qt.application.layoutDirection == Qt.RightToLeft ? Text.ElideLeft: Text.ElideRight
             }
         }
     }
@@ -152,6 +153,7 @@ Style.PageHeaderStyle {
                 visible: text != ""
                 textSize: pageHeaderStyle.subTextSize
                 font.weight: pageHeaderStyle.fontWeight
+                elide: Text.ElideRight
             }
         }
     }

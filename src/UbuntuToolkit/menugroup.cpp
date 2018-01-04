@@ -23,7 +23,7 @@ UT_NAMESPACE_BEGIN
 
 /*!
  * \qmltype MenuGroup
- * \inqmlmodule Ubuntu.Components
+ * \inqmlmodule Ubuntu.Components.Labs
  * \ingroup ubuntu
  * \brief Logical list of items for a menu.
  *
@@ -31,6 +31,7 @@ UT_NAMESPACE_BEGIN
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
  * Menu {
  *     text: "Edit"
  *

@@ -30,14 +30,14 @@ Page {
             Action {
                 text: i18n.tr('Right to Left')
                 iconName: 'flash-on'
-                visible: !gallery.rtl
-                onTriggered: gallery.rtl = !gallery.rtl
+                visible: UbuntuApplication.layoutDirection == Qt.LeftToRight
+                onTriggered: UbuntuApplication.layoutDirection = Qt.RightToLeft
             },
             Action {
                 text: i18n.tr('Left to Right')
                 iconName: 'flash-off'
-                visible: gallery.rtl
-                onTriggered: gallery.rtl = !gallery.rtl
+                visible: UbuntuApplication.layoutDirection == Qt.RightToLeft
+                onTriggered: UbuntuApplication.layoutDirection = Qt.LeftToRight
             },
             Action {
                 text: i18n.tr('Use dark theme')

@@ -79,6 +79,7 @@ ListView {
 
       \qml
       import QtQuick 2.4
+      import QtQuick.XmlListModel 2.0
       import Ubuntu.Components 1.3
 
       UbuntuListView {
@@ -199,10 +200,10 @@ ListView {
         color: root.activeFocus
                ? theme.palette.focused.background
                : theme.palette.selected.background
-        width: root.currentItem.width
-        height: root.currentItem.height
+        width: root.currentItem ? root.currentItem.width : 0
+        height: root.currentItem ? root.currentItem.height : 0
         // FIXME: use opacity yet, until we fix the palette's disabled.background color
-        opacity: root.currentItem.enabled ? 1.0 : 0.5
+        opacity: root.currentItem && root.currentItem.enabled ? 1.0 : 0.5
     }
     highlightMoveDuration: 50
 }

@@ -33,6 +33,7 @@ class UBUNTUTOOLKIT_EXPORT UCApplication : public QObject
     Q_OBJECT
     Q_PROPERTY(QString applicationName READ applicationName WRITE setApplicationName NOTIFY applicationNameChanged)
     Q_PROPERTY(QObject* inputMethod READ inputMethod WRITE setInputMethod NOTIFY inputMethodChanged)
+    Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection NOTIFY layoutDirectionChanged)
 
 private:
     Q_DISABLE_COPY(UCApplication)
@@ -53,11 +54,13 @@ public:
     // getter
     QString applicationName();
     QObject* inputMethod();
+    Qt::LayoutDirection layoutDirection();
 
     // setter
     void setContext(QQmlContext* context);
     void setApplicationName(const QString& applicationName);
     void setInputMethod(QObject* inputMethod);
+    void setLayoutDirection(Qt::LayoutDirection layoutDirection);
 
 private:
     QQmlContext* m_context;
@@ -67,6 +70,7 @@ private:
 Q_SIGNALS:
     void applicationNameChanged();
     void inputMethodChanged();
+    void layoutDirectionChanged();
 };
 
 UT_NAMESPACE_END

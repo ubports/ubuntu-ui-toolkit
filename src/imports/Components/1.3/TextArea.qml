@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3 as Ubuntu
 import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.Private 1.3 as Private
 
 /*!
     \qmltype TextArea
@@ -581,6 +582,16 @@ Ubuntu.StyledItem {
     }
 
     /*!
+      Appends a new paragraph with text to the end of the TextArea.
+
+      In order to append without inserting a new paragraph, call TextArea.insert(TextArea.length, text) instead.
+      */
+    function append(text)
+    {
+        editor.append(text);
+    }
+
+    /*!
       Returns the text position closest to pixel position (x, y).
 
       Position 0 is before the first character, position 1 is after the first
@@ -736,6 +747,15 @@ Ubuntu.StyledItem {
         editor.linkActivated.connect(control.linkActivated);
     }
 
+    Connections {
+        target: Private.UCContentHub
+        onPasteSelected: {
+            if (targetItem === control) {
+                control.paste(data)
+            }
+        }
+    }
+
     // activation area on mouse click
     // the editor activates automatically when pressed in the editor control,
     // however that one can be slightly spaced to the main control area
@@ -806,6 +826,11 @@ Ubuntu.StyledItem {
                 control.paste("\n");
             }
             event.accepted = true;
+        } else if ((event.key === Qt.Key_V) && (event.modifiers & Qt.ControlModifier) && (event.modifiers & Qt.ShiftModifier)){
+            if (Private.UCContentHub.canPaste) {
+                Private.UCContentHub.requestPaste(control);
+                event.accepted = true;
+            }
         } else {
             event.accepted = false;
         }

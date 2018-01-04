@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Canonical Ltd.
+ * Copyright 2016 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,16 +24,49 @@ Style.ToolbarStyle {
     // reduce toolbar height on phone in landscape orientation:
     implicitHeight: Screen.height > units.gu(50) ? units.gu(4) : units.gu(3)
 
+    backgroundColor: theme.palette.normal.background
+    buttons {
+        foregroundColor: theme.palette.normal.backgroundText
+        pressedForegroundColor: buttons.foregroundColor
+        disabledForegroundColor: theme.palette.disabled.backgroundText
+        backgroundColor: "transparent" // background is already colored
+        pressedBackgroundColor: theme.palette.highlighted.background
+        disabledBackgroundColor: buttons.backgroundColor
+    }
+
     /*!
       The default action delegate if the styled item does
       not provide a delegate.
      */
-    defaultDelegate: AbstractButton {
-        style: IconButtonStyle { }
-        objectName: action.objectName + "_button"
-        height: parent ? parent.height : undefined
+    defaultDelegate: ListItem {
         width: units.gu(4)
-        action: modelData
-        activeFocusOnTab: true
+        height: toolbarStyle.height
+        enabled: modelData.enabled
+        objectName: modelData.objectName + "_button"
+        onClicked: button.trigger()
+        AbstractButton {
+            id: button
+            anchors.fill: parent
+            style: IconButtonStyle {
+                foregroundColor: button.pressed ?
+                                     toolbarStyle.buttons.pressedForegroundColor :
+                                     button.enabled ?
+                                         toolbarStyle.buttons.foregroundColor :
+                                         toolbarStyle.buttons.disabledForegroundColor
+                backgroundColor: button.pressed ?
+                                     toolbarStyle.buttons.pressedBackgroundColor :
+                                     button.enabled ?
+                                         toolbarStyle.buttons.backgroundColor :
+                                         toolbarStyle.buttons.disabledBackgroundColor
+            }
+            action: modelData
+            activeFocusOnTab: false
+        }
+        divider.visible: false
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: toolbarStyle.backgroundColor
     }
 }

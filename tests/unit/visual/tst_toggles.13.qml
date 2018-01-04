@@ -39,6 +39,23 @@ MainView {
             property bool checkedNow: true
             onClicked: checkedNow = checked
         }
+
+        CheckBox {
+            id: testCheckLbl
+            checked: true
+            text: "This a checkbox label"
+            property bool checkedNow: true
+            onClicked: checkedNow = checked
+        }
+
+        CheckBox {
+            id: testCheckLblDisabled
+            checked: false
+            enabled: false
+            text: "This a checkbox label"
+            property bool checkedNow: false
+            onClicked: checkedNow = checked
+        }
     }
 
     UbuntuTestCase {
@@ -73,6 +90,37 @@ MainView {
                 mouseClick(data.testItem, centerOf(data.testItem).x, centerOf(data.testItem).y);
             }
             clickedSpy.wait(400);
+            compare(data.testItem.checkedNow, data.testItem.checked);
+        }
+
+
+        function test_toggle_lbl_checked_data() {
+            return [
+                {tag: "CheckBox", testItem: testCheckLbl, mouse: true},
+            ];
+        }
+
+        function test_toggle_lbl_checked(data) {
+            data.testItem.checkedNow = data.testItem.checked;
+            data.testItem.forceActiveFocus();
+            clickedSpy.target = data.testItem;
+            mouseClick(data.testItem, centerOf(data.testItem).x, centerOf(data.testItem).y);
+            clickedSpy.wait(400);
+            compare(data.testItem.checkedNow, data.testItem.checked);
+        }
+
+        function test_toggle_lbl_checked_disabled_data() {
+            return [
+                {tag: "CheckBox", testItem: testCheckLblDisabled, mouse: true},
+            ];
+        }
+
+        function test_toggle_lbl_checked_disabled(data) {
+            data.testItem.checkedNow = data.testItem.checked;
+            data.testItem.forceActiveFocus();
+            clickedSpy.target = data.testItem;
+            mouseClick(data.testItem, centerOf(data.testItem).x, centerOf(data.testItem).y);
+            compare(clickedSpy.count, 0);
             compare(data.testItem.checkedNow, data.testItem.checked);
         }
     }

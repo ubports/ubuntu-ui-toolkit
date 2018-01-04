@@ -47,8 +47,8 @@ import Ubuntu.Components 1.3
 */
 Rectangle {
     anchors {
-        left: (parent) ? parent.left : null
-        right: (parent) ? parent.right : null
+        left: (parent) ? parent.left : undefined
+        right: (parent) ? parent.right : undefined
     }
     height: (visible) ? units.dp(2) : 0
     // a private property to catch theme background color change

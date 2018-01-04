@@ -18,18 +18,12 @@
 
 import os
 
-from ubuntuuitoolkit import environment
-
-
 ENV_GRID_UNIT_PX = 'GRID_UNIT_PX'
 DEFAULT_GRID_UNIT_PX = 8
 
 
 def get_grid_unit():
     grid_unit_px = os.environ.get(ENV_GRID_UNIT_PX, None)
-    if not grid_unit_px and environment.is_initctl_env_var_set(
-            ENV_GRID_UNIT_PX):
-        grid_unit_px = environment.get_initctl_env_var(ENV_GRID_UNIT_PX)
     return float(grid_unit_px or DEFAULT_GRID_UNIT_PX)
 
 

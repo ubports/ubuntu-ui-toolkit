@@ -731,6 +731,7 @@ Ubuntu.Components.OptionSelector 1.0 0.1: Empty
 Ubuntu.Components.OptionSelector 1.3: Empty
     property bool colourImage
     property double containerHeight
+    readonly property int count
     property bool currentlyExpanded
     property Component delegate
     property bool expanded
@@ -1416,6 +1417,7 @@ Ubuntu.Components.TextArea 1.3: StyledItem
     function var cut()
     function var deselect()
     function var insert(var position, var text)
+    function var append(var text)
     function var positionAt(var x, var y)
     function var isRightToLeft(var start, var end)
     function var moveCursorSelection(var position, var mode)
@@ -1619,6 +1621,8 @@ Ubuntu.Components.ToolbarItems 1.3: Item
     property bool opened
     property Item pageStack
 Ubuntu.Components.Styles.ToolbarStyle 1.3: Item
+    property color backgroundColor
+    readonly property ActionItemProperties buttons
     property Component defaultDelegate
 Ubuntu.Components.Type: Enum
     Bool
@@ -1631,6 +1635,7 @@ UCActionContextAttached: QtObject
 Ubuntu.Components.UCApplication 1.0 0.1: QtObject
     property string applicationName
     property QtObject inputMethod
+    property Qt.LayoutDirection layoutDirection
 Ubuntu.Components.UCFontUtils 1.0 0.1: QtObject
     function double sizeToPixels(string size)
     function double modularScale(string size)

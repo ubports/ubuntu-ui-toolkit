@@ -19,6 +19,7 @@
 #ifndef UCQQUICKIMAGEEXTENSION_P_H
 #define UCQQUICKIMAGEEXTENSION_P_H
 
+#include <QtCore/QEvent>
 #include <QtCore/QByteArray>
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
@@ -48,6 +49,7 @@ Q_SIGNALS:
 
 protected Q_SLOTS:
     void reloadSource();
+    void onSourceSizeChanged();
 
 protected:
     bool rewriteSciFile(const QString &sciFilePath, const QString &scaleFactor, QTextStream& output);

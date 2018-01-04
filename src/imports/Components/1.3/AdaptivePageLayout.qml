@@ -193,6 +193,9 @@ import Ubuntu.Components.Private 1.3
 PageTreeNode {
     id: layout
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     Page {
         // AdaptivePageLayout has its own split headers, so
         //  disable the application header.

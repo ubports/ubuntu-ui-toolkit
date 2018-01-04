@@ -16,6 +16,7 @@
 
 """Ubuntu UI Toolkit autopilot tests."""
 
+import fixtures
 import os
 import tempfile
 
@@ -106,9 +107,7 @@ MainView {
         desktop_file_name = os.path.basename(
             fake_application.desktop_file_path)
         application_name, _ = os.path.splitext(desktop_file_name)
-        self.app = self.launch_upstart_application(
-            application_name,
-            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
+        self.app = self.launch_test_application(application_name)
 
     def use_local_modules(self, local_modules_path):
         env_vars = [
@@ -116,10 +115,9 @@ MainView {
             'QML2_IMPORT_PATH',
             'UBUNTU_UI_TOOLKIT_THEMES_PATH'
         ]
-        kwargs = {'global_': True}
         for env in env_vars:
-            kwargs[env] = local_modules_path
-        self.useFixture(fixture_setup.InitctlEnvironmentVariable(**kwargs))
+            self.useFixture(fixtures.EnvironmentVariable(env,
+                                                         local_modules_path))
 
 
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
