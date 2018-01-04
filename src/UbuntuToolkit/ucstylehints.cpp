@@ -23,6 +23,7 @@
 #include "propertychange_p.h"
 #include "ucstyleditembase_p_p.h"
 
+
 UT_NAMESPACE_BEGIN
 
 // verifies property declaration correctness
@@ -254,54 +255,29 @@ void UCStyleHints::_q_applyStyleHints()
             delete change;
             continue;
         }
-        //FIXME!! EXTREMLY BAD WORKAROUND! WONT WORK!
-        (void)context;
-        /*
         // create a binding object from the expression using the palette context
         QQmlContextData *cdata = QQmlContextData::get(context);
         QQmlBinding *newBinding = 0;
         if (e.id != QQmlBinding::Invalid) {
             QV4::Scope scope(QQmlEnginePrivate::getV4Engine(qmlEngine(this)));
 
-            const QList<QByteArray> &signalParameters = QList<QByteArray>();
-            QString *error = 0;
-            QV4::ExecutionEngine *engine = QQmlEnginePrivate::getV4Engine(cdata->engine);
-            QV4::Scope valueScope(engine);
-            QV4::Scoped<QV4::QmlContextWrapper> qmlScopeObject(valueScope, QV4::QmlContextWrapper::qmlScope(engine, cdata, item));
-            QV4::ScopedContext global(valueScope, valueScope.engine->rootContext());
-            QV4::Scoped<QV4::QmlContext> wrapperContext(valueScope, global->newQmlContext(qmlScopeObject));
-            engine->popContext();
-
-            if (!signalParameters.isEmpty()) {
-                if (error)
-                    QQmlPropertyCache::signalParameterStringForJS(engine, signalParameters, error);
-                QV4::ScopedProperty p(valueScope);
-                QV4::ScopedString s(valueScope);
-                int index = 0;
-                foreach (const QByteArray &param, signalParameters) {
-                    QV4::ScopedFunctionObject g(valueScope, engine->memoryManager->alloc<QV4::IndexedBuiltinFunction>(wrapperContext, index++, signalParameterGetter));
-                    p->setGetter(g);
-                    p->setSetter(0);
-                    s = engine->newString(QString::fromUtf8(param));
-                    qmlScopeObject->insertMember(s, p, QV4::Attr_Accessor|QV4::Attr_NotEnumerable|QV4::Attr_NotConfigurable);
-                }
-            }
-
-            QV4::ScopedFunctionObject function(valueScope, QV4::FunctionObject::createScriptFunction(wrapperContext, m_cdata->runtimeFunctions[e.id]));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-            QV4::ScopedValue function(scope, function->d());
+            QV4::Scoped<QV4::QmlContext> qmlContext(scope, QV4::QmlContext::create(scope.engine->rootContext(), cdata, new QObject()));
 #else
             QV4::ScopedValue function(scope, QV4::QmlBindingWrapper::createQmlCallableForFunction(cdata, item, m_cdata->compilationUnit->runtimeFunctions[e.id]));
 #endif
-            newBinding = new QQmlBinding::create(function, item, cdata, scope);
+            QQmlPropertyData const *prop = new QQmlPropertyData();
+            newBinding = QQmlBinding::create(prop, m_cdata->runtimeFunctions[e.id], new QObject(), cdata, qmlContext);
+
+
         }
         if (!newBinding) {
-            newBinding = new QQmlBinding(e.expression, item, cdata, e.url.toString(), e.line, e.column);
+            QQmlPropertyData const *prop = new QQmlPropertyData();
+            newBinding = QQmlBinding::create(prop, e.expression, new QObject(), cdata, e.url.toString(), e.line);
         }
 
         newBinding->setTarget(change->property());
         PropertyChange::setBinding(change, newBinding);
-        */
     }
 }
 
