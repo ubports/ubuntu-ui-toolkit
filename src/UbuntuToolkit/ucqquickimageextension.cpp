@@ -127,7 +127,7 @@ void UCQQuickImageExtension::reloadSource()
             ss = QSize(-1, -1);
         }
 
-        if (QQuickPixmap::isCached(m_source, ss)) {
+        if (QQuickPixmap::isCached(m_source, ss, QQuickImageProviderOptions())) {
             m_image->setSource(m_source);
             return;
         }
