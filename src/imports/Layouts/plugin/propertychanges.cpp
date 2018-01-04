@@ -231,8 +231,7 @@ PropertyChange::PropertyChange(QQuickItem *target, const QString &property, cons
             action.setValue(value);
         } else {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
-            QQmlPropertyData const *prop = new QQmlPropertyData();
-            QQmlBinding *binding = QQmlBinding::create(prop, script, target, scriptContext);
+            QQmlBinding *binding = QQmlBinding::create(&QQmlPropertyPrivate::get(action.property)->core, script, target, scriptContext);
 #else
             QQmlBinding *binding = new QQmlBinding(script, target, scriptContext);
 #endif
