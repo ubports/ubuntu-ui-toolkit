@@ -41,10 +41,12 @@ SUBDIRS += \
     performance \
     mainview11 \
     mainview13 \
-#    i18n \ FIXME: breaks xenial
+#   i18n \ FIXME: breaks xenial
+    mainwindow \
     arguments \
     argument \
     alarms \
     theme \
     quickutils \
-    tree
+    tree \
+    contenthub

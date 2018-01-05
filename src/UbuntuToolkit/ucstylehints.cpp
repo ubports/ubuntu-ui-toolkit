@@ -278,6 +278,7 @@ void UCStyleHints::_q_applyStyleHints()
 
         newBinding->setTarget(change->property());
         PropertyChange::setBinding(change, newBinding);
+        m_propertyBackup << change;
     }
 }
 

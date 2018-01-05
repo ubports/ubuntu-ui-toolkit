@@ -52,6 +52,7 @@ HEADERS += \
     $$PWD/privates/listviewextensions_p.h \
     $$PWD/privates/splitviewhandler_p.h \
     $$PWD/privates/threelabelsslot_p.h \
+    $$PWD/privates/uccontenthub_p.h \
     $$PWD/privates/ucpagewrapper_p.h \
     $$PWD/privates/ucpagewrapper_p_p.h \
     $$PWD/privates/ucpagewrapperincubator_p.h \
@@ -106,6 +107,8 @@ HEADERS += \
     $$PWD/uclistitemstyle_p.h \
     $$PWD/ucmainviewbase_p.h \
     $$PWD/ucmainviewbase_p_p.h \
+    $$PWD/ucmainwindow_p.h \
+    $$PWD/ucmainwindow_p_p.h \
     $$PWD/ucmargins_p.h \
     $$PWD/ucmathutils_p.h \
     $$PWD/ucmouse_p.h \
@@ -163,6 +166,7 @@ SOURCES += \
     $$PWD/privates/listviewextensions.cpp \
     $$PWD/privates/splitviewhandler.cpp \
     $$PWD/privates/threelabelsslot_p.cpp \
+    $$PWD/privates/uccontenthub.cpp \
     $$PWD/privates/ucpagewrapper.cpp \
     $$PWD/privates/ucpagewrapperincubator.cpp \
     $$PWD/privates/ucscrollbarutils.cpp \
@@ -203,6 +207,7 @@ SOURCES += \
     $$PWD/uclistitemlayout.cpp \
     $$PWD/uclistitemstyle.cpp \
     $$PWD/ucmainviewbase.cpp \
+    $$PWD/ucmainwindow.cpp \
     $$PWD/ucmathutils.cpp \
     $$PWD/ucmousefilters.cpp \
     $$PWD/ucpagetreenode.cpp \

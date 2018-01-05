@@ -15,126 +15,124 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2016-11-15 06:29+0000\n"
-"X-Generator: Launchpad (build 18261)\n"
+"X-Launchpad-Export-Date: 2017-04-05 07:13+0000\n"
+"X-Generator: Launchpad (build 18335)\n"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:29
 #: Ubuntu/Components/1.3/TextInputPopover.qml:29
 msgid "Select All"
-msgstr ""
+msgstr "เลือกทั้งหมด"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:36
 #: Ubuntu/Components/1.3/TextInputPopover.qml:36
 msgid "Cut"
-msgstr ""
+msgstr "ตัด"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:48
 #: Ubuntu/Components/1.3/TextInputPopover.qml:48
 msgid "Copy"
-msgstr ""
+msgstr "คัดลอก"
 
 #: Ubuntu/Components/1.2/TextInputPopover.qml:57
 #: Ubuntu/Components/1.3/TextInputPopover.qml:57
 msgid "Paste"
-msgstr ""
+msgstr "วาง"
 
 #: Ubuntu/Components/1.2/ToolbarItems.qml:143
 #: Ubuntu/Components/1.3/ToolbarItems.qml:143
 msgid "Back"
-msgstr ""
+msgstr "ย้อนกลับ"
 
 #: Ubuntu/Components/ListItems/1.2/Empty.qml:398
 #: Ubuntu/Components/ListItems/1.3/Empty.qml:398
 msgid "Delete"
-msgstr ""
+msgstr "ลบ"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:51
 msgid "No service/path specified"
-msgstr ""
+msgstr "ไม่มีบริการ/เส้นทางที่ระบุ"
 
 #: Ubuntu/Components/plugin/adapters/dbuspropertywatcher_p.cpp:69
 #, qt-format
 msgid "Invalid bus type: %1."
-msgstr ""
+msgstr "ชนิดของ bus ไม่ถูกต้อง: %1"
 
 #. TRANSLATORS: Time based "this is happening/happened now"
 #: Ubuntu/Components/plugin/i18n.cpp:268
 msgid "Now"
-msgstr ""
+msgstr "ตอนนี้"
 
 #: Ubuntu/Components/plugin/i18n.cpp:275
 #, qt-format
 msgid "%1 minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 นาทีที่ผ่านมา"
 
 #: Ubuntu/Components/plugin/i18n.cpp:277
 #, qt-format
 msgid "%1 minute"
 msgid_plural "%1 minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 นาที"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:284
 msgid "h:mm ap"
-msgstr ""
+msgstr "h.mm น. ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:287
 msgid "HH:mm"
-msgstr ""
+msgstr "HH.mm น."
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:293
 msgid "'Yesterday 'h:mm ap"
-msgstr ""
+msgstr "'เมื่อวานนี้ 'h.mm น. ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:296
 msgid "'Yesterday 'HH:mm"
-msgstr ""
+msgstr "'เมื่อวานนี้ 'HH.mm น."
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:302
 msgid "'Tomorrow 'h:mm ap"
-msgstr ""
+msgstr "'พรุ่งนี้ 'h.mm น. ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:305
 msgid "'Tomorrow 'HH:mm"
-msgstr ""
+msgstr "'พรุ่งนี้ 'HH.mm น."
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:312
 msgid "ddd' 'h:mm ap"
-msgstr ""
+msgstr "ddd' 'h.mm น. ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:315
 msgid "ddd' 'HH:mm"
-msgstr ""
+msgstr "ddd' 'HH.mm น."
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:322
 msgid "ddd d MMM' 'h:mm ap"
-msgstr ""
+msgstr "วันdddที่ d MMM' 'h.mm น. ap"
 
 #. TRANSLATORS: Please translated these to your locale datetime format using the format specified by
 #. https://qt-project.org/doc/qt-5-snapshot/qdatetime.html#fromString-2
 #: Ubuntu/Components/plugin/i18n.cpp:325
 msgid "ddd d MMM' 'HH:mm"
-msgstr ""
+msgstr "วันdddที่ d MMM' 'HH.mm น."
 
 #: Ubuntu/Components/plugin/privates/listitemdragarea.cpp:122
 msgid ""
@@ -148,16 +146,18 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"คุณสมบัติ \"%1\" ของวัตถุ %2 อยู่ในประเภท %3 และไม่สามารถตั้งเป็นค่า \"%4\" "
+"ของวัตถุ %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr ""
+msgstr "คุณสมบัติ \"%1\" ไม่มีอยู่ หรือไม่สามารถเขียนลงในวัตถุ %2 ได้"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:41
 #: Ubuntu/Components/plugin/ucalarm.cpp:643
 msgid "Alarm"
-msgstr ""
+msgstr "การเตือน"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:635
 #: Ubuntu/Components/plugin/ucalarm.cpp:667
@@ -166,26 +166,26 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "วิธีใช้: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "ตัวเลือก:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 ต้องการอาร์กิวเมนต์เพิ่มเติม: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 ต้องการค่าสำหรัยอาร์กิวเมนต์: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 ต้องการอาร์กิวเมนต์เพิ่มเติม: %2"
 
 #: Ubuntu/Components/plugin/uclistitemstyle.cpp:145
 msgid "consider overriding swipeEvent() slot!"
@@ -218,6 +218,7 @@ msgstr ""
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
 msgstr ""
+"คำเตือน: UUID ของผู้แนบได้ถูกลงทะเบียนไปแล้ว สถานะดังกล่าวจะไม่ถูกบันทึก: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:107
 #, qt-format
@@ -229,7 +230,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/uctheme.cpp:208
 #, qt-format
 msgid "Theme not found: \"%1\""
-msgstr ""
+msgstr "ไม่พบชุดตกแต่ง: \"%1\""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:539
 msgid "Not a Palette component."
@@ -248,34 +249,34 @@ msgstr ""
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:78
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:78
 msgid "Cancel"
-msgstr ""
+msgstr "ยกเลิก"
 
 #: Ubuntu/Components/Popups/1.2/ComposerSheet.qml:88
 #: Ubuntu/Components/Popups/1.3/ComposerSheet.qml:88
 msgid "Confirm"
-msgstr ""
+msgstr "ยืนยัน"
 
 #: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:85
 #: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:85
 msgid "Close"
-msgstr ""
+msgstr "ปิด"
 
 #: Ubuntu/Components/Popups/1.2/DefaultSheet.qml:95
 #: Ubuntu/Components/Popups/1.3/DefaultSheet.qml:95
 msgid "Done"
-msgstr ""
+msgstr "เสร็จสิ้น"
 
 #: Ubuntu/Components/Themes/Ambiance/1.2/ProgressBarStyle.qml:51
 #: Ubuntu/Components/Themes/Ambiance/1.3/ProgressBarStyle.qml:50
 msgid "In Progress"
-msgstr ""
+msgstr "กำลังดำเนินการ"
 
 #: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
 #: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "ปล่อยเพื่อรีเฟรช..."
 
 #: Ubuntu/Components/Themes/Ambiance/1.2/PullToRefreshStyle.qml:28
 #: Ubuntu/Components/Themes/Ambiance/1.3/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
+msgstr "ดึงเพื่อรีเฟรช..."

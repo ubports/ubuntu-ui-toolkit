@@ -52,7 +52,8 @@ UT_NAMESPACE_BEGIN
  *         }
  *         ListElement {
  *             title: "Elephants Dream"
- *             producer: "Blender"
+ *             // lowercase b
+ *             producer: "blender"
  *         }
  *         ListElement {
  *             title: "Big Buck Bunny"
@@ -69,7 +70,8 @@ UT_NAMESPACE_BEGIN
  *         sortCaseSensitivity: Qt.CaseInsensitive
  *
  *         filter.property: "producer"
- *         filter.pattern: /blender/
+ *         // case insensitive matches
+ *         filter.pattern: /blender/i
  *     }
  *
  *     ListView {
@@ -154,6 +156,7 @@ QSortFilterProxyModelQML::sortBehavior()
  *     \li /possible/ matches anywhere in a word, so both "impossible" and "possible".
  *     \li /^sign/ matches "sign". But not "assignment" because ^ means start.
  *     \li /vest$/ matches "safety vest" and "vest" but not "vested".
+ *     \li /bar/i matches "bar", "Bar" or "BAR" regardless of case.
  * \endlist
  *
  * For more advanced uses it's recommended to read up on Javascript regular expressions.

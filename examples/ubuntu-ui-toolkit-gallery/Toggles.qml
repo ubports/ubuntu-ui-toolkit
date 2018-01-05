@@ -55,6 +55,49 @@ Template {
                 checked: true
             }
         }
+
+        TemplateRow {
+            title: i18n.tr("Checkbox with label")
+
+            CheckBox {
+                objectName: "checkbox_checked_lbl"
+                checked: true
+                text: "This a checkbox label"
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Disabled checkbox with label")
+
+            CheckBox {
+                objectName: "checkbox_disabled_checked_lbl"
+                checked: true
+                enabled: false
+                text: "This a checkbox label"
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Disabled checkbox with label")
+
+            CheckBox {
+                objectName: "checkbox_disabled_checked_lbl"
+                checked: false
+                enabled: false
+                text: "This a checkbox label"
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Checkbox with multiline label")
+
+            CheckBox {
+                objectName: "checkbox_checked_lbl"
+                checked: true
+                text: "This is a checkbox with a built-in label spanning several lines that won't be ellipsized but increase in height instead"
+                width: parent.width
+            }
+        }
     }
 
 

@@ -104,7 +104,7 @@ void MenuBarPrivate::menu_clear(QQmlListProperty<Menu> *prop)
 
 /*!
  * \qmltype MenuBar
- * \inqmlmodule Ubuntu.Components 1.3
+ * \inqmlmodule Ubuntu.Components.Labs
  * \ingroup ubuntu
  * \brief MenuBar defines an application menu bar structure
  *
@@ -112,6 +112,7 @@ void MenuBarPrivate::menu_clear(QQmlListProperty<Menu> *prop)
  * \qml
  * import QtQuick 2.4
  * import Ubuntu.Components 1.3
+ * import Ubuntu.Components.Labs 1.0
  * MainView {
  *     MenuBar {
  *         Menu {

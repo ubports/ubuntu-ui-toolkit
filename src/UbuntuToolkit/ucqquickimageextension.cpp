@@ -22,7 +22,13 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtGui/QGuiApplication>
+#include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickimagebase_p.h>
+#include <QtQuick/private/qquickpixmapcache_p.h>
+
+#define foreach Q_FOREACH
+#include <QtQml/private/qqmlengine_p.h>
+#undef foreach
 
 #include "ucunits_p.h"
 
@@ -61,12 +67,40 @@ QUrl UCQQuickImageExtension::source() const
     return m_source;
 }
 
+
 void UCQQuickImageExtension::setSource(const QUrl& url)
 {
     if (url != m_source) {
         m_source = url;
-        reloadSource();
+        // We need to wait until the component is complete
+        // so that m_image->sourceSize() is actually valid
+        if (QQuickItemPrivate::get(m_image)->componentComplete) {
+            reloadSource();
+        } else {
+            // This is a bit convoluted but i couldn't find a better way to get notified of when
+            // the image actually finishes constructing.
+            // Since what we're interested in reloadSource() is the image having the sourceSize set,
+            // what we do is connect to the sourceSizeChanged signal.
+            // The problem is that this signal isn't fired if the Image {} doesn't have sourceSize set
+            // so we tell the engine to fire the sourceSizeChanged signal when the image finishes constructing
+            // This way if the Image {} has a sourceSize set the lambda gets called because of it
+            // and if there's no sourceSize set the lambda gets called because we registered the finalize callback
+
+            // WARNING do not convert this to a "modern-style" connect, i.e. &QQuickImageBase::sourceSizeChanged,
+            // it will break if m_image is a QQuickBorderImage since it redeclares the sourceSizeChanged
+            // See https://codereview.qt-project.org/#/c/187967/
+            connect(m_image, SIGNAL(sourceSizeChanged()), this, SLOT(onSourceSizeChanged()));
+            QQmlEnginePrivate *engPriv = QQmlEnginePrivate::get(qmlEngine(m_image));
+            engPriv->registerFinalizeCallback(m_image, m_image->metaObject()->indexOfSignal("sourceSizeChanged()"));
+        }
     }
+}
+
+void UCQQuickImageExtension::onSourceSizeChanged()
+{
+    // See WARNING above
+    QObject::disconnect(m_image, SIGNAL(sourceSizeChanged()), this, SLOT(onSourceSizeChanged()));
+    reloadSource();
 }
 
 void UCQQuickImageExtension::reloadSource()
@@ -78,6 +112,25 @@ void UCQQuickImageExtension::reloadSource()
     if (m_source.isEmpty()) {
         m_image->setSource(m_source);
         return;
+    }
+
+    // If the url we're trying to load is already in the cache and
+    // the devicePixelRatio is 1, we save calling UCUnits::resolveResource
+    // and just set that image directly.
+    // UCUnits::resolveResource is not cheap (does a stat on disk)
+    if (qFuzzyCompare(qGuiApp->devicePixelRatio(), (qreal)1.0)) {
+        QSize ss = m_image->sourceSize();
+        if (ss.isNull() && m_image->image().isNull()) {
+            // For some reason QQuickImage returns 0x0 as sourceSize
+            // when the sourceSize is not set (and the image has not yet been loaded)
+            // so set it back to -1x-1
+            ss = QSize(-1, -1);
+        }
+
+        if (QQuickPixmap::isCached(m_source, ss, QQuickImageProviderOptions())) {
+            m_image->setSource(m_source);
+            return;
+        }
     }
 
     QString resolved = UCUnits::instance()->resolveResource(m_source);
@@ -98,7 +151,9 @@ void UCQQuickImageExtension::reloadSource()
             || selectedFilePath.endsWith(QStringLiteral(".svgz"))) {
             // Take care to pass the original fragment
             QUrl selectedFileUrl(QUrl::fromLocalFile(selectedFilePath));
-            selectedFileUrl.setFragment(fragment);
+            if (m_source.hasFragment()) {
+                selectedFileUrl.setFragment(fragment);
+            }
             m_image->setSource(selectedFileUrl);
         } else {
             // Need to scale the pixel-based image to suit the devicePixelRatio setting ourselves.

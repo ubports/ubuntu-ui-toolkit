@@ -219,8 +219,9 @@ PageTreeNode {
         // used when the Page has a Page.header property set.
         id: backAction
         visible: pageStack.depth > 1
-        iconName: "back"
-        text: "Back"
+        // FIXME: lp#1666607
+        iconName: Qt.application.layoutDirection == Qt.RightToLeft ? "next": "back"
+        text: i18n.tr("Back")
         onTriggered: pageStack.pop()
         objectName: "pagestack_back_action"
     }
