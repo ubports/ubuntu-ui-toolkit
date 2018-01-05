@@ -102,6 +102,17 @@ import QtQuick.Window 2.2
 Toolkit.MainViewBase {
     id: mainView
 
+    /*!
+      \internal
+      Hint the default width of the MainView
+     */
+    implicitWidth: units.gu(45)
+    /*!
+      \internal
+      Hint the default height of the MainView
+     */
+    implicitHeight: units.gu(75)
+
     /*! \deprecated */
     property bool automaticOrientation: false
 
