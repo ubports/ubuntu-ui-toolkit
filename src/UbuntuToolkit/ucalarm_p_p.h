@@ -87,7 +87,7 @@ public:
 
 inline bool UCAlarmPrivate::isDaySet(int dayNumber, UCAlarm::DaysOfWeek days)
 {
-    return (days & (1 << (dayNumber - 1))) == (unsigned) (1 << (dayNumber - 1));
+    return (unsigned) (days & (1 << (dayNumber - 1))) == (unsigned) (1 << (dayNumber - 1));
 }
 
 UT_NAMESPACE_END
