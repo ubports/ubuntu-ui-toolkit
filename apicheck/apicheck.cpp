@@ -198,10 +198,14 @@ QByteArray convertToId(const QMetaObject *mo)
     generatedNames.insert(mo, className);
     return className;
 }
-
 // Collect all metaobjects for types registered with qmlRegisterType() without parameters
 void collectReachableMetaObjectsWithoutQmlName( QSet<const QMetaObject *>& metas ) {
-    Q_FOREACH (const QQmlType *ty, QQmlMetaType::qmlAllTypes()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+      Q_FOREACH (const QQmlType _ty, QQmlMetaType::qmlAllTypes()) {
+            const QQmlType *ty(&_ty);
+#else
+      Q_FOREACH (const QQmlType *ty, QQmlMetaType::qmlAllTypes()) {
+#endif
         if ( ! metas.contains(ty->metaObject()) ) {
             if (!ty->isComposite()) {
                 collectReachableMetaObjects(ty, &metas);
@@ -211,17 +215,28 @@ void collectReachableMetaObjectsWithoutQmlName( QSet<const QMetaObject *>& metas
         }
     }
 }
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
+                                                      QSet<const QMetaObject *> &noncreatables,
+                                                      QSet<const QMetaObject *> &singletons,
+                                                      const QList<QQmlType> &skip = QList<QQmlType>())
+#else
 QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
                                                       QSet<const QMetaObject *> &noncreatables,
                                                       QSet<const QMetaObject *> &singletons,
                                                       const QList<QQmlType *> &skip = QList<QQmlType *>())
+#endif
 {
     QSet<const QMetaObject *> metas;
     metas.insert(FriendlyQObject::qtMeta());
 
     QHash<QByteArray, QSet<QByteArray> > extensions;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+    Q_FOREACH (const QQmlType _ty, QQmlMetaType::qmlTypes()) {
+          const QQmlType *ty(&_ty);
+#else
     Q_FOREACH (const QQmlType *ty, QQmlMetaType::qmlTypes()) {
+#endif
         if (!ty->isCreatable())
             noncreatables.insert(ty->metaObject());
         if (ty->isSingleton())
@@ -270,8 +285,17 @@ QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
 
     // find even more QMetaObjects by instantiating QML types and running
     // over the instances
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+    Q_FOREACH (QQmlType _ty, QQmlMetaType::qmlTypes()) {
+        QQmlType *ty(&_ty);
+#else
     Q_FOREACH (QQmlType *ty, QQmlMetaType::qmlTypes()) {
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+        if (skip.contains(_ty))
+#else
         if (skip.contains(ty))
+#endif
             continue;
         if (ty->isExtendedType())
             continue;
@@ -864,7 +888,12 @@ int main(int argc, char *argv[])
 
     // find a valid QtQuick import
     QByteArray importCode;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+    QQmlType _qtObjectType = QQmlMetaType::qmlType(&QObject::staticMetaObject);
+    QQmlType *qtObjectType = &_qtObjectType;
+#else
     QQmlType *qtObjectType = QQmlMetaType::qmlType(&QObject::staticMetaObject);
+#endif
     if (!qtObjectType) {
         std::cerr << "Could not find QtObject type" << std::endl;
         importCode = QByteArray("import QtQuick 2.0\n");
@@ -1001,7 +1030,11 @@ int main(int argc, char *argv[])
             }
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
+        QList<QQmlType> defaultTypes = QQmlMetaType::qmlTypes();
+#else
         QList<QQmlType *> defaultTypes = QQmlMetaType::qmlTypes();
+#endif
         QSet<const QMetaObject *> candidates = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas, defaultTypes);
         candidates.subtract(defaultReachable);
 
