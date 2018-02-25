@@ -72,16 +72,6 @@ void UCApplication::setApplicationName(const QString& applicationName) {
        to how Unity uses it to distinguish running applications.
      */
     QCoreApplication::setApplicationName(applicationName);
-
-    /* We want to override the organization name for apps using qmlscene
-     * to be sure we get sane storage paths. Otherwise we end up with strange
-     * paths like .local/share/QtProject/$APP_NAME which breaks confinement and
-     * should actually be .local/share/$APP_NAME
-     */
-    if (QCoreApplication::organizationName() == QStringLiteral("QtProject")) {
-        QCoreApplication::setOrganizationName("");
-    }
-
     /*
        Ensure that LocalStorage and WebKit use the same location
        Docs are ambiguous: in practise applicationName is ignored by default
@@ -91,7 +81,6 @@ void UCApplication::setApplicationName(const QString& applicationName) {
     engine->setOfflineStoragePath(dataFolder);
     // Get Qtlabs.settings to use a sane path
     QCoreApplication::setOrganizationDomain(applicationName);
-
 }
 
 /*!
