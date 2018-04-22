@@ -208,8 +208,9 @@ void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
     qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", notInstantiatable);
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
-    qmlRegisterUncreatableType<UbuntuI18n>(
-        uri, major, minor, "i18n", QStringLiteral("Singleton object"));
+    // Disabled due to upstream QT change https://github.com/qt/qtdeclarative/commit/1e350a8c98d9c98823dde83a6745d2f26a9c0785
+    //qmlRegisterUncreatableType<UbuntuI18n>(
+    //    uri, major, minor, "i18n", QStringLiteral("Singleton object"));
     qmlRegisterExtendedType<
         QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", notInstantiatable);
