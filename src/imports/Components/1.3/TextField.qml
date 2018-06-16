@@ -17,7 +17,6 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3 as Ubuntu
 import Ubuntu.Components.Popups 1.3
-import Ubuntu.Components.Private 1.3 as Private
 
 /*!
     \qmltype TextField
@@ -638,6 +637,7 @@ Ubuntu.ActionItem {
         control.triggered(control.text)
     }
 
+
     /*!
       Copies the currently selected text to the system clipboard.
     */
@@ -834,27 +834,6 @@ Ubuntu.ActionItem {
 
     // internals
 
-    Connections {
-        target: Private.UCContentHub
-        onPasteSelected: {
-            if (targetItem === control) {
-                control.paste(data)
-            }
-        }
-    }
-
-    Keys.onPressed: {
-        if (readOnly)
-            return;
-        if ((event.key === Qt.Key_V) && (event.modifiers & Qt.ControlModifier) && (event.modifiers & Qt.ShiftModifier)){
-            if (Private.UCContentHub.canPaste) {
-                Private.UCContentHub.requestPaste(control);
-                event.accepted = true;
-            }
-        } else {
-            event.accepted = false;
-        }
-    }
 
     // Overload focus mechanics to avoid bubbling up of focus from children
     activeFocusOnPress: true
