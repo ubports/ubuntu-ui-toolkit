@@ -420,7 +420,7 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
             QStringLiteral("collection-type"), QStringLiteral("Task List"));
         if (!manager->saveCollection(&collection)) {
             qWarning() << "WARNING: Creating dedicated collection for alarms was not possible, alarms will be saved into the default collection!";
-            collection = manager->defaultCollection();
+            collection = manager->collection(manager->defaultCollectionId());
         }
     }
 }
