@@ -34,8 +34,9 @@ import Ubuntu.Components.Popups 1.3
     \qml
     import QtQuick 2.4
     import Ubuntu.Components 1.3
+    import Ubuntu.Components.Pickers 1.3
 
-    MainWindow {
+    MainView {
         width: units.gu(40)
         height: units.gu(71)
 
