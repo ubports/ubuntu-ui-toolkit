@@ -102,15 +102,12 @@ UCUnits::UCUnits(QWindow *parent) :
     m_devicePixelRatio(parent->devicePixelRatio())
 {
     m_gridUnit = getenvFloat(ENV_GRID_UNIT_PX, DEFAULT_GRID_UNIT_PX * m_devicePixelRatio);
-
-    if (!qEnvironmentVariableIsSet(ENV_GRID_UNIT_PX)) {
-        QObject::connect(parent, &QWindow::screenChanged,
-                         this, &UCUnits::screenChanged);
-        m_screen = parent->screen();
-        if (m_screen)
-            QObject::connect(m_screen, &QScreen::physicalDotsPerInchChanged,
-                             this, &UCUnits::devicePixelRatioChanged);
-    }
+    QObject::connect(parent, &QWindow::screenChanged,
+                     this, &UCUnits::screenChanged);
+    m_screen = parent->screen();
+    if (m_screen)
+        QObject::connect(m_screen, &QScreen::physicalDotsPerInchChanged,
+                         this, &UCUnits::devicePixelRatioChanged);
 }
 
 void UCUnits::screenChanged(QScreen *screen)
