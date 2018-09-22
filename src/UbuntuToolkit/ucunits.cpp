@@ -335,7 +335,7 @@ void UCUnits::windowPropertyChanged(QPlatformWindow *window, const QString &prop
     if (QHighDpiScaling::isActive())
       setGridUnit(qCeil(m_devicePixelRatio * DEFAULT_GRID_UNIT_PX));
     else
-      setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX));
+      setGridUnit(qCeil(scale * DEFAULT_GRID_UNIT_PX) * m_devicePixelRatio);
 }
 
 UT_NAMESPACE_END
