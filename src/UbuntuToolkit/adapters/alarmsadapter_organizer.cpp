@@ -454,9 +454,10 @@ void AlarmsAdapter::init()
     loadAlarms();
 
     // connect to manager to receive changes
-    QObject::connect(manager, SIGNAL(itemsModified(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)),
-                     this, SLOT(alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)));
-    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, &QOrganizerManager::itemsModified,
+                     this, &AlarmsAdapter::alarmOperation);
+    QObject::connect(manager, &QOrganizerManager::dataChanged,
+                     this, &AlarmsAdapter::fetchAlarms);
 }
 
 AlarmsAdapter::~AlarmsAdapter()
@@ -638,7 +639,8 @@ bool AlarmsAdapter::fetchAlarms()
         fetchRequest->setFilter(filter);
 
         // start request
-        QObject::connect(fetchRequest, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(completeFetchAlarms()));
+        QObject::connect(fetchRequest, &QOrganizerAbstractRequest::stateChanged,
+                         this, &AlarmsAdapter::completeFetchAlarms);
     }
 
     Q_EMIT q_ptr->alarmsRefreshStarted();
