@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (1.3.2192~0ubports1) xenial; urgency=medium
+
+  * debian/changelog: New versioning scheme
+  * Updated to latest QtPim
+  * If Qt HiDpi scaling is active, use that insted of GRID_UNIT_PX
+
+ -- Alberto Mardegan <mardy@users.sourceforge.net>  Sun, 23 Sep 2018 11:32:23 +0300
+
 ubuntu-ui-toolkit (1.3.2191+ubports) xenial; urgency=medium
 
   * Imported to UBports
