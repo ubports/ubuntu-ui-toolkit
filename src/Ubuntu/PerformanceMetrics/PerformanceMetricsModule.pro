@@ -17,9 +17,11 @@ qmldir_file.files = $$QMLDIR_FILE
 qml_files.installPath = $$installPath
 qml_files.files = $$QML_FILES
 
-plugins_qmltypes.path = $$installPath
-plugins_qmltypes.files = plugins.qmltypes
-plugins_qmltypes.extra = $$[QT_INSTALL_BINS]/qmlplugindump -notrelocatable Ubuntu.PerformanceMetrics 0.1 ../../ > $(INSTALL_ROOT)/$$installPath/plugins.qmltypes
+!cross_compile {
+    plugins_qmltypes.path = $$installPath
+    plugins_qmltypes.files = plugins.qmltypes
+    plugins_qmltypes.extra = $$[QT_INSTALL_BINS]/qmlplugindump -notrelocatable Ubuntu.PerformanceMetrics 0.1 ../../ > $(INSTALL_ROOT)/$$installPath/plugins.qmltypes
 
-INSTALLS += plugins_qmltypes
+    INSTALLS += plugins_qmltypes
+}
 UBUNTU_QML_MODULE_FILES += qmldir_file qml_files
