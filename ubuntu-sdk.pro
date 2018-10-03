@@ -11,7 +11,10 @@ load(qt_parts)
 src_uitk_launcher.subdir = ubuntu-ui-toolkit-launcher
 src_uitk_launcher.depends = sub-src
 
-SUBDIRS += po documentation app-launch-profiler src_uitk_launcher apicheck
+SUBDIRS += po app-launch-profiler src_uitk_launcher apicheck
+!CONFIG(no_docs) {
+    SUBDIRS += documentation
+}
 
 sub_tests.CONFIG -= no_default_target
 sub_tests.CONFIG -= no_default_install
