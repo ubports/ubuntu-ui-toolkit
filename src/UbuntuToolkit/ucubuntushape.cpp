@@ -366,7 +366,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , m_sourceTransform(1.0f, 1.0f, 0.0f, 0.0f)
     , m_relativeRadius(0)
     , m_radius(Small)
-    , m_aspect(Inset)
+    , m_aspect(DropShadow)
     , m_imageHorizontalAlignment(AlignHCenter)
     , m_imageVerticalAlignment(AlignVCenter)
     , m_backgroundMode(SolidColor)
@@ -423,7 +423,7 @@ void UCUbuntuShape::setRadius(const QString& radius)
 /*! \qmlproperty enumeration UbuntuShape::aspect
 
     This property defines the graphical style of the UbuntuShape. The default value is \c
-    UbuntuShape.Inset.
+    UbuntuShape.DropShadow.
 
     \note Setting this disables support for the deprecated \l borderSource property. Use the
     UbuntuShapeOverlay item in order to provide the inset "pressed" aspect previously supported by
@@ -432,6 +432,7 @@ void UCUbuntuShape::setRadius(const QString& radius)
     \list
     \li \b UbuntuShape.Flat - no effects applied
     \li \b UbuntuShape.Inset - inner shadow slightly moved downwards and bevelled bottom
+    \li \b UbuntuShape.DropShadow - outer non-blurred shadow slightly moved downwards
     \endlist
 */
 void UCUbuntuShape::setAspect(Aspect aspect)
@@ -857,7 +858,7 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
     if (!(m_flags & AspectSet)) {
         quint8 aspect;
         if (borderSource.endsWith(QStringLiteral("radius_idle.sci"))) {
-            aspect = Inset;
+            aspect = DropShadow;
         } else if (borderSource.endsWith(QStringLiteral("radius_pressed.sci"))) {
             aspect = Pressed;
         } else {
