@@ -16,7 +16,7 @@
 
 pragma Singleton
 import QtQuick 2.4
-import QtQuick.Window 2.0
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import Ubuntu.Components.ListItems 1.3
 import Ubuntu.Components.Popups 1.3
@@ -205,7 +205,7 @@ Object {
             // no additional styling is needed
             color: theme.palette.normal.overlay
             width: parent.width
-            height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(26)
+            height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio : units.gu(26)
             y: parent.height
 
             ThinDivider { anchors.bottom: parent.top }
