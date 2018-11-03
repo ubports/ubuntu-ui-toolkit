@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.4
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 import "internalPopupUtils.js" as InternalPopupUtils
 
@@ -222,7 +223,7 @@ PopupBase {
         property real margins: units.gu(4)
         property real itemSpacing: units.gu(2)
         property Item dismissArea: dialog.dismissArea
-        property real keyboardHeight: dialog.anchorToKeyboard && UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+        property real keyboardHeight: dialog.anchorToKeyboard && UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio : 0
 
         height: Math.min(contentsColumn.height + foreground.margins, dialog.height - keyboardHeight)
 

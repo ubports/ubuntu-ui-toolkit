@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import QtQuick.Window 2.0
+import QtQuick.Window 2.2
 import Ubuntu.Components 1.3
 
 /*!
@@ -118,7 +118,7 @@ Item {
 
             var availableHeight = orientationHelper.parent.height;
             if (d.stateAngle === 0 && UbuntuApplication.inputMethod.visible && anchorToKeyboard)
-                availableHeight -= UbuntuApplication.inputMethod.keyboardRectangle.height;
+                availableHeight -= UbuntuApplication.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio;
             return availableHeight;
         }
 
