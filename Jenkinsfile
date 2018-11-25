@@ -50,7 +50,7 @@ build-binary.sh'''
       steps {
         cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
         unstash 'build-armhf'
-        unstash 'build-arm64'
+        //unstash 'build-arm64'
         unstash 'build-amd64'
         archiveArtifacts(artifacts: '*.gz,*.bz2,*.xz,*.deb,*.dsc,*.changes,*.buildinfo', fingerprint: true, onlyIfSuccessful: true)
         sh '''/usr/bin/build-repo.sh'''
