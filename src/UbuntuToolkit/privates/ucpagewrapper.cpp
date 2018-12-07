@@ -174,7 +174,7 @@ QQuickItem *UCPageWrapperPrivate::toItem(QObject *theObject, bool canDelete)
         //do not leak the pointer
         if (canDelete && theObject) delete theObject;
 
-        qmlInfo(q) << "PageWrapper only supports components that are derived from Item";;
+        qmlWarning(q) << "PageWrapper only supports components that are derived from Item";;
         return nullptr;
     }
     return theItem;
@@ -223,7 +223,7 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
             convertible = prop.write(i.value());
         }
         if (!convertible) {
-            qmlInfo(q) << "Could not assign value: " << i.value() << " to property: " << i.key();
+            qmlWarning(q) << "Could not assign value: " << i.value() << " to property: " << i.key();
         }
     }
 }
@@ -322,7 +322,7 @@ void UCPageWrapperPrivate::loadComponentState()
         return;
     } else {
         m_state = Error;
-        qmlInfo(q) << "PageWrapper.reference contains unsupported data";
+        qmlWarning(q) << "PageWrapper.reference contains unsupported data";
         return;
     }
 
@@ -354,7 +354,7 @@ void UCPageWrapperPrivate::createObjectState()
 {
     Q_Q(UCPageWrapper);
     if (m_component->status() == QQmlComponent::Error) {
-        qmlInfo(q) << m_component->errors();
+        qmlWarning(q) << m_component->errors();
         m_state = Error;
         return; //full stop
     }
@@ -374,7 +374,7 @@ void UCPageWrapperPrivate::createObjectState()
     if (creationContext && !creationContext->isValid()) {
         // we are having the changes in the component being under deletion
 
-        qmlInfo(q) << "Could not get creation context";
+        qmlWarning(q) << "Could not get creation context";
         m_state = Error;
         return;
     }
@@ -444,7 +444,7 @@ void UCPageWrapperPrivate::finalizeObjectIfReady()
         }
     } else if(m_incubator->status() == QQmlIncubator::Error) {
         m_state = Error;
-        qmlInfo(q) << m_incubator->errors();
+        qmlWarning(q) << m_incubator->errors();
     } else if (m_incubator->status() == QQmlIncubator::Null) {
         //page loading was cancled
         reset();

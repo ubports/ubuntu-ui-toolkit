@@ -46,7 +46,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 {
     QQuickItem *item = qobject_cast<QQuickItem*>(owner);
     if (!item) {
-        qmlInfo(owner) << QStringLiteral("Warning: %1 filter can only be attached to Items.").arg(qmlName);
+        qmlWarning(owner) << QStringLiteral("Warning: %1 filter can only be attached to Items.").arg(qmlName);
     }
 
     T *filter = new T(owner);
@@ -1128,7 +1128,7 @@ void UCInverseMouse::setEnabled(bool enabled)
 void UCInverseMouse::setPriority(Priority priority)
 {
     if (priority != m_priority) {
-        qmlInfo(m_owner) << QStringLiteral("Ignoring AfterItem priority for InverseMouse filters.");
+        qmlWarning(m_owner) << QStringLiteral("Ignoring AfterItem priority for InverseMouse filters.");
     }
 }
 

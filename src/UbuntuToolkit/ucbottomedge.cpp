@@ -121,7 +121,7 @@ void UCBottomEdgePrivate::appendRegion(UCBottomEdgeRegion *region)
     // the region must be owned by other non-BottomEdge component,
     // otherwise we cannot "reuse" the region
     if (region->parent() != q && qobject_cast<UCBottomEdge*>(region->parent())) {
-        qmlInfo(q) << "Cannot reuse region owned by other BottomEdge components";
+        qmlWarning(q) << "Cannot reuse region owned by other BottomEdge components";
         return;
     }
 
@@ -187,11 +187,11 @@ void UCBottomEdgePrivate::validateRegion(UCBottomEdgeRegion *region, int regions
         }
         QRectF rect(stackedRegion->rect(boundingRect));
         if (rect.contains(regionRect)) {
-            qmlInfo(region) << QStringLiteral("Region at index %1 contains this region. This region will never activate.").arg(i);
+            qmlWarning(region) << QStringLiteral("Region at index %1 contains this region. This region will never activate.").arg(i);
         } else {
             QRectF intersect = regionRect.intersected(stackedRegion->rect(boundingRect));
             if (!intersect.isNull()) {
-                qmlInfo(region) << QStringLiteral("Region intersects the one from index %1 having from: %2 and to: %3")
+                qmlWarning(region) << QStringLiteral("Region intersects the one from index %1 having from: %2 and to: %3")
                                    .arg(i)
                                    .arg(UCBottomEdgeRegionPrivate::get(stackedRegion)->from)
                                    .arg(UCBottomEdgeRegionPrivate::get(stackedRegion)->to);

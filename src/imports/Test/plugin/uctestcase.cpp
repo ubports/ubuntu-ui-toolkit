@@ -24,7 +24,7 @@
 #include <QtCore/QDebug>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickItem>
-#include <QtTest/QtTest>
+#include <QtTest>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 

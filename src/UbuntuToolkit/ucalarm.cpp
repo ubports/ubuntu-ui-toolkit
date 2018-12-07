@@ -635,7 +635,7 @@ UCAlarm::Status UCAlarm::status() const
 void UCAlarm::save()
 {
     if (d_ptr->status == InProgress) {
-        qmlInfo(this) << QStringLiteral("Alarm has a pending operation.");
+        qmlWarning(this) << QStringLiteral("Alarm has a pending operation.");
         return;
     }
 
@@ -667,7 +667,7 @@ void UCAlarm::save()
 void UCAlarm::cancel()
 {
     if (d_ptr->status == InProgress) {
-        qmlInfo(this) << QStringLiteral("Alarm has a pending operation.");
+        qmlWarning(this) << QStringLiteral("Alarm has a pending operation.");
         return;
     }
 

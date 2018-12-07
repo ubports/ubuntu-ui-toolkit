@@ -121,7 +121,7 @@ void SplitViewHandler::onDelegateChanged()
             QQuickItem *item = qobject_cast<QQuickItem*>(object);
             if (!item) {
                 if (!warningShown) {
-                    qmlInfo(view) << "handle delegate not an Item";
+                    qmlWarning(view) << "handle delegate not an Item";
                     warningShown = true;
                 }
                 SplitViewPrivate::get(view)->handleDelegate->completeCreate();

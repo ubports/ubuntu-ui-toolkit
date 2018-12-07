@@ -603,7 +603,7 @@ void SplitView::reportConflictingAnchors()
         }
     }
     if (anchorConflict) {
-        qmlInfo(this) << "Cannot specify left, right, horizontalCenter, fill or centerIn anchors for items inside SplitView."
+        qmlWarning(this) << "Cannot specify left, right, horizontalCenter, fill or centerIn anchors for items inside SplitView."
                       << " SplitView will not function.";
     }
 }

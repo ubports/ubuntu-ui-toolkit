@@ -418,7 +418,7 @@ void UCAction::setShortcut(const QVariant& shortcut)
         ACT_TRACE("ADD SHORTCUT" << sequence.toString());
         QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, sequence, Qt::WindowShortcut, shortcutContextMatcher);
     } else {
-        qmlInfo(this) << "Invalid shortcut: " << shortcut.toString();
+        qmlWarning(this) << "Invalid shortcut: " << shortcut.toString();
     }
 
     m_shortcut = shortcut;
@@ -600,7 +600,7 @@ bool UCAction::event(QEvent *event)
     // by a component belonging to an active ActionContext.
     QShortcutEvent *shortcut_event(static_cast<QShortcutEvent*>(event));
     if (shortcut_event->isAmbiguous()) {
-        qmlInfo(this) << "Ambiguous shortcut: " << shortcut_event->key().toString();
+        qmlWarning(this) << "Ambiguous shortcut: " << shortcut_event->key().toString();
         return false;
     }
 
