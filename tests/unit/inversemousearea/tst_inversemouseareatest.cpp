@@ -88,31 +88,6 @@ private Q_SLOTS:
         QCOMPARE(area->pressedButtons(), Qt::NoButton);
         QCOMPARE(area->propagateComposedEvents(), false);
     }
-    void testCase_DoNotPropagateEvents()
-    {
-        eventCleanup.clear();
-        QScopedPointer<InverseMouseAreaTest> quickView(new InverseMouseAreaTest("InverseMouseAreaDoNotPropagateEvents.qml"));
-        InverseMouseAreaType *area = quickView->findItem<InverseMouseAreaType*>("testObject");
-
-        // connect pressed signal to capture mouse object
-        QObject::connect(area, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(capturePressed(QQuickMouseEvent*)));
-        QTest::mouseClick(quickView.data(), Qt::LeftButton, Qt::NoModifier, QPoint(10, 10));
-        QTest::waitForEvents();
-        QVERIFY(eventCleanup.isEmpty());
-    }
-
-    void testCase_PropagateEvents()
-    {
-        eventCleanup.clear();
-        QScopedPointer<InverseMouseAreaTest> quickView(new InverseMouseAreaTest("InverseMouseAreaPropagateEvents.qml"));
-        InverseMouseAreaType *area = quickView->findItem<InverseMouseAreaType*>("testObject");
-
-        // connect pressed signal to capture mouse object
-        QObject::connect(area, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(capturePressed(QQuickMouseEvent*)));
-        QTest::mouseClick(quickView.data(), Qt::LeftButton, Qt::NoModifier, QPoint(10, 10));
-        QTest::waitForEvents();
-        QVERIFY(eventCleanup.isEmpty());
-    }
 
     void testCase_sensingAreaError()
     {
