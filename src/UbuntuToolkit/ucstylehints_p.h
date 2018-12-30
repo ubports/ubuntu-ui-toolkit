@@ -78,7 +78,7 @@ private:
     friend class UCStyleHintsParser;
 
     void propertyNotFound(const QString &styleName, const QString &property);
-    void decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
+    void decodeBinding(const QString &propertyPrefix, const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding);
 };
 
 class UBUNTUTOOLKIT_EXPORT UCStyleHintsParser : public QQmlCustomParser
@@ -86,11 +86,11 @@ class UBUNTUTOOLKIT_EXPORT UCStyleHintsParser : public QQmlCustomParser
 public:
     UCStyleHintsParser() : QQmlCustomParser(QQmlCustomParser::AcceptsSignalHandlers) {}
 
-    void verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
-    void applyBindings(QObject *obj, QV4::CompiledData::CompilationUnit *cdata, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+    void verifyBindings(const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+    void applyBindings(QObject *obj, const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
 
 private:
-    void verifyProperty(const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
+    void verifyProperty(const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding);
 };
 
 UT_NAMESPACE_END
