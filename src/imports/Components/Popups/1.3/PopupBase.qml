@@ -110,9 +110,7 @@ OrientationHelper {
       */
     function __closePopup() {
         if (popupBase !== undefined) {
-            if (eventGrabber.enabled) {
-                stateWrapper.restoreActiveFocus();
-            }
+            stateWrapper.restoreActiveFocus();
             popupBase.destroy();
         }
     }
