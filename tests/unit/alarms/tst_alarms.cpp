@@ -439,8 +439,8 @@ private Q_SLOTS:
     {
         QDate cd = QDate::currentDate();
         QTime ct = QTime::currentTime();
-        QDateTime dt(cd, QTime(ct.hour(), ct.minute(), ct.second() + 2));
-        QDateTime nextDt(cd.addDays(1), QTime(ct.hour(), ct.minute(), ct.second() + 2));
+        QDateTime dt(cd, QTime(ct.hour(), ct.minute() + 1, ct.second()));
+        QDateTime nextDt(cd.addDays(1), QTime(ct.hour(), ct.minute() + 1, ct.second()));
         UCAlarm alarm(dt, UCAlarm::Daily, "test_correctAlarmOrderDaily");
         UCAlarm nextAlarm(nextDt, UCAlarm::Daily, "test_correctAlarmOrderDaily");
 
@@ -456,8 +456,8 @@ private Q_SLOTS:
     {
         QDate cd = QDate::currentDate();
         QTime ct = QTime::currentTime();
-        QDateTime dt(cd, QTime(ct.hour(), ct.minute(), ct.second() + 1));
-        QDateTime nextDt(cd.addDays(7), QTime(ct.hour(), ct.minute(), ct.second() + 1));
+        QDateTime dt(cd, QTime(ct.hour(), ct.minute() + 1, ct.second()));
+        QDateTime nextDt(cd.addDays(7), QTime(ct.hour(), ct.minute() + 1, ct.second()));
         UCAlarm alarm(dt, UCAlarm::AutoDetect, "test_correctAlarmOrderWeekly");
         UCAlarm nextAlarm(nextDt, UCAlarm::AutoDetect, "test_correctAlarmOrderWeekly");
 
