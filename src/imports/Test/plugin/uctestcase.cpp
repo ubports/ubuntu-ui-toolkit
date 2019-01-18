@@ -65,7 +65,7 @@ int UbuntuTestCase::warnings() const
 }
 
 /*!
- * Ignore an expected warning message created using qmlInfo.
+ * Ignore an expected warning message created using qmlWarning.
  */
 void UbuntuTestCase::ignoreWarning(const QString& fileName, uint line,
     uint column, const QString& message, uint occurences)
