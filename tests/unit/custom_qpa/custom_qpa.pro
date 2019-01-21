@@ -3,8 +3,7 @@ TEMPLATE = lib
 
 CONFIG += plugin no_keywords c++11
 
-QT -= gui
-QT += core-private gui-private platformsupport-private
+QT += core-private gui-private eventdispatcher_support-private
 
 SOURCES =   main.cpp \
             qcustomintegration.cpp \
