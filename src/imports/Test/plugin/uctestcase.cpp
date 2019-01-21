@@ -34,6 +34,9 @@ Q_DECLARE_METATYPE(QList<QQmlError>)
  */
 UbuntuTestCase::UbuntuTestCase(const QString& file, ResizeMode resize, bool assertOnFailure, QWindow* parent) : QQuickView(parent)
 {
+    // Create a dummy touch device for tests.
+    QTest::createTouchDevice();
+
     QString modules(UBUNTU_QML_IMPORT_PATH);
     Q_ASSERT(QDir(modules).exists());
     QString modulePath(QDir(modules).absolutePath());
