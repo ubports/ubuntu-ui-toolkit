@@ -31,7 +31,8 @@ QMAKE_EXTRA_TARGETS += license
 
 check.target = check
 check.commands = $$PWD/tests/checkresults.sh $$OUT_PWD/tests/*.xml || exit 1;
-check.commands += pep8 $$PWD || exit 1;
+# Disable pep8 for now, as autopilot tests are not being run.
+#check.commands += pep8 $$PWD || exit 1;
 
 #helper files
 OTHER_FILES += \
