@@ -36,7 +36,7 @@ ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
 	chmod +x tests/xvfb.sh
-	tests/xvfb.sh dh_auto_test || exit $?
+	tests/xvfb.sh dh_auto_test --parallel || exit $?
 endif
 endif
 endif
