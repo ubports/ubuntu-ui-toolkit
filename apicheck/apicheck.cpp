@@ -271,7 +271,6 @@ QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
     // over the instances
     Q_FOREACH (QQmlType ty, QQmlMetaType::qmlTypes()) {
         if (skip.contains(ty))
-#endif
             continue;
         if (ty.isExtendedType())
             continue;
