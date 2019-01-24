@@ -1263,7 +1263,7 @@ void UCListItemPrivate::showContextMenu()
     QQmlEngine* engine = qmlEngine(q);
     QQmlComponent* component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, q);
     if (component->isError()) {
-        qmlInfo(q) << component->errorString();
+        qmlWarning(q) << component->errorString();
     } else {
         QQmlEngine::setContextForObject(component, qmlContext(q));
         QQuickItem* item = static_cast<QQuickItem*>(component->create(qmlContext(q)));

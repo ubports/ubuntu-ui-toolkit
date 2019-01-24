@@ -11,7 +11,10 @@ load(qt_parts)
 src_uitk_launcher.subdir = ubuntu-ui-toolkit-launcher
 src_uitk_launcher.depends = sub-src
 
-SUBDIRS += po documentation app-launch-profiler src_uitk_launcher apicheck
+SUBDIRS += po app-launch-profiler src_uitk_launcher apicheck
+!CONFIG(no_docs) {
+    SUBDIRS += documentation
+}
 
 sub_tests.CONFIG -= no_default_target
 sub_tests.CONFIG -= no_default_install
@@ -28,7 +31,8 @@ QMAKE_EXTRA_TARGETS += license
 
 check.target = check
 check.commands = $$PWD/tests/checkresults.sh $$OUT_PWD/tests/*.xml || exit 1;
-check.commands += pep8 $$PWD || exit 1;
+# Disable pep8 for now, as autopilot tests are not being run.
+#check.commands += pep8 $$PWD || exit 1;
 
 #helper files
 OTHER_FILES += \

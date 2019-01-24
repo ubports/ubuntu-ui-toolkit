@@ -1,51 +1,57 @@
-=================
-Ubuntu UI Toolkit
-=================
+# Ubuntu UI Toolkit
 
-Introduction
-------------
+
+## Introduction
 
 This project consists of a set of QML components to ease the creation of
 beautiful applications in QML for Ubuntu.
 
 QML alone lacks built-in components for basic widgets like Button, Slider,
-Scrollbar, etc, meaning a developer has to build them from scratch. This 
-toolkit aims to stop this duplication of work, supplying beautiful components 
+Scrollbar, etc, meaning a developer has to build them from scratch. This
+toolkit aims to stop this duplication of work, supplying beautiful components
 ready-made and with a clear and consistent API.
 
-These components are fully themeable so the look and feel can be easily 
-customized. Resolution independence technology is built in so UIs are scaled 
+These components are fully themeable so the look and feel can be easily
+customized. Resolution independence technology is built in so UIs are scaled
 to best suit the display.
 
 Other features:
 - localisation through gettext
 
-This project supports QML2 and above.
+This project supports QML2 and above on Qt 5.9 and above.
 
 
-Building & Setup
-----------------
+## Building & Setup
 
 You need Qt5 installed to proceed. To build this repository, run
-$ qmake
-$ make
+```
+mkdir build
+cd build
+qmake ..
+make -j4
+```
 
 View the components gallery by running
-$ ./gallery.sh
+```
+./gallery.sh
+```
 
 To install these components, run
-$ make install
+```
+make install
+```
 You may need to be root for this command to succeed.
 
-To use these components in QML without installing them, you need to set the 
+To use these components in QML without installing them, you need to set the
 QML2_IMPORT_PATH environment variable. This is done by running
-$ source export_qml_dir.sh
-from the root directory of this repository, but is lost when you close your 
+```
+source export_qml_dir.sh
+```
+from the root directory of this repository, but is lost when you close your
 shell.
 
 
-Tests
------
+## Tests
 
 tests
  - autopilot/ubuntuuitoolkit: Autopilot test cases and CPOs
@@ -68,36 +74,34 @@ tests
     with a width and height. TestCase or UbuntuTestCase must be a child.
 
  Verify the whole Toolkit API:
- './tests/qmlapicheck.sh' inspects components.api and produces components.api.new
+ `./tests/qmlapicheck.sh` inspects components.api and produces components.api.new
 
  Verify the tidyness of packaging:
- ./packaging-sorting.sh
+ `./packaging-sorting.sh`
 
  Verify the coding style of Python source code:
  pyflakes .
 
- 'source export_qml_dir.sh' can be used in bash to setup the environment.
+ `source export_qml_dir.sh` can be used in bash to setup the environment.
 
 
-Documentation
--------------
+## Documentation
 
-Once built, you may view the documentation by opening  
+Once built, you may view the documentation by opening
   documentation/html/overview-ubuntu-sdk.html
 in your favorite web browser.
 
-Autopilot SDK Helpers Documentation (Sphinx docs):
-++++++++++++++++++++++++++++++++++++++++++++++++++
+## Autopilot SDK Helpers Documentation (Sphinx docs):
 
 To build the Autopilot SDK Helpers documentation, you need to install sphinx.
 After installation, change directory to documentation/autopilot-helpers
 and executing make.
 
- * $ sudo apt-get install python3-sphinx
-
- * $ cd documentation/autopilot-helpers
-
- * $ make singlehtml
+```
+sudo apt-get install python3-sphinx
+cd documentation/autopilot-helpers
+make singlehtml
+```
 
  * Once built, you may view the documentation by opening
  `_build/singlehtml/index.html` in your favorite web browser.

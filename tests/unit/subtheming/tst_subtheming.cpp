@@ -739,7 +739,7 @@ private Q_SLOTS:
     void test_mixed_versions() {
         ThemeTestCase::ignoreWarning("OtherVersion.qml", 19, 1, "QML StyledItem: Mixing of Ubuntu.Components module versions 1.3 and 1.2 detected!");
         QScopedPointer<ThemeTestCase> view(new ThemeTestCase("OtherVersion.qml"));
-        QTest::waitForEvents();
+        QCoreApplication::processEvents();
         UCStyledItemBase *newStyled = static_cast<UCStyledItemBase*>(view->rootObject());
         UCStyledItemBase *otherStyled = view->findItem<UCStyledItemBase*>("otherStyled");
         QCOMPARE(UCStyledItemBasePrivate::get(newStyled)->styleInstance()->objectName(), QString("OptionSelector13"));

@@ -81,11 +81,11 @@ void ViewColumnPrivate::setMinimumWidth(qreal width)
         return;
     }
     if (width < 0.0) {
-        qmlInfo(q_func()) << "minimumWidth cannot be a negative value";
+        qmlWarning(q_func()) << "minimumWidth cannot be a negative value";
         return;
     }
     if (width > maximumWidth) {
-        qmlInfo(q_func()) << "minimumWidth is greater than maximumWidth";
+        qmlWarning(q_func()) << "minimumWidth is greater than maximumWidth";
         return;
     }
     minimumWidth = width;
@@ -106,11 +106,11 @@ void ViewColumnPrivate::setMaximumWidth(qreal width)
         return;
     }
     if (width < 0.0) {
-        qmlInfo(q_func()) << "maximumWidth cannot be a negative value";
+        qmlWarning(q_func()) << "maximumWidth cannot be a negative value";
         return;
     }
     if (width < minimumWidth) {
-        qmlInfo(q_func()) << "maximumWidth is smaller than minimumWidth";
+        qmlWarning(q_func()) << "maximumWidth is smaller than minimumWidth";
         return;
     }
     maximumWidth = width;

@@ -115,7 +115,7 @@ private Q_SLOTS:
         static bool loggedOnce = false; \
         if (!loggedOnce) { \
             if (QuickUtils::showDeprecationWarnings()) { \
-                qmlInfo(this) << msg; \
+                qmlWarning(this) << msg; \
             } \
         } \
     }

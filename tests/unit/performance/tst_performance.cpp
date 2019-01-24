@@ -35,7 +35,7 @@ private:
     QQuickItem *loadDocument(const QString &document)
     {
         quickView->setSource(QUrl::fromLocalFile(document));
-        QTest::waitForEvents();
+        QCoreApplication::processEvents();
 
         return quickView->rootObject();
     }

@@ -606,7 +606,7 @@ void UCTheme::setPalette(QObject *config)
         return;
     }
     if (config && !QuickUtils::inherits(config, QStringLiteral("Palette"))) {
-        qmlInfo(config) << QStringLiteral("Not a Palette component.");
+        qmlWarning(config) << QStringLiteral("Not a Palette component.");
         return;
     }
 
@@ -736,7 +736,7 @@ void UCTheme::checkMixedVersionImports(QQuickItem *item, quint16 version)
                 .arg(MINOR_VERSION(version))
                 .arg(MAJOR_VERSION(previousVersion))
                 .arg(MINOR_VERSION(previousVersion));
-        qmlInfo(item) << msg;
+        qmlWarning(item) << msg;
         wasShown = true;
     }
     previousVersion = version;
@@ -763,13 +763,13 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
         QUrl url = styleUrl(styleName, version, &fallback);
         if (url.isValid()) {
             if (fallback) {
-                qmlInfo(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
+                qmlWarning(parent) << QStringLiteral("Theme '%1' has no '%2' style for version %3.%4, fall back to version %5.%6.")
                                    .arg(name()).arg(styleName).arg(MAJOR_VERSION(version)).arg(MINOR_VERSION(version))
                                    .arg(MAJOR_VERSION(LATEST_UITK_VERSION)).arg(MINOR_VERSION(LATEST_UITK_VERSION));
             }
             component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
             if (component->isError()) {
-                qmlInfo(parent) << component->errorString();
+                qmlWarning(parent) << component->errorString();
                 delete component;
                 component = NULL;
             } else {
@@ -777,7 +777,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
                 QQmlEngine::setContextForObject(component, qmlContext(parent));
             }
         } else {
-            qmlInfo(parent) <<
+            qmlWarning(parent) <<
                QStringLiteral("Warning: Style %1 not found in theme %2").arg(styleName).arg(name());
         }
     }

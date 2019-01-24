@@ -57,7 +57,7 @@ public:
     {
         // load the document
         view->setSource(QUrl::fromLocalFile(document));
-        QTest::waitForEvents();
+        QCoreApplication::processEvents();
 
         return view->rootObject();
     }

@@ -28,7 +28,7 @@ UT_NAMESPACE_BEGIN
         static bool loggedOnce = false; \
         if (!loggedOnce) { \
             if (QuickUtils::showDeprecationWarnings()) { \
-                qmlInfo(this) << msg; \
+                qmlWarning(this) << msg; \
             } \
         } \
     }

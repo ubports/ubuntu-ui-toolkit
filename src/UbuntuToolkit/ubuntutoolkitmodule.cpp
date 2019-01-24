@@ -45,7 +45,6 @@
 #include "menugroup_p.h"
 #include "privates/appheaderbase_p.h"
 #include "privates/frame_p.h"
-#include "privates/uccontenthub_p.h"
 #include "privates/ucpagewrapper_p.h"
 #include "privates/ucscrollbarutils_p.h"
 #include "qquickclipboard_p.h"
@@ -208,9 +207,8 @@ void UbuntuToolkitModule::registerTypesToVersion(const char *uri, int major, int
     qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
     qmlRegisterUncreatableType<UCFontUtils>(uri, major, minor, "UCFontUtils", notInstantiatable);
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItem");
-    // Disabled due to upstream QT change https://github.com/qt/qtdeclarative/commit/1e350a8c98d9c98823dde83a6745d2f26a9c0785
-    //qmlRegisterUncreatableType<UbuntuI18n>(
-    //    uri, major, minor, "i18n", QStringLiteral("Singleton object"));
+    qmlRegisterUncreatableType<UbuntuI18n>(
+       uri, major, minor, "I18n", QStringLiteral("Singleton object"));
     qmlRegisterExtendedType<
         QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", notInstantiatable);
@@ -264,8 +262,6 @@ void UbuntuToolkitModule::initializeModule(QQmlEngine *engine, const QUrl &plugi
     qmlRegisterType<UCPageWrapper>(privateUri, 1, 3, "PageWrapper");
     qmlRegisterType<UCAppHeaderBase>(privateUri, 1, 3, "AppHeaderBase");
     qmlRegisterType<Tree>(privateUri, 1, 3, "Tree");
-
-    qmlRegisterSimpleSingletonType<UCContentHub>(privateUri, 1, 3, "UCContentHub");
 
     //FIXME: move to a more generic location, i.e StyledItem or QuickUtils
     qmlRegisterSimpleSingletonType<UCScrollbarUtils>(privateUri, 1, 3, "PrivateScrollbarUtils");

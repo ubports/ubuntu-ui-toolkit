@@ -58,7 +58,9 @@ private:
     QQuickView *createView(const QString &file)
     {
         UbuntuTestCase* testCase = new UbuntuTestCase(file);
-        return qobject_cast<QQuickView*>(testCase);
+        auto view = qobject_cast<QQuickView*>(testCase);
+        view->rootContext()->setContextProperty(QLatin1String("id"), QLatin1String("realTestRootView"));
+        return view;
     }
 
     void resetView(QScopedPointer<UbuntuTestCase> &view, const QString &file)
@@ -458,7 +460,7 @@ private Q_SLOTS:
         QVERIFY(topLoader);
 
         topLoader->setProperty("source", "Dynamic.qml");
-        QTest::waitForEvents();
+        QCoreApplication::processEvents();
 
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);

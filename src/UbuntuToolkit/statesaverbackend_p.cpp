@@ -180,7 +180,7 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
             if (writeSuccess) {
                 result++;
             } else {
-                qmlInfo(item) << QStringLiteral("property \"%1\" of "
+                qmlWarning(item) << QStringLiteral("property \"%1\" of "
                     "object %2 has type %3 and cannot be set to value \"%4\" of"
                     " type %5").arg(propertyName)
                                .arg(qmlContext(item)->nameForObject(item))
@@ -189,7 +189,7 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
                                .arg(QString::fromLatin1(value.typeName()));
             }
         } else {
-            qmlInfo(item) << QStringLiteral("property \"%1\" does not exist or is not writable for object %2")
+            qmlWarning(item) << QStringLiteral("property \"%1\" does not exist or is not writable for object %2")
                              .arg(propertyName).arg(qmlContext(item)->nameForObject(item));
         }
     }

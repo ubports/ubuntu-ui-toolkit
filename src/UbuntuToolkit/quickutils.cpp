@@ -162,7 +162,7 @@ bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
  */
 QQuickItem *QuickUtils::rootObject()
 {
-    qmlInfo(this) << "WARNING: QuickUtils.rootObject property is deprecated: Use QuickUtils::rootItem() function instead.";
+    qmlWarning(this) << "WARNING: QuickUtils.rootObject property is deprecated: Use QuickUtils::rootItem() function instead.";
     if (!m_rootView)
         lookupQuickView();
     return (m_rootView) ? m_rootView->rootObject() : 0;
@@ -300,7 +300,7 @@ QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
     QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous);
     QObject* result(Q_NULLPTR);
     if (component->isError()) {
-        qmlInfo(engine) << component->errorString();
+        qmlWarning(engine) << component->errorString();
     } else {
         result = component->create();
     }
