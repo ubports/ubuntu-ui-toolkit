@@ -205,12 +205,7 @@ void collectReachableMetaObjectsWithoutQmlName( QSet<const QMetaObject *>& metas
         }
     }
 }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 2)
-QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
-                                                      QSet<const QMetaObject *> &noncreatables,
-                                                      QSet<const QMetaObject *> &singletons,
-                                                      const QList<QQmlType> &skip = QList<QQmlType>())
-#else
+
 QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
                                                       QSet<const QMetaObject *> &noncreatables,
                                                       QSet<const QMetaObject *> &singletons,
