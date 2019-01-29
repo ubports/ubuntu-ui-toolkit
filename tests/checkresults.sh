@@ -40,12 +40,13 @@ for _XML in $*; do
                 qquick_image_extension \
                 tst_label13.qml \
                 performance \
+                tst_optionselector.13.qml \
                 tst_pickerpanel.11.qml \
                 tst_picker.11.qml \
-                tst_picker.13.qml \
                 recreateview \
                 touchregistry \
                 mainview \
+                tst_tabs_with_repeater.11.qml \
                 tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
                 inversemousearea \
                 '
