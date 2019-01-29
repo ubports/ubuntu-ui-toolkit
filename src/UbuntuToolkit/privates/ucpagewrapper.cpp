@@ -211,9 +211,9 @@ void UCPageWrapperPrivate::copyProperties(QObject *target)
     for (;i != propMap.constEnd(); i++) {
         QQmlProperty prop(target, i.key(), context);
         bool convertible = true;
-        if (!qstrcmp(i.value().typeName(),"void*")) {
-            // we have void*, we cannot convert that one, so we must force the conversion
-            void *pvalue = i.value().value<void*>();
+        if (!qstrcmp(i.value().typeName(), "std::nullptr_t")) {
+            // we have std::nullptr_t, we cannot convert that one, so we must force the conversion
+            void *pvalue = i.value().value<std::nullptr_t>();
             QVariant value(QVariant::Type(prop.propertyType()), pvalue);
             convertible = value.isValid();
             if (convertible) {
