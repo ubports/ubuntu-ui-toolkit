@@ -211,9 +211,7 @@ MainView {
             keyRelease(data.key);
         }
 
-        // FIXME: must be executed before the test_hiding as flick with mouse affects
-        // the touch drag on ListView for some unknown reason
-        function test_0_touch_gesture() {
+        function test_touch_gesture() {
             bottomEdgeHint.text = "Touch Activated";
             var gestureStartPoint = Qt.point(centerOf(bottomEdgeHint).x, bottomEdgeHint.height - 1);
             TestExtras.touchDrag(0, bottomEdgeHint, gestureStartPoint, Qt.point(0, -units.gu(8)), 6);
