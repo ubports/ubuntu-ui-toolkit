@@ -1,9 +1,3 @@
-ubuntu-ui-toolkit (1.3.2192~0ubports1.18.04.1) bionic; urgency=medium
-
-  * No change rebuild.
-
- -- Rodney Dawes <dobey@ubuntu.com>  Wed, 23 Jan 2019 21:59:05 -0500
-
 ubuntu-ui-toolkit (1.3.2192~0ubports1) xenial; urgency=medium
 
   * debian/changelog: New versioning scheme
