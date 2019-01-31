@@ -175,7 +175,7 @@ UbuntuTestCase {
         verify(steppersTransition !== null, "Valid steppers transition instance found.")
         //trigger steppers style and wait for the transition to complete
         tryCompare(scrollbar.__styleInstance, "state", "hidden")
-        mouseMove(scrollbar, 1, 1)
+        mouseMove(scrollbar, 0, 0)
         tryCompare(steppersTransition, "running", true)
         tryCompare(scrollbar.__styleInstance, "state", "steppers")
         tryCompare(steppersTransition, "running", false)

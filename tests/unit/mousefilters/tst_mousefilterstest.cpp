@@ -739,6 +739,7 @@ private Q_SLOTS:
 
     void testCase_forwardedEventsToTransparentMouseArea()
     {
+        QSKIP("FIXME: lp#1542215 Flaky test result");
         QScopedPointer<QQuickView> view(loadTest("ForwardToTransparentMouseArea.qml"));
         QVERIFY(view);
         QQuickMouseArea *target = view->rootObject()->findChild<QQuickMouseArea*>("target");

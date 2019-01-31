@@ -308,17 +308,16 @@ Item {
         }
 
         function test_9_modelClear() {
+            skip("PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400")
             var linearList = getPickerList(linearDynPicker, true);
             var circularList = getPickerList(circularDynPicker, false);
             dynamicModel.clear();
             waitPickerScrolling();
 
             compare(linearList.currentIndex, -1, "linear picker's itemList selection not reset");
-            expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
             compare(circularList.currentIndex, -1, "circular picker's itemList selection not reset");
 
             compare(linearDynPicker.selectedIndex, -1, "linear picker's selection not reset");
-            expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
             compare(circularDynPicker.selectedIndex, -1, "circular picker's selection not reset");
         }
     }
