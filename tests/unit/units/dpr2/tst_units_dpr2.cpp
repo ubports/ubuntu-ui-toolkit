@@ -134,7 +134,6 @@ private Q_SLOTS:
 //QTEST_MAIN(tst_UCUnitsDPR2) - want to set custom env var, so need to use actual code:
 int main(int argc, char *argv[])
 {
-    qputenv("QT_DEVICE_PIXEL_RATIO", "2");
     qputenv("QT_SCALE_FACTOR", "2");
     qunsetenv("GRID_UNIT_PX");
 

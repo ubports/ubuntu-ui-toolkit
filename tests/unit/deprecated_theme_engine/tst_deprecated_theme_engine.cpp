@@ -56,13 +56,13 @@ public:
     void setTheme(const QString &theme)
     {
         rootObject()->setProperty("themeName", theme);
-        QTest::waitForEvents();
+        QCoreApplication::processEvents();
     }
 
     void setStyle(const QString &style)
     {
         rootObject()->setProperty("styleDocument", style);
-        QTest::waitForEvents();
+        QCoreApplication::processEvents();
     }
 };
 

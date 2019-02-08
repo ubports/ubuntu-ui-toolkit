@@ -1129,7 +1129,7 @@ Item {
                 } else if (thumbStyleFlag
                            || (draggingThumb && slider.touchDragging) || __overshootTimer.running) {
                     return 'thumb'
-                } else if (flickableItem.moving || scrollAnimation.running || transitionToIndicator.running) {
+                } else if ((flickableItem && flickableItem.moving) || scrollAnimation.running || transitionToIndicator.running) {
                     return 'indicator';
                 } else return 'hidden';
             } else {

@@ -206,6 +206,14 @@ StyledItem {
         }
     }
 
+    // update curentItem automatically when selectedIndex changes
+    Binding {
+        target: loader.item
+        property: "currentIndex"
+        value: picker.selectedIndex
+        when: loader.completed && (picker.selectedIndex > 0)
+    }
+
     // tumbler
     Loader {
         id: loader
@@ -220,14 +228,6 @@ StyledItem {
 
         // do we have a ListView or PathView?
         property bool isListView: (item && QuickUtils.className(item) === "QQuickListView")
-
-        // update curentItem automatically when selectedIndex changes
-        Binding {
-            target: loader.item
-            property: "currentIndex"
-            value: picker.selectedIndex
-            when: loader.completed && (picker.selectedIndex > 0)
-        }
 
         // selectedIndex updater, live or non-live ones
         Connections {

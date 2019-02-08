@@ -540,6 +540,19 @@ Ubuntu.Components.Header 1.3 UCHeader: StyledItem
     property bool exposed
     property Flickable flickable
     readonly property bool moving
+Ubuntu.Components.I18n 1.0 0.1: QtObject
+    property string domain
+    property string language
+    function bindtextdomain(string domain_name, string dir_name)
+    function string tr(string text)
+    function string tr(string singular, string plural, int n)
+    function string dtr(string domain, string text)
+    function string dtr(string domain, string singular, string plural, int n)
+    function string ctr(string context, string text)
+    function string dctr(string domain, string context, string text)
+    function string tag(string text)
+    function string tag(string context, string text)
+    function string relativeDateTime(QDateTime datetime)
 Ubuntu.Components.Icon 1.0 0.1: Item
     property color color
     property color keyColor
@@ -1825,16 +1838,3 @@ Ubuntu.Components.ViewItems 1.2: QtObject
 Ubuntu.Components.WrapMode: Enum
     Repeat
     Transparent
-Ubuntu.Components.i18n 1.0 0.1: QtObject
-    property string domain
-    property string language
-    function bindtextdomain(string domain_name, string dir_name)
-    function string tr(string text)
-    function string tr(string singular, string plural, int n)
-    function string dtr(string domain, string text)
-    function string dtr(string domain, string singular, string plural, int n)
-    function string ctr(string context, string text)
-    function string dctr(string domain, string context, string text)
-    function string tag(string text)
-    function string tag(string context, string text)
-    function string relativeDateTime(QDateTime datetime)

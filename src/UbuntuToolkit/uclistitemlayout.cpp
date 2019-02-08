@@ -451,7 +451,7 @@ QQuickItem *UCListItemLayout::mainSlot() {
 void UCListItemLayout::setMainSlot(QQuickItem *slot, bool fireSignal) {
     Q_UNUSED(slot);
     Q_UNUSED(fireSignal);
-    qmlInfo(this) << "Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead.";
+    qmlWarning(this) << "Setting a different mainSlot on ListItemLayout is not supported. Please use SlotsLayout instead.";
 }
 
 UT_NAMESPACE_END

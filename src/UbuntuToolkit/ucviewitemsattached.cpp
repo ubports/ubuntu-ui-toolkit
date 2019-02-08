@@ -479,7 +479,7 @@ void UCViewItemsAttached::setDragMode(bool value)
          * not enable dragging if these conditions are not fulfilled.
          */
         if (!d->listView) {
-            qmlInfo(parent()) << QStringLiteral("Dragging mode requires ListView");
+            qmlWarning(parent()) << QStringLiteral("Dragging mode requires ListView");
             return;
         }
         QVariant model = d->listView->model();
@@ -487,14 +487,14 @@ void UCViewItemsAttached::setDragMode(bool value)
         // or a derivate of QAbstractItemModel
         QString warning = QStringLiteral("Dragging is only supported when using a QAbstractItemModel, ListModel or list.");
         if (model.isValid() && !model.value<QQmlInstanceModel*>() && !model.value<QAbstractItemModel*>() && !(model.type() == QVariant::List)) {
-            qmlInfo(parent()) << warning;
+            qmlWarning(parent()) << warning;
         }
         // if we have a QQmlDelegateModel we must also check the model property of it
         QQmlDelegateModel *delegateModel = model.value<QQmlDelegateModel*>();
         if (delegateModel && delegateModel->model().isValid() &&
                              !delegateModel->model().value<QAbstractItemModel*>() &&
                              !(delegateModel->model().type() == QVariant::List)) {
-            qmlInfo(parent()) << warning;
+            qmlWarning(parent()) << warning;
         }
     }
     d->draggable = value;

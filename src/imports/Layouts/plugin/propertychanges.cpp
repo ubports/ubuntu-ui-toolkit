@@ -129,7 +129,7 @@ void PropertyAction::apply()
         }
     } else if (toValueSet) {
         if (!property.object()->setProperty(property.name().toLocal8Bit(), toValue)) {
-            qmlInfo(property.object()) << "Layouts: updating property \""
+            qmlWarning(property.object()) << "Layouts: updating property \""
                                       << property.name()
                                       << "\" failed.";
         }

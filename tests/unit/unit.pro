@@ -25,16 +25,16 @@ SUBDIRS += \
     statesaver \
     deprecated_theme_engine \
     orientation \
-#    layouts \ # FIXME: Breaks on Yakkety. See bug #1625137.
+    layouts \
     mousefilters \
     animator \
     serviceproperties \
     subtheming \
-#    swipearea \ # FIXME: Breaks with QT 5.9
+    swipearea \
     touchregistry \
     bottomedge \
     asyncloader \
-#    custom_qpa \ # FIXME: Breaks with QT 5.9
+    custom_qpa \
     units \
     scaling_image_provider \
     qquick_image_extension \
@@ -49,4 +49,3 @@ SUBDIRS += \
     theme \
     quickutils \
     tree
-#    contenthub

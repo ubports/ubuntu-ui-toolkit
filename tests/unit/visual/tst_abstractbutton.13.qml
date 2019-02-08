@@ -257,12 +257,12 @@ Item {
             return [
                 // margins is [left, top, right, bottom]
                 {tag: "zero size, no margins, tap in visual", sizeGU: [0, 0], clickGU: [0, 0], touch: true},
-                {tag: "zero size, no margins, click in visual", sizeGU: [0, 0], clickGU: [0, 0], fail: true},
+                {tag: "zero size, no margins, click in visual", sizeGU: [0, 0], clickGU: [0, 0]},
                 {tag: "zero size, no margins, tap in sensing +", sizeGU: [0, 0], clickGU: [2, 2], touch: true},
                 {tag: "zero size, no margins, tap in sensing -", sizeGU: [0, 0], clickGU: [-2, -2], touch: true},
                 {tag: "zero size, no margins, click in sensing", sizeGU: [0, 0], clickGU: [2, 2], fail: true},
                 {tag: "zero size, 1GU margins, tap in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], touch: true},
-                {tag: "zero size, 1GU margins, click in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0], fail: true},
+                {tag: "zero size, 1GU margins, click in visual", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [0, 0]},
                 {tag: "zero size, 1GU margins, tap in sensing", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [2, 2], touch: true},
                 {tag: "zero size, 1GU margins, click in sensing", sizeGU: [0, 0], marginsGU: [1, 1, 1, 1], clickGU: [2, 2], fail: true},
                 {tag: "zero size, 3GU margins horizontal, tap in sensing", sizeGU: [0, 0], marginsGU: [3, 0, 3, 0], clickGU: [3, 2], touch: true},
