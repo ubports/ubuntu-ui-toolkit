@@ -240,7 +240,10 @@ void TouchRegistry::addCandidateOwnerForTouch(int id, QQuickItem *candidate)
     UG_DEBUG << "addCandidateOwnerForTouch id" << id << "candidate" << candidate;
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
-    if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
+    if (!touchInfo) {
+        qCritical("TouchRegistry: Failed to find TouchInfo");
+        return;
+    }
 
     if (touchInfo->isOwned()) {
         qWarning("TouchRegistry: trying to add candidate owner for a touch that's already owned");
@@ -268,7 +271,10 @@ void TouchRegistry::addTouchWatcher(int touchId, QQuickItem *watcher)
     UG_DEBUG << "addTouchWatcher id" << touchId << "watcher" << watcher;
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(touchId);
-    if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
+    if (!touchInfo) {
+        qCritical("TouchRegistry: Failed to find TouchInfo");
+        return;
+    }
 
     // TODO: Check if watcher already exists
 
@@ -280,7 +286,10 @@ void TouchRegistry::removeCandidateOwnerForTouch(int id, QQuickItem *candidate)
     UG_DEBUG << "removeCandidateOwnerForTouch id" << id << "candidate" << candidate;
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
-    if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
+    if (!touchInfo) {
+        qCritical("TouchRegistry: Failed to find TouchInfo");
+        return;
+    }
 
     // TODO: check if the candidate is in fact the owner of the touch
 
@@ -343,7 +352,10 @@ void TouchRegistry::requestTouchOwnership(int id, QQuickItem *candidate)
     UG_DEBUG << "requestTouchOwnership id " << id << "candidate" << candidate;
 
     Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(id);
-    if (!touchInfo) { qFatal("TouchRegistry: Failed to find TouchInfo"); }
+    if (!touchInfo) {
+        qCritical("TouchRegistry: Failed to find TouchInfo");
+        return;
+    }
 
     Q_ASSERT(!touchInfo->isOwned());
 

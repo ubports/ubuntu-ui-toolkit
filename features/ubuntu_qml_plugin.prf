@@ -7,7 +7,7 @@ load(ubuntu_enable_testing)
 
 #hacky hacks to build the qmltypes
 
-!qt_submodule_build {
+!cross_compile:!qt_submodule_build {
     #should be already set by the qml_plugin.prf, but lets be safe
     isEmpty(IMPORT_VERSION): error("Must set IMPORT_VERSION")
 

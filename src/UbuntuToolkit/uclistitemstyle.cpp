@@ -147,7 +147,7 @@ void UCListItemStyle::updateFlickable(QQuickFlickable *flickable)
 void UCListItemStyle::swipeEvent(UCSwipeEvent *event)
 {
     Q_UNUSED(event);
-    qmlInfo(this) << QStringLiteral("consider overriding swipeEvent() slot!");
+    qmlWarning(this) << QStringLiteral("consider overriding swipeEvent() slot!");
 }
 void UCListItemStyle::invokeSwipeEvent(UCSwipeEvent *event)
 {
@@ -167,7 +167,7 @@ void UCListItemStyle::invokeSwipeEvent(UCSwipeEvent *event)
  */
 void UCListItemStyle::rebound()
 {
-    qmlInfo(this) << QStringLiteral("consider overriding rebound() slot!");
+    qmlWarning(this) << QStringLiteral("consider overriding rebound() slot!");
 }
 void UCListItemStyle::invokeRebound()
 {

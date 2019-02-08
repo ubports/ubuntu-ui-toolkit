@@ -38,18 +38,15 @@ for _XML in $*; do
                 tst_textinput_touch.SEGFAULT.11.qml \
                 swipearea \
                 qquick_image_extension \
-                tst_page.11.qml \
                 tst_label13.qml \
                 performance \
-                tst_tabs.11.qml \
-                tst_focus.13.qml \
+                tst_optionselector.13.qml \
                 tst_pickerpanel.11.qml \
-                tst_picker.11.qml \
-                tst_picker.13.qml \
+                tst_scrollbar.13.qml \
                 recreateview \
                 touchregistry \
                 mainview \
-                tst_listitems_itemselector.11.qml \
+                tst_tabs_with_repeater.11.qml \
                 tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
                 inversemousearea \
                 '

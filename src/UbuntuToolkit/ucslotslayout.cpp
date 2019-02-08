@@ -127,7 +127,7 @@ void UCSlotsLayoutPrivate::insertSlotIntoSortedList(QQuickItem *slot,
 
         if (!attachedProperty) {
             Q_Q(UCSlotsLayout);
-            qmlInfo(q) << "Invalid attached property!";
+            qmlWarning(q) << "Invalid attached property!";
             return;
         }
 
@@ -149,7 +149,7 @@ void UCSlotsLayoutPrivate::addSlot(QQuickItem *slot)
     UCSlotsAttached *attachedProperty =
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(slot));
     if (!attachedProperty) {
-        qmlInfo(q) << "Invalid attached property!";
+        qmlWarning(q) << "Invalid attached property!";
         return;
     }
 
@@ -170,7 +170,7 @@ void UCSlotsLayoutPrivate::removeSlot(QQuickItem *slot)
     UCSlotsAttached *attachedProperty =
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(slot));
     if (!attachedProperty) {
-        qmlInfo(q) << "Invalid attached property!";
+        qmlWarning(q) << "Invalid attached property!";
         return;
     }
 
@@ -228,7 +228,7 @@ void UCSlotsLayoutPrivate::_q_updateCachedMainSlotHeight()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(mainSlot));
 
         if (!attachedProperty) {
-            qmlInfo(q) << "Invalid attached property!";
+            qmlWarning(q) << "Invalid attached property!";
             mainSlotHeight = 0;
             return;
         }
@@ -281,7 +281,7 @@ void UCSlotsLayoutPrivate::_q_updateSlotsBBoxHeight()
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
             if (!attachedProperty) {
-                qmlInfo(q) << "Invalid attached property!";
+                qmlWarning(q) << "Invalid attached property!";
                 continue;
             }
 
@@ -396,7 +396,7 @@ void UCSlotsLayoutPrivate::setupSlotsVerticalPositioning(QQuickItem *slot, UCSlo
 
         if (attachedProps == Q_NULLPTR) {
             Q_Q(UCSlotsLayout);
-            qmlInfo(q) << "Invalid attached property!";
+            qmlWarning(q) << "Invalid attached property!";
             return;
         }
     }
@@ -435,7 +435,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
 
         if (!attached) {
-            qmlInfo(q) << "Invalid attached property!";
+            qmlWarning(q) << "Invalid attached property!";
             continue;
         }
 
@@ -455,7 +455,7 @@ void UCSlotsLayoutPrivate::layoutInRow(qreal siblingAnchorMargin, QQuickAnchorLi
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(items.at(i - 1)));
 
             if (!attachedPreviousItem) {
-                qmlInfo(q) << "Invalid attached property!";
+                qmlWarning(q) << "Invalid attached property!";
             } else {
                 itemAnchors->setLeft(QQuickItemPrivate::get(items.at(i - 1))->right());
                 itemAnchors->setLeftMargin(attachedPreviousItem->padding()->trailing() + attached->padding()->leading());
@@ -499,7 +499,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
         if (i < numOfLeading) {
             if (numOfLeadingToLayout >= maxNumberOfLeadingSlots) {
                 skipSlotFlag = true;
-                qmlInfo(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
+                qmlWarning(q) << "This layout only allows up to " << maxNumberOfLeadingSlots
                            << " leading slots. Please remove any additional leading slot.";
             } else {
                 if (!skipSlotFlag)
@@ -508,7 +508,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
         } else {
             if (numOfTrailingToLayout >= maxNumberOfTrailingSlots) {
                 skipSlotFlag = true;
-                qmlInfo(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
+                qmlWarning(q) << "This layout only allows up to " << maxNumberOfTrailingSlots
                            << " trailing slots. Please remove any additional trailing slot.";
 
             } else {
@@ -522,7 +522,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                     qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(child));
 
             if (!attached) {
-                qmlInfo(q) << "Invalid attached property!";
+                qmlWarning(q) << "Invalid attached property!";
                 continue;
             }
             totalSlotsWidth += child->width() + attached->padding()->leading()
@@ -538,7 +538,7 @@ void UCSlotsLayoutPrivate::_q_relayout()
                 qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(mainSlot));
 
         if (!attachedProps) {
-            qmlInfo(q) << "Invalid attached property!";
+            qmlWarning(q) << "Invalid attached property!";
             return;
         }
         //bug#1630167: set width instead of implicitWidth to avoid clashing with internal logic of the
@@ -564,7 +564,7 @@ void UCSlotsLayoutPrivate::handleAttachedPropertySignals(QQuickItem *item, bool 
     UCSlotsAttached *attachedSlot =
             qobject_cast<UCSlotsAttached *>(qmlAttachedPropertiesObject<UCSlotsLayout>(item));
     if (!attachedSlot) {
-        qmlInfo(q) << "Invalid attached property!";
+        qmlWarning(q) << "Invalid attached property!";
         return;
     }
 

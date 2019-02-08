@@ -144,7 +144,7 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::Compi
 void UCStyleHints::propertyNotFound(const QString &styleName, const QString &property)
 {
     if (!m_ignoreUnknownProperties) {
-        qmlInfo(this) << QStringLiteral("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
+        qmlWarning(this) << QStringLiteral("Style '%1' has no property called '%2'.").arg(styleName).arg(property);
     }
 }
 
@@ -207,7 +207,7 @@ void UCStyleHints::classBegin()
         connect(m_styledItem, SIGNAL(styleInstanceChanged()),
                 this, SLOT(_q_applyStyleHints()));
     } else {
-        qmlInfo(this) << "StyleHints must be declared in a StyledItem or a derivate of it.";
+        qmlWarning(this) << "StyleHints must be declared in a StyledItem or a derivate of it.";
     }
 }
 

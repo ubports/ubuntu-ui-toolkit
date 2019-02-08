@@ -326,7 +326,7 @@ void ULLayoutsPrivate::updateLayout()
 
 void ULLayoutsPrivate::error(QObject *item, const QString &message)
 {
-    qmlInfo(item) << "ERROR: " << message;
+    qmlWarning(item) << "ERROR: " << message;
     QQmlEngine *engine = qmlEngine(item);
     if (engine) {
         engine->quit();
@@ -335,7 +335,7 @@ void ULLayoutsPrivate::error(QObject *item, const QString &message)
 
 void ULLayoutsPrivate::error(QObject *item, const QList<QQmlError> &errors)
 {
-    qmlInfo(item, errors);
+    qmlWarning(item, errors);
     QQmlEngine *engine = qmlEngine(item);
     if (engine) {
         engine->quit();
@@ -344,7 +344,7 @@ void ULLayoutsPrivate::error(QObject *item, const QList<QQmlError> &errors)
 
 void ULLayoutsPrivate::warning(QObject *item, const QString &message)
 {
-    qmlInfo(item) << "WARNING: " << message;
+    qmlWarning(item) << "WARNING: " << message;
 }
 
 

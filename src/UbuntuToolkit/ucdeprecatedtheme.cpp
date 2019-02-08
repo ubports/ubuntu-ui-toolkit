@@ -102,7 +102,7 @@ void UCDeprecatedTheme::showDeprecatedNote(QObject *onItem, const char *note)
     if (m_notes.contains(noteId))
         return;
     QByteArray suppressNote = qgetenv("SUPPRESS_DEPRECATED_NOTE");
-    qmlInfo(onItem) << note;
+    qmlWarning(onItem) << note;
     m_notes.insert(noteId, true);
 }
 

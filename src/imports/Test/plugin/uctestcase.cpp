@@ -24,7 +24,7 @@
 #include <QtCore/QDebug>
 #include <QtQml/QQmlEngine>
 #include <QtQuick/QQuickItem>
-#include <QtTest/QtTest>
+#include <QtTest>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -34,6 +34,9 @@ Q_DECLARE_METATYPE(QList<QQmlError>)
  */
 UbuntuTestCase::UbuntuTestCase(const QString& file, ResizeMode resize, bool assertOnFailure, QWindow* parent) : QQuickView(parent)
 {
+    // Create a dummy touch device for tests.
+    QTest::createTouchDevice();
+
     QString modules(UBUNTU_QML_IMPORT_PATH);
     Q_ASSERT(QDir(modules).exists());
     QString modulePath(QDir(modules).absolutePath());
@@ -65,7 +68,7 @@ int UbuntuTestCase::warnings() const
 }
 
 /*!
- * Ignore an expected warning message created using qmlInfo.
+ * Ignore an expected warning message created using qmlWarning.
  */
 void UbuntuTestCase::ignoreWarning(const QString& fileName, uint line,
     uint column, const QString& message, uint occurences)

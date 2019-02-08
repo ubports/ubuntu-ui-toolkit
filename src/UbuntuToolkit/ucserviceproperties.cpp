@@ -52,7 +52,7 @@ void UCServicePropertiesPrivate::warning(const QString &message)
     }
     QString env = QString::fromLocal8Bit(qgetenv("SHOW_SERVICEPROPERTIES_WARNINGS"));
     if (!env.isEmpty() && (env == QStringLiteral("1") || env.toLower() == QStringLiteral("true"))) {
-        qmlInfo(q_ptr) << message;
+        qmlWarning(q_ptr) << message;
     }
 }
 
