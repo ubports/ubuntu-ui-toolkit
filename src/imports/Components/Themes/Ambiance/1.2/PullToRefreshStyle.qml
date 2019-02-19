@@ -25,7 +25,7 @@ Style.PullToRefreshStyle {
     defaultContent: Label {
         id: labelComponent
         visible: control.enabled
-        text: releaseToRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
+        text: releaseToRefresh ? i18n.dtr("ubuntu-ui-toolkit", "Release to refresh...") : i18n.dtr("ubuntu-ui-toolkit", "Pull to refresh...")
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         Behavior on text {
