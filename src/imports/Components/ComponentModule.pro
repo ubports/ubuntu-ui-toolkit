@@ -128,6 +128,9 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/PageHeader.qml \
              1.3/Icon.qml
 
+# 1.4
+QML_FILES += 1.4/TextField.qml
+
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \
              1.3/PageHeadConfiguration.qdoc \
