@@ -1585,6 +1585,68 @@ Ubuntu.Components.TextField 1.3: ActionItem
     readonly property int selectionStart
     property QValidator validator
     property int verticalAlignment
+Ubuntu.Components.TextField 1.4: ActionItem
+    readonly property bool acceptableInput
+    property bool autoScroll
+    readonly property bool canPaste
+    readonly property bool canRedo
+    readonly property bool canUndo
+    property color color
+    readonly property double contentHeight
+    readonly property double contentWidth
+    property Component cursorDelegate
+    property int cursorPosition
+    readonly property QRectF cursorRectangle
+    property bool cursorVisible
+    property Component customSoftwareInputPanel
+    readonly property string displayText
+    property int echoMode
+    readonly property int effectiveHorizontalAlignment
+    property bool errorHighlight
+    property QFont font
+    property bool hasClearButton
+    property bool highlighted
+    property int horizontalAlignment
+    property string inputMask
+    readonly property bool inputMethodComposing
+    property int inputMethodHints
+    readonly property int length
+    property int maximumLength
+    signal accepted()
+    function var copy()
+    function var cut()
+    function var paste(var data)
+    function var deselect()
+    function var insert(var position, var text)
+    function var positionAt(var x, var position)
+    function var positionToRectangle(var pos)
+    function var select(var start, var end)
+    function var selectAll()
+    function var selectWord()
+    function var isRightToLeft(var start, var end)
+    function var moveCursorSelection(var position, var mode)
+    function var redo()
+    function var undo()
+    function var remove(var start, var end)
+    function var getText(var start, var end)
+    function var clear()
+    property int mouseSelectionMode
+    property string passwordCharacter
+    property bool persistentSelection
+    property string placeholderText
+    property var popover
+    property list<QtObject> primaryItem
+    property bool readOnly
+    property int renderType
+    property list<QtObject> secondaryItem
+    property bool selectByMouse
+    readonly property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    readonly property int selectionEnd
+    readonly property int selectionStart
+    property QValidator validator
+    property int verticalAlignment
 Ubuntu.Components.TextSize: Enum
     Large
     Medium

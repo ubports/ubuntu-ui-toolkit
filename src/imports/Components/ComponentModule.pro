@@ -129,7 +129,9 @@ QML_FILES += 1.3/ActionBar.qml \
              1.3/Icon.qml
 
 # 1.4
-QML_FILES += 1.4/TextField.qml
+QML_FILES += 1.4/TextField.qml \
+             1.4/TextCursor.qml \
+             1.4/InputHandler.qml
 
 OTHER_FILES+= qmldir \
              1.3/CrossFadeImage.qdoc \
