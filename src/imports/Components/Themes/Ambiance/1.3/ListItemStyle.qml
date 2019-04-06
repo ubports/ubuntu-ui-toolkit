@@ -123,6 +123,7 @@ Styles.ListItemStyle {
                         width: units.gu(2)
                         height: width
                         name: action.iconName
+                        source: action.iconSource
                         color: leading
                                ? (action.enabled ? leadingForegroundColor : leadingDisabledForegroundColor)
                                : (action.enabled ? trailingForegroundColor : trailingDisabledForegroundColor)
