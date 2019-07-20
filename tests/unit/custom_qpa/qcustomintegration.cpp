@@ -86,7 +86,7 @@ QCustomIntegration::QCustomIntegration()
     mPrimaryScreen->mDepth = 32;
     mPrimaryScreen->mFormat = QImage::Format_ARGB32_Premultiplied;
 
-    screenAdded(mPrimaryScreen);
+    QWindowSystemInterface::handleScreenAdded(mPrimaryScreen);
 }
 
 QCustomIntegration::~QCustomIntegration()
