@@ -25,8 +25,7 @@ Item {
     property var button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
-    // FIXME: Add this color to the palette
-    property color defaultColor: "#b2b2b2"
+    property color defaultColor: "#888888"
     property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
