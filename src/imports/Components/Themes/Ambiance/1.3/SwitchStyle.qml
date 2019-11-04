@@ -49,12 +49,14 @@ Item {
 
     UbuntuShape {
         id: background
+        aspect: UbuntuShape.Inset
         anchors.fill: parent
         backgroundColor: switchStyle.backgroundColor
         clip: true
 
         UbuntuShape {
             id: thumb
+            aspect: UbuntuShape.Inset
             states: [
                 State {
                     name: "checked"

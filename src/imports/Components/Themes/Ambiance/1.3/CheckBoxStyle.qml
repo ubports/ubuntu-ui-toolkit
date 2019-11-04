@@ -64,6 +64,7 @@ Item {
 
     UbuntuShape {
         id: background
+        aspect: UbuntuShape.Inset
         anchors {
             margins: checkBoxStyle.backgroundPadding
         }
