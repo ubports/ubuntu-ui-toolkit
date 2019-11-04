@@ -29,6 +29,7 @@ Item {
 
     UbuntuShape {
         id: background
+        aspect: UbuntuShape.Inset
 
         width: styledItem.width
         height: styledItem.height
