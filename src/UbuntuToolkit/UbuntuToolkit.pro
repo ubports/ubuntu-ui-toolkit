@@ -7,7 +7,7 @@ QT *= systeminfo systeminfo-private
 
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0 dbus-1 libnih libnih-dbus
+    PKGCONFIG += gio-2.0 dbus-1
 }
 
 !contains(QT_ARCH, arm) {

@@ -30,10 +30,8 @@ parts:
         - gdb
         - libdbus-1-dev
         - liblttng-ust-dev
-        - libnih-dbus-dev
         - libqt5svg5-dev
         - qtpim5-dev
     stage-packages:
-        - libnih-dbus1
         - suru-icon-theme
         - ttf-ubuntu-font-family
