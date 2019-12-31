@@ -137,10 +137,16 @@ QtObject {
     readonly property color green: "#3eb34f"
 
     /*!
-      Blue. Recommended for text selection and text cursor.
+      Blue. Recommended for text selection and text cursor for Ambiance theme.
+      \since Ubuntu.Components 1.3
+     */
+    readonly property color blue: "#335280"
+
+    /*!
+      Blue. Recommended for text selection and text cursor for SuruDark theme.
       \since Ubuntu.Components 1.1
      */
-    readonly property color blue: "#19b6ee"
+    readonly property color lightBlue: "#19b6ee"
 
     /*!
       Purple. Recommended for proper nouns in
