@@ -28,8 +28,8 @@ Palette {
                 raised: "#FFFFFF",
                 positiveText: UbuntuColors.porcelain,
                 negativeText: UbuntuColors.porcelain,
-                activityText: UbuntuColors.porcelain,
-                focusText: "#FFFFFF",
+                activityText: UbuntuColors.Inkstone,
+                focusText: UbuntuColors.Inkstone,
                 selectionText: "#FFFFFF"
             };
             for (var p in normal) {
@@ -59,8 +59,8 @@ Palette {
                 selectionText: "#FFFFFF",
                 positiveText: UbuntuColors.porcelain,
                 negativeText: UbuntuColors.porcelain,
-                activityText: UbuntuColors.porcelain,                
-                focusText: UbuntuColors.porcelain,
+                activityText: UbuntuColors.jet,
+                focusText: UbuntuColors.jet,
                 position: "#00000000"
             };
             for (var p in selected) {
@@ -85,7 +85,7 @@ Palette {
     }
 
     focused: SuruDarkNormal {
-        background: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.4)
+        background: Qt.rgba(UbuntuColors.lightBlue.r, UbuntuColors.lightBlue.g, UbuntuColors.lightBlue.b, 0.4)
     }
 }
 //![0]
