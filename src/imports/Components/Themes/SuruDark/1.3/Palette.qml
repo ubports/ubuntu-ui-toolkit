@@ -28,8 +28,8 @@ Palette {
                 raised: "#FFFFFF",
                 positiveText: UbuntuColors.porcelain,
                 negativeText: UbuntuColors.porcelain,
-                activityText: UbuntuColors.Inkstone,
-                focusText: UbuntuColors.Inkstone,
+                activityText: UbuntuColors.inkstone,
+                focusText: UbuntuColors.inkstone,
                 selectionText: "#FFFFFF"
             };
             for (var p in normal) {
