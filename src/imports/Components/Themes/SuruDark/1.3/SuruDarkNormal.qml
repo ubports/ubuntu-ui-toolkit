@@ -39,10 +39,10 @@ PaletteValues {
     focusText: "#000000"
     selection: Qt.rgba(UbuntuColors.lightBlue.r, UbuntuColors.lightBlue.g, UbuntuColors.lightBlue.b, 0.4)
     selectionText: "#FFFFFF"
-    positive: UbuntuColors.green
-    positiveText: "#FFFFFF"
-    negative: UbuntuColors.red
-    negativeText: "#FFFFFF"
+    positive: UbuntuColors.lightGreen
+    positiveText: "#000000"
+    negative: UbuntuColors.lightRed
+    negativeText: "#000000"
     activity: UbuntuColors.lightBlue
     activityText: "#000000"
     position: "#00000000"

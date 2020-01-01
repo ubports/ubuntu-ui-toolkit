@@ -1734,7 +1734,9 @@ Ubuntu.Components.UbuntuColors 1.3: QtObject singleton
     readonly property color jet
     readonly property color lightAubergine
     readonly property color lightBlue
+    readonly property color lightGreen
     readonly property color lightGrey
+    readonly property color lightRed
     readonly property color midAubergine
     readonly property color orange
     property Gradient orangeGradient
