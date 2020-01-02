@@ -32,10 +32,8 @@ parts:
         - liblttng-ust-dev
         - libnih-dbus-dev
         - libqt5svg5-dev
-        - qtdeclarative5-unity-action-plugin
         - qtpim5-dev
     stage-packages:
         - libnih-dbus1
-        - qtdeclarative5-unity-action-plugin
         - suru-icon-theme
         - ttf-ubuntu-font-family
