@@ -27,14 +27,22 @@
 UT_NAMESPACE_BEGIN
 
 // verifies property declaration correctness
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
 void UCStyleHintsParser::verifyBindings(const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
+#else
+void UCStyleHintsParser::verifyBindings(const QV4::CompiledData::Unit *compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
+#endif
 {
     Q_FOREACH(const QV4::CompiledData::Binding *binding, bindings) {
         verifyProperty(compilationUnit, binding);
     }
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
 void UCStyleHintsParser::verifyProperty(const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding)
+#else
+void UCStyleHintsParser::verifyProperty(const QV4::CompiledData::Unit *compilationUnit, const QV4::CompiledData::Binding *binding)
+#endif
 {
     if (binding->type == QV4::CompiledData::Binding::Type_Object) {
         error(compilationUnit->objectAt(binding->value.objectIndex),
@@ -61,7 +69,11 @@ void UCStyleHintsParser::verifyProperty(const QQmlRefPointer<QV4::CompiledData::
 }
 
 // decodes property declarations, stores the bindings and values
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
 void UCStyleHintsParser::applyBindings(QObject *obj, const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
+#else
+void UCStyleHintsParser::applyBindings(QObject *obj, QV4::CompiledData::CompilationUnit *compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
+#endif
 {
     UCStyleHints *hints = static_cast<UCStyleHints*>(obj);
 
@@ -79,7 +91,11 @@ void UCStyleHintsParser::applyBindings(QObject *obj, const QQmlRefPointer<QV4::C
     hints->m_decoded = true;
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
 void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding)
+#else
+void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::CompilationUnit *compilationUnit, const QV4::CompiledData::Binding *binding)
+#endif
 {
     QString propertyName = propertyPrefix + compilationUnit->stringAt(binding->propertyNameIndex);
 
@@ -99,7 +115,11 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QQmlRefPoi
     switch (binding->type) {
     case QV4::CompiledData::Binding::Type_Script:
     {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         QString expression = binding->valueAsScriptString(compilationUnit.data());
+#else
+        QString expression = binding->valueAsScriptString(compilationUnit->data);
+#endif
         QUrl url = QUrl();
         int line = -1;
         int column = -1;
@@ -124,12 +144,20 @@ void UCStyleHints::decodeBinding(const QString &propertyPrefix, const QQmlRefPoi
     case QV4::CompiledData::Binding::Type_TranslationById:
     case QV4::CompiledData::Binding::Type_String:
     {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         m_values << qMakePair(propertyName, binding->valueAsString(compilationUnit.data()));
+#else
+        m_values << qMakePair(propertyName, binding->valueAsString(compilationUnit->data));
+#endif
         break;
     }
     case QV4::CompiledData::Binding::Type_Number:
     {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         m_values << qMakePair(propertyName, binding->valueAsNumber(compilationUnit->constants));
+#else
+        m_values << qMakePair(propertyName, binding->valueAsNumber());
+#endif
         break;
     }
     case QV4::CompiledData::Binding::Type_Boolean:
