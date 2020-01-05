@@ -65,7 +65,7 @@ qreal ColorUtils::contrast(const QColor &color)
 
 qreal ColorUtils::contrastRatio(const QColor &color1, const QColor &color2)
 {
-    return (contrast(color1) + 0.05) / contrast(color2 + 0.05);
+    return (contrast(color1) + 0.05) / (contrast(color2) + 0.05);
 }
 
 UT_NAMESPACE_END
