@@ -30,6 +30,7 @@ public:
     explicit ColorUtils(QObject *parent = 0);
     Q_INVOKABLE static qreal luminance(const QColor &color);
     Q_INVOKABLE static qreal contrast(const QColor &color);
+    Q_INVOKABLE static qreal contrastRatio(const QColor &color1, const QColor &color2);
 };
 
 UT_NAMESPACE_END

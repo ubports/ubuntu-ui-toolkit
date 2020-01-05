@@ -251,6 +251,7 @@ Ubuntu.Components.Clipboard 1.0 0.1: QtObject singleton
 Ubuntu.Components.ColorUtils 1.0 0.1: QtObject singleton
     function double luminance(color color)
     function double contrast(color color)
+    function double contrastRatio(color color, color color)
 Ubuntu.Components.ComboButton 1.1: Button
     property double collapsedHeight
     default property list<QtObject> comboList

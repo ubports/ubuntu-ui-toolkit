@@ -38,30 +38,34 @@ qreal ColorUtils::luminance(const QColor &color)
 
 qreal ColorUtils::contrast(const QColor &color)
 {
-    const qreal whiteLight = 1;
     qreal redLight, greenLight, blueLight, colorLight;
 
     if (color.redF() <= 0.03928) {
         redLight = color.redF() / 12.92;
     } else {
-        redLight = pow ((color.redF() + 0.055) / 1.055, 2.4);
+        redLight = pow((color.redF() + 0.055) / 1.055, 2.4);
     }
 
     if (color.greenF() <= 0.03928) {
         greenLight = color.greenF() / 12.92;
     } else {
-        greenLight = pow ((color.greenF() + 0.055) / 1.055, 2.4);
+        greenLight = pow((color.greenF() + 0.055) / 1.055, 2.4);
     }
 
     if (color.blueF() <= 0.03928) {
         blueLight = color.blueF() / 12.92;
     } else {
-        blueLight = pow ((color.blueF() + 0.055) / 1.055, 2.4);
+        blueLight = pow((color.blueF() + 0.055) / 1.055, 2.4);
     }
 
     colorLight = redLight * 0.2126 + greenLight * 0.7152 + blueLight * 0.0722;
 
-    return (whiteLight + 0.05) / (colorLight + 0.05);
+    return colorLight;
+}
+
+qreal ColorUtils::contrastRatio(const QColor &color1, const QColor &color2)
+{
+    return (contrast(color1) + 0.05) / contrast(color2 + 0.05);
 }
 
 UT_NAMESPACE_END
