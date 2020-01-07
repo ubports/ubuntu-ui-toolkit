@@ -35,16 +35,16 @@ PaletteValues {
     overlaySecondaryText: UbuntuColors.slate
     field: UbuntuColors.jet
     fieldText: "#FFFFFF"
-    focus: UbuntuColors.blue
-    focusText: "#FFFFFF"
-    selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.4)
+    focus: UbuntuColors.lightBlue
+    focusText: "#000000"
+    selection: Qt.rgba(UbuntuColors.lightBlue.r, UbuntuColors.lightBlue.g, UbuntuColors.lightBlue.b, 0.4)
     selectionText: "#FFFFFF"
-    positive: UbuntuColors.green
-    positiveText: "#FFFFFF"
-    negative: UbuntuColors.red
-    negativeText: "#FFFFFF"
-    activity: UbuntuColors.blue
-    activityText: "#FFFFFF"
+    positive: UbuntuColors.lightGreen
+    positiveText: "#000000"
+    negative: UbuntuColors.lightRed
+    negativeText: "#000000"
+    activity: UbuntuColors.lightBlue
+    activityText: "#000000"
     position: "#00000000"
-    positionText: UbuntuColors.blue
+    positionText: UbuntuColors.lightBlue
 }

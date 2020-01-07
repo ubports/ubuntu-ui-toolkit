@@ -128,19 +128,38 @@ QtObject {
       buttons, errors and alerts.
       \since Ubuntu.Components 1.1
      */
-    readonly property color red: "#ed3146"
+    readonly property color red: "#c7162b"
 
     /*!
-      Green. Recommended for positive action buttons.
-      \since Ubuntu.Components 1.1
+      Red. Recommended for negative and irreversible action
+      buttons, errors and alerts.
+      \since Ubuntu.Components 1.3
      */
-    readonly property color green: "#3eb34f"
+    readonly property color lightRed: "#ed3146"
 
     /*!
-      Blue. Recommended for text selection and text cursor.
+      Green. Recommended for positive action buttons for Ambiance theme.
       \since Ubuntu.Components 1.1
      */
-    readonly property color blue: "#19b6ee"
+    readonly property color green: "#0e8420"
+
+    /*!
+      Green. Recommended for positive action buttons for SuruDark theme.
+      \since Ubuntu.Components 1.3
+     */
+    readonly property color lightGreen: "#3eb34f"
+
+    /*!
+      Blue. Recommended for text selection and text cursor for Ambiance theme.
+      \since Ubuntu.Components 1.1
+     */
+    readonly property color blue: "#335280"
+
+    /*!
+      Blue. Recommended for text selection and text cursor for SuruDark theme.
+      \since Ubuntu.Components 1.3
+     */
+    readonly property color lightBlue: "#19b6ee"
 
     /*!
       Purple. Recommended for proper nouns in
