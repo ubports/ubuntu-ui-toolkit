@@ -28,4 +28,44 @@ qreal ColorUtils::luminance(const QColor &color)
     return color.lightnessF();
 }
 
+/*
+ * Contrast calculation
+ * https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-procedure
+ *
+ * Based on the code by kirilloid
+ * https://stackoverflow.com/questions/9733288/how-to-programmatically-calculate-the-contrast-ratio-between-two-colors
+ */
+
+qreal ColorUtils::contrast(const QColor &color)
+{
+    qreal redLight, greenLight, blueLight, colorLight;
+
+    if (color.redF() <= 0.03928) {
+        redLight = color.redF() / 12.92;
+    } else {
+        redLight = pow((color.redF() + 0.055) / 1.055, 2.4);
+    }
+
+    if (color.greenF() <= 0.03928) {
+        greenLight = color.greenF() / 12.92;
+    } else {
+        greenLight = pow((color.greenF() + 0.055) / 1.055, 2.4);
+    }
+
+    if (color.blueF() <= 0.03928) {
+        blueLight = color.blueF() / 12.92;
+    } else {
+        blueLight = pow((color.blueF() + 0.055) / 1.055, 2.4);
+    }
+
+    colorLight = redLight * 0.2126 + greenLight * 0.7152 + blueLight * 0.0722;
+
+    return colorLight;
+}
+
+qreal ColorUtils::contrastRatio(const QColor &color1, const QColor &color2)
+{
+    return (contrast(color1) + 0.05) / (contrast(color2) + 0.05);
+}
+
 UT_NAMESPACE_END

@@ -29,6 +29,9 @@ class UBUNTUTOOLKIT_EXPORT ColorUtils : public QObject
 public:
     explicit ColorUtils(QObject *parent = 0);
     Q_INVOKABLE static qreal luminance(const QColor &color);
+    Q_INVOKABLE static qreal contrastRatio(const QColor &color1, const QColor &color2);
+private:
+    static qreal contrast(const QColor &color);
 };
 
 UT_NAMESPACE_END
