@@ -25,7 +25,7 @@ Item {
     property var button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
-    property color defaultColor: "#888888"
+    property color defaultColor: "#666666"
     property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
@@ -163,7 +163,7 @@ Item {
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain best contrast (works in most cases)
         */
-        textColor: ColorUtils.contrastRatio("#FFFFFF", button.color) >= 4 && !(stroke && !button.pressed) ? "#FFFFFF" : "#111111"
+        textColor: ColorUtils.contrastRatio("#FFFFFF", button.color) >= 4.1 && !(stroke && !button.pressed) ? "#FFFFFF" : "#111111"
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)
