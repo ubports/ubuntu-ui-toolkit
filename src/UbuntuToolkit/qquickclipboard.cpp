@@ -38,7 +38,7 @@ UT_NAMESPACE_BEGIN
  *
  * The clipboard data cannot be modified through the type returned by the data
  * property, for this a new instance of MimeData type must be used. This instance
- * can be either a standalone MimeDala component or an object created using newData()
+ * can be either a standalone MimeData component or an object created using newData()
  * function. Remember that standalone MimeData types duplicate the clipboard data
  * which may cause extensive memory use.
  *

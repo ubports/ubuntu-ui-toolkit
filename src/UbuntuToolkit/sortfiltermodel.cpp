@@ -36,14 +36,13 @@ UT_NAMESPACE_BEGIN
  *
  * Example usage:
  * \qml
- * import QtQuick 2.4
- * import Ubuntu.Components 1.2
- * import Ubuntu.Components.ListItems 1.1
- *
+ * import QtQuick 2.9
+ * import Ubuntu.Components 1.3
+ * 
  * MainView {
  *     width: units.gu(80)
  *     height: units.gu(40)
- *
+ * 
  *     ListModel {
  *         id: movies
  *         ListElement {
@@ -52,40 +51,43 @@ UT_NAMESPACE_BEGIN
  *         }
  *         ListElement {
  *             title: "Elephants Dream"
- *             // lowercase b
- *             producer: "blender"
+ *             producer: "Blender"
  *         }
  *         ListElement {
  *             title: "Big Buck Bunny"
- *             producer: "Blender"
+ *             producer: "blender"
  *         }
  *     }
- *
+ * 
  *     SortFilterModel {
  *         id: sortedMovies
  *         model: movies
- *         sort.property: "title"
- *         sort.order: Qt.DescendingOrder
- *         // case insensitive sorting
- *         sortCaseSensitivity: Qt.CaseInsensitive
- *
- *         filter.property: "producer"
- *         // case insensitive matches
- *         filter.pattern: /blender/i
+ *         sort {
+ *             property: "title"
+ *             order: Qt.DescendingOrder
+ *         }
+ *         filter {
+ *             property: "producer"
+ *             //Add i for case insensitive
+ *             pattern: /Blender/i
+ *         }
  *     }
- *
+ * 
  *     ListView {
  *         model: sortedMovies
  *         anchors.fill: parent
- *
- *         delegate: Subtitled {
- *             text: title
- *             subText: producer
+ *         delegate: ListItemLayout {
+ *             title.text: model.title
+ *             subtitle.text: model.producer
  *         }
- *
- *         section.delegate: ListItem.Header { text: i18n.tr(section) }
- *         section.property: "title"
- *         section.criteria: ViewSection.FirstCharacter
+ * 
+ *         section {
+ *             property: "title"
+ *             criteria: ViewSection.FirstCharacter
+ *             delegate: Text {
+ *                 text: i18n.tr(section)
+ *             }
+ *         }
  *     }
  * }
  * \endqml
