@@ -38,11 +38,11 @@ UT_NAMESPACE_BEGIN
  * \qml
  * import QtQuick 2.9
  * import Ubuntu.Components 1.3
- * 
+ *
  * MainView {
  *     width: units.gu(80)
  *     height: units.gu(40)
- * 
+ *
  *     ListModel {
  *         id: movies
  *         ListElement {
@@ -51,14 +51,14 @@ UT_NAMESPACE_BEGIN
  *         }
  *         ListElement {
  *             title: "Elephants Dream"
- *             producer: "Blender"
+ *             producer: "blender"
  *         }
  *         ListElement {
  *             title: "Big Buck Bunny"
- *             producer: "blender"
+ *             producer: "Blender"
  *         }
  *     }
- * 
+ *
  *     SortFilterModel {
  *         id: sortedMovies
  *         model: movies
@@ -72,7 +72,7 @@ UT_NAMESPACE_BEGIN
  *             pattern: /Blender/i
  *         }
  *     }
- * 
+ *
  *     ListView {
  *         model: sortedMovies
  *         anchors.fill: parent
@@ -80,7 +80,7 @@ UT_NAMESPACE_BEGIN
  *             title.text: model.title
  *             subtitle.text: model.producer
  *         }
- * 
+ *
  *         section {
  *             property: "title"
  *             criteria: ViewSection.FirstCharacter
