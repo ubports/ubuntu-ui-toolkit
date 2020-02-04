@@ -17,8 +17,13 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtQml/QQmlInfo>
 #include <QtQml/private/qqmlcomponentattached_p.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#include <QtQmlModels/private/qqmldelegatemodel_p.h>
+#include <QtQmlModels/private/qqmlobjectmodel_p.h>
+#else
 #include <QtQml/private/qqmldelegatemodel_p.h>
 #include <QtQml/private/qqmlobjectmodel_p.h>
+#endif
 #include <QtQuick/private/qquickflickable_p.h>
 
 #include "i18n_p.h"

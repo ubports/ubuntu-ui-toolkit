@@ -73,12 +73,22 @@ private:
     QList<Expression> m_expressions;
     QList< QPair<QString, QVariant> > m_values;
     QList< PropertyChange* > m_propertyBackup;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QQmlRefPointer<QV4::ExecutableCompilationUnit> m_cdata;
+#else
     QQmlRefPointer<QV4::CompiledData::CompilationUnit> m_cdata;
+#endif
 
     friend class UCStyleHintsParser;
 
     void propertyNotFound(const QString &styleName, const QString &property);
-    void decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    void decodeBinding(const QString &propertyPrefix, const QQmlRefPointer<QV4::ExecutableCompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding);
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+    void decodeBinding(const QString &propertyPrefix, const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding);
+#else
+    void decodeBinding(const QString &propertyPrefix, const QV4::CompiledData::CompilationUnit *compilationUnit, const QV4::CompiledData::Binding *binding);
+#endif
 };
 
 class UBUNTUTOOLKIT_EXPORT UCStyleHintsParser : public QQmlCustomParser
@@ -86,11 +96,25 @@ class UBUNTUTOOLKIT_EXPORT UCStyleHintsParser : public QQmlCustomParser
 public:
     UCStyleHintsParser() : QQmlCustomParser(QQmlCustomParser::AcceptsSignalHandlers) {}
 
-    void verifyBindings(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
-    void applyBindings(QObject *obj, QV4::CompiledData::CompilationUnit *cdata, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    void verifyBindings(const QQmlRefPointer<QV4::ExecutableCompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+    void applyBindings(QObject *obj, const QQmlRefPointer<QV4::ExecutableCompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+    void verifyBindings(const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+    void applyBindings(QObject *obj, const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+#else
+    void verifyBindings(const QV4::CompiledData::Unit *compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+    void applyBindings(QObject *obj, QV4::CompiledData::CompilationUnit *compilationUnit, const QList<const QV4::CompiledData::Binding *> &bindings) override;
+#endif
 
 private:
-    void verifyProperty(const QV4::CompiledData::Unit *qmlUnit, const QV4::CompiledData::Binding *binding);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    void verifyProperty(const QQmlRefPointer<QV4::ExecutableCompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding);
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+    void verifyProperty(const QQmlRefPointer<QV4::CompiledData::CompilationUnit> &compilationUnit, const QV4::CompiledData::Binding *binding);
+#else
+    void verifyProperty(const QV4::CompiledData::Unit *compilationUnit, const QV4::CompiledData::Binding *binding);
+#endif
 };
 
 UT_NAMESPACE_END

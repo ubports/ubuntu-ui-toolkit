@@ -290,10 +290,18 @@ QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
                           << " is singleton, but has no singletonInstanceInfo" << std::endl;
                 continue;
             }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+            if (ty.isQObjectSingleton()) {
+#else
             if (siinfo->qobjectCallback) {
                 siinfo->init(engine);
+#endif
                 collectReachableMetaObjects(object, &metas);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                object = QQmlEnginePrivate::get(engine)->singletonInstance<QObject*>(ty);
+#else
                 object = siinfo->qobjectApi(engine);
+#endif
             } else {
                 inObjectInstantiation.clear();
                 continue; // we don't handle QJSValue singleton types.
@@ -900,8 +908,22 @@ int main(int argc, char *argv[])
         p.parse(qmlDirFile.readAll());
         if (p.hasError()) {
             std::cerr << "Failed to read " << qPrintable(qmlDirFile.fileName()) << std::endl;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+            Q_FOREACH (const QQmlJS::DiagnosticMessage &e, p.errors(qmlDirFile.fileName())) {
+                QString errorString = QLatin1String("qmldir");
+                if (e.line > 0) {
+                    errorString += QLatin1Char(':') + QString::number(e.line);
+                    if (e.column > 0)
+                        errorString += QLatin1Char(':') + QString::number(e.column);
+                }
+
+                errorString += QLatin1String(": ") + e.message;
+                std::cerr << qPrintable( errorString ) << std::endl;
+            }
+#else
             Q_FOREACH (const QQmlError &error, p.errors(qmlDirFile.fileName()))
                 std::cerr << qPrintable( error.toString() ) << std::endl;
+#endif
             return EXIT_IMPORTERROR;
         }
 
