@@ -95,7 +95,7 @@ void UCActionManager::contextAppend(QQmlListProperty<UCActionContext> *list, UCA
 void UCActionManager::contextClear(QQmlListProperty<UCActionContext> *list)
 {
     Q_UNUSED(list);
-    Q_FOREACH(UCActionContext *context, ActionProxy::instance().localContexts().toList()) {
+    Q_FOREACH(UCActionContext *context, ActionProxy::instance().localContexts().values()) {
         ActionProxy::removeContext(context);
     }
 }

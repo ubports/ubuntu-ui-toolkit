@@ -275,7 +275,7 @@ PropertyBackup::PropertyBackup(QQuickItem *target, const QString &property)
  * Normal priority change, a PropertyChange reparenting an item to the target.
  */
 ParentChange::ParentChange(QQuickItem *item, QQuickItem *targetParent, bool topmostChild)
-    : PropertyChange(item, "parent", qVariantFromValue(targetParent), Normal)
+    : PropertyChange(item, "parent", QVariant::fromValue(targetParent), Normal)
     , newParent(targetParent)
     , topmostChild(topmostChild)
 {
@@ -308,7 +308,7 @@ AnchorChange::AnchorChange(QQuickItem *item, const QString &anchor, QQuickItem *
     if (anchor != "fill" || (anchor == "fill" && !anchors->fill())) {
         active = true;
         if (targetAnchor.isEmpty()) {
-            action.setValue(qVariantFromValue(target));
+            action.setValue(QVariant::fromValue(target));
         } else {
             action.setValue(target->property(QString("anchors." + targetAnchor).toLocal8Bit()));
         }
