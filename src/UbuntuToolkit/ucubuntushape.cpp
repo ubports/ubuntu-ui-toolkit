@@ -1229,7 +1229,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         }
         if (provider) {
             QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(_q_textureChanged()));
-            QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(_q_providerDestroyed()));
+            QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(_q_providerDestroyed()), Qt::DirectConnection);
         }
         m_sourceTextureProvider = provider;
     }
