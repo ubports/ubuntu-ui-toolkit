@@ -12,6 +12,7 @@ QML_FILES += 1.2/MainViewStyle.qml \
              1.3/SuruDarkSelected.qml \
              1.3/Palette.qml \
              1.3/TabBarStyle.qml \
+             1.3/ButtonStyle.qml \
              $$ARTWORK_FILES \
              $$PARENT_THEME_FILE
 
