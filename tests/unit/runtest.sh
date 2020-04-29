@@ -149,6 +149,9 @@ function execute_test_cmd {
   return $RESULT
 }
 
+# Tests are written using this theme in mind.
+export UITK_ICON_THEME="suru"
+
 # Always create XML in case the test can't be run, eg. .so file missing
 create_fallback_xml 1 '<failure message="Test couldnt be run" result="fail"/>'
 create_test_cmd
