@@ -76,7 +76,7 @@ void TouchRegistry::update(const QTouchEvent *event)
             Pool<TouchInfo>::Iterator touchInfo = findTouchInfo(touchPoint.id());
             if (!touchInfo) {
                 qCritical("TouchRegistry: Failed to find TouchInfo");
-                return;
+                continue;
             }
 
             touchInfo->physicallyEnded = true;
