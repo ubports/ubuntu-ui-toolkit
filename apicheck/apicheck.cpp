@@ -911,11 +911,19 @@ int main(int argc, char *argv[])
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
             Q_FOREACH (const QQmlJS::DiagnosticMessage &e, p.errors(qmlDirFile.fileName())) {
                 QString errorString = QLatin1String("qmldir");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+                if (e.loc.startLine > 0) {
+                    errorString += QLatin1Char(':') + QString::number(e.loc.startLine);
+                    if (e.loc.startColumn > 0)
+                        errorString += QLatin1Char(':') + QString::number(e.loc.startColumn);
+                }
+#else
                 if (e.line > 0) {
                     errorString += QLatin1Char(':') + QString::number(e.line);
                     if (e.column > 0)
                         errorString += QLatin1Char(':') + QString::number(e.column);
                 }
+#endif
 
                 errorString += QLatin1String(": ") + e.message;
                 std::cerr << qPrintable( errorString ) << std::endl;
