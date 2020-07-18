@@ -18,6 +18,8 @@
 
 #include <QtGui/QColor>
 
+#include <math.h>
+
 UT_NAMESPACE_BEGIN
 
 ColorUtils::ColorUtils(QObject *parent) : QObject(parent)
