@@ -298,7 +298,7 @@ void ULLayoutsPrivate::updateLayout()
                     "\" with no container specified. Falling back to default layout.");
             break;
         }
-        if (!layout->layoutName().isEmpty() && layout->when() && layout->when()->evaluate().toBool()) {
+        if (!layout->layoutName().isEmpty() && layout->when()) {
             if (currentLayoutIndex == i) {
                 return;
             }

@@ -144,7 +144,7 @@ PageTreeNode {
         onBackActionChanged: internal.printDeprecationWarning()
     }
 
-    Object {
+    Item {
         id: internal
 
         property bool showDeprecationWarning: true

@@ -20,7 +20,7 @@ import Ubuntu.Components 1.3
   \internal
   documented in PageHeadConfiguration.qdoc
  */
-Object {
+Item {
     // To be used inside a Page only.
     id: headerConfig
 
@@ -53,9 +53,6 @@ Object {
     property color foregroundColor: theme.palette.normal.backgroundText
 
     property bool locked: false
-
-    // auto-updated by AppHeader, but may be set by the developer
-    property bool visible: true
 
     property string title
     property Flickable flickable

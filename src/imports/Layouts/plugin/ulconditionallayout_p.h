@@ -28,7 +28,7 @@ public:
     ULConditionalLayoutPrivate(ULConditionalLayout *qq);
 
     ULConditionalLayout *q_ptr;
-    QQmlBinding *when;
+    bool when;
     QQmlComponent *component;
     QString name;
 

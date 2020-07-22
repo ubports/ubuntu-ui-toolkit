@@ -330,7 +330,7 @@ StyledItem {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);
                     }
-                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                } else if (model && Object.prototype.toString.call(model) === "[object Number]") {
                     if (model >= 2) {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);

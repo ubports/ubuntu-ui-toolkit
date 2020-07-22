@@ -26,7 +26,7 @@ import Ubuntu.Components 1.2
 
     For examples how to use Page.head, see \l Page.
  */
-Object {
+Item {
     // To be used inside a Page only.
     id: headerConfig
 

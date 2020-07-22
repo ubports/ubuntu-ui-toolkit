@@ -585,8 +585,6 @@ Item {
             ];
         }
         function test_text_field_evokes_osk_bug1545802(data) {
-            // FIXME: Figure out the CI failures and unskip, bug #1580538
-            skip("This test fails on amd64-stable and i386-gles on CI and passes locally on amd64-devel.");
             waitForRendering(data.input);
             compare(data.input.activeFocus, false, 'TextField is not yet focused');
             mouseClick(data.input);

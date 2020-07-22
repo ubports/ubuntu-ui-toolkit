@@ -944,10 +944,10 @@ Item {
                     anchors {
                         //it's left in both cases, otherwise using RTL
                         //would break the layout of the arrow
-                        left: parent.left
-                        right: isVertical ? parent.right : undefined
-                        top: parent.top
-                        bottom: !isVertical ? parent.bottom : undefined
+                        left: parent ? parent.left : undefined
+                        right: isVertical ? (parent ? parent.right : undefined) : undefined
+                        top: parent ? parent.top : undefined
+                        bottom: !isVertical ? (parent ? parent.bottom : undefined) : undefined
                     }
                     color: (steppersMouseArea.hoveringFirstStepper && flickableItem && !flickableItem[scrollbarUtils.propAtBeginning])
                            ? Qt.rgba(stepperBgColor.r, stepperBgColor.g, stepperBgColor.b,

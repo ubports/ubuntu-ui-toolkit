@@ -21,7 +21,6 @@ Switch 0.1 1.2/Switch.qml
 CheckBox 0.1 1.2/CheckBox.qml
 Slider 0.1 1.2/Slider.qml
 Scrollbar 0.1 1.2/Scrollbar.qml
-Object 0.1 1.2/Object.qml
 OptionSelector 0.1 1.2/OptionSelector.qml
 OptionSelectorDelegate 0.1 1.2/OptionSelectorDelegate.qml
 Page 0.1 1.2/Page10.qml
@@ -60,7 +59,6 @@ Switch 1.0 1.2/Switch.qml
 CheckBox 1.0 1.2/CheckBox.qml
 Slider 1.0 1.2/Slider.qml
 Scrollbar 1.0 1.2/Scrollbar.qml
-Object 1.0 1.2/Object.qml
 OptionSelector 1.0 1.2/OptionSelector.qml
 OptionSelectorDelegate 1.0 1.2/OptionSelectorDelegate.qml
 Page 1.0 1.2/Page10.qml

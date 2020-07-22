@@ -353,7 +353,7 @@ MainView {
             incubator.onStatusChanged = function (status) {
                 pageLoaded = (incubator.object != null);
             }
-            tryCompareFunction(function() {return pageLoaded}, true, 1000);
+            tryCompareFunction(function() {return pageLoaded}, true, 5000);
             var n = root.columns === 2 ? 1 : 0
             compare(get_subheader(n).config.title, "Page from QML file",
                     "Adding external Page does not update the header title.");

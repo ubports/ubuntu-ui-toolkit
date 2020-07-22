@@ -36,7 +36,7 @@ mkdir -p $DOC_PATH
 # Offline docs for QtCreator
 eval "$QDOC $SRC/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $DOC_PATH/qdoc.log"
 # FIXME: With Qt 5.2 this warning shows up, forcibly omit it from errors
-grep -v "error: HTML file already exists; overwriting" $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" | grep -v "warning: Can't link to" > $DOC_PATH/qdoc.err
+grep -v "error: Output file already exists; overwriting" $DOC_PATH/qdoc.log | grep "error: " > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Offline done.
@@ -46,7 +46,7 @@ echo docs: qch done: $DOC_PATH
 
 # Online docs
 eval "$QDOC $SRC/ubuntu-ui-toolkit-online.qdocconf 2> $DOC_PATH/qdoc.log"
-grep -v "error: HTML file already exists; overwriting" $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" | grep -v "warning: Can't link to" > $DOC_PATH/qdoc.err
+grep -v "error: Output file already exists; overwriting" $DOC_PATH/qdoc.log | grep "error: " > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Online done.
@@ -54,11 +54,11 @@ echo docs: Online done.
 # Second qdoc pass, this time with indexes for cross-referencing.
 # If we don't do this, bugs in docs from other modules (Qt, Unity) fail our build
 eval "$QDOC $SRC/ubuntu-ui-toolkit-offline-indexes.qdocconf 2> $DOC_PATH/qdoc.log"
-grep "warning: Can't link to" $DOC_PATH/qdoc.log > $DOC_PATH/qdoc.err
+grep "error: " $DOC_PATH/qdoc.log | grep -v "error: Output file already exists" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 eval "$QDOC $SRC/ubuntu-ui-toolkit-online-indexes.qdocconf 2> $DOC_PATH/qdoc.log"
-grep "warning: Can't link to" $DOC_PATH/qdoc.log > $DOC_PATH/qdoc.err
+grep "error: " $DOC_PATH/qdoc.log | grep -v "error: Output file already exists" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Cross-referenced done.

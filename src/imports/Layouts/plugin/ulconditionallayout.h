@@ -31,7 +31,7 @@ class ULConditionalLayout : public QObject
     Q_DISABLE_COPY(ULConditionalLayout)
 
     Q_PROPERTY(QString name READ layoutName WRITE setLayoutName)
-    Q_PROPERTY(QQmlBinding* when READ when WRITE setWhen)
+    Q_PROPERTY(bool when READ when WRITE setWhen)
     Q_PROPERTY(QQmlComponent *layout READ layout WRITE setLayout)
     Q_CLASSINFO("DefaultProperty", "layout")
 public:
@@ -41,8 +41,8 @@ public:
 // getter/setter
     QString layoutName() const;
     void setLayoutName(const QString &name);
-    QQmlBinding *when() const;
-    void setWhen(QQmlBinding *when);
+    bool when() const;
+    void setWhen(bool when);
     QQmlComponent *layout() const;
     void setLayout(QQmlComponent *component);
 

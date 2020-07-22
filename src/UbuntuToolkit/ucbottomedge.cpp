@@ -23,7 +23,9 @@
 #include <QtGui/QScreen>
 #include <QtGui/QStyleHints>
 #include <QtQml/QQmlEngine>
+#include <QtQml/QQmlListReference>
 #include <QtQml/QQmlProperty>
+#include <QtQml/QtQml>
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickitem_p.h>
@@ -405,33 +407,32 @@ void UCBottomEdgePrivate::patchContentItemHeader()
 
     LOG << "PATCH HEADER" << currentContentItem.data();
     // get the navigationActions and inject an action there
-    QVariant list(header->property("navigationActions"));
-    QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
-    QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
+    QQmlListReference navigationActions(header, /* property */ "navigationActions", qmlEngine(q_func()));
 
     // do we have any action in the list?
-    if (navigationActions->size()) {
+    if (navigationActions.count()) {
         // we have actions in the list, check if those are ours
-        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions.at(0));
         if (!collapse) {
             // not ours, clear the list
-            navigationActions->clear();
+            navigationActions.clear();
         }
     }
-    if (navigationActions->size() <= 0) {
+    if (navigationActions.count() <= 0) {
         // no actions, patch
-        navigationActions->append(new UCCollapseAction(header));
+        navigationActions.append(new UCCollapseAction(header));
+
         // invoke PageHeader.navigationActionsChanged signal
         int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
         if (signal >= 0) {
-            header->metaObject()->invokeMethod(header, "navigationActionsChanged");
+            QMetaObject::activate(header, signal, nullptr);
         }
     }
 
     // are we committed?
     if (status == UCBottomEdge::Committed) {
         // activate the action
-        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions->at(0));
+        UCCollapseAction *collapse = qobject_cast<UCCollapseAction*>(navigationActions.at(0));
         Q_ASSERT(collapse);
         collapse->activate();
         QObject::connect(collapse, &UCAction::triggered, q_func(), &UCBottomEdge::collapse, Qt::DirectConnection);

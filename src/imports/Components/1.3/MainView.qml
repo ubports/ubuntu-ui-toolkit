@@ -206,7 +206,7 @@ Toolkit.MainViewBase {
         }
     }
 
-    Toolkit.Object {
+    Item {
         id: internal
 
         // Even when using MainView 1.1, we still support Page 1.0.

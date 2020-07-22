@@ -649,7 +649,7 @@ Item {
             return [
                 {tag: "No actions", item: highlightTest, x: centerOf(highlightTest).x, y: centerOf(highlightTest).y, pressed: false},
                 {tag: "Leading/trailing actions", item: testItem, x: centerOf(testItem).x, y: centerOf(testItem).y, pressed: true},
-                {tag: "Active component content", item: controlItem, x: units.gu(1), y: units.gu(1), pressed: true},
+                {tag: "Active component content", item: controlItem, x: units.gu(1), y: units.gu(1), pressed: false},
                 {tag: "Center of active component content", item: controlItem, x: centerOf(controlItem).x, y: centerOf(controlItem).y, pressed: false},
                 {tag: "clicked() connected", item: clickedConnected, x: centerOf(clickedConnected).x, y: centerOf(clickedConnected).y, pressed: true},
             ];
