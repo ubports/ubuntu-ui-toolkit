@@ -166,9 +166,9 @@ Item {
         }
 
         function test_flickRectCombo() {
-            // skip the test temporarily due to flakyness on powerpc target
+            skip("FIXME: Broken on Qt 5.12");
+            // the test is flaky on powerpc target
             // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1315244
-            skip("The test is flaky on powerpc target");
             var dropDown = findChild(rectCombo, "combobutton_dropdown");
             var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
             var comboList = findChild(rectCombo, "combobutton_combolist");
@@ -239,7 +239,7 @@ Item {
             tryCompare(rectCombo, 'expanded', false, 500, "ComboBox not expanded after focus");
             keyClick(Qt.Key_Space);
             waitForRendering(rectCombo);
-            verify(rectCombo.expanded, true, "ComboBox was expanded via the Space key");
+            tryCompare(rectCombo, 'expanded', true, 500, "ComboBox was expanded via the Space key");
             keyClick(Qt.Key_Space);
             waitForRendering(rectCombo);
             tryCompare(rectCombo, 'expanded', false, 500, "ComboBox was collapsed via the Space key");

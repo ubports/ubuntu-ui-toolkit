@@ -993,11 +993,11 @@ Item {
         function test_scrollingRatioValuesSanityCheck() {
             var freshTestItem = getFreshFlickable(Qt.AlignTrailing)
             var style = freshTestItem.scrollbar.__styleInstance
-            verify(style.shortScrollingRatio > 0, true,
+            verify(style.shortScrollingRatio > 0,
                    "Short scrolling ratio must be > 0.")
-            verify(style.longScrollingRatio > 0, true,
+            verify(style.longScrollingRatio > 0,
                    "Short scrolling ratio must be > 0.")
-            verify(style.shortScrollingRatio <= style.longScrollingRatio, true,
+            verify(style.shortScrollingRatio <= style.longScrollingRatio,
                    "Short scrolling ratio is higher than long scrolling ratio.")
         }
 

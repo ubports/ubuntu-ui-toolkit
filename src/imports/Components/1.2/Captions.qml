@@ -124,22 +124,16 @@ ColumnLayout {
     }
 
     Label {
+        Layout.fillWidth: true
         id: titleLabel
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
         fontSize: (captionStyle == Ubuntu.SummaryCaptionStyle) ? "small" : "medium"
         horizontalAlignment: (captionStyle == Ubuntu.SummaryCaptionStyle) ? Text.AlignRight : Text.AlignLeft
         visible: text !== ""
         elide: (captionStyle == Ubuntu.TitleCaptionStyle) ? Text.ElideRight : Text.ElideNone
     }
     Label {
+        Layout.fillWidth: true
         id: subtitleLabel
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
         fontSize: "small"
         horizontalAlignment: (captionStyle == Ubuntu.SummaryCaptionStyle) ? Text.AlignRight : Text.AlignLeft
         visible: text !== ""
@@ -148,3 +142,4 @@ ColumnLayout {
         elide: (captionStyle == Ubuntu.TitleCaptionStyle) ? Text.ElideRight : Text.ElideNone
     }
 }
+

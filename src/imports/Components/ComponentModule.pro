@@ -42,7 +42,6 @@ QML_FILES += 1.2/AbstractButton.qml \
              1.2/MainView12.qml \
              1.2/MainViewBase.qml \
              1.2/MainView.qml \
-             1.2/Object.qml \
              1.2/OptionSelectorDelegate.qml \
              1.2/OptionSelector.qml \
              1.2/OrientationHelper.qml \

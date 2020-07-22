@@ -55,7 +55,7 @@ import Ubuntu.Components.Popups 1.0
     of the panel or Popover area.
   */
 
-Object {
+Item {
 
     /*!
       The function opens a DatePicker component in the input method area or in a
@@ -68,7 +68,7 @@ Object {
       On failure, the function returns null. On success, the returned object has the
       following properties:
       \code
-      Object {
+      Item {
           property DatePicker picker
           property string pickerMode
           property date date

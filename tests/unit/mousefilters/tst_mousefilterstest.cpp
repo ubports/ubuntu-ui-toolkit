@@ -851,7 +851,7 @@ private Q_SLOTS:
         QCOMPARE(pressed.count(), 1);
         QCOMPARE(released.count(), 1);
         QCOMPARE(clicked.count(), 1);
-        QCOMPARE(positionChanged.count(), 30);
+        QCOMPARE(positionChanged.count(), 31);
         QCOMPARE(doubleClicked.count(), 0);
         QCOMPARE(pressAndHold.count(), 0);
         QCOMPARE(entered.count(), 1);
@@ -889,7 +889,7 @@ private Q_SLOTS:
         QCOMPARE(pressed.count(), 1);
         QCOMPARE(released.count(), 1);
         QCOMPARE(clicked.count(), 1);
-        QCOMPARE(positionChanged.count(), 30);
+        QCOMPARE(positionChanged.count(), 31);
         QCOMPARE(doubleClicked.count(), 0);
         QCOMPARE(pressAndHold.count(), 0);
         QCOMPARE(entered.count(), 1);

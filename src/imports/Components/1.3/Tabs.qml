@@ -299,7 +299,7 @@ Toolkit.PageTreeNode {
         }
     }
 
-    Toolkit.Object {
+    Item {
         id: internal
         property AppHeader header: tabs.__propagated ? tabs.__propagated.header : null
 

@@ -18,15 +18,11 @@
 
 #include "ulconditionallayout_p.h"
 
-#define foreach Q_FOREACH
-#include <QtQml/private/qqmlbinding_p.h>
-#undef foreach
-
 #include "ullayouts_p.h"
 
 ULConditionalLayoutPrivate::ULConditionalLayoutPrivate(ULConditionalLayout *qq) :
     q_ptr(qq),
-    when(0),
+    when(false),
     component(0)
 {
 }
@@ -153,12 +149,12 @@ void ULConditionalLayout::setLayoutName(const QString &name)
  * When two ConditionalLayouts \b when condition is evaluated to true, the first
  * one declared in the layouts list is chosen.
  */
-QQmlBinding *ULConditionalLayout::when() const
+bool ULConditionalLayout::when() const
 {
     Q_D(const ULConditionalLayout);
     return d->when;
 }
-void ULConditionalLayout::setWhen(QQmlBinding *when)
+void ULConditionalLayout::setWhen(bool when)
 {
     Q_D(ULConditionalLayout);
     d->when = when;

@@ -65,7 +65,7 @@ PageTreeNode {
      */
     property alias actions: actionContext.actions
 
-    Object {
+    Item {
         id: internal
 
         // Toolkit ActionContext registers automatically to ActionManager

@@ -32,7 +32,7 @@ Page10 {
         print("Page.tools is a deprecated property. Please use Page.head instead.");
     }
 
-    Object {
+    Item {
         id: internal
 
         // Note: The bindings below need to check whether headerConfig.contents

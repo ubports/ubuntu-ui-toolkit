@@ -18,7 +18,7 @@ import QtQuick 2.4
 import QtFeedback 5.0
 import Ubuntu.Components 1.1
 
-Object {
+Item {
     readonly property bool enabled: true
     property alias effect: effect
 

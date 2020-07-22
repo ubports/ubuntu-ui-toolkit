@@ -116,7 +116,7 @@ MainView {
     Component {
         id: pageComponentNoFlick
         Page {
-            title: "Loaded page without flickable"
+            header: PageHeader { title: "Loaded page without flickable" }
         }
     }
 

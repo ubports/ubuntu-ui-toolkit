@@ -36,7 +36,6 @@ for _XML in $*; do
                 tst_datepicker.bug1567840.SEGFAULT.12.qml \
                 tst_datepicker.bug1567840.SEGFAULT.13.qml \
                 tst_textinput_touch.SEGFAULT.11.qml \
-                swipearea \
                 qquick_image_extension \
                 tst_label13.qml \
                 performance \
@@ -49,6 +48,8 @@ for _XML in $*; do
                 tst_tabs_with_repeater.11.qml \
                 tst_tabs_with_repeater.DEPRECATED_TOOLBAR.11.qml \
                 inversemousearea \
+                tst_listitem_focus_bug.13.qml \
+                tst_shortcuts.13.qml \
                 '
 
     WARNINGS=$(grep -c -P "$WARNINGS_PATTERN" $_XML)
