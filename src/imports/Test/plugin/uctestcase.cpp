@@ -55,7 +55,8 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, ResizeMode resize, bool asse
     }
     if (rootObject()) {
         show();
-        QTest::qWaitForWindowExposed(this);
+        bool window_shown = QTest::qWaitForWindowExposed(this);
+        Q_ASSERT(window_shown);
     }
 }
 
