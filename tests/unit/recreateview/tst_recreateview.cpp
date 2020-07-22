@@ -51,7 +51,8 @@ void RecreateViewTest::testCase_recreateView()
     view->setSource(QUrl::fromLocalFile("SimpleApp.qml"));
     QVERIFY(view->rootObject() != 0);
     view->show();
-    QTest::qWaitForWindowExposed(view);
+    bool window_shown = QTest::qWaitForWindowExposed(view);
+    Q_ASSERT(window_shown);
     delete view;
 
     view = new QQuickView;
@@ -60,7 +61,8 @@ void RecreateViewTest::testCase_recreateView()
     view->setSource(QUrl::fromLocalFile("SimpleApp.qml"));
     QVERIFY(view->rootObject() != 0);
     view->show();
-    QTest::qWaitForWindowExposed(view);
+    window_shown = QTest::qWaitForWindowExposed(view);
+    Q_ASSERT(window_shown);
     delete view;
 }
 
