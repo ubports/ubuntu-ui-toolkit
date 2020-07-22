@@ -75,7 +75,7 @@ UCUriHandler::UCUriHandler()
         qWarning() << "UCUriHandler: Empty \"APP_ID\" environment variable, ignoring.";
         return;
     }
-    char* path = nih_dbus_path(NULL, "", applicationId.constData(), NULL);
+    char* path = nih_dbus_path(NULL, "", applicationId.constData(), nullptr);
     objectPath = QString::fromLocal8Bit(path);
     nih_free(path);
 
