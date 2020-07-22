@@ -36,7 +36,7 @@ mkdir -p $DOC_PATH
 # Offline docs for QtCreator
 eval "$QDOC $SRC/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $DOC_PATH/qdoc.log"
 # FIXME: With Qt 5.2 this warning shows up, forcibly omit it from errors
-grep -v "error: HTML file already exists; overwriting" $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" | grep -v "warning: Can't link to" > $DOC_PATH/qdoc.err
+grep -v "error: HTML file already exists; overwriting" $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" | grep -v " warning: " | grep -v "warning: Can't link to" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Offline done.
