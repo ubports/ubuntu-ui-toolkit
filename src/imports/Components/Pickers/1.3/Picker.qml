@@ -330,7 +330,7 @@ StyledItem {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);
                     }
-                } else if (Object.getPrototypeOf(model).toString() === "[object Number]") {
+                } else if (model.toString() === "[object Number]") {
                     if (model >= 2) {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);
@@ -388,16 +388,16 @@ StyledItem {
         property bool cropping: false
 
         function isObjectModel() {
-            return (prevModel && Object.getPrototypeOf(prevModel).toString() === "[object Object]");
+            return (prevModel && prevModel.toString() === "[object Object]");
         }
 
         function modelSize() {
             if (prevModel) {
-                if (Object.getPrototypeOf(model).toString() === "[object Object]") {
+                if (model.toString() === "[object Object]") {
                     return prevModel.count;
-                } else if (Object.getPrototypeOf(model).toString() === "[object Array]") {
+                } else if (model.toString() === "[object Array]") {
                     return prevModel.length;
-                } else if (Object.getPrototypeOf(model).toString() === "[object Number]") {
+                } else if (model.toString() === "[object Number]") {
                     return prevModel;
                 }
             }
@@ -408,7 +408,7 @@ StyledItem {
             disconnectModel();
             prevModel = model;
             // check if the model is derived from QAbstractListModel
-            if (model && Object.getPrototypeOf(model).toString() === "[object Object]") {
+            if (model && model.toString() === "[object Object]") {
                 model.rowsAboutToBeRemoved.connect(itemsAboutToRemove);
                 model.rowsInserted.connect(updateView);
             }

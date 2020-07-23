@@ -238,7 +238,7 @@ Item {
             tryCompare(rectCombo, 'expanded', false, 500, "ComboBox not expanded after focus");
             keyClick(Qt.Key_Space);
             waitForRendering(rectCombo);
-            tryCompare(rectCombo.expanded, true, "ComboBox was expanded via the Space key");
+            tryCompare(rectCombo, 'expanded', true, 500, "ComboBox was expanded via the Space key");
             keyClick(Qt.Key_Space);
             waitForRendering(rectCombo);
             tryCompare(rectCombo, 'expanded', false, 500, "ComboBox was collapsed via the Space key");

@@ -133,7 +133,7 @@ MainView {
             inputModel.move(3, 0, 1);
             inputModel.move(1, 3, 1);
             // wait few miliseconds
-            wait(50);
+            wait(250);
             for (i=0; i < tabsModel.count; i++) {
                 compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles after shuffling don't match for index "+i);
             }
@@ -188,6 +188,7 @@ MainView {
             var secondRepeaterModel = secondRepeater.model;
 
             compare(tabsModel.count, firstRepeater.count + secondRepeater.count, "Incorrect number of tabs in TabBar");
+            wait(250);
             for (var i = 0; i < firstRepeater.count; i++) {
                 compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
             }
