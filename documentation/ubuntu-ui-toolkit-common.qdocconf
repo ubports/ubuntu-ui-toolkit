@@ -1,5 +1,5 @@
 project = UbuntuUserInterfaceToolkit
-url = http://developer.ubuntu.com/api/ubuntu-15.04/qml/mobile/
+url = https://api-docs.ubports.com/sdk/apps/qml/
 description = Ubuntu User Interface Toolkit Documentation
 defines = Q_QDOC
 sourcedirs = ./
