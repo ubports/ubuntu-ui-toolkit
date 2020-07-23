@@ -22,6 +22,7 @@
 # imports ASCII-wise). The result is that qdoc is unable to link to properties
 # inherited from UCMainViewBase like applicationName, so constructs like that
 # don't work: \l MainView::applicationName...
+set -x
 
 QDOC=$1
 QHELPGENERATOR=$2
