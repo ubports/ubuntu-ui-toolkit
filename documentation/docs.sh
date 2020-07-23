@@ -54,11 +54,11 @@ echo docs: Online done.
 # Second qdoc pass, this time with indexes for cross-referencing.
 # If we don't do this, bugs in docs from other modules (Qt, Unity) fail our build
 eval "$QDOC $SRC/ubuntu-ui-toolkit-offline-indexes.qdocconf 2> $DOC_PATH/qdoc.log"
-grep "error: " $DOC_PATH/qdoc.log > $DOC_PATH/qdoc.err
+grep "error: " $DOC_PATH/qdoc.log | grep -v "error: Outpupt file already exists" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 eval "$QDOC $SRC/ubuntu-ui-toolkit-online-indexes.qdocconf 2> $DOC_PATH/qdoc.log"
-grep "error: " $DOC_PATH/qdoc.log > $DOC_PATH/qdoc.err
+grep "error: " $DOC_PATH/qdoc.log | grep -v "error: Output file already exists" > $DOC_PATH/qdoc.err
 cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Cross-referenced done.
