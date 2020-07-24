@@ -17,7 +17,7 @@ ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 endif
 
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := armhf arm64 powerpc ppc64el s390x
+testskip_architectures := amd64 armhf arm64 powerpc ppc64el s390x
 testskip_series := 
 
 override_dh_auto_configure:
