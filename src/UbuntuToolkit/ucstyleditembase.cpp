@@ -444,9 +444,9 @@ void UCStyledItemBasePrivate::connectStyleSizeChanges(bool attach)
     if (attach) {
         QQuickImplicitSizeItem *sitem = qobject_cast<QQuickImplicitSizeItem*>(styleItem);
         if (sitem) {
-            QObject::connect(styleItem, SIGNAL(implicitWidthChanged2()),
+            QObject::connect(styleItem, SIGNAL(implicitWidthChanged()),
                              q, SLOT(_q_styleResized()), Qt::DirectConnection);
-            QObject::connect(styleItem, SIGNAL(implicitHeightChanged2()),
+            QObject::connect(styleItem, SIGNAL(implicitHeightChanged()),
                              q, SLOT(_q_styleResized()), Qt::DirectConnection);
         } else {
             QObject::connect(styleItem, SIGNAL(implicitWidthChanged()),
@@ -457,9 +457,9 @@ void UCStyledItemBasePrivate::connectStyleSizeChanges(bool attach)
     } else {
         QQuickImplicitSizeItem *sitem = qobject_cast<QQuickImplicitSizeItem*>(styleItem);
         if (sitem) {
-            QObject::disconnect(styleItem, SIGNAL(implicitWidthChanged2()),
+            QObject::disconnect(styleItem, SIGNAL(implicitWidthChanged()),
                              q, SLOT(_q_styleResized()));
-            QObject::disconnect(styleItem, SIGNAL(implicitHeightChanged2()),
+            QObject::disconnect(styleItem, SIGNAL(implicitHeightChanged()),
                              q, SLOT(_q_styleResized()));
         } else {
             QObject::disconnect(styleItem, SIGNAL(implicitWidthChanged()),
