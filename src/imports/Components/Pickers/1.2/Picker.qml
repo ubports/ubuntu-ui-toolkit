@@ -221,7 +221,7 @@ StyledItem {
             target: loader.item
             property: "currentIndex"
             value: picker.selectedIndex
-            when: loader.completed && (picker.selectedIndex > 0)
+            when: picker.selectedIndex > 0
         }
 
         // selectedIndex updater, live or non-live ones
@@ -325,7 +325,7 @@ StyledItem {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);
                     }
-                } else if (model.toString() === "[object Number]") {
+                } else if (model && model.toString() === "[object Number]") {
                     if (model >= 2) {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);

@@ -109,7 +109,7 @@ OrientationHelper {
       longer valid.
       */
     function __closePopup() {
-        if (popupBase !== undefined) {
+        if (popupBase) {
             popupBase.destroy();
         }
     }

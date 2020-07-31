@@ -399,7 +399,7 @@ PageTreeNode {
           the Repeater.
           */
         function connectRepeaterModelChanges(repeater) {
-            if (repeater === undefined) {
+            if (!repeater) {
                 repeater = this;
             }
 
@@ -414,7 +414,7 @@ PageTreeNode {
 
               Inspired from http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
               */
-            if (Object.prototype.toString.call(repeater.model) !== "[object Object]") {
+            if (!repeater.model || repeater.model.toString() !== "[object Object]") {
                 return;
             }
 
