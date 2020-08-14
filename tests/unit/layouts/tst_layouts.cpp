@@ -95,7 +95,6 @@ public:
 private Q_SLOTS:
     void initTestCase()
     {
-        QSKIP("FIXME: SEGV with Qt 5.12");
         qputenv("SUPPRESS_DEPRECATED_NOTE", "yes");
     }
 
@@ -292,8 +291,6 @@ private Q_SLOTS:
 
     void testCase_NestedLayouts_ExtraLarge()
     {
-        QRegularExpression expression(".+ items in the process of being created at engine destruction.+");
-        QTest::ignoreMessage(QtWarningMsg, expression);
         QScopedPointer<QQuickView> view(loadTest("NestedLayouts.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
