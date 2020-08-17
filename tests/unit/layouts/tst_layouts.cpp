@@ -369,11 +369,7 @@ private Q_SLOTS:
         UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 35, 13,
             "QML ConditionalLayout: ERROR: no container specified for layout \"landscape\". ConditionalLayout cannot be activated without a container.");
         UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 30, 13,
-            "QML ConditionalLayout: WARNING: Cannot activate layout \"portrait\" with no container specified. Falling back to default layout.");
-        UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 30, 13,
-            "QML ConditionalLayout: WARNING: Cannot activate layout \"portrait\" with no container specified. Falling back to default layout.");
-        UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 30, 13,
-            "QML ConditionalLayout: WARNING: Cannot activate layout \"portrait\" with no container specified. Falling back to default layout.");
+            "QML ConditionalLayout: WARNING: Cannot activate layout \"portrait\" with no container specified. Falling back to default layout.", 3);
         QScopedPointer<QQuickView> view(loadTest("CurrentLayoutChange.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -392,7 +388,7 @@ private Q_SLOTS:
     void testCase_PositioningOnLayoutChange()
     {
         UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
-            "QML ConditionalLayout: WARNING: Cannot activate layout \"landscape\" with no container specified. Falling back to default layout.", 2);
+            "QML ConditionalLayout: WARNING: Cannot activate layout \"landscape\" with no container specified. Falling back to default layout.", 4);
         UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
             "QML ConditionalLayout: ERROR: no container specified for layout \"landscape\". ConditionalLayout cannot be activated without a container.");
         QScopedPointer<QQuickView> view(loadTest("PositioningOnLayoutChange.qml"));
