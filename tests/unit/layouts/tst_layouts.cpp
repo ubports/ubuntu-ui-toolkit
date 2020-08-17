@@ -395,10 +395,6 @@ private Q_SLOTS:
             "QML ConditionalLayout: WARNING: Cannot activate layout \"landscape\" with no container specified. Falling back to default layout.", 2);
         UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
             "QML ConditionalLayout: ERROR: no container specified for layout \"landscape\". ConditionalLayout cannot be activated without a container.");
-        UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
-            "QML ConditionalLayout: WARNING: Cannot activate layout \"landscape\" with no container specified. Falling back to default layout.", 2);
-        UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
-            "QML ConditionalLayout: WARNING: Cannot activate layout \"landscape\" with no container specified. Falling back to default layout.", 2);
         QScopedPointer<QQuickView> view(loadTest("PositioningOnLayoutChange.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
