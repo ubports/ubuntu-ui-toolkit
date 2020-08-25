@@ -73,6 +73,7 @@ private Q_SLOTS:
     void interimOwnerWontGetUnownedTouchEvents();
     void candidateVanishes();
     void candicateOwnershipReentrace();
+    void touchReleaseWithoutPressDoesNotCrash();
 
 private:
     TouchRegistry *touchRegistry;
@@ -918,6 +919,18 @@ void tst_TouchRegistry::candicateOwnershipReentrace()
     QCOMPARE(mainCandidate.ownedTouches.count(), 1);
     QCOMPARE(candicate2.lostTouches.count(), 1);
     QCOMPARE(candicate3.lostTouches.count(), 1);
+}
+
+void tst_TouchRegistry::touchReleaseWithoutPressDoesNotCrash() {
+    QList<QTouchEvent::TouchPoint> touchPoints;
+    touchPoints.append(QTouchEvent::TouchPoint(0));
+    touchPoints[0].setState(Qt::TouchPointReleased);
+    QTouchEvent touchEvent(QEvent::TouchEnd,
+                            0 /* device */,
+                            Qt::NoModifier,
+                            Qt::TouchPointReleased,
+                            touchPoints);
+    touchRegistry->update(&touchEvent);
 }
 
 ////////////// TouchMemento //////////
