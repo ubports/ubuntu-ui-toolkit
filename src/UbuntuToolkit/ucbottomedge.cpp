@@ -424,7 +424,7 @@ void UCBottomEdgePrivate::patchContentItemHeader()
         // invoke PageHeader.navigationActionsChanged signal
         int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
         if (signal >= 0) {
-            header->metaObject()->invokeMethod(header, "navigationActionsChanged");
+            header->metaObject()->activate(header, signal, nullptr);
         }
     }
 
