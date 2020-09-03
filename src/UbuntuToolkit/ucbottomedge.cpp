@@ -422,13 +422,11 @@ void UCBottomEdgePrivate::patchContentItemHeader()
         // no actions, patch
         navigationActions->append(new UCCollapseAction(header));
 
-#if 0
         // invoke PageHeader.navigationActionsChanged signal
         int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
         if (signal >= 0) {
-            header->metaObject()->activate(header, signal, nullptr);
+            header->metaObject()->activate(q_func(), signal, nullptr);
         }
-#endif
     }
 
     // are we committed?
