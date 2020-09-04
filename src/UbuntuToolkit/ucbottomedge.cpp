@@ -426,7 +426,7 @@ void UCBottomEdgePrivate::patchContentItemHeader()
         auto signature = header->metaObject()->normalizedSignature("navigationActionsChanged");
         int signal = header->metaObject()->indexOfSignal(signature.constData());
         if (signal >= 0) {
-            header->metaObject()->activate(header, signal, nullptr);
+            header->metaObject()->invokeMethod(header, "navigationActionsChanged");
         }
     }
 
