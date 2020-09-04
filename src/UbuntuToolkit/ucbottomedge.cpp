@@ -423,9 +423,10 @@ void UCBottomEdgePrivate::patchContentItemHeader()
         navigationActions->append(new UCCollapseAction(header));
 
         // invoke PageHeader.navigationActionsChanged signal
-        int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
+        auto signature = header->metaObject()->normalizedSignature("navigationActionsChanged");
+        int signal = header->metaObject()->indexOfSignal(signature.constData());
         if (signal >= 0) {
-            header->metaObject()->activate(q_func(), signal, nullptr);
+            header->metaObject()->activate(header, signal, nullptr);
         }
     }
 
