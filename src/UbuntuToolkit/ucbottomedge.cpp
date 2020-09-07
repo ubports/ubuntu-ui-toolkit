@@ -423,10 +423,9 @@ void UCBottomEdgePrivate::patchContentItemHeader()
         navigationActions->append(new UCCollapseAction(header));
 
         // invoke PageHeader.navigationActionsChanged signal
-        auto signature = header->metaObject()->normalizedSignature("navigationActionsChanged");
-        int signal = header->metaObject()->indexOfSignal(signature.constData());
+        int signal = header->metaObject()->indexOfSignal("navigationActionsChanged()");
         if (signal >= 0) {
-            header->metaObject()->invokeMethod(header, "navigationActionsChanged");
+            QMetaObject::activate(header, signal, nullptr);
         }
     }
 
