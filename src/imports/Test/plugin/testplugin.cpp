@@ -33,6 +33,7 @@ static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
 
 void TestPlugin::registerTypes(const char *uri)
 {
+    qmlRegisterModule(uri, 0, 1);
     qmlRegisterSingletonType<UCTestExtras>(uri, 1, 0, "TestExtras", registerExtras);
     qmlRegisterSingletonType<MouseTouchAdaptor>(uri, 1, 0, "MouseTouchAdaptor", MouseTouchAdaptor::registerQmlSingleton);
 }
