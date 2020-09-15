@@ -27,6 +27,8 @@
 #include <UbuntuToolkit/private/quickutils_p.h>
 #include <UbuntuToolkit/private/ucbottomedgestyle_p.h>
 #undef private
+#include <QtQml/QQmlListReference>
+#include <QtQml/QtQml>
 #include <QtTest/QtTest>
 
 #include "uctestcase.h"
@@ -98,13 +100,11 @@ public:
             return false;
         }
 
-        QVariant list(header->property("navigationActions"));
-        QQmlListProperty<UCAction> actions = list.value< QQmlListProperty<UCAction> >();
-        QList<UCAction*> *navigationActions = reinterpret_cast<QList<UCAction*>*>(actions.data);
-        if (navigationActions->size() <= 0) {
+        QQmlListReference navigationActions(header, /* property */ "navigationActions", qmlEngine(header));
+        if (navigationActions.count() <= 0) {
             return false;
         }
-        return (qobject_cast<UCCollapseAction*>(navigationActions->at(0)) != Q_NULLPTR);
+        return (qobject_cast<UCCollapseAction*>(navigationActions.at(0)) != Q_NULLPTR);
     }
 
     void guToPoints(QList<QPoint> &guMoves)
@@ -853,7 +853,6 @@ private Q_SLOTS:
     }
     void test_autocollapse_navigation_action_on_commit_completed()
     {
-        QSKIP("FIXME: Crashing on Qt 5.12");
         QFETCH(QString, document);
 
         auto test = new BottomEdgeTestCase(document);
