@@ -31,8 +31,8 @@ PaletteValues {
     raisedText: UbuntuColors.slate
     raisedSecondaryText: UbuntuColors.silk
     overlay: UbuntuColors.inkstone
-    overlayText: "#FFFFFF"
-    overlaySecondaryText: UbuntuColors.slate
+    overlayText: UbuntuColors.porcelain
+    overlaySecondaryText: UbuntuColors.silk
     field: UbuntuColors.jet
     fieldText: "#FFFFFF"
     focus: UbuntuColors.lightBlue
