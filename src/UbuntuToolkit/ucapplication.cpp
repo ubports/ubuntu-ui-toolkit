@@ -79,7 +79,7 @@ void UCApplication::setApplicationName(const QString& applicationName) {
      * should actually be .local/share/$APP_NAME
      */
     if (QCoreApplication::organizationName() == QStringLiteral("QtProject")) {
-        QCoreApplication::setOrganizationName("");
+        QCoreApplication::setOrganizationName(QStringLiteral(""));
     }
 
     /*

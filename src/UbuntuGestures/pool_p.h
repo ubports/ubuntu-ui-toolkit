@@ -55,6 +55,7 @@ public:
         Iterator() : index(-1), item(nullptr) {}
         Iterator(int index, ItemType *item)
             : index(index), item(item) {}
+        Iterator(const Iterator&) = default;
 
         ItemType *operator->() const { return item; }
         ItemType &operator*() const { return *item; }
