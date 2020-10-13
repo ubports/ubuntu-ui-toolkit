@@ -213,7 +213,6 @@ bool X11MouseTouchAdaptorPrivate::xi2HandleEvent(xcb_ge_event_t *event)
                 xiDeviceEvent->mods.base_mods,
                 fixed1616ToReal(xiDeviceEvent->event_x),
                 fixed1616ToReal(xiDeviceEvent->event_y));
-        return true;
     default:
         return false;
     }
