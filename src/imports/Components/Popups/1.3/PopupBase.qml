@@ -155,7 +155,9 @@ OrientationHelper {
         property bool dim: false
         anchors.fill: parent
         visible: dim
-        color: popupBase.width > units.gu(60) ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0, 0, 0, 0.9)
+        color: popupBase.width > units.gu(60) ?
+               Qt.rgba(UbuntuColors.inkstone.r, UbuntuColors.inkstone.g, UbuntuColors.inkstone.b, 0.6) :
+               Qt.rgba(UbuntuColors.inkstone.r, UbuntuColors.inkstone.g, UbuntuColors.inkstone.b, 0.9)
     }
 
     InverseMouseArea {
