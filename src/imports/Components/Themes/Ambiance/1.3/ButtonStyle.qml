@@ -160,6 +160,10 @@ Item {
             horizontalCenterOffset: buttonFaceOffset
         }
         text: button.text
+        /* Pick either a clear or dark text color depending on the luminance of the
+           background color to maintain best contrast (works in most cases),
+           when strokeColor is not specified.
+        */
         textColor: stroke
             ? button.strokeColor
             : ColorUtils.contrastRatio("#FFFFFF", button.color) >= 4.1 && !(stroke && !button.pressed)
