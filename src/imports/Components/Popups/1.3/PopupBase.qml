@@ -155,7 +155,7 @@ OrientationHelper {
         property bool dim: false
         anchors.fill: parent
         visible: dim
-        property color dimC: Theme.name == "Ubuntu.Components.Themes.Ambiance" ? UbuntuColors.jet : UbuntuColors.inkstone
+        property color dimC: __foreground.theme.name == "Ubuntu.Components.Themes.Ambiance" ? UbuntuColors.jet : UbuntuColors.inkstone
         color: popupBase.width > units.gu(60) ? Qt.rgba(dimC.r, dimC.g, dimC.b, 0.6) : Qt.rgba(dimC.r, dimC.g, dimC.b, 0.9)
     }
 
