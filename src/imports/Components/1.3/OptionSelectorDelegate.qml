@@ -321,7 +321,7 @@ ListItem.Empty {
                 - parent.spacing * 2 - parent.anchors.leftMargin
 
             Toolkit.Label {
-                text: (option.text === "" && typeof modelData !== "undefined") ? modelData : option.text
+                text: (option.text === "" && modelData !== undefined) ? modelData : option.text
                 width: parent.width
                 elide: Text.ElideRight
             }
