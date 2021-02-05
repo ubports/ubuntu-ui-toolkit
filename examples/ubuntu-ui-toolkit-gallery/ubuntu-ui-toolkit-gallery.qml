@@ -24,7 +24,7 @@ MainView {
     objectName: "mainView"
 
     // Note! applicationName needs to match the .desktop filename
-    applicationName: "com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery"
+    applicationName: "com.ubports.ubuntu-ui-toolkit-gallery"
 
     width: units.gu(120)
     height: units.gu(75)

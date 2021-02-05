@@ -69,7 +69,7 @@ ListModel {
     }
     ListElement {
         objectName: "listItemsElement"
-        label: "List Items (old)"
+        label: "List Items (deprecated)"
         source: "ListItems.qml"
     }
     ListElement {

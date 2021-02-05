@@ -4,7 +4,7 @@ Exec=qmlscene %U ubuntu-ui-toolkit-gallery.qml
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
-X-Ubuntu-Gettext-Domain=com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery
+#X-Ubuntu-Gettext-Domain=com.ubuntu.developer.bzoltan.ubuntu-ui-toolkit-gallery
 # Added Icon and Path as a workaround for http://pad.lv/1227359.
 # TODO remove them once that bug is fixed. --elopio - 2013-09-18
 Icon=ubuntu-ui-toolkit-gallery.png

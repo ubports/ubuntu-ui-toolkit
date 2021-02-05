@@ -23,7 +23,7 @@ Column {
     width: parent.width
     property string className
     property string title: className
-    property string documentation: "qml-ubuntu-components-%1.html".arg(className.toLowerCase())
+    property string documentation: "Ubuntu.Components/%1.html".arg(className)
 
     property string description
     property url designUrl
@@ -38,7 +38,7 @@ Column {
 
     WebLink {
         id: docLink
-        property string prefix: "/usr/share/ubuntu-ui-toolkit/doc/html/"
+        property string prefix: "https://api-docs.ubports.com/sdk/apps/qml/"
         label: title ? "API Documentation" : "%1 API Documentation".arg(className)
         url: prefix + documentation
         visible: documentation != ""
