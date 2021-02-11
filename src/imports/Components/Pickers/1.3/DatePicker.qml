@@ -576,28 +576,6 @@ StyledItem {
                 }
 
                 arrangeTumblers();
-                resetPickers();
-            }
-        }
-
-        /*
-          Resets the pickers. Pickers will update their models with the given date,
-          minimum and maximum values.
-          */
-        function resetPickers() {
-            if (!completed) return;
-            for (var i = 0; i < tumblerModel.count; i++) {
-                var pickerItem = tumblerModel.get(i).pickerModel.pickerItem;
-                pickerItem.resetPicker();
-            }
-
-            // calculate the ratio for the dayPicker
-            var maxWidth = 0.0;
-            maxWidth += showYearPicker ? yearModel.longFormatLimit : 0.0;
-            maxWidth += showMonthPicker ? monthModel.longFormatLimit : 0.0;
-            maxWidth += showDayPicker ? dayModel.longFormatLimit : 0.0;
-            if (showDayPicker && maxWidth > 0.0) {
-                dayPickerRatio = (dayModel.longFormatLimit / maxWidth).toPrecision(3);
             }
         }
 
@@ -663,6 +641,15 @@ StyledItem {
                 formatIndex++;
             } else {
                 tumblerModel.removePicker("SecondsPicker");
+            }
+
+            // calculate the ratio for the dayPicker
+            var maxWidth = 0.0;
+            maxWidth += showYearPicker ? yearModel.longFormatLimit : 0.0;
+            maxWidth += showMonthPicker ? monthModel.longFormatLimit : 0.0;
+            maxWidth += showDayPicker ? dayModel.longFormatLimit : 0.0;
+            if (showDayPicker && maxWidth > 0.0) {
+                dayPickerRatio = (dayModel.longFormatLimit / maxWidth).toPrecision(3);
             }
 
             // re-enable completion
