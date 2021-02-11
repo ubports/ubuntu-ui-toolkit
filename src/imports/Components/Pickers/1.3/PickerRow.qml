@@ -129,7 +129,7 @@ Row {
             Component.onCompleted: {
                 // update model with the item instance
                 pickerModel.pickerItem = unitPicker;
-                resetPicker()
+                resetPicker();
                 unitPicker.onMovingChanged.connect(pickerMoving.bind(unitPicker));
                 row.pickerMoving(unitPicker.moving);
             }
