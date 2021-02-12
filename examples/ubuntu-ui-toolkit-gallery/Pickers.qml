@@ -25,7 +25,7 @@ Template {
     property var stringListModel: ["starred", "media-record", "like", "language-chooser", "go-home", "email", "contact-group", "notification", "active-call"]
     TemplateSection {
         className: "Picker"
-        documentation: "qml-ubuntu-components-pickers-picker.html"
+        documentation: "Ubuntu.Components.Pickers/%1.html".arg(className)
 
         TemplateRow {
             title: i18n.tr("Linear")
@@ -131,7 +131,7 @@ Template {
 
     TemplateSection {
         className: "Dialer"
-        documentation: "qml-ubuntu-components-pickers-dialer.html"
+        documentation: "Ubuntu.Components/%1.html".arg(className)
 
         TemplateRow {
             title: i18n.tr("Clock")
@@ -207,7 +207,8 @@ Template {
     }
     TemplateSection {
         className: "DatePicker"
-        documentation: "qml-ubuntu-components-pickers-datepicker.html"
+        documentation: "Ubuntu.Components.Pickers/%1.html".arg(className)
+
         TemplateRow {
             title: "Date"
             DatePicker {
