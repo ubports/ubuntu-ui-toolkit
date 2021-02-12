@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+SUBDIRS += po
+
 #load Ubuntu specific features
 load(ubuntu-click)
 
