@@ -1,0 +1,6 @@
+{
+  "clickable_minimum_required": "6.12.2",
+  "builder": "pure-qml-qmake",
+  "build_args": "${SRC_DIR}/ubuntu-ui-toolkit-gallery-click.pro CLICKABLE_PREFIX=/",
+  "kill": "qmlscene"
+}
