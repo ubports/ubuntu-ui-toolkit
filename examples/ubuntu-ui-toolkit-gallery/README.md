@@ -6,8 +6,6 @@ This is a gallery of examples for the ubuntu unity (lomiri) interface toolkit.
 
 ### Using clickable:
 
-Due to a clickable issue, `ubuntu-ui-toolkit-gallery.pro` must be removed ( or renamed without the `pro` file extension)
-
 - Deploy to device:
 `clickable`
 

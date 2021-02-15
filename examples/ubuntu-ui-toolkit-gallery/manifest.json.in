@@ -9,7 +9,7 @@
         }
     },
     "maintainer": "UBports <dev@ubports.com>",
-    "name": "com.ubports.ubuntu-ui-toolkit-gallery",
+    "name": "uitk-gallery.ubports",
     "title": "Ubuntu UI Toolkit Gallery",
     "version": "0.6"
 }
