@@ -23,7 +23,7 @@ Template {
     TemplateSection {
         id: crossFadeImageTemplateSection
         className: "CrossFadeImage"
-        documentation: "qml-crossfadeimage.html"
+        documentation: "Ubuntu.Components/%1.html".arg(className)
 
         function next() {
             if (internal.index < internal.paths.length - 1)
