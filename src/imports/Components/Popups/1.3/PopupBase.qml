@@ -144,6 +144,14 @@ OrientationHelper {
 
     /*!
       \internal
+      Property driving the dim color popup's background. The default is the same as
+      defined in the style
+      */
+    property alias __dimBackgroundColor: background.color
+
+
+    /*!
+      \internal
       Property to control dismissArea event capture.
       */
     property alias __eventGrabber: eventGrabber
