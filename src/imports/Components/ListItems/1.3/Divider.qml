@@ -26,11 +26,13 @@ import Ubuntu.Components 1.3
 
     Examples: see \l Header
 */
-Image {
-    source: Qt.resolvedUrl("../../artwork/ListItemDivider6px.png")
+
+Rectangle {
     anchors {
         left: parent ? parent.left : undefined
         right: parent ? parent.right : undefined
     }
-    height: units.gu(1)
+
+    height: units.dp(1)
+    color: theme.palette.normal.base
 }
