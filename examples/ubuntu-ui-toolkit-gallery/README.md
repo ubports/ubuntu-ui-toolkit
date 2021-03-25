@@ -1,6 +1,6 @@
 # Ubuntu UI Toolkit demo gallery
 
-This is a gallery of examples for the ubuntu unity (lomiri) interface toolkit.
+This is a gallery of examples for the lomiri interface toolkit.
 
 ## Buid
 

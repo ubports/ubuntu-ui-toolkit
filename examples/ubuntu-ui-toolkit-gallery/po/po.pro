@@ -6,7 +6,7 @@ TARGET_PREFIX = $$[QT_INSTALL_PREFIX]
 TARGET_NAMESPACE = "ubuntu-ui-toolkit-gallery"
 CLICKABLE {
     TARGET_PREFIX = /
-    TARGET_NAMESPACE = "com.ubports.ubuntu-ui-toolkit-gallery"
+    TARGET_NAMESPACE = "uitk-gallery.ubports"
 }
 
 
